@@ -40,7 +40,7 @@ What this project will not do:
 The other resources (like graphics, music and text) will also be completely replaced with copyright free resources before publishing the complete game.</p>
 
 ## How to Contribute to this project
-<p>Anyone can contribute to this repository in accordance with these <a href="https://codeberg.org/rhorvat/OpenCiv1/src/branch/master/Contributing/CONTRIBUTING.md">Contributing guidelines</a></p>
+<p>Anyone can contribute to this repository in accordance with these <a href="https://codeberg.org/rhorvat/OpenCiv1/src/branch/master/CONTRIBUTING/CONTRIBUTING.md">Contributing guidelines</a></p>
 Currently, you can contribute to this repository in one of the following ways:
 <ul>
 <li>By testing the game functionality and submitting Issues,</li>
