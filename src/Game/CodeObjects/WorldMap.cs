@@ -818,7 +818,7 @@ namespace OpenCiv1
 				16, (short)(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)) + 3));
 
 			// Instruction address 0x0000:0x08d8, size: 5
-			this.oParent.LanguageTools.F0_2f4d_04f7(0xba06, 270);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 270));
 
 			// Instruction address 0x0000:0x08f3, size: 5
 			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 40, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)) + 5, 15);
@@ -1169,7 +1169,7 @@ namespace OpenCiv1
 
 			// Instruction address 0x0000:0x0ccd, size: 5
 			this.oParent.Segment_1238.F0_1238_14a3(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1e)),
-				(short)this.oParent.Segment_1238.F0_1238_1c98_GetPalacelLevel(this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1e))].Score),
+				(short)this.oParent.Segment_1238.F0_1238_1c98_GetPalaceLevel(this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1e))].Score),
 				128, 
 				(short)(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa)) - 13));
 

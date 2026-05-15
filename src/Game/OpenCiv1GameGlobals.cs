@@ -121,6 +121,9 @@ namespace OpenCiv1
 		public bool Var_2fa2_DialogMousePressed = false;
 		public string[] Array_2fac = { "Defense Minister:", "Domestic Advisor:", "Foreign Minister:", "Science Advisor:" };
 
+		// { "$US", "$THEM", "$BUCKS", "$RPLC1", "$RPLC2" }
+		public string[] Array_30b8 = new string[] { "", "", "", "", "" };
+
 		public string[] Array_33a2_GameDifficultyNames = { "Chief", "Lord", "Prince", "King", "Emperor" };
 
 		public int Var_3484 = -1;

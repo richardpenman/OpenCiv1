@@ -3,12 +3,12 @@ using OpenCiv1.Graphics;
 
 namespace OpenCiv1
 {
-	public class Civilopedia
+	public class Encyclopedia
 	{
 		private OpenCiv1Game oParent;
 		private VCPU oCPU;
 
-		public Civilopedia(OpenCiv1Game parent)
+		public Encyclopedia(OpenCiv1Game parent)
 		{
 			this.oParent = parent;
 			this.oCPU = parent.CPU;
@@ -338,13 +338,9 @@ namespace OpenCiv1
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58)), this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.L) goto L03d4;
 
-			// Instruction address 0x0000:0x0372, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x18), (ushort)(this.oCPU.BP.UInt16 - 0x32));
-
 			// Instruction address 0x0000:0x0381, size: 5
-			this.oParent.LanguageTools.F0_2f4d_04f7(
-				(ushort)(this.oCPU.BP.UInt16 - 0x18),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a)));
+			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x18), this.oParent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.oCPU.ReadString(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x32)),
+				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a))));
 
 			// Instruction address 0x0000:0x0396, size: 5
 			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0((ushort)(this.oCPU.BP.UInt16 - 0x18),
@@ -646,10 +642,10 @@ namespace OpenCiv1
 		/// ?
 		/// </summary>
 		/// <param name="topicID"></param>
-		/// <param name="param2"></param>
-		public void F8_0000_062a(int topicID, int param2)
+		/// <param name="encyclopediaID"></param>
+		public void F8_0000_062a(int topicID, int encyclopediaID)
 		{
-			this.oCPU.Log.EnterBlock($"F8_0000_062a({topicID}, {param2})");
+			this.oCPU.Log.EnterBlock($"F8_0000_062a({topicID}, {encyclopediaID})");
 
 			// function body
 			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
@@ -657,9 +653,6 @@ namespace OpenCiv1
 			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x34);
 			this.oCPU.PUSH_UInt16(this.oCPU.DI.UInt16);
 			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
-			this.oCPU.AX.LowUInt8 = (byte)param2;
-			this.oCPU.AX.LowUInt8 = this.oCPU.ADD_UInt8(this.oCPU.AX.LowUInt8, 0x30);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0x3fa9, this.oCPU.AX.LowUInt8);
 
 			// Instruction address 0x0000:0x063a, size: 5
 			this.oParent.Segment_2dc4.F0_2dc4_065f_StopPaletteCycleSlots();
@@ -700,13 +693,13 @@ namespace OpenCiv1
 			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x32), 0xcc);
 			
-			if (param2 != 2) goto L06dc;
+			if (encyclopediaID != 2) goto L06dc;
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x32), 0xe0);
 
 		L06dc:
-			if (param2 == 4) goto L06f5;
+			if (encyclopediaID == 4) goto L06f5;
 
-			if (param2 != 1) goto L06ee;
+			if (encyclopediaID != 1) goto L06ee;
 
 			if (topicID > 24) goto L06f5;
 
@@ -718,7 +711,7 @@ namespace OpenCiv1
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x32), 0xa0);
 
 		L06fa:
-			this.oCPU.AX.Int16 = (short)param2;
+			this.oCPU.AX.Int16 = (short)encyclopediaID;
 			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.E) goto L0724;
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
@@ -799,6 +792,7 @@ namespace OpenCiv1
 
 			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 0x4c);
+
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), 0x0);
 			if (this.oCPU.Flags.NE) goto L0846;
 			goto L08e4;
@@ -806,11 +800,14 @@ namespace OpenCiv1
 		L0846:
 			if (this.oParent.GameData.GameSettingFlags.CivilopediaText)
 			{
+				string content = this.oParent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey($"BLURB{encyclopediaID}", 
+					this.oCPU.ReadString(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2c)));
+
 				// Instruction address 0x0000:0x0855, size: 5
-				if ((short)this.oParent.LanguageTools.F0_2f4d_01ad(0x3fa4, (ushort)(this.oCPU.BP.UInt16 - 0x2c)) != -1)
+				if ( !string.IsNullOrEmpty(content))
 				{
 					// Instruction address 0x0000:0x0870, size: 5
-					this.oParent.LanguageTools.F0_2f4d_0088_DrawTextBlock(37, 12, 76, 1);
+					this.oParent.LanguageTools.F0_2f4d_0088_DrawTextBlock(12, 76, content, 296, 1);
 
 					// Instruction address 0x0000:0x0878, size: 5
 					this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
@@ -826,19 +823,19 @@ namespace OpenCiv1
 
 			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
 			
-			if (param2 == 0) goto L08e4;
-
-			// Instruction address 0x0000:0x08bf, size: 5
-			this.oParent.LanguageTools.F0_2f4d_01ad(0x3fa4, (ushort)(this.oCPU.BP.UInt16 - 0x2c));
+			if (encyclopediaID == 0) goto L08e4;
 
 			// Instruction address 0x0000:0x08d6, size: 5
-			this.oParent.LanguageTools.F0_2f4d_0088_DrawTextBlock(36, 12, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 1);
+			this.oCPU.AX.Int16 = (short)this.oParent.LanguageTools.F0_2f4d_0088_DrawTextBlock(12, 
+				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)),
+				this.oParent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey($"BLURB{encyclopediaID}", this.oCPU.ReadString(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2c))),
+				288, 1);
 
 			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, 0x8);
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), this.oCPU.AX.UInt16);
 
 		L08e4:
-			this.oCPU.AX.Int16 = (short)param2;
+			this.oCPU.AX.Int16 = (short)encyclopediaID;
 			goto L1636;
 
 		L08ea:
@@ -1274,11 +1271,18 @@ namespace OpenCiv1
 
 		L102d:
 			// Instruction address 0x0000:0x1035, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Requires ");
+			this.oParent.CAPI.strcpy(0xba06, "Required technology: ");
 
-			// Instruction address 0x0000:0x1054, size: 5
-			this.oParent.CAPI.strcat(0xba06, 
-				this.oParent.GameData.Technologies[(int)this.oParent.GameData.Units[topicID].RequiredTechnology].Name);
+			if (this.oParent.GameData.Units[topicID].RequiredTechnology == TechnologyEnum.None)
+			{
+				this.oParent.CAPI.strcat(0xba06, "None");
+			}
+			else
+			{
+				// Instruction address 0x0000:0x1054, size: 5
+				this.oParent.CAPI.strcat(0xba06,
+					this.oParent.GameData.Technologies[(int)this.oParent.GameData.Units[topicID].RequiredTechnology].Name);
+			}
 
 			if (topicID != 25) goto L1072;
 

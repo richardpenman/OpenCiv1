@@ -2054,22 +2054,16 @@ namespace OpenCiv1
 			// Instruction address 0x1ade:0x1333, size: 5
 			this.oParent.CAPI.strcpy(0xba06, "Military Advisor:\n");
 
-			// Instruction address 0x1ade:0x1344, size: 5
-			this.oParent.LanguageTools.F0_2f4d_01ad(0x2284, (ushort)(this.oCPU.BP.UInt16 - 0x12e));
-
 			// Instruction address 0x1ade:0x1355, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30be), (ushort)(this.oCPU.BP.UInt16 - 0x12d));
-
-			// Instruction address 0x1ade:0x135d, size: 5
-			this.oParent.LanguageTools.F0_2f4d_0471();
-
-			// Instruction address 0x1ade:0x1366, size: 5
-			this.oParent.LanguageTools.F0_2f4d_0000(0x32);
+			this.oParent.Array_30b8[3] = this.oCPU.ReadString(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12d));
 
 			this.oParent.Var_db38 = 1;
 
 			// Instruction address 0x1ade:0x1380, size: 5
-			this.oParent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(0xba06, 8, 160, true, false, true);
+			this.oParent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(
+				this.oParent.LanguageTools.F0_2f4d_0000_AdjustTextBlockWidth(this.oParent.LanguageTools.F0_2f4d_0471_ReplaceKeywords(
+				this.oParent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey("PRODUCE", this.oCPU.ReadString(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12e)))), 50),
+				8, 160, true, false, true);
 
 		L1388:
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x48)), 0xffff);
@@ -2096,25 +2090,17 @@ namespace OpenCiv1
 				this.oParent.GameData.GetImprovementType(-this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x134))).Name);
 
 		L13bc:
-			// Instruction address 0x1ade:0x13d2, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Domestic Advisor:\n");
-
-			// Instruction address 0x1ade:0x13e3, size: 5
-			this.oParent.LanguageTools.F0_2f4d_01ad(0x22a3, (ushort)(this.oCPU.BP.UInt16 - 0x12e));
-
 			// Instruction address 0x1ade:0x13f4, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30be), (ushort)(this.oCPU.BP.UInt16 - 0x12d));
-
-			// Instruction address 0x1ade:0x13fc, size: 5
-			this.oParent.LanguageTools.F0_2f4d_0471();
-
-			// Instruction address 0x1ade:0x1405, size: 5
-			this.oParent.LanguageTools.F0_2f4d_0000(0x32);
+			this.oParent.Array_30b8[3] = this.oCPU.ReadString(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12d));
 
 			this.oParent.Var_db38 = 1;
 
 			// Instruction address 0x1ade:0x141f, size: 5
-			this.oParent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(0xba06, 164, 160, true, false, true);
+			this.oParent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(
+				this.oParent.LanguageTools.F0_2f4d_0000_AdjustTextBlockWidth(
+				"Domestic Advisor:\n" + this.oParent.LanguageTools.F0_2f4d_0471_ReplaceKeywords(this.oParent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey("PRODUCE",
+				this.oCPU.ReadString(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12e)))), 50),
+				164, 160, true, false, true);
 
 		L1427:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 0x1);
@@ -2164,12 +2150,12 @@ namespace OpenCiv1
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x134)), 0x0);
 			if (this.oCPU.Flags.L) goto L14bd;
 
-			this.oParent.Civilopedia.F8_0000_062a(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x134)), 2);
+			this.oParent.Encyclopedia.F8_0000_062a(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x134)), 2);
 
 			goto L14c8;
 
 		L14bd:
-			this.oParent.Civilopedia.F8_0000_062a(-this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x134)), 1);
+			this.oParent.Encyclopedia.F8_0000_062a(-this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x134)), 1);
 
 		L14c8:
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
@@ -2376,7 +2362,7 @@ namespace OpenCiv1
 			goto L19d4;
 
 		L16af:
-			this.oParent.Civilopedia.F8_0000_16c4(this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].ResearchTechnologyID);
+			this.oParent.Encyclopedia.F8_0000_16c4(this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].ResearchTechnologyID);
 			
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x44), this.oCPU.AX.UInt16);
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x42), 0x0);
@@ -2484,8 +2470,6 @@ namespace OpenCiv1
 		L186e:
 			this.oParent.Var_db38 = 1;
 
-			;
-
 			// Instruction address 0x1ade:0x188b, size: 5
 			this.oParent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(0xba06, 96, (this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)) != 0) ? 25 : 1, 
 				false, false, true);
@@ -2504,7 +2488,7 @@ namespace OpenCiv1
 			// Instruction address 0x1ade:0x18d3, size: 5
 			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, 0xba06, 0);
 
-			this.oParent.Civilopedia.F8_0000_16f7(
+			this.oParent.Encyclopedia.F8_0000_16f7(
 				(ushort)(((this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x44)) % 3) * 111) + 1),
 				(ushort)((((this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x44)) % 9) / 3) * 69) + 1),
 				110, 68, 174, (this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)) != 0 ? 87 : 96));
@@ -2550,7 +2534,7 @@ namespace OpenCiv1
 		L19d4:
 			if (this.oParent.GameData.Players[playerID].DiscoveredTechnologyCount <= 1)
 			{
-				this.oParent.Help.F4_0000_02d3_ShowInstantAdvicePopup(0x231d);
+				this.oParent.Help.F4_0000_02d3_ShowInstantAdvicePopup("*FIRSTCIV");
 			}
 
 			// Instruction address 0x1ade:0x19ec, size: 5
@@ -2785,7 +2769,7 @@ namespace OpenCiv1
 			
 			if (!this.oParent.Var_2f9c_MenuBoxHelpRequested) goto L1cc2;
 
-			this.oParent.Civilopedia.F8_0000_062a(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46)), 0);
+			this.oParent.Encyclopedia.F8_0000_062a(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46)), 0);
 			
 			// Instruction address 0x1ade:0x1cb5, size: 5
 			this.oParent.Segment_1238.F0_1238_1b44();
@@ -3049,20 +3033,18 @@ namespace OpenCiv1
 			
 			this.oCPU.AX.UInt16 = this.oCPU.INC_UInt16(this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.E) goto L2013;
-			this.oCPU.AX.UInt16 = 0;
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x3934, this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd804, this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
+			
+			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x3934, 0);
+			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd804, 0);
 
 			// Instruction address 0x1ade:0x1fc4, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30b8),
-				this.oParent.GameData.Players[playerID].Nation);
+			this.oParent.Array_30b8[0] = this.oParent.GameData.Players[playerID].Nation;
 
 			// Instruction address 0x1ade:0x1fda, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30be), this.oParent.GameData.Technologies[(int)technology].Name);
+			this.oParent.Array_30b8[3] = this.oParent.GameData.Technologies[(int)technology].Name;
 
 			// Instruction address 0x1ade:0x1fe6, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x240e);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*GAPE"));
 
 			this.oParent.Var_3936 = 2;
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
@@ -3076,7 +3058,7 @@ namespace OpenCiv1
 
 			if (technology == TechnologyEnum.FutureTechnology5) goto L202f;
 
-			this.oParent.Civilopedia.F8_0000_062a((int)technology, 0);
+			this.oParent.Encyclopedia.F8_0000_062a((int)technology, 0);
 
 		L202f:
 			if (technology != TechnologyEnum.Invention) goto L203f;
@@ -3098,7 +3080,7 @@ namespace OpenCiv1
 			if (technology != TechnologyEnum.Monarchy)
 				goto L20d9;
 
-			this.oParent.Help.F4_0000_02d3_ShowInstantAdvicePopup(0x2414);
+			this.oParent.Help.F4_0000_02d3_ShowInstantAdvicePopup("*MONARCHY");
 			
 			goto L20d9;
 

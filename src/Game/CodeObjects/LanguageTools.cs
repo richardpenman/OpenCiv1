@@ -1,4 +1,10 @@
+using IRB.Collections.Generic;
 using IRB.VirtualCPU;
+using OpenCiv1.Graphics;
+using OpenCiv1.UI;
+using System.Text;
+using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace OpenCiv1
 {
@@ -7,550 +13,475 @@ namespace OpenCiv1
 		private OpenCiv1Game oParent;
 		private VCPU oCPU;
 
+		private BDictionary<string, List<string>> languagePackItems = new();
+
 		public LanguageTools(OpenCiv1Game parent)
 		{
 			this.oParent = parent;
 			this.oCPU = parent.CPU;
+
+			string[] textSections = {"BLURB0", "BLURB1", "BLURB2", "BLURB3", "BLURB4", "ERROR", "HELP", "KING", "PRODUCE"};
+
+			for (int i = 0; i < textSections.Length; i++)
+			{
+				try
+				{
+					ParseSectionFile(textSections[i]);
+				}
+				catch { }
+			}
+		}
+
+		public void ParseSectionFile(string section)
+		{
+			FileStream inputStream;
+			StreamReader textReader;
+			Regex rxKey = new Regex(@"^\s*\*([A-Z0-9' \.]+)\s*$");
+			Match match;
+			string? line;
+
+			inputStream = new FileStream($"{this.oParent.ResourcePath}{section}.TXT", FileMode.Open);
+			inputStream.Seek(0x212, SeekOrigin.Begin);
+			textReader = new StreamReader(inputStream, Encoding.ASCII);
+
+			line = textReader.ReadLine();
+
+			while (!textReader.EndOfStream)
+			{
+				List<string> contentItems = new List<string>();
+				StringBuilder contentBuilder = new StringBuilder();
+				List<string> keys = new List<string>();
+
+				if (line != null && (match = rxKey.Match(line)).Success)
+				{
+					if (match.Groups[1].Value.Equals("END", StringComparison.CurrentCultureIgnoreCase))
+						break;
+
+					while (line != null && (match = rxKey.Match(line)).Success)
+					{
+						keys.Add(match.Groups[1].Value.Replace(' ', '_').Replace("'", "").Replace(".", "").ToUpper());
+
+						line = textReader.ReadLine();
+					}
+
+					while (line != null && !(match = rxKey.Match(line)).Success)
+					{
+						line = line.Trim();
+
+						if (line.Length > 0)
+						{
+							if (line.StartsWith('_') || line.StartsWith('-'))
+							{
+								contentItems.Add(contentBuilder.ToString().TrimEnd(' ', '^').Replace("  ", " "));
+								contentBuilder.Clear();
+							}
+
+							if (line.EndsWith('^'))
+							{
+								contentBuilder.Append(line.TrimEnd(' ', '^'));
+								contentBuilder.Append("^");
+							}
+							else
+							{
+								contentBuilder.Append(line);
+								contentBuilder.Append(" ");
+							}
+						}
+
+						line = textReader.ReadLine();
+					}
+
+					if (contentBuilder.Length > 0)
+					{
+						contentItems.Add(contentBuilder.ToString().TrimEnd(' ', '^').Replace("  ", " "));
+					}
+
+					for (int i = 0; i < keys.Count; i++)
+					{
+						languagePackItems.Add($"{section}_{keys[i]}", contentItems);
+					}
+				}
+				else
+				{
+					line = textReader.ReadLine();
+				}
+			}
+
+			textReader.Close();
 		}
 
 		/// <summary>
-		/// ?
+		/// Adjusts the given text block to specified width in characters
 		/// </summary>
-		/// <param name="param1"></param>
-		public void F0_2f4d_0000(short param1)
+		/// <param name="maxLength">Maximum length of the one line of text in characters</param>
+		public string F0_2f4d_0000_AdjustTextBlockWidth(string text, int maxLength)
 		{
-			this.oCPU.Log.EnterBlock($"F0_2f4d_0000({param1})");
+			//this.oCPU.Log.EnterBlock($"F0_2f4d_0000({length})");
 
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x4);
+			int previousDelimiter = 0;
+			int currentTextLength = 0;
+			List<char> newText = new();
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x0);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 0x0);
-			goto L005d;
+			for (int i = 0; i < text.Length; i++)
+			{
+				char ch = text[i];
+				char nextCh = (i + 1 < text.Length) ? text[i + 1] : '\0';
 
-		L0012:
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
-			this.oCPU.CMP_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xba06)), 0x5e);
-			if (this.oCPU.Flags.NE) goto L002b;
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xba06), 0x20);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xba07), 0xa);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0xffff);
+				if (ch == ' ' || ch == '^' || ch == '\n')
+				{
+					if ((ch == '^' || ch == '\n') && (nextCh == ' ' || nextCh=='_'))
+					{
+						// the case where an option is presented
+						newText.Add('\n');
+						newText.Add(nextCh);
+						currentTextLength = 1;
+						previousDelimiter = 0;
+						i++;
+					}
+					else if (newText.Count > 0 && currentTextLength > 0)
+					{
+						newText.Add(' ');
+						currentTextLength++;
+						previousDelimiter = newText.Count - 1;
+					}
+					else
+					{
+						previousDelimiter = 0;
+					}
+				}
+				else
+				{
+					newText.Add(ch);
+					currentTextLength++;
 
-		L002b:
-			this.oCPU.CMP_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xba06)), 0xa);
-			if (this.oCPU.Flags.NE) goto L0037;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0xffff);
+					if (currentTextLength > maxLength && previousDelimiter > 0)
+					{
+						newText[previousDelimiter] = '\n';
+						previousDelimiter = 0;
+						currentTextLength = i - previousDelimiter;
+					}
+				}
+			}
 
-		L0037:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))));
-			
-			if (this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)) <= param1)
-				goto L005a;
+			if (currentTextLength > 0)
+			{
+				while (newText.Count > 0 && newText[newText.Count - 1] == ' ')
+				{
+					newText.RemoveAt(newText.Count - 1);
+				}
+				newText.Add('\n');
+			}
 
-			if (this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xba06)) != 0x20)
-				goto L005a;
-
-			if (this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xba07)) == 0x20)
-				goto L005a;
-
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xba06), 0xa);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x0);
-
-		L005a:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))));
-
-		L005d:
-			// Instruction address 0x2f4d:0x0061, size: 5
-			this.oParent.CAPI.strlen(0xba06);
-
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-			if (this.oCPU.Flags.G) goto L0012;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 0x0);
-			if (this.oCPU.Flags.LE) goto L0084;
-
-			// Instruction address 0x2f4d:0x007c, size: 5
-			this.oParent.CAPI.strcat(0xba06, "\n");
-
-		L0084:
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F0_2f4d_0000");
+			return new(newText.ToArray());
 		}
 
 		/// <summary>
 		/// Draws a text in a block of maximum width
 		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
 		/// <param name="maxWidth"></param>
-		/// <param name="xPos"></param>
-		/// <param name="yPos"></param>
 		/// <param name="frontColor"></param>
-		/// <returns></returns>
-		public int F0_2f4d_0088_DrawTextBlock(int maxWidth, int xPos, int yPos, byte frontColor)
+		/// <returns>The new Y position</returns>
+		public int F0_2f4d_0088_DrawTextBlock(int x, int y, string text, int maxWidth, byte frontColor)
 		{
-			this.oCPU.Log.EnterBlock($"F0_2f4d_0088_DrawTextBlock({maxWidth}, {xPos}, {yPos}, {frontColor})");
+			//this.oCPU.Log.EnterBlock($"F0_2f4d_0088_DrawTextBlock({maxWidth}, {x}, {y}, {frontColor})");
 
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0xc);
-			this.oCPU.AX.UInt16 = 0;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), this.oCPU.AX.UInt16);
+			int newY = y;
+			int lastSeparatorPosition = -1;
+			int currentPosition = 0;
 
-			// Instruction address 0x2f4d:0x00a0, size: 5
-			this.oParent.Graphics.F0_VGA_11ae_GetTextHeight(this.oParent.Var_aa_Screen0_Rectangle.FontID);
+			// clean out text of unnecessary characters
+			text = text.Replace('\r', ' ').Replace("^\n", "\r").Replace('\n', ' ').Replace('\r', '\n').Replace('^', '\n');
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8), 0x0);
-			goto L00b5;
+			while (text.IndexOf("  ") >= 0)
+			{
+				text = text.Replace("  ", " ");
+			}
 
-		L00b2:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8))));
+			// we want to adamantly end our text with a line separator
+			if (!text.EndsWith('\n'))
+			{
+				text += '\n';
+			}
 
-		L00b5:
-			// Instruction address 0x2f4d:0x00b9, size: 5
-			this.oParent.CAPI.strlen(0xba06);
+			// process text block
+			int textLength = text.Length;
 
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)));
-			if (this.oCPU.Flags.G) goto L00c9;
-			goto L017b;
+			while (currentPosition < textLength && newY < 193)
+			{
+				int separatorPosition = text.IndexOfAny([' ', '\n'], lastSeparatorPosition + 1);
 
-		L00c9:
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8));
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xba06));
+				if (separatorPosition >= 0)
+				{
+					char separatorChar = text[separatorPosition];
+					string textPart = text.Substring(currentPosition, separatorPosition - currentPosition);
+					GSize textPartSize = this.oParent.Graphics.GetDrawStringSize(this.oParent.Var_aa_Screen0_Rectangle.FontID, textPart);
 
-			// Instruction address 0x2f4d:0x00d9, size: 5
-			this.oParent.Graphics.F0_VGA_115d_GetCharWidth(this.oParent.Var_aa_Screen0_Rectangle.FontID, this.oCPU.AX.LowUInt8);
+					if (textPartSize.Width > maxWidth)
+					{
+						textPart = text.Substring(currentPosition, lastSeparatorPosition - currentPosition);
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), this.oCPU.AX.UInt16));
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8));
-			this.oCPU.CMP_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xba06)), 0x20);
-			if (this.oCPU.Flags.E) goto L00fc;
-			this.oCPU.CMP_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xba06)), 0xa);
-			if (this.oCPU.Flags.E) goto L00fc;
-			this.oCPU.CMP_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xba06)), 0x5e);
-			if (this.oCPU.Flags.NE) goto L0101;
+						// Instruction address 0x2f4d:0x013b, size: 5
+						this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(textPart, x, newY, frontColor);
 
-		L00fc:
-			this.oCPU.AX.UInt16 = this.oCPU.BX.UInt16;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), this.oCPU.AX.UInt16);
+						currentPosition = lastSeparatorPosition + 1;
+						lastSeparatorPosition = separatorPosition;
+						newY += textPartSize.Height;
+					}
+					else if (separatorChar == '\n')
+					{
+						// Instruction address 0x2f4d:0x013b, size: 5
+						this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(textPart, x, newY, frontColor);
 
-		L0101:
-			this.oCPU.CMP_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xba06)), 0xa);
-			if (this.oCPU.Flags.E) goto L011b;
-			this.oCPU.CMP_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xba06)), 0x5e);
-			if (this.oCPU.Flags.E) goto L011b;
+						currentPosition = separatorPosition + 1;
+						lastSeparatorPosition = separatorPosition;
+						newY += textPartSize.Height;
+					}
+					else
+					{
+						lastSeparatorPosition = separatorPosition;
+					}
+				}
+				else
+				{
+					string textPart = text.Substring(currentPosition, textLength - currentPosition).Trim(' ', '\n');
+					GSize textPartSize = this.oParent.Graphics.GetDrawStringSize(this.oParent.Var_aa_Screen0_Rectangle.FontID, textPart);
 
-			if (maxWidth * 8 >= this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)))
-				goto L00b2;
+					// Instruction address 0x2f4d:0x013b, size: 5
+					this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(textPart, x, newY, frontColor);
 
-		L011b:
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6));
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xba06));
-			this.oCPU.CBW(this.oCPU.AX);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xba06), 0x0);
+					currentPosition = textLength;
+					lastSeparatorPosition = textLength;
+					newY += textPartSize.Height;
+				}
+			}
+		
+			return newY;
+		}
 
-			// Instruction address 0x2f4d:0x013b, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0((ushort)(0xba06 + this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc))),
-				xPos, yPos, frontColor);
+		public int GetTextBlockHeight(string text, int y, int maxWidth)
+		{
+			int newY = y;
+			int lastSeparatorPosition = -1;
+			int currentPosition = 0;
 
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6));
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xba06), this.oCPU.AX.LowUInt8);
+			// clean out text of unnecessary characters
+			text = text.Replace('\r', ' ').Replace("^\n", "\r").Replace('\n', ' ').Replace('\r', '\n').Replace('^', '\n');
 
-			yPos += this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa));
+			while (text.IndexOf("  ") >= 0)
+			{
+				text = text.Replace("  ", " ");
+			}
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 0x0);
-			this.oCPU.AX.UInt16 = this.oCPU.BX.UInt16;
-			this.oCPU.AX.UInt16 = this.oCPU.INC_UInt16(this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), this.oCPU.AX.UInt16);
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8));
-			this.oCPU.CMP_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xba06)), 0x5e);
-			if (this.oCPU.Flags.NE) goto L016b;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc))));
+			// we want to adamantly end our text with a line separator
+			if (!text.EndsWith('\n'))
+			{
+				text += '\n';
+			}
 
-		L016b:
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8), this.oCPU.AX.UInt16);
+			// process text block
+			int textLength = text.Length;
 
-			if (yPos <= 192)
-				goto L00b2;
+			while (currentPosition < textLength && newY < 193)
+			{
+				int separatorPosition = text.IndexOfAny([' ', '\n'], lastSeparatorPosition + 1);
 
-		L017b:
-			if (this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)) <= 0)
-				goto L01a6;
-			
-			if (yPos > 192)
-				goto L01a6;
+				if (separatorPosition >= 0)
+				{
+					char separatorChar = text[separatorPosition];
+					string textPart = text.Substring(currentPosition, separatorPosition - currentPosition);
+					GSize textPartSize = this.oParent.Graphics.GetDrawStringSize(this.oParent.Var_aa_Screen0_Rectangle.FontID, textPart);
 
-			// Instruction address 0x2f4d:0x0198, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0((ushort)(0xba06 + this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc))),
-				xPos, yPos, frontColor);
+					if (textPartSize.Width > maxWidth)
+					{
+						textPart = text.Substring(currentPosition, lastSeparatorPosition - currentPosition);
 
-			yPos += this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa));
+						currentPosition = lastSeparatorPosition + 1;
+						lastSeparatorPosition = separatorPosition;
+						newY += textPartSize.Height;
+					}
+					else if (separatorChar == '\n')
+					{
+						currentPosition = separatorPosition + 1;
+						lastSeparatorPosition = separatorPosition;
+						newY += textPartSize.Height;
+					}
+					else
+					{
+						lastSeparatorPosition = separatorPosition;
+					}
+				}
+				else
+				{
+					string textPart = text.Substring(currentPosition, textLength - currentPosition);
+					GSize textPartSize = this.oParent.Graphics.GetDrawStringSize(this.oParent.Var_aa_Screen0_Rectangle.FontID, textPart);
 
-		L01a6:
-			this.oCPU.AX.UInt16 = (ushort)((short)yPos);
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F0_2f4d_0088_DrawTextBlock");
+					currentPosition = textLength;
+					lastSeparatorPosition = textLength;
+					newY += textPartSize.Height;
+				}
+			}
 
-			return yPos;
+			return newY - y;
 		}
 
 		/// <summary>
-		/// ?
+		/// Gets the Language item from Language pack specified by its section and key
 		/// </summary>
-		/// <param name="filenamePtr"></param>
-		/// <param name="stringPtr"></param>
-		/// <returns></returns>
-		public ushort F0_2f4d_01ad(ushort filenamePtr, ushort stringPtr)
+		/// <param name="section">The Language item section</param>
+		/// <param name="key">The Language item</param>
+		/// <returns>The string from the Language pack</returns>
+		public string F0_2f4d_01ad_GetTextBySectionAndKey(string section, string key)
 		{
-			this.oCPU.Log.EnterBlock($"F0_2f4d_01ad(0x{filenamePtr:x4}, 0x{stringPtr:x4})");
+			//this.oCPU.Log.EnterBlock($"F0_2f4d_01ad(0x{filename:x4}, 0x{key:x4})");
 
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x110);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
-			this.oCPU.AX.UInt16 = 0;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x102), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x106), this.oCPU.AX.UInt16);
-			goto L01d9;
+			// !!! This hashing thing doesn't function correctly
+			/*string resourcePath = $"{this.oParent.ResourcePath}{section}.TXT";
+			int hashValue = 0;
 
-		L01c5:
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x106));
-			this.oCPU.SI.UInt16 = stringPtr;
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + this.oCPU.SI.UInt16));
-			this.oCPU.CBW(this.oCPU.AX);
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.BX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x102), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x102)), this.oCPU.AX.UInt16));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x106), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x106))));
+			for (int i = 0; i < key.Length; i++)
+			{
+				hashValue += (int)key[i] * i;
+			}
+			//hashValue &= 0xffff;
 
-		L01d9:
-			// Instruction address 0x2f4d:0x01dc, size: 5
-			this.oParent.CAPI.strlen(stringPtr);
+			int itemFilePosition;
 
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x106)));
-			if (this.oCPU.Flags.G) goto L01c5;
-			this.oCPU.WriteUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x101), 0x0);
+			using (FileStream fileStream = new(resourcePath, FileMode.Open, FileAccess.Read))
+			{
+				fileStream.Seek((((hashValue >> 5) + hashValue) & 0xff) * 2, SeekOrigin.Begin);
 
-		L01ef:
-			// Instruction address 0x2f4d:0x01f6, size: 5
-			this.oParent.CAPI.fopen(filenamePtr, "rb");
+				itemFilePosition = GameLoadAndSave.ReadUInt16(fileStream);
+			}//*/
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110), this.oCPU.AX.UInt16);
+			int lineCount = 0;
 
-			// Instruction address 0x2f4d:0x0226, size: 5
-			this.oParent.CAPI.fseek((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110)),
-				(((int)((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x102))) >> 5) +
-					this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x102))) << 1,
-				0);
+			using (FileStream inputStream = new FileStream($"{this.oParent.ResourcePath}{section}.TXT", FileMode.Open))
+			{
+				inputStream.Seek(0x212, SeekOrigin.Begin);
 
-			// Instruction address 0x2f4d:0x023f, size: 5
-			this.oParent.CAPI.fread((ushort)(this.oCPU.BP.UInt16 - 0x104), 2, 1, 
-				(short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110)));
-			
-			// Instruction address 0x2f4d:0x024b, size: 5
-			this.oParent.CAPI.fclose((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110)));
-			
-			// Instruction address 0x2f4d:0x025a, size: 5
-			this.oParent.CAPI.fopen(filenamePtr, "rt");
+				using (StreamReader textReader = new StreamReader(inputStream, Encoding.ASCII))
+				{
+					StringBuilder itemText = new StringBuilder();
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110), this.oCPU.AX.UInt16);
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104)), 0x1ff);
-			if (this.oCPU.Flags.BE) goto L02bc;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104)), 0x3030);
-			if (this.oCPU.Flags.E) goto L02bc;
+					while (true)
+					{
+						string? line = textReader.ReadLine();
 
-			// Instruction address 0x2f4d:0x0282, size: 5
-			this.oParent.CAPI.fseek((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110)),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104)), 0);
+						// Instruction address 0x2f4d:0x0310, size: 5
+						if (line != null && line.Equals(key, StringComparison.CurrentCultureIgnoreCase))
+						{
+							line = textReader.ReadLine();
 
-			// Instruction address 0x2f4d:0x0297, size: 5
-			this.oParent.CAPI.fscanf((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110)),
-				"%[^\n]\n", (ushort)(this.oCPU.BP.UInt16 - 0x100));
+							while (line != null && line.StartsWith('*'))
+							{
+								line = textReader.ReadLine();
+							}
 
-			// Instruction address 0x2f4d:0x02a7, size: 5
-			this.oParent.CAPI.stricmp((ushort)(this.oCPU.BP.UInt16 - 0x100), stringPtr);
+							while (line != null && !line.StartsWith('*'))
+							{
+								line = line.Trim();
 
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L02b6;
-			goto L0392;
+								if (line.Length > 0)
+								{
+									itemText.Append(line.TrimEnd());
+									itemText.Append('\n');
+								}
 
-		L02b6:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e), 0x1);
+								line = textReader.ReadLine();
 
-		L02bc:
-			this.oCPU.AX.UInt16 = 0;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10a), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10c), this.oCPU.AX.UInt16);
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)), this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.NE) goto L0323;
+								lineCount++;
+							}
 
-			// Instruction address 0x2f4d:0x02d7, size: 5
-			this.oParent.CAPI.fseek((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110)),
-				0x200, (short)this.oCPU.AX.UInt16);
+							string item = itemText.ToString().TrimEnd(' ', '^', '\n');
 
-		L02df:
-			// Instruction address 0x2f4d:0x02e3, size: 5
-			this.oParent.CAPI.ftell((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110)));
+							while (item.IndexOf("  ") >= 0)
+							{
+								item = item.Replace("  ", " ");
+							}
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104), this.oCPU.AX.UInt16);
-
-			// Instruction address 0x2f4d:0x02fc, size: 5
-			this.oParent.CAPI.fscanf((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110)),
-				"%[^\n]\n", (ushort)(this.oCPU.BP.UInt16 - 0x100));
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10a), this.oCPU.AX.UInt16);
-
-			// Instruction address 0x2f4d:0x0310, size: 5
-			this.oParent.CAPI.stricmp((ushort)(this.oCPU.BP.UInt16 - 0x100), stringPtr);
-
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L0323;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10a)), 0xffff);
-			if (this.oCPU.Flags.NE) goto L02df;
-
-		L0323:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10a)), 0xffff);
-			if (this.oCPU.Flags.NE) goto L032d;
-			goto L03af;
-
-		L032d:
-			// Instruction address 0x2f4d:0x033a, size: 5
-			this.oParent.CAPI.fscanf((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110)),
-				"%[^\n]\n", (ushort)(this.oCPU.BP.UInt16 - 0x100));
-
-			this.oCPU.CMP_UInt8(this.oCPU.ReadUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x100)), 0x2a);
-			if (this.oCPU.Flags.E) goto L032d;
-
-		L0349:
-			// Instruction address 0x2f4d:0x0352, size: 5
-			this.oParent.CAPI.strcat(0xba06, (ushort)(this.oCPU.BP.UInt16 - 0x100));
-
-			// Instruction address 0x2f4d:0x0362, size: 5
-			this.oParent.CAPI.strcat(0xba06, " ");
-
-			// Instruction address 0x2f4d:0x0377, size: 5
-			this.oParent.CAPI.fscanf((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110)),
-				"%[^\n]\n", (ushort)(this.oCPU.BP.UInt16 - 0x100));
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10c), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10c))));
-			this.oCPU.CMP_UInt8(this.oCPU.ReadUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x100)), 0x2a);
-			if (this.oCPU.Flags.NE) goto L0349;
-
-			// Let's try to trim the dialog text, and fix the bug with unnecessary lines in dialogs
-			string sInput = this.oCPU.ReadString(VCPU.ToLinearAddress(this.oParent.CPU.DS.UInt16, 0xba06));
-			sInput = sInput.TrimEnd(new char[] {' ', '^'});
-			this.oCPU.WriteString(VCPU.ToLinearAddress(this.oParent.CPU.DS.UInt16, 0xba06), sInput, sInput.Length);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108), 0x1);
-			goto L03b5;
-
-		L0392:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x102), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x102))));
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x102));
-			this.oCPU.AX.HighUInt8 = 0;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x102), this.oCPU.AX.UInt16);
-			
-			// Instruction address 0x2f4d:0x03a4, size: 5
-			this.oParent.CAPI.fclose((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110)));
-			goto L01ef;
-
-		L03af:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108), 0x0);
-
-		L03b5:
-			// Instruction address 0x2f4d:0x03b9, size: 5
-			this.oParent.CAPI.fclose((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110)));
-
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)), 0x0);
-			if (this.oCPU.Flags.NE) goto L043a;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)), 0x0);
-			if (this.oCPU.Flags.E) goto L043a;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10a)), 0xffff);
-			if (this.oCPU.Flags.E) goto L043a;
-
-			// Instruction address 0x2f4d:0x03dd, size: 5
-			this.oParent.CAPI.fopen(filenamePtr, "r+b");
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110), this.oCPU.AX.UInt16);
-
-			// Instruction address 0x2f4d:0x040d, size: 5
-			this.oParent.CAPI.fseek((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110)),
-				((int)((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x102))) >> 5 +
-					this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x102))) << 1,
-				0);
-
-			// Instruction address 0x2f4d:0x0426, size: 5
-			this.oParent.CAPI.fwrite((ushort)(this.oCPU.BP.UInt16 - 0x104), 2, 1,
-				(short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110)));
-			
-			// Instruction address 0x2f4d:0x0432, size: 5
-			this.oParent.CAPI.fclose((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110)));
-
-		L043a:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)), 0x0);
-			if (this.oCPU.Flags.E) goto L0447;
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10c));
-			goto L044a;
-
-		L0447:
-			this.oCPU.AX.UInt16 = 0xffff;
-
-		L044a:
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F0_2f4d_01ad");
-
-			return this.oCPU.AX.UInt16;
+							return item;
+						}
+						else if (line == null)
+						{
+							// The Language item is not found, report the error via MessageBox for now
+							MessageBox.Show($"The language item from section '{section}', key '{key}' is not found in the Language pack!", "Error", MessageBoxIcon.Error);
+							return "";
+						}
+					}
+				}
+			}
 		}
 
 		/// <summary>
-		/// ?
+		/// Gets the Language item in king section from Language pack, replaces keywords, and adjusts the the width of the text to 80 characters
 		/// </summary>
-		/// <param name="stringPtr"></param>
-		public void F0_2f4d_044f(ushort stringPtr)
+		/// <param name="key">Language item</param>
+		/// <returns>Adjusted Language item string</returns>
+		public string F0_2f4d_044f_GetTextFromKingSection(string key)
 		{
-			this.oCPU.Log.EnterBlock($"F0_2f4d_044f(0x{stringPtr:x4})");
-
-			// function body
-			// Instruction address 0x2f4d:0x045a, size: 3
-			F0_2f4d_01ad(0x30a5, stringPtr);
-
-			// Instruction address 0x2f4d:0x0461, size: 3
-			F0_2f4d_0471();
-
-			// Instruction address 0x2f4d:0x0469, size: 3
-			F0_2f4d_0000(0x50);
-
-			// Far return
-			this.oCPU.Log.ExitBlock("F0_2f4d_044f");
+			return F0_2f4d_044f_GetTextFromKingSection(key, 80);
 		}
 
 		/// <summary>
-		/// ?
+		/// Gets the Language item in king section from Language pack, replaces keywords, and adjusts the the width of the text
 		/// </summary>
-		public void F0_2f4d_0471()
+		/// <param name="key">Language item</param>
+		/// <param name="maxWidth">Maximum width of the text in characters</param>
+		/// <returns>Adjusted Language item string</returns>
+		public string F0_2f4d_044f_GetTextFromKingSection(string key, int maxWidth)
 		{
-			this.oCPU.Log.EnterBlock("F0_2f4d_0471()");
+			//this.oCPU.Log.EnterBlock($"F0_2f4d_044f(0x{stringPtr:x4})");
 
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x204);
-			this.oCPU.PUSH_UInt16(this.oCPU.DI.UInt16);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x204), 0x0);
+			return F0_2f4d_0000_AdjustTextBlockWidth(F0_2f4d_0471_ReplaceKeywords(F0_2f4d_01ad_GetTextBySectionAndKey("KING", key)), maxWidth);
+		}
 
-		L0480:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x204));
-			this.oCPU.SI.UInt16 <<= 1;
-			// Instruction address 0x2f4d:0x048e, size: 5
-			this.oParent.CAPI.strstr(0xba06, this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x30ae)));
+		private static readonly string[] Array_30ae = { "$US", "$THEM", "$BUCKS", "$RPLC1", "$RPLC2" };
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.AX.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L04e0;
+		/// <summary>
+		/// Replaces keywords in a string with their value
+		/// </summary>
+		public string F0_2f4d_0471_ReplaceKeywords(string text)
+		{
+			//this.oCPU.Log.EnterBlock("F0_2f4d_0471_ReplaceKeywords()");
 
-			// Instruction address 0x2f4d:0x04a3, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x202), this.oCPU.AX.UInt16);
+			// function body
+			for (int i = 0; i < Array_30ae.Length; i++)
+			{
+				text = text.Replace(Array_30ae[i], this.oParent.Array_30b8[i]);
+			}
 
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, this.oCPU.BX.UInt16, 0x0);
-
-			// Instruction address 0x2f4d:0x04b9, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x30b8)));
-
-			// Instruction address 0x2f4d:0x04c5, size: 5
-			this.oParent.CAPI.strlen(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x30ae)));
-
-			this.oCPU.DI.UInt16 = this.oCPU.AX.UInt16;
-			// Instruction address 0x2f4d:0x04d8, size: 5
-			this.oParent.CAPI.strcat(0xba06, (ushort)(this.oCPU.BP.UInt16 + this.oCPU.DI.UInt16 - 0x202));
-
-		L04e0:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 0x0);
-			if (this.oCPU.Flags.NE) goto L0480;
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x204), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x204))));
-
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x204)), 0x5);
-			if (this.oCPU.Flags.L) goto L0480;
-
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.DI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F0_2f4d_0471");
+			return text;
 		}
 
 		/// <summary>
-		/// ?
+		/// Trims (deletes) characters from the end of a string to a specified pixel width
 		/// </summary>
-		/// <param name="stringPtr"></param>
-		/// <param name="maxWidth"></param>
-		public void F0_2f4d_04f7(ushort stringPtr, ushort maxWidth)
+		/// <param name="text">The text to trim</param>
+		/// <param name="maxWidth">Maximum width of text in pixels</param>
+		public string F0_2f4d_04f7_TrimStringToWidth(string text, int maxWidth)
 		{
-			this.oCPU.Log.EnterBlock($"F0_2f4d_04f7(0x{stringPtr:x4}, {maxWidth})");
+			//this.oCPU.Log.EnterBlock($"F0_2f4d_04f7_TrimStringToWidth(0x{text:x4}, {maxWidth})");
 
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
-			goto L0537;
+			while (text.Length > 1 && this.oParent.DrawStringTools.F0_1182_00ef_GetStringWidth(text) > maxWidth)
+			{
+				if (text[text.Length - 2] != ' ')
+				{
+					text = text.Substring(0, text.Length - 2) + '.';
+				}
+				else
+				{
+					text = text.Substring(0, text.Length - 1);
+				}
+			}
 
-		L04fd:
-			// Instruction address 0x2f4d:0x0500, size: 5
-			this.oParent.CAPI.strlen(stringPtr);
-
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.BX.UInt16 = stringPtr;
-			this.oCPU.CMP_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + this.oCPU.SI.UInt16 - 0x3)), 0x20);
-			if (this.oCPU.Flags.E) goto L0525;
-
-			// Instruction address 0x2f4d:0x0514, size: 5
-			this.oParent.CAPI.strlen(this.oCPU.BX.UInt16);
-
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.BX.UInt16 = stringPtr;
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + this.oCPU.SI.UInt16 - 0x2), 0x2e);
-
-		L0525:
-			// Instruction address 0x2f4d:0x0526, size: 5
-			this.oParent.CAPI.strlen(this.oCPU.BX.UInt16);
-
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.BX.UInt16 = stringPtr;
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + this.oCPU.SI.UInt16 - 0x1), 0x0);
-
-		L0537:
-			// Instruction address 0x2f4d:0x053a, size: 5
-			this.oParent.DrawStringTools.F0_1182_00ef_GetStringWidth(stringPtr);
-
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, maxWidth);
-			if (this.oCPU.Flags.G) goto L04fd;
-
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F0_2f4d_04f7");
+			return text;
 		}
 	}
 }

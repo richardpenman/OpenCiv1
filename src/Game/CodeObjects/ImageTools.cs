@@ -9,13 +9,13 @@ namespace OpenCiv1
 	/// </summary>
 	public class ImageTools
 	{
-		private OpenCiv1Game oParent;
-		private VCPU oCPU;
+		private OpenCiv1Game parent;
+		private VCPU CPU;
 
 		public ImageTools(OpenCiv1Game parent)
 		{
-			this.oParent = parent;
-			this.oCPU = parent.CPU;
+			this.parent = parent;
+			this.CPU = parent.CPU;
 		}
 
 		#region New Image loading functions
@@ -23,7 +23,7 @@ namespace OpenCiv1
 		{
 			byte[] palette;
 
-			F0_2fa1_01a2_LoadBitmapOrPalette(screenID, xPos, yPos, this.oCPU.ReadString(this.oCPU.DS.UInt16, filenamePtr), out palette);
+			F0_2fa1_01a2_LoadBitmapOrPalette(screenID, xPos, yPos, this.CPU.ReadString(this.CPU.DS.UInt16, filenamePtr), out palette);
 
 			if (palette != null)
 			{
@@ -35,14 +35,14 @@ namespace OpenCiv1
 						startPtr = 0xba08;
 						for (int i = 0; i < palette.Length; i++)
 						{
-							this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, startPtr++, palette[i]);
+							this.CPU.WriteUInt8(this.CPU.DS.UInt16, startPtr++, palette[i]);
 						}
 						break;
 					case 1:
 						startPtr = 0xba06;
 						for (int i = 0; i < palette.Length; i++)
 						{
-							this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, startPtr++, palette[i]);
+							this.CPU.WriteUInt8(this.CPU.DS.UInt16, startPtr++, palette[i]);
 						}
 						break;
 
@@ -50,13 +50,13 @@ namespace OpenCiv1
 						startPtr = palettePtr;
 						for (int i = 0; i < palette.Length; i++)
 						{
-							this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, startPtr++, palette[i]);
+							this.CPU.WriteUInt8(this.CPU.DS.UInt16, startPtr++, palette[i]);
 						}
 						break;
 				}
 
 				if (palettePtr == 1 || palettePtr == 0xba06)
-					this.oParent.Graphics.SetColorsFromColorStruct(palette);
+					this.parent.Graphics.SetColorsFromColorStruct(palette);
 			}
 		}
 
@@ -76,14 +76,14 @@ namespace OpenCiv1
 						startPtr = 0xba08;
 						for (int i = 0; i < palette.Length; i++)
 						{
-							this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, startPtr++, palette[i]);
+							this.CPU.WriteUInt8(this.CPU.DS.UInt16, startPtr++, palette[i]);
 						}
 						break;
 					case 1:
 						startPtr = 0xba06;
 						for (int i = 0; i < palette.Length; i++)
 						{
-							this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, startPtr++, palette[i]);
+							this.CPU.WriteUInt8(this.CPU.DS.UInt16, startPtr++, palette[i]);
 						}
 						break;
 
@@ -91,13 +91,13 @@ namespace OpenCiv1
 						startPtr = palettePtr;
 						for (int i = 0; i < palette.Length; i++)
 						{
-							this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, startPtr++, palette[i]);
+							this.CPU.WriteUInt8(this.CPU.DS.UInt16, startPtr++, palette[i]);
 						}
 						break;
 				}
 
 				if (palettePtr == 1 || palettePtr == 0xba06)
-					this.oParent.Graphics.SetColorsFromColorStruct(palette);
+					this.parent.Graphics.SetColorsFromColorStruct(palette);
 			}
 		}
 
@@ -112,16 +112,16 @@ namespace OpenCiv1
 		/// <exception cref="Exception"></exception>
 		public void F0_2fa1_01a2_LoadBitmapOrPalette(short screenID, ushort xPos, ushort yPos, string filename, out byte[] palette)
 		{
-			string filename1 = this.oParent.ResourcePath + CAPI.GetDOSFileName(filename).ToUpper();
+			string filename1 = this.parent.ResourcePath + CAPI.GetDOSFileName(filename).ToUpper();
 
-			this.oCPU.Log.EnterBlock($"F0_2fa1_01a2_LoadBitmapOrPalette(0x{screenID:x4}, 0x{xPos:x4}, 0x{yPos:x4}, '{filename1}')");
+			//this.CPU.Log.EnterBlock($"F0_2fa1_01a2_LoadBitmapOrPalette(0x{screenID:x4}, 0x{xPos:x4}, 0x{yPos:x4}, '{filename1}')");
 
 			if (screenID >= 0 && (Path.GetExtension(filename1).Equals(".pic", StringComparison.InvariantCultureIgnoreCase) ||
 				Path.GetExtension(filename1).Equals(".map", StringComparison.InvariantCultureIgnoreCase)))
 			{
-				if (this.oParent.Graphics.Screens.ContainsKey(screenID))
+				if (this.parent.Graphics.Screens.ContainsKey(screenID))
 				{
-					this.oParent.Graphics.Screens.GetValueByKey(screenID).LoadPIC(filename1, xPos, yPos, out palette);
+					this.parent.Graphics.Screens.GetValueByKey(screenID).LoadPIC(filename1, xPos, yPos, out palette);
 				}
 				else
 				{
@@ -132,9 +132,6 @@ namespace OpenCiv1
 			{
 				GBitmap.ReadPaletteFromPICFile(filename1, out palette);
 			}
-
-			// Far return
-			this.oCPU.Log.ExitBlock("F0_2fa1_01a2_LoadBitmapOrPalette");
 		}
 
 		/// <summary>
@@ -143,7 +140,7 @@ namespace OpenCiv1
 		/// <param name="filenamePtr"></param>
 		public int F0_2fa1_044c_LoadIcon(ushort filenamePtr)
 		{
-			return this.oParent.Graphics.LoadIcon(CAPI.GetDOSFileName(this.oCPU.ReadString(VCPU.ToLinearAddress(this.oCPU.DS.UInt16, filenamePtr))));
+			return this.parent.Graphics.LoadIcon(CAPI.GetDOSFileName(this.CPU.ReadString(VCPU.ToLinearAddress(this.CPU.DS.UInt16, filenamePtr))));
 		}
 		#endregion
 	}

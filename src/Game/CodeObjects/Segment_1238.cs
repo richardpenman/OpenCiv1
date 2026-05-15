@@ -254,10 +254,8 @@ namespace OpenCiv1
 			{
 				// Warning: Funds are running low...
 
-				this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
 				// Instruction address 0x1238:0x034f, size: 5
-				this.oParent.LanguageTools.F0_2f4d_044f(0x1c2a);
+				this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*TAXES"));
 
 				this.oParent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 
@@ -271,7 +269,7 @@ namespace OpenCiv1
 			{
 				this.oParent.GameData.Year += 20;
 
-				// handle case where afer AD the year is set to 1 AD and then incremented by 20 equals 21 AD
+				// handle case where after AD the year is set to 1 AD and then incremented by 20 equals 21 AD
 				if (this.oParent.GameData.Year == 21)
 				{
 					this.oParent.GameData.Year = 20;
@@ -518,12 +516,10 @@ namespace OpenCiv1
 
 				if (this.oParent.Var_b884 == 0)
 				{
-					this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
 					// Your final score has entered the Hall of Fame.
 					// Do you want to keep playing ?
 					// Instruction address 0x1238:0x0867, size: 5
-					this.oParent.LanguageTools.F0_2f4d_044f(0x1cf0);
+					this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*FAME"));
 
 					// Instruction address 0x1238:0x0879, size: 3
 					this.oParent.Var_dc48_GameEndType = 1 - F0_1238_001e_ShowDialog(0xba06, 80, 80);
@@ -1836,7 +1832,7 @@ namespace OpenCiv1
 			// Instruction address 0x1238:0x1802, size: 3
 			F0_1238_001e_ShowDialog(0xba06, 100, 80);
 
-			this.oParent.Civilopedia.F8_0000_062a(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)) + 24, 1);
+			this.oParent.Encyclopedia.F8_0000_062a(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)) + 24, 1);
 			
 			// Instruction address 0x1238:0x181c, size: 3
 			F0_1238_1b44();
@@ -2231,7 +2227,7 @@ namespace OpenCiv1
 		/// Calculates the approximate palace level to be built
 		/// </summary>
 		/// <param name="score"></param>
-		public int F0_1238_1c98_GetPalacelLevel(int score)
+		public int F0_1238_1c98_GetPalaceLevel(int score)
 		{
 			// function body
 			int level = 0;

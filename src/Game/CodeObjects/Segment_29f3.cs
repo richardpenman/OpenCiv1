@@ -960,10 +960,8 @@ namespace OpenCiv1
 
 					if (playerID1 == this.oParent.GameData.HumanPlayerID)
 					{
-						this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
 						// Instruction address 0x29f3:0x093a, size: 5
-						this.oParent.LanguageTools.F0_2f4d_044f(0x2ae7);
+						this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*LEADER"));
 
 						// Instruction address 0x29f3:0x094b, size: 5
 						this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 80, 80);

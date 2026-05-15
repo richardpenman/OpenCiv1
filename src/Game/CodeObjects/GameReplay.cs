@@ -771,7 +771,7 @@ namespace OpenCiv1
 
 		L0935:
 			// Instruction address 0x0000:0x093d, size: 5
-			this.oParent.LanguageTools.F0_2f4d_04f7(0xba06, 312);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 312));
 
 			// Instruction address 0x0000:0x0959, size: 5
 			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 8, 15);

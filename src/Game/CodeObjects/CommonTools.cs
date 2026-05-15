@@ -8,25 +8,25 @@ namespace OpenCiv1
 {
 	public class CommonTools
 	{
-		private OpenCiv1Game oParent;
-		private VCPU oCPU;
-		private GDriver oGraphics;
+		private OpenCiv1Game parent;
+		private VCPU CPU;
+		private GDriver graphics;
 
-		private bool bInTimer = false;
-		private Timer? oTimer = null;
+		private bool inTimer = false;
+		private Timer? timer = null;
 
-		private BDictionary<int, PaletteCycleSlot> aPletteCycleSlots = new BDictionary<int, PaletteCycleSlot>();
+		private BDictionary<int, PaletteCycleSlot> pletteCycleSlots = new BDictionary<int, PaletteCycleSlot>();
 
-		private bool bTransformFlag = false;
-		private int iTransformValue = 0;
-		private int iTransformCount = 0;
-		private TransformColor[] aTransformColors = new TransformColor[0];
+		private bool transformFlag = false;
+		private int transformValue = 0;
+		private int transformCount = 0;
+		private TransformColor[] transformColors = new TransformColor[0];
 
 		public CommonTools(OpenCiv1Game parent)
 		{
-			this.oParent = parent;
-			this.oCPU = parent.CPU;
-			this.oGraphics = parent.Graphics;
+			this.parent = parent;
+			this.CPU = parent.CPU;
+			this.graphics = parent.Graphics;
 		}
 
 		/// <summary>
@@ -37,10 +37,10 @@ namespace OpenCiv1
 			//this.oCPU.Log.EnterBlock("F0_1000_0000_InitializeTimer()");
 
 			// function body
-			if (this.oTimer == null)
+			if (this.timer == null)
 			{
-				this.oCPU.EnableTimer = true;
-				this.oTimer = new Timer(F0_1000_01a7_Timer, null, 10, 10);
+				this.CPU.EnableTimer = true;
+				this.timer = new Timer(F0_1000_01a7_Timer, null, 10, 10);
 			}
 		}
 
@@ -52,10 +52,10 @@ namespace OpenCiv1
 			//this.oCPU.Log.EnterBlock("F0_1000_0051_InitTimer()");
 
 			// function body
-			if (this.oTimer != null)
+			if (this.timer != null)
 			{
-				this.oTimer.Dispose();
-				this.oTimer = null;
+				this.timer.Dispose();
+				this.timer = null;
 			}
 		}
 
@@ -66,9 +66,9 @@ namespace OpenCiv1
 		{
 			lock (VCPU.GraphicsLock)
 			{
-				this.bInTimer = true;
+				this.inTimer = true;
 
-				if (this.bTransformFlag)
+				if (this.transformFlag)
 				{
 					// Instruction address 0x1000:0x0349, size: 5
 					F0_1000_0631_TransformPaletteTimer();
@@ -79,13 +79,13 @@ namespace OpenCiv1
 					F0_1000_044a_CyclePaletteTimer();
 				}
 
-				this.oParent.Var_5c_TickCount++;
+				this.parent.Var_5c_TickCount++;
 
 				// sound driver call
 				// Instruction address 0x1000:0x01e7, size: 5
 				F0_1000_0a40_SoundWorker();
 
-				this.bInTimer = false;
+				this.inTimer = false;
 			}
 		}
 
@@ -95,9 +95,9 @@ namespace OpenCiv1
 		/// <exception cref="Exception"></exception>
 		public void F0_1000_044a_CyclePaletteTimer()
 		{
-			for (int i = 0; i < this.aPletteCycleSlots.Count; i++)
+			for (int i = 0; i < this.pletteCycleSlots.Count; i++)
 			{
-				PaletteCycleSlot slot = this.aPletteCycleSlots[i].Value;
+				PaletteCycleSlot slot = this.pletteCycleSlots[i].Value;
 
 				if (slot.Active)
 				{
@@ -112,7 +112,7 @@ namespace OpenCiv1
 						{
 							int index = (slot.CurrentPosition + j) % slot.Palette.Length;
 
-							this.oGraphics.SetPaletteColor((byte)(slot.StartPosition + index), slot.Palette[j]);
+							this.graphics.SetPaletteColor((byte)(slot.StartPosition + index), slot.Palette[j]);
 						}
 					}
 				}
@@ -125,23 +125,23 @@ namespace OpenCiv1
 		/// <exception cref="Exception"></exception>
 		public void F0_1000_0631_TransformPaletteTimer()
 		{
-			if (this.bTransformFlag)
+			if (this.transformFlag)
 			{
-				this.iTransformCount++;
+				this.transformCount++;
 
-				for (int i = 0; i < this.aTransformColors.Length; i++)
+				for (int i = 0; i < this.transformColors.Length; i++)
 				{
-					this.oGraphics.SetPaletteColor((byte)i, this.aTransformColors[i].GetNextColor(this.iTransformCount).ToColor());
+					this.graphics.SetPaletteColor((byte)i, this.transformColors[i].GetNextColor(this.transformCount).ToColor());
 				}
 
-				if (this.iTransformCount >= this.iTransformValue)
+				if (this.transformCount >= this.transformValue)
 				{
-					for (int i = 0; i < this.aTransformColors.Length; i++)
+					for (int i = 0; i < this.transformColors.Length; i++)
 					{
-						this.oGraphics.SetPaletteColor((byte)i, this.aTransformColors[i].ToHSV.ToColor());
+						this.graphics.SetPaletteColor((byte)i, this.transformColors[i].ToHSV.ToColor());
 					}
 
-					this.bTransformFlag = false;
+					this.transformFlag = false;
 				}
 			}
 		}
@@ -153,7 +153,7 @@ namespace OpenCiv1
 		public void F0_1000_033e_ResetWaitTimer()
 		{
 			// function body
-			this.oParent.Var_5c_TickCount = 0;
+			this.parent.Var_5c_TickCount = 0;
 		}
 
 		/// <summary>
@@ -169,7 +169,7 @@ namespace OpenCiv1
 			int iTime = Math.Max(waitTime * 12, 1);
 
 			Thread.Sleep(iTime);
-			this.oCPU.DoEvents();
+			this.CPU.DoEvents();
 
 			/*waitTime = (short)(Math.Ceiling(0.6 * waitTime));
 
@@ -197,7 +197,7 @@ namespace OpenCiv1
 			if (fromColorIndex > toColorIndex)
 				throw new ArgumentOutOfRangeException("Argument fromColorIndex is greater than toColorIndex");
 
-			while (this.bInTimer)
+			while (this.inTimer)
 			{
 				Thread.Sleep(1);
 			}
@@ -205,16 +205,16 @@ namespace OpenCiv1
 			// function body
 			lock (VCPU.GraphicsLock)
 			{
-				if (this.aPletteCycleSlots.ContainsKey(index))
+				if (this.pletteCycleSlots.ContainsKey(index))
 				{
 					// restore old slot palette
-					PaletteCycleSlot oldSlot = this.aPletteCycleSlots.GetValueByKey(index);
+					PaletteCycleSlot oldSlot = this.pletteCycleSlots.GetValueByKey(index);
 					
 					if (oldSlot.Active)
 					{
 						for (int i = 0; i < oldSlot.Palette.Length; i++)
 						{
-							this.oGraphics.SetPaletteColor((byte)(oldSlot.StartPosition + i), oldSlot.Palette[i]);
+							this.graphics.SetPaletteColor((byte)(oldSlot.StartPosition + i), oldSlot.Palette[i]);
 						}
 					}
 
@@ -222,25 +222,25 @@ namespace OpenCiv1
 					Color[] palette = new Color[(toColorIndex - fromColorIndex) + 1];
 					for (int i = 0; i < palette.Length; i++)
 					{
-						palette[i] = this.oGraphics.GetPaletteColor((byte)(fromColorIndex + i));
+						palette[i] = this.graphics.GetPaletteColor((byte)(fromColorIndex + i));
 					}
 
 					PaletteCycleSlot newSlot = new PaletteCycleSlot(speed, fromColorIndex, palette);
 					//newSlot.Active = oldSlot.Active;
 
-					this.aPletteCycleSlots.SetValueByKey(index, newSlot);
+					this.pletteCycleSlots.SetValueByKey(index, newSlot);
 				}
 				else
 				{
 					Color[] palette = new Color[(toColorIndex - fromColorIndex) + 1];
 					for (int i = 0; i < palette.Length; i++)
 					{
-						palette[i] = this.oGraphics.GetPaletteColor((byte)(fromColorIndex + i));
+						palette[i] = this.graphics.GetPaletteColor((byte)(fromColorIndex + i));
 					}
 
 					PaletteCycleSlot slot = new PaletteCycleSlot(speed, fromColorIndex, palette);
 
-					this.aPletteCycleSlots.Add(index, slot);
+					this.pletteCycleSlots.Add(index, slot);
 				}
 			}
 		}
@@ -254,16 +254,16 @@ namespace OpenCiv1
 			//this.oCPU.Log.EnterBlock($"F0_1000_03fa_StartPaletteCycleSlot({index})");
 
 			// function body
-			if (this.aPletteCycleSlots.ContainsKey(index))
+			if (this.pletteCycleSlots.ContainsKey(index))
 			{
-				while (this.bInTimer)
+				while (this.inTimer)
 				{
 					Thread.Sleep(1);
 				}
 
 				lock (VCPU.GraphicsLock)
 				{
-					this.aPletteCycleSlots.GetValueByKey(index).Active = true;
+					this.pletteCycleSlots.GetValueByKey(index).Active = true;
 				}
 			}
 			else
@@ -281,22 +281,22 @@ namespace OpenCiv1
 			//this.oCPU.Log.EnterBlock($"F0_1000_042b_StopPaletteCycleSlot({index})");
 
 			// function body
-			if (this.aPletteCycleSlots.ContainsKey(index))
+			if (this.pletteCycleSlots.ContainsKey(index))
 			{
-				while (this.bInTimer)
+				while (this.inTimer)
 				{
 					Thread.Sleep(1);
 				}
 
 				lock (VCPU.GraphicsLock)
 				{
-					PaletteCycleSlot slot = this.aPletteCycleSlots.GetValueByKey(index);
+					PaletteCycleSlot slot = this.pletteCycleSlots.GetValueByKey(index);
 
 					if (slot.Active)
 					{
 						for (int i = 0; i < slot.Palette.Length; i++)
 						{
-							this.oGraphics.SetPaletteColor((byte)(slot.StartPosition + i), slot.Palette[i]);
+							this.graphics.SetPaletteColor((byte)(slot.StartPosition + i), slot.Palette[i]);
 						}
 					}
 
@@ -318,37 +318,37 @@ namespace OpenCiv1
 			if (speed < 1 || speed > 50)
 				throw new ArgumentOutOfRangeException("The argument speed is out of range");
 
-			this.aTransformColors = new TransformColor[256];
+			this.transformColors = new TransformColor[256];
 			palettePtr += 6;
 
 			lock (VCPU.GraphicsLock)
 			{
-				while (this.bInTimer)
+				while (this.inTimer)
 				{
 					Thread.Sleep(1);
 				}
 
-				this.iTransformValue = speed * 10;
-				this.iTransformCount = 0;
+				this.transformValue = speed * 10;
+				this.transformCount = 0;
 
 				for (int i = 0; i < 256; i++)
 				{
-					HSVColor from = HSVColor.FromColor(this.oGraphics.GetPaletteColor((byte)i));
-					HSVColor to = HSVColor.FromColor(GBitmap.Color18ToColor(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, palettePtr),
-						this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(palettePtr + 1)),
-						this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(palettePtr + 2))));
+					HSVColor from = HSVColor.FromColor(this.graphics.GetPaletteColor((byte)i));
+					HSVColor to = HSVColor.FromColor(GBitmap.Color18ToColor(this.CPU.ReadUInt8(this.CPU.DS.UInt16, palettePtr),
+						this.CPU.ReadUInt8(this.CPU.DS.UInt16, (ushort)(palettePtr + 1)),
+						this.CPU.ReadUInt8(this.CPU.DS.UInt16, (ushort)(palettePtr + 2))));
 
-					this.aTransformColors[i] = new TransformColor(from, to, this.iTransformValue);
+					this.transformColors[i] = new TransformColor(from, to, this.transformValue);
 
 					palettePtr += 3;
 				}
 
-				this.bTransformFlag = true;
+				this.transformFlag = true;
 			}
 
-			while (this.bTransformFlag)
+			while (this.transformFlag)
 			{
-				this.oCPU.DoEvents();
+				this.CPU.DoEvents();
 				Thread.Sleep(1);
 			}
 		}
@@ -368,35 +368,35 @@ namespace OpenCiv1
 			if (speed < 1 || speed > 50)
 				throw new ArgumentOutOfRangeException("The argument speed is out of range");
 
-			this.aTransformColors = new TransformColor[256];
+			this.transformColors = new TransformColor[256];
 			position += 6;
 
 			lock (VCPU.GraphicsLock)
 			{
-				while (this.bInTimer)
+				while (this.inTimer)
 				{
 					Thread.Sleep(1);
 				}
 
-				this.iTransformValue = speed * 10;
-				this.iTransformCount = 0;
+				this.transformValue = speed * 10;
+				this.transformCount = 0;
 
 				for (int i = 0; i < 256; i++)
 				{
-					HSVColor from = HSVColor.FromColor(this.oGraphics.GetPaletteColor((byte)i));
+					HSVColor from = HSVColor.FromColor(this.graphics.GetPaletteColor((byte)i));
 					HSVColor to = HSVColor.FromColor(GBitmap.Color18ToColor(palette[position], palette[position + 1], palette[position + 2]));
 
-					this.aTransformColors[i] = new TransformColor(from, to, this.iTransformValue);
+					this.transformColors[i] = new TransformColor(from, to, this.transformValue);
 
 					position += 3;
 				}
 
-				this.bTransformFlag = true;
+				this.transformFlag = true;
 			}
 
-			while (this.bTransformFlag)
+			while (this.transformFlag)
 			{
-				this.oCPU.DoEvents();
+				this.CPU.DoEvents();
 				Thread.Sleep(1);
 			}
 		}
@@ -412,31 +412,31 @@ namespace OpenCiv1
 
 			// function body
 			HSVColor to = HSVColor.FromColor(color);
-			this.aTransformColors = new TransformColor[256];
+			this.transformColors = new TransformColor[256];
 
 			lock (VCPU.GraphicsLock)
 			{
-				while (this.bInTimer)
+				while (this.inTimer)
 				{
 					Thread.Sleep(1);
 				}
 
-				this.iTransformValue = speed * 10;
-				this.iTransformCount = 0;
+				this.transformValue = speed * 10;
+				this.transformCount = 0;
 
 				for (int i = 0; i < 256; i++)
 				{
-					HSVColor from = HSVColor.FromColor(this.oGraphics.GetPaletteColor((byte)i));
+					HSVColor from = HSVColor.FromColor(this.graphics.GetPaletteColor((byte)i));
 
-					this.aTransformColors[i] = new TransformColor(from, to, this.iTransformValue);
+					this.transformColors[i] = new TransformColor(from, to, this.transformValue);
 				}
 
-				this.bTransformFlag = true;
+				this.transformFlag = true;
 			}
 
-			while (this.bTransformFlag)
+			while (this.transformFlag)
 			{
-				this.oCPU.DoEvents();
+				this.CPU.DoEvents();
 				Thread.Sleep(1);
 			}
 		}
@@ -446,17 +446,17 @@ namespace OpenCiv1
 		/// </summary>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
-		/// <param name="BitmapPtr"></param>
-		public void F0_1000_083f(int x, int y, int BitmapPtr)
+		/// <param name="bitmapPtr"></param>
+		public void F0_1000_083f(int x, int y, int bitmapPtr)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1000_083f({x}, {y}, {BitmapPtr})");
 
 			// function body
 			//this.oParent.Graphics.F0_VGA_0270(x, y, BitmapPtr);
 
-			if (this.oParent.Var_5403 != 0)
+			if (this.parent.Var_5403 != 0)
 			{
-				this.oParent.Var_5402 = 0;
+				this.parent.Var_5402 = 0;
 			}
 		}
 
@@ -470,11 +470,11 @@ namespace OpenCiv1
 
 			// function body
 			//this.oParent.Graphics.F0_VGA_063c(screenID);
-			this.oParent.Graphics.F0_VGA_06b7_DrawScreenToMainScreenWithEffect(screenID);
+			this.parent.Graphics.F0_VGA_06b7_DrawScreenToMainScreenWithEffect(screenID);
 
-			if (this.oParent.Var_5403 != 0)
+			if (this.parent.Var_5403 != 0)
 			{
-				this.oParent.Var_5402 = 0;
+				this.parent.Var_5402 = 0;
 			}
 		}
 
@@ -490,11 +490,11 @@ namespace OpenCiv1
 			//this.oCPU.Log.EnterBlock($"F0_1000_0797_DrawBitmapToScreen({rect}, {xPos}, {yPos}, 0x{bitmapPtr:x4})");
 
 			// function body
-			this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(rect, xPos, yPos, bitmapPtr);
+			this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(rect, xPos, yPos, bitmapPtr);
 
-			if (this.oParent.Var_5403 != 0)
+			if (this.parent.Var_5403 != 0)
 			{
-				this.oParent.Var_5402 = 0;
+				this.parent.Var_5402 = 0;
 			}
 		}
 
@@ -510,11 +510,11 @@ namespace OpenCiv1
 			//this.oCPU.Log.EnterBlock($"F0_1000_084d_DrawBitmapToScreen({rect}, {xPos}, {yPos}, 0x{bitmapPtr:x4})");
 
 			// function body
-			this.oParent.Graphics.F0_VGA_0d47_DrawBitmapToScreen(rect, xPos, yPos, bitmapPtr);
+			this.parent.Graphics.F0_VGA_0d47_DrawBitmapToScreen(rect, xPos, yPos, bitmapPtr);
 
-			if (this.oParent.Var_5403 != 0)
+			if (this.parent.Var_5403 != 0)
 			{
-				this.oParent.Var_5402 = 0;
+				this.parent.Var_5402 = 0;
 			}
 		}
 
@@ -526,7 +526,7 @@ namespace OpenCiv1
 			//this.oCPU.Log.EnterBlock("Sound overlay 'F0_1000_0a2b_InitSound'");
 
 			// Instruction address 0x1000:0x0a2b, size: 5
-			this.oParent.Sound.F0_0000_0048_InitSound();
+			this.parent.Sound.F0_0000_0048_InitSound();
 			//this.oCPU.Log.ExitBlock("Sound overlay 'F0_1000_0a2b_InitSound'");
 		}
 
@@ -537,10 +537,10 @@ namespace OpenCiv1
 		/// <param name="param2"></param>
 		public void F0_1000_0a32_PlayTune(short tune, ushort param2)
 		{
-			if (this.oParent.GameData.GameSettingFlags.Sound)
+			if (this.parent.GameData.GameSettingFlags.Sound)
 			{
 				// Instruction address 0x1000:0x0a32, size: 5
-				this.oParent.Sound.F0_0000_0062_PlayTune(tune, param2);
+				this.parent.Sound.F0_0000_0062_PlayTune(tune, param2);
 			}
 		}
 
@@ -553,7 +553,7 @@ namespace OpenCiv1
 			//this.oCPU.Log.EnterBlock("Sound overlay 'F0_1000_0a39_CloseSound'");
 
 			// Instruction address 0x1000:0x0a39, size: 5
-			this.oParent.Sound.F0_0000_006a_CloseSound();
+			this.parent.Sound.F0_0000_006a_CloseSound();
 			//this.oCPU.Log.ExitBlock("Sound overlay 'F0_1000_0a39_CloseSound'");
 		}
 
@@ -566,7 +566,7 @@ namespace OpenCiv1
 			//this.oCPU.Log.EnterBlock("Sound overlay 'F0_1000_0a40_SoundWorker'");
 
 			// Instruction address 0x1000:0x0a40, size: 5
-			return this.oParent.Sound.F0_0000_0055_SoundWorker();
+			return this.parent.Sound.F0_0000_0055_SoundWorker();
 		}
 
 		/// <summary>
@@ -578,7 +578,7 @@ namespace OpenCiv1
 
 			// function body
 			// Instruction address 0x1000:0x0a47, size: 5
-			this.oParent.Sound.F0_0000_005c_FastSoundWorker();
+			this.parent.Sound.F0_0000_005c_FastSoundWorker();
 			//this.oCPU.Log.ExitBlock("Sound overlay 'F0_1000_0a47_FastSoundWorker'");
 		}
 
@@ -586,12 +586,12 @@ namespace OpenCiv1
 		/// Sound function
 		/// </summary>
 		/// <returns></returns>
-		public ushort F0_1000_0a4e_Soundtimer()
+		public ushort F0_1000_0a4e_SoundTimer()
 		{
-			//this.oCPU.Log.EnterBlock("Sound overlay 'F0_1000_0a4e_Soundtimer'");
+			//this.oCPU.Log.EnterBlock("Sound overlay 'F0_1000_0a4e_SoundTimer'");
 
 			// Instruction address 0x1000:0x0a4e, size: 5
-			return this.oParent.Sound.F0_0000_005d_SoundTimer();
+			return this.parent.Sound.F0_0000_005d_SoundTimer();
 		}
 
 		/// <summary>
@@ -610,13 +610,13 @@ namespace OpenCiv1
 			// function body
 			if (width > 0 && height > 0)
 			{
-				this.oParent.Graphics.F0_VGA_040a_FillRectangle(rect.ScreenID, 
+				this.parent.Graphics.F0_VGA_040a_FillRectangle(rect.ScreenID, 
 					new GRectangle(rect.Left + x, rect.Top + y, width, height), (byte)(mode & 0xff), (byte)((mode & 0xff00) >> 8));
 			}
 		}
 
 		/// <summary>
-		/// Resets and inits the mouse subsystem
+		/// Reset and init the mouse subsystem
 		/// </summary>
 		/// <returns>true if mouse is detected</returns>
 		public void F0_1000_163e_InitMouse()
@@ -624,10 +624,10 @@ namespace OpenCiv1
 			//this.oCPU.Log.EnterBlock("F0_1000_163e_InitMouse()");
 
 			// function body
-			this.oParent.Var_586e_MouseNewX = this.oCPU.MouseLocation.X;
-			this.oParent.Var_5870_MouseNewY = this.oCPU.MouseLocation.Y;
-			this.oParent.Var_5872_MouseNewButtons = (int)this.oCPU.MouseButtons;
-			this.oParent.Var_587d = -1;
+			this.parent.Var_586e_MouseNewX = this.CPU.MouseLocation.X;
+			this.parent.Var_5870_MouseNewY = this.CPU.MouseLocation.Y;
+			this.parent.Var_5872_MouseNewButtons = (int)this.CPU.MouseButtons;
+			this.parent.Var_587d = -1;
 		}
 
 		/// <summary>
@@ -641,9 +641,9 @@ namespace OpenCiv1
 			//this.oCPU.Log.EnterBlock($"F0_1000_1697({param1}, {param2}, {bitmapPtr})");
 
 			// function body
-			this.oParent.Var_5878_MouseIconXOffset = x;
-			this.oParent.Var_587a_MouseIconYOffset = y;
-			this.oParent.Var_5876_MouseIcon = bitmapPtr;
+			this.parent.Var_5878_MouseIconXOffset = x;
+			this.parent.Var_587a_MouseIconYOffset = y;
+			this.parent.Var_5876_MouseIcon = bitmapPtr;
 		}
 
 		/// <summary>
@@ -656,8 +656,8 @@ namespace OpenCiv1
 			//this.oCPU.Log.EnterBlock($"F0_1000_16ae({param1}, {param2})");
 
 			// function body
-			this.oParent.Var_586e_MouseNewX = x;
-			this.oParent.Var_5870_MouseNewY = y;
+			this.parent.Var_586e_MouseNewX = x;
+			this.parent.Var_5870_MouseNewY = y;
 		}
 
 		/// <summary>
@@ -668,16 +668,16 @@ namespace OpenCiv1
 			//this.oCPU.Log.EnterBlock("F0_1000_16db()");
 
 			// function body
-			if (this.oParent.Var_5876_MouseIcon != 0)
+			if (this.parent.Var_5876_MouseIcon != 0)
 			{
-				if (this.oParent.Var_5403 == 0)
+				if (this.parent.Var_5403 == 0)
 				{
 					// Instruction address 0x1000:0x16fd, size: 5
-					F0_1000_083f(this.oParent.Var_586e_MouseNewX - this.oParent.Var_5878_MouseIconXOffset,
-						this.oParent.Var_5870_MouseNewY - this.oParent.Var_587a_MouseIconYOffset,
-						this.oParent.Var_5876_MouseIcon);
+					F0_1000_083f(this.parent.Var_586e_MouseNewX - this.parent.Var_5878_MouseIconXOffset,
+						this.parent.Var_5870_MouseNewY - this.parent.Var_587a_MouseIconYOffset,
+						this.parent.Var_5876_MouseIcon);
 
-					this.oParent.Var_5403 = 1;
+					this.parent.Var_5403 = 1;
 				}
 			}
 		}
@@ -690,11 +690,11 @@ namespace OpenCiv1
 			//this.oCPU.Log.EnterBlock("F0_1000_170b()");
 
 			// function body
-			if (this.oParent.Var_5876_MouseIcon != 0)
+			if (this.parent.Var_5876_MouseIcon != 0)
 			{
-				if (this.oParent.Var_5403 != 0)
+				if (this.parent.Var_5403 != 0)
 				{
-					this.oParent.Var_5403 = 0;
+					this.parent.Var_5403 = 0;
 				}
 			}
 		}
@@ -707,21 +707,21 @@ namespace OpenCiv1
 			//this.oCPU.Log.EnterBlock("F0_1000_17db_MouseEvent()");
 
 			// function body
-			this.oParent.Var_5874_MouseNewButtonsOr |= this.oCPU.BX.UInt16;
-			this.oParent.Var_5872_MouseNewButtons = this.oCPU.BX.Int16;
-			this.oParent.Var_586e_MouseNewX = this.oCPU.CX.Int16;
-			this.oParent.Var_5870_MouseNewY = this.oCPU.DX.Int16;
+			this.parent.Var_5874_MouseNewButtonsOr |= this.CPU.BX.UInt16;
+			this.parent.Var_5872_MouseNewButtons = this.CPU.BX.Int16;
+			this.parent.Var_586e_MouseNewX = this.CPU.CX.Int16;
+			this.parent.Var_5870_MouseNewY = this.CPU.DX.Int16;
 
 			// Mouse location changed
-			if ((this.oCPU.AX.UInt16 & 0x1) != 0 && this.oParent.Var_5403 != 0)
+			if ((this.CPU.AX.UInt16 & 0x1) != 0 && this.parent.Var_5403 != 0)
 			{
-				if (this.oParent.Var_5402 == 0)
+				if (this.parent.Var_5402 == 0)
 				{
-					this.oParent.Var_5402 = 0;
+					this.parent.Var_5402 = 0;
 				}
 				else
 				{
-					this.oParent.Var_5402 = 2;
+					this.parent.Var_5402 = 2;
 				}
 			}
 		}

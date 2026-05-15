@@ -1,0 +1,69 @@
+name: CI - Parallel Build, Test & Code Analysis
+
+on:
+  pull_request
+
+jobs:
+  # Build and test job
+  build-and-test:
+    name: Build & Test (${{ matrix.os }})
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]  # Multi-OS support
+      fail-fast: false
+    
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      working-directory: ./src
+      run: dotnet restore
+
+    - name: Build
+      working-directory: ./src
+      run: dotnet build --no-restore --configuration Release
+
+    - name: Test
+      working-directory: ./src
+      run: dotnet test --no-build --configuration Release --verbosity normal
+
+  # Code Analysis job (runs in parallel)
+  code-analysis:
+    name: Code Analysis (${{ matrix.os }})
+
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]  # Multi-OS support
+      fail-fast: false
+
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Run built-in .NET code analysis
+      working-directory: ./src
+      run: |
+        dotnet build --configuration Release /p:EnableNETAnalyzers=true /p:AnalysisMode=AllEnabledByDefault
+        dotnet format style --verify-no-changes
+        dotnet format analyzers --verify-no-changes
+        
+    - name: Run security scan
+      working-directory: ./src
+      run: |
+        dotnet tool install --global security-code-scan
+        dotnet tool run security-code-scan -- ./src

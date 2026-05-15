@@ -225,19 +225,17 @@ namespace OpenCiv1
 			this.oParent.GameData.Players[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16))].Nation =
 				this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06);
 
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
 			this.oCPU.DI.UInt16 = (ushort)playerID;
 			this.oCPU.DI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.DI.UInt16, 0x1);
 			// Instruction address 0x0000:0x0241, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30b8), this.oParent.GameData.Players[playerID].Nationality);
+			this.oParent.Array_30b8[0] = this.oParent.GameData.Players[playerID].Nationality;
 
 			// Instruction address 0x0000:0x0251, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30ba), 
-				this.oParent.GameData.Players[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16))].Nationality);
-		
+			this.oParent.Array_30b8[1] = this.oParent.GameData.Players[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16))].Nationality;
+
 			// Instruction address 0x0000:0x026a, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f((ushort)((playerID == this.oParent.GameData.HumanPlayerID) ? 0x4a18 : 0x4a20));
+			this.oParent.CAPI.strcpy(0xba06, 
+				this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection(((playerID == this.oParent.GameData.HumanPlayerID) ? "*SCHISM" : "*ESCHISM")));
 
 			this.oParent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.ForeignMinisterReport;
 

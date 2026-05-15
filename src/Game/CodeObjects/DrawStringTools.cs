@@ -4,13 +4,13 @@ namespace OpenCiv1
 {
 	public class DrawStringTools
 	{
-		private OpenCiv1Game oParent;
-		private VCPU oCPU;
+		private OpenCiv1Game parent;
+		private VCPU CPU;
 
 		public DrawStringTools(OpenCiv1Game parent)
 		{
-			this.oParent = parent;
-			this.oCPU = parent.CPU;
+			this.parent = parent;
+			this.CPU = parent.CPU;
 		}
 
 		/// <summary>
@@ -22,7 +22,7 @@ namespace OpenCiv1
 		/// <param name="frontColor"></param>
 		public void F0_1182_002a_DrawString(ushort stringPtr, int xPos, int yPos, byte frontColor)
 		{
-			string text = this.oCPU.ReadString(VCPU.ToLinearAddress(this.oCPU.DS.UInt16, stringPtr));
+			string text = this.CPU.ReadString(VCPU.ToLinearAddress(this.CPU.DS.UInt16, stringPtr));
 
 			F0_1182_002a_DrawString(text, xPos, yPos, frontColor);
 		}
@@ -36,15 +36,15 @@ namespace OpenCiv1
 		/// <param name="frontColor"></param>
 		public void F0_1182_002a_DrawString(string text, int xPos, int yPos, byte frontColor)
 		{
-			this.oParent.Var_aa_Screen0_Rectangle.FrontColor = frontColor;
+			this.parent.Var_aa_Screen0_Rectangle.FrontColor = frontColor;
 
-			if (this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x6b8c) != 0x0)
+			if (this.CPU.ReadUInt16(this.CPU.DS.UInt16, 0x6b8c) != 0x0)
 			{
 				xPos *= 2;
 			}
 
 			// Instruction address 0x1182:0x0053, size: 5
-			this.oParent.Graphics.F0_VGA_11d7_DrawString(this.oParent.Var_aa_Screen0_Rectangle, xPos, yPos, text);
+			this.parent.Graphics.F0_VGA_11d7_DrawString(this.parent.Var_aa_Screen0_Rectangle, xPos, yPos, text);
 		}
 
 		/// <summary>
@@ -56,7 +56,7 @@ namespace OpenCiv1
 		/// <param name="frontColor"></param>
 		public void F0_1182_005c_DrawStringToScreen0(ushort stringPtr, int xPos, int yPos, byte frontColor)
 		{
-			string text = this.oCPU.ReadString(VCPU.ToLinearAddress(this.oCPU.DS.UInt16, stringPtr));
+			string text = this.CPU.ReadString(VCPU.ToLinearAddress(this.CPU.DS.UInt16, stringPtr));
 
 			F0_1182_005c_DrawStringToScreen0(text, xPos, yPos, frontColor);
 		}
@@ -70,11 +70,11 @@ namespace OpenCiv1
 		/// <param name="frontColor"></param>
 		public void F0_1182_005c_DrawStringToScreen0(string text, int xPos, int yPos, byte frontColor)
 		{
-			this.oParent.Var_aa_Screen0_Rectangle.Flags = 0;
+			this.parent.Var_aa_Screen0_Rectangle.Flags = 0;
 
 			F0_1182_002a_DrawString(text, xPos, yPos, frontColor);
 
-			this.oParent.Var_aa_Screen0_Rectangle.Flags = 1;
+			this.parent.Var_aa_Screen0_Rectangle.Flags = 1;
 		}
 
 		/// <summary>
@@ -112,7 +112,7 @@ namespace OpenCiv1
 		/// <param name="frontColor"></param>
 		public void F0_1182_00b3_DrawCenteredStringToScreen0(ushort stringPtr, int xPos, int yPos, byte frontColor)
 		{
-			string text = this.oCPU.ReadString(VCPU.ToLinearAddress(this.oCPU.DS.UInt16, stringPtr));
+			string text = this.CPU.ReadString(VCPU.ToLinearAddress(this.CPU.DS.UInt16, stringPtr));
 
 			F0_1182_00b3_DrawCenteredStringToScreen0(text, xPos, yPos, frontColor);
 		}
@@ -128,11 +128,11 @@ namespace OpenCiv1
 		{
 			xPos -= F0_1182_00ef_GetStringWidth(text) / 2;
 
-			this.oParent.Var_aa_Screen0_Rectangle.Flags = 0;
+			this.parent.Var_aa_Screen0_Rectangle.Flags = 0;
 
 			F0_1182_002a_DrawString(text, xPos, yPos, frontColor);
 
-			this.oParent.Var_aa_Screen0_Rectangle.Flags = 1;
+			this.parent.Var_aa_Screen0_Rectangle.Flags = 1;
 		}
 
 		/// <summary>
@@ -144,7 +144,7 @@ namespace OpenCiv1
 		/// <param name="frontColor"></param>
 		public void F0_1182_00b3_DrawCenteredStringWithShadowToScreen0(ushort stringPtr, int xPos, int yPos, byte frontColor)
 		{
-			string text = this.oCPU.ReadString(VCPU.ToLinearAddress(this.oCPU.DS.UInt16, stringPtr));
+			string text = this.CPU.ReadString(VCPU.ToLinearAddress(this.CPU.DS.UInt16, stringPtr));
 
 			F0_1182_00b3_DrawCenteredStringWithShadowToScreen0(text, xPos, yPos, frontColor);
 		}
@@ -160,12 +160,12 @@ namespace OpenCiv1
 		{
 			xPos -= F0_1182_00ef_GetStringWidth(text) / 2;
 
-			this.oParent.Var_aa_Screen0_Rectangle.Flags = 0;
+			this.parent.Var_aa_Screen0_Rectangle.Flags = 0;
 
 			F0_1182_002a_DrawString(text, xPos + 1, yPos + 1, 0);
 			F0_1182_002a_DrawString(text, xPos, yPos, frontColor);
 
-			this.oParent.Var_aa_Screen0_Rectangle.Flags = 1;
+			this.parent.Var_aa_Screen0_Rectangle.Flags = 1;
 		}
 
 		/// <summary>
@@ -175,7 +175,7 @@ namespace OpenCiv1
 		/// <returns></returns>
 		public int F0_1182_00ef_GetStringWidth(ushort stringPtr)
 		{
-			string text = this.oCPU.ReadString(VCPU.ToLinearAddress(this.oCPU.DS.UInt16, stringPtr));
+			string text = this.CPU.ReadString(VCPU.ToLinearAddress(this.CPU.DS.UInt16, stringPtr));
 
 			return F0_1182_00ef_GetStringWidth(text);
 		}
@@ -187,9 +187,9 @@ namespace OpenCiv1
 		/// <returns></returns>
 		public int F0_1182_00ef_GetStringWidth(string text)
 		{
-			int width = this.oParent.Graphics.GetDrawStringSize(this.oParent.Var_aa_Screen0_Rectangle.FontID, text).Width;
+			int width = this.parent.Graphics.GetDrawStringSize(this.parent.Var_aa_Screen0_Rectangle.FontID, text).Width;
 
-			this.oCPU.AX.UInt16 = (ushort)((short)width);
+			this.CPU.AX.UInt16 = (ushort)((short)width);
 
 			return width;
 		}

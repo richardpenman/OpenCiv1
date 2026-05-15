@@ -32,7 +32,7 @@ What this project will not do:
 
 <p><b>The available source code and resources are not a full working copy of the game.</b>
 <b>To run OpenCiv1 you are legally required to own your own copy of the Original game.</b>
-<b>This is the reason that not a single file from the Original game is included in this GitHub repository as they are copyrighted.</b></p>
+<b>This is the reason that not a single file from the Original game is included in this Repository as they are copyrighted.</b></p>
 
 ## Current status
 <p><b>The game is in working state</b>, but you have to legally own the Original game (the .txt, .pic and .pal files have to be present).</p>
@@ -40,7 +40,7 @@ What this project will not do:
 The other resources (like graphics, music and text) will also be completely replaced with copyright free resources before publishing the complete game.</p>
 
 ## How to Contribute to this project
-<p>Anyone can contribute to this repository in accordance with these <a href="https://github.com/rajko-horvat/OpenCiv1/blob/master/.github/CONTRIBUTING.md">Contributing guidelines</a></p>
+<p>Anyone can contribute to this repository in accordance with these <a href="https://codeberg.org/rhorvat/OpenCiv1/src/branch/master/Contributing/CONTRIBUTING.md">Contributing guidelines</a></p>
 Currently, you can contribute to this repository in one of the following ways:
 <ul>
 <li>By testing the game functionality and submitting Issues,</li>
@@ -107,7 +107,7 @@ It is where its home directory resides (Images, palettes, text and save games ar
 </ul>
 You can also compile with CLI method:
 <ul>
-<li>git clone https://github.com/rajko-horvat/OpenCiv1 (To clone a specific branch use: git clone -b [branch] https://github.com/rajko-horvat/OpenCiv1)</li>
+<li>git clone https://codeberg.org/rhorvat/OpenCiv1 (To clone a specific branch use: git clone -b [branch] https://codeberg.org/rhorvat/OpenCiv1)</li>
 <li>cd OpenCiv1</li>
 <li>dotnet build -c Debug</li>
 </ul>

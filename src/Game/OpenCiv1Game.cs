@@ -45,7 +45,7 @@ namespace OpenCiv1
 		private StartGameMenu startGameMenu;
 		private TextBoxDialogs textBoxDialogs;
 		private Overlay_14 oOverlay_14;
-		private Civilopedia civilopedia;
+		private Encyclopedia encyclopedia;
 		private Overlay_21 oOverlay_21;
 		private CityView cityView;
 		private Overlay_18 oOverlay_18;
@@ -159,7 +159,7 @@ namespace OpenCiv1
 			this.startGameMenu = new StartGameMenu(this);
 			this.textBoxDialogs = new TextBoxDialogs(this);
 			this.oOverlay_14 = new Overlay_14(this);
-			this.civilopedia = new Civilopedia(this);
+			this.encyclopedia = new Encyclopedia(this);
 			this.oOverlay_21 = new Overlay_21(this);
 			this.cityView = new CityView(this);
 			this.oOverlay_18 = new Overlay_18(this);
@@ -1389,9 +1389,9 @@ namespace OpenCiv1
 			get { return this.oOverlay_14; }
 		}
 
-		public Civilopedia Civilopedia
+		public Encyclopedia Encyclopedia
 		{
-			get { return this.civilopedia; }
+			get { return this.encyclopedia; }
 		}
 
 		public Overlay_21 Overlay_21

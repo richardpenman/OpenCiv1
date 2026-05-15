@@ -31,10 +31,8 @@ namespace OpenCiv1
 			// Instruction address 0x0000:0x0009, size: 5
 			this.oParent.MainCode.F0_11a8_0268_HideMouse();
 
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
 			// Instruction address 0x0000:0x0017, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x4ade);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*PALACE"));
 
 			// Instruction address 0x0000:0x0028, size: 5
 			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x100), 0xba06);

@@ -194,7 +194,7 @@ namespace OpenCiv1
 				do
 				{
 					// Instruction address 0x11a8:0x04c2, size: 5
-					timerValue = this.parent.CommonTools.F0_1000_0a4e_Soundtimer();
+					timerValue = this.parent.CommonTools.F0_1000_0a4e_SoundTimer();
 
 					if (timerValue <= 5269) break;
 
@@ -300,7 +300,7 @@ namespace OpenCiv1
 
 							if (this.parent.Var_7ef6_PlanetLandMass != -1 && this.parent.Var_2f9c_MenuBoxHelpRequested)
 							{
-								this.parent.Help.F4_0000_0000(0x1b6a);
+								this.parent.Help.F4_0000_0000("Land");
 
 								this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = this.parent.Var_7ef6_PlanetLandMass;
 								this.parent.Var_7ef6_PlanetLandMass = -1;
@@ -320,7 +320,7 @@ namespace OpenCiv1
 
 							if (this.parent.Var_7ef8_PlanetTemperature != -1 && this.parent.Var_2f9c_MenuBoxHelpRequested)
 							{
-								this.parent.Help.F4_0000_0000(0x1b94);
+								this.parent.Help.F4_0000_0000("Temperature");
 
 								this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = this.parent.Var_7ef8_PlanetTemperature;
 								this.parent.Var_7ef8_PlanetTemperature = -1;
@@ -340,7 +340,7 @@ namespace OpenCiv1
 
 							if (this.parent.Var_7efa_PlanetClimate != -1 && this.parent.Var_2f9c_MenuBoxHelpRequested)
 							{
-								this.parent.Help.F4_0000_0000(0x1bbd);
+								this.parent.Help.F4_0000_0000("Climate");
 
 								this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = this.parent.Var_7efa_PlanetClimate;
 								this.parent.Var_7efa_PlanetClimate = -1;
@@ -360,7 +360,7 @@ namespace OpenCiv1
 
 							if (this.parent.Var_7efc_PlanetAge != -1 && this.parent.Var_2f9c_MenuBoxHelpRequested)
 							{
-								this.parent.Help.F4_0000_0000(0x1bfe);
+								this.parent.Help.F4_0000_0000("Age");
 
 								this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = this.parent.Var_7efc_PlanetAge;
 								this.parent.Var_7efc_PlanetAge = -1;

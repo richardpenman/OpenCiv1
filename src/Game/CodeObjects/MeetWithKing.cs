@@ -780,14 +780,12 @@ namespace OpenCiv1
 
 		L0762:
 			this.oParent.Var_3936 = 1;
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
 
 			// Instruction address 0x0000:0x077b, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30be),
-				this.oParent.GameData.Technologies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa))].Name);
+			this.oParent.Array_30b8[3] = this.oParent.GameData.Technologies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa))].Name;
 
 			// Instruction address 0x0000:0x0787, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x3776);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*EXCHANGE"));
 
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
 
@@ -881,27 +879,22 @@ namespace OpenCiv1
 			goto L0952;
 
 		L0891:
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
 			// Instruction address 0x0000:0x08a3, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30ba),
-				this.oParent.GameData.Players[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x30))].Nation);
+			this.oParent.Array_30b8[1] = this.oParent.GameData.Players[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x30))].Nation;
 
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x24)), 0x0);
-			if (this.oCPU.Flags.E) goto L08b6;
-			
-			// Instruction address 0x0000:0x08be, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30be), "demand");
+			if (this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x24)) != 0)
+			{
+				// Instruction address 0x0000:0x08be, size: 5
+				this.oParent.Array_30b8[3] = "demand";
+			}
+			else
+			{
+				// Instruction address 0x0000:0x08be, size: 5
+				this.oParent.Array_30b8[3] = "request";
+			}
 
-			goto L08b9;
-
-		L08b6:
-			// Instruction address 0x0000:0x08be, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30be), "request");
-
-		L08b9:
 			// Instruction address 0x0000:0x08ca, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x378f);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*CANCEL"));
 
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x24)), 0x0);
 			if (this.oCPU.Flags.E) goto L08dd;
@@ -980,12 +973,10 @@ namespace OpenCiv1
 				this.oParent.CAPI.itoa((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), 10));
 
 			// Instruction address 0x0000:0x09b9, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30bc), 0xba06);
-
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
+			this.oParent.Array_30b8[2] = this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06);
 
 			// Instruction address 0x0000:0x09ca, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x3797);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*TRIBUTE"));
 
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x6b8e, 0x0);
 			this.oParent.Var_3936 = 2;
@@ -1026,14 +1017,12 @@ namespace OpenCiv1
 			
 			this.oCPU.AX.UInt16 = this.oCPU.INC_UInt16(this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.E) goto L0ad0;
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
 
 			// Instruction address 0x0000:0x0a6a, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30be),
-				this.oParent.GameData.Technologies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc))].Name);
+			this.oParent.Array_30b8[3] = this.oParent.GameData.Technologies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc))].Name;
 
 			// Instruction address 0x0000:0x0a76, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x37a0);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*TAKECIV"));
 
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x6b8e, 0x0);
 			this.oParent.Var_3936 = 2;
@@ -1082,16 +1071,11 @@ namespace OpenCiv1
 
 			// Instruction address 0x0000:0x0b0a, size: 5
 			this.oParent.CommonTools.F0_1000_0a32_PlayTune(0x21, 0);
-
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
 			
-			// Instruction address 0x0000:0x0b1b, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x37a9);
+			// Instruction address 0x0000:0x0b27, size: 5
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*PROVOKE", 40));
 
 		L0b1a:
-			// Instruction address 0x0000:0x0b27, size: 5
-			this.oParent.LanguageTools.F0_2f4d_0000(0x28);
-
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x6b8e, 0x1);
 			this.oParent.Var_3936 = 2;
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
@@ -1101,10 +1085,8 @@ namespace OpenCiv1
 			goto L0c13;
 
 		L0b54:
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
 			// Instruction address 0x0000:0x0bee, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x37b2);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*PROVOKE", 40));
 
 			goto L0bed;
 
@@ -1124,10 +1106,8 @@ namespace OpenCiv1
 			// Instruction address 0x0000:0x0b86, size: 5
 			this.oParent.CommonTools.F0_1000_0a32_PlayTune(0x21, 0);
 
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-			
 			// Instruction address 0x0000:0x0b1b, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x37bb);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*REJECT", 40));
 
 			goto L0b1a;
 
@@ -1159,23 +1139,16 @@ namespace OpenCiv1
 			// Instruction address 0x0000:0x0bd2, size: 5
 			this.oParent.CommonTools.F0_1000_0a32_PlayTune(0x21, 0);
 
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-			
 			// Instruction address 0x0000:0x0b1b, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x37c3);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*RID", 40));
 
 			goto L0b1a;
 
 		L0be5:
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
 			// Instruction address 0x0000:0x0bee, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x37c8);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*RID", 40));
 
 		L0bed:
-			// Instruction address 0x0000:0x0bfa, size: 5
-			this.oParent.LanguageTools.F0_2f4d_0000(0x28);
-
 			// Instruction address 0x0000:0x0c0e, size: 5
 			this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 40, 100);
 
@@ -1211,10 +1184,8 @@ namespace OpenCiv1
 			goto L1097;
 
 		L0c65:
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
 			// Instruction address 0x0000:0x0c6e, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x37cd);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*PEACE"));
 
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x6b8e, 0x0);
 			this.oParent.Var_3936 = 0;
@@ -1281,13 +1252,10 @@ namespace OpenCiv1
 				goto L0e0e;
 
 			// Instruction address 0x0000:0x0d61, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30be),
-				this.oParent.GameData.Technologies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa))].Name);
-
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
+			this.oParent.Array_30b8[3] = this.oParent.GameData.Technologies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa))].Name;
 
 			// Instruction address 0x0000:0x0d72, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x3805);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*GIVECIV"));
 
 			this.oParent.Var_3936 = 0;
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
@@ -1368,12 +1336,10 @@ namespace OpenCiv1
 				this.oParent.CAPI.itoa((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)), 10));
 
 			// Instruction address 0x0000:0x0e87, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30bc), 0xba06);
-
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
+			this.oParent.Array_30b8[2] = this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06);
 
 			// Instruction address 0x0000:0x0e98, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x380e);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*GIVECASH"));
 
 			this.oParent.Var_3936 = 0;
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
@@ -1419,12 +1385,10 @@ namespace OpenCiv1
 			this.oParent.CAPI.strcat(0xba06, this.oParent.CAPI.itoa(this.oParent.GameData.Players[playerID].Coins, 10));
 
 			// Instruction address 0x0000:0x0f4a, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30bc), 0xba06);
-
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
+			this.oParent.Array_30b8[2] = this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06);
 
 			// Instruction address 0x0000:0x0f5b, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x3818);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*GROVEL"));
 
 			this.oParent.Var_3936 = 0;
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
@@ -1516,10 +1480,8 @@ namespace OpenCiv1
 			// Instruction address 0x0000:0x1059, size: 5
 			this.oParent.CommonTools.F0_1000_0a32_PlayTune(0x21, 0);
 
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
 			// Instruction address 0x0000:0x106a, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x3820);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*MOBILIZE"));
 
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x6b8e, 0x1);
 			this.oParent.Var_3936 = 2;
@@ -1567,10 +1529,9 @@ namespace OpenCiv1
 
 			this.oParent.Var_3936 = 1;
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0x4);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
 
 			// Instruction address 0x0000:0x1124, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x382a);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*ATTITUDE"));
 
 			goto L11c3;
 
@@ -1625,13 +1586,10 @@ namespace OpenCiv1
 
 		L1209:
 			// Instruction address 0x0000:0x1216, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30be),
-				this.oParent.GameData.Players[playerID].Nation);
-
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
+			this.oParent.Array_30b8[3] = this.oParent.GameData.Players[playerID].Nation;
 
 			// Instruction address 0x0000:0x1227, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x388f);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*THREAT"));
 
 			this.oCPU.AX.UInt16 = (ushort)oParent.GameData.TurnCount;
 			this.oCPU.AX.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.AX.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34)));
@@ -1683,12 +1641,10 @@ namespace OpenCiv1
 				this.oParent.CAPI.itoa((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)), 10));
 
 			// Instruction address 0x0000:0x12e0, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30bc), 0xba06);
-
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
+			this.oParent.Array_30b8[2] = this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06);
 
 			// Instruction address 0x0000:0x12f1, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x3897);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*GIVEMORE"));
 
 			this.oParent.Var_3936 = 0;
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
@@ -1708,10 +1664,8 @@ namespace OpenCiv1
 			// Instruction address 0x0000:0x133c, size: 5
 			this.oParent.CommonTools.F0_1000_0a32_PlayTune(0x21, 0);
 
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
 			// Instruction address 0x0000:0x134d, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x38a1);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*PROVOKE"));
 
 			// Instruction address 0x0000:0x1360, size: 5
 			this.oParent.Segment_2517.F0_2517_0aa1_ClearDiplomacyFlags(this.oParent.GameData.HumanPlayerID, playerID, 2);
@@ -1795,8 +1749,7 @@ namespace OpenCiv1
 			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
 
 			// Instruction address 0x0000:0x1460, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30be),
-				this.oParent.GameData.Players[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20))].Nation);
+			this.oParent.Array_30b8[3] = this.oParent.GameData.Players[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20))].Nation;
 
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0x4);
 
@@ -1807,10 +1760,8 @@ namespace OpenCiv1
 			if ((this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20))] & 1) != 0)
 				goto L1487;
 
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
 			// Instruction address 0x0000:0x15c7, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x38e9);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*NOCONTACT"));
 
 			goto L15cf;
 
@@ -1825,10 +1776,8 @@ namespace OpenCiv1
 			if ((this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20))] & 2) != 0)
 				goto L14c1;
 
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
 			// Instruction address 0x0000:0x14a3, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x38f4);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*ATWAR"));
 
 			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
@@ -1857,12 +1806,10 @@ namespace OpenCiv1
 				this.oParent.CAPI.itoa((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)), 10));
 
 			// Instruction address 0x0000:0x152e, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30bc), 0xba06);
-
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
+			this.oParent.Array_30b8[2] = this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06);
 
 			// Instruction address 0x0000:0x153f, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x38fb);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*MERCENARY"));
 
 			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
@@ -1893,10 +1840,8 @@ namespace OpenCiv1
 			goto L15cf;
 
 		L15be:
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
 			// Instruction address 0x0000:0x15c7, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x391e);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*UNFORTUNATE"));
 
 		L15cf:
 			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
@@ -1949,10 +1894,9 @@ namespace OpenCiv1
 				goto L165d;
 
 			// Instruction address 0x0000:0x1649, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30ba),
-				this.oParent.GameData.Players[playerID].Nation);
+			this.oParent.Array_30b8[1] = this.oParent.GameData.Players[playerID].Nation;
 
-			this.oParent.Help.F4_0000_02d3_ShowInstantAdvicePopup(0x392b);
+			this.oParent.Help.F4_0000_02d3_ShowInstantAdvicePopup("*SCHISM");
 
 		L165d:
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x3934), 0xffff);
@@ -2311,16 +2255,15 @@ namespace OpenCiv1
 			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
 
 			// Instruction address 0x0000:0x1a4f, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30be), this.oParent.GameData.Players[playerID].Nationality);
+			this.oParent.Array_30b8[3] = this.oParent.GameData.Players[playerID].Nationality;
 
 			// Instruction address 0x0000:0x1a65, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30b8), this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Nationality);
+			this.oParent.Array_30b8[0] = this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Nationality;
 
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
 
 			// Instruction address 0x0000:0x1a7c, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x3a8c);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*TREATY"));
 
 			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			

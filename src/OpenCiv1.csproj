@@ -5,12 +5,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Title>OpenCiv1 - Open source rewrite of Civilization 1 Game designed by Sid Meier and Bruce Shelley in year 1991</Title>
+    <Title>OpenCiv1 project - Open source preservation effort and rewrite of the iconic Civilization Game designed by Sid Meier and Bruce Shelley in year 1991</Title>
     <Version>1.475.6.7</Version>
     <Copyright>Copyright (c) 2023-2024 by Rajko Horvat, Parts of the code Copyright (c) 1991 Microprose Software, Inc. and Take-Two Interactive Software, Inc.</Copyright>
-    <PackageProjectUrl>https://github.com/rajko-horvat/OpenCiv1</PackageProjectUrl>
+    <PackageProjectUrl>https://codeberg.org/rhorvat/OpenCiv1</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://github.com/rajko-horvat/OpenCiv1</RepositoryUrl>
+    <RepositoryUrl>https://codeberg.org/rhorvat/OpenCiv1</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>game;retro;remake;civilization;retrogaming;4x-strategy-game;4x;retro-game;civilization-games;sid-meier-civilization;remake-games</PackageTags>
     <NeutralLanguage>en</NeutralLanguage>
@@ -82,8 +82,8 @@
   <ItemGroup>
     <None Remove="..\LICENSE" />
     <None Remove="..\README.md" />
-	<None Remove="..\.github\code_of_conduct.md" />
-	<None Remove="..\.github\CONTRIBUTING.md" />
+	<None Remove="..\CONTRIBUTING\code_of_conduct.md" />
+	<None Remove="..\CONTRIBUTING\CONTRIBUTING.md" />
   </ItemGroup>
 
   <ItemGroup>
@@ -93,10 +93,10 @@
     <Content Include="..\README.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\.github\code_of_conduct.md">
+    <Content Include="..\CONTRIBUTING\code_of_conduct.md">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\.github\CONTRIBUTING.md">
+    <Content Include="..\CONTRIBUTING\CONTRIBUTING.md">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

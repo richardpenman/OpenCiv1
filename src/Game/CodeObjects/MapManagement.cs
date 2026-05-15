@@ -176,7 +176,7 @@ namespace OpenCiv1
 				this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityInfo.CityID));
 
 				// Instruction address 0x2aea:0x015c, size: 5
-				this.parent.LanguageTools.F0_2f4d_04f7(0xba06, (ushort)(327 - cityInfo.ScreenPos.X));
+				this.parent.CAPI.strcpy(0xba06, this.parent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.CPU.ReadString(this.CPU.DS.UInt16, 0xba06), 327 - cityInfo.ScreenPos.X));
 
 				// Instruction address 0x2aea:0x018d, size: 5
 				this.parent.DrawStringTools.F0_1182_0086_DrawStringWithShadow(0xba06,

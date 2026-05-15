@@ -917,9 +917,16 @@ namespace OpenCiv1
 			return destinationPtr;
 		}
 
-		public ushort strcpy(ushort destinationPtr, string source)
+		public ushort strcpy(ushort destinationPtr, string? source)
 		{
-			this.oCPU.WriteString(VCPU.ToLinearAddress(this.oCPU.DS.UInt16, destinationPtr), source);
+			if (source == null)
+			{
+				this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, destinationPtr, 0);
+			}
+			else
+			{
+				this.oCPU.WriteString(VCPU.ToLinearAddress(this.oCPU.DS.UInt16, destinationPtr), source);
+			}
 
 			this.oCPU.AX.UInt16 = destinationPtr; // preserve compatibility
 			return destinationPtr;

@@ -301,7 +301,7 @@ namespace OpenCiv1
 
 			if (playerID != this.oParent.GameData.HumanPlayerID) goto L0385;
 
-			this.oParent.Help.F4_0000_02d3_ShowInstantAdvicePopup(0x4f66);
+			this.oParent.Help.F4_0000_02d3_ShowInstantAdvicePopup("*FIRSTPRODUCT");
 
 		L0385:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 0x0);
@@ -433,10 +433,8 @@ namespace OpenCiv1
 
 			this.oParent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
 			// Instruction address 0x0000:0x051c, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x4f74);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*PMAX"));
 
 			// Instruction address 0x0000:0x0530, size: 5
 			this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 64, 80);
@@ -499,7 +497,7 @@ namespace OpenCiv1
 			this.oParent.CAPI.strcat(0xba06, this.oParent.Segment_2459.F0_2459_08c6_GetCityName(cityID));
 
 			// Instruction address 0x0000:0x05a8, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30be), 0xba06);
+			this.oParent.Array_30b8[3] = this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06);
 
 			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
 
@@ -631,7 +629,7 @@ namespace OpenCiv1
 
 		L06dd:
 			// Instruction address 0x0000:0x06e1, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x4f99);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*D1"));
 
 			this.oCPU.CMP_UInt8((byte)this.oParent.GameData.Cities[cityID].ActualSize, 0x0);
 			if (this.oCPU.Flags.NE) goto L06f3;
@@ -672,7 +670,7 @@ namespace OpenCiv1
 
 		L0738:
 			// Instruction address 0x0000:0x073c, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x4f9d);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*D2"));
 
 			if (this.oParent.GameData.Cities[cityID].ActualSize > 1)
 				goto L06f3;
@@ -704,7 +702,7 @@ namespace OpenCiv1
 
 		L0784:
 			// Instruction address 0x0000:0x0788, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x4fa1);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*D3"));
 
 			if (this.oParent.GameData.Cities[cityID].ActualSize > 1)
 				goto L079a;
@@ -742,7 +740,7 @@ namespace OpenCiv1
 
 		L07d9:
 			// Instruction address 0x0000:0x07dd, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x4fa5);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*D4"));
 
 			this.oParent.GameData.Cities[cityID].FoodCount = 0;
 			this.oCPU.AX.LowUInt8 = (byte)this.oParent.GameData.Cities[cityID].ActualSize;
@@ -815,11 +813,10 @@ namespace OpenCiv1
 			this.oParent.GameData.Cities[cityID].ImprovementFlags1 &= this.oCPU.DX.UInt16;
 
 			// Instruction address 0x0000:0x089a, size: 5
-			this.oParent.CAPI.strcpy(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x30b8),
-				this.oParent.GameData.GetImprovementType(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)) + 1).Name);
+			this.oParent.Array_30b8[0] = this.oParent.GameData.GetImprovementType(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)) + 1).Name;
 
 			// Instruction address 0x0000:0x08a6, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x4fc3);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*D5"));
 
 			goto L0bc6;
 
@@ -838,7 +835,7 @@ namespace OpenCiv1
 
 		L08cd:
 			// Instruction address 0x0000:0x08d1, size: 5
-			this.oParent.LanguageTools.F0_2f4d_044f(0x4fc7);
+			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*D6"));
 
 			this.oParent.GameData.Cities[cityID].FoodCount = 0;
 			this.oParent.GameData.Cities[cityID].ShieldsCount = 0;

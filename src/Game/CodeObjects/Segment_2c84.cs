@@ -562,7 +562,7 @@ namespace OpenCiv1
 			}
 			else
 			{
-				this.oParent.Civilopedia.F8_0000_0000_ShowCivilopedia((short)(selectedOption - 1));
+				this.oParent.Encyclopedia.F8_0000_0000_ShowCivilopedia((short)(selectedOption - 1));
 				this.Var_654a = -1;
 			}
 
