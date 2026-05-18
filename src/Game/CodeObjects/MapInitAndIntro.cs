@@ -1315,7 +1315,7 @@ namespace OpenCiv1
 				if (this.animationStage == 0)
 				{
 					// Instruction address 0x0000:0x1869, size: 5
-					this.storyFile = new StreamReader($"{this.parent.ResourcePath}story.txt");
+					this.storyFile = FileReader.GetFile($"{this.parent.ResourcePath}story.txt");
 
 					this.animationStage = 1;
 					this.storyText = "";

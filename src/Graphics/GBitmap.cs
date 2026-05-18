@@ -597,7 +597,7 @@ namespace OpenCiv1.Graphics
 		public static GBitmap? FromPICFile(string path, out byte[] palette, bool preferHiColor)
 		{
 			GBitmap? bitmap = null;
-			FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+			FileStream stream = FileReader.GetFileStream(path, FileMode.Open, FileAccess.Read);
 			List<BKeyValuePair<int, Color>> aPalette = new List<BKeyValuePair<int, Color>>();
 			palette = new byte[0];
 			
