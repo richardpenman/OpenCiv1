@@ -360,7 +360,7 @@ namespace OpenCiv1
 
 			int lineCount = 0;
 
-			using (FileStream inputStream = new FileStream($"{this.oParent.ResourcePath}{section}.TXT", FileMode.Open))
+			using (FileStream inputStream = FileReader.GetFileStream($"{this.oParent.ResourcePath}{section}.TXT", FileMode.Open))
 			{
 				inputStream.Seek(0x212, SeekOrigin.Begin);
 
