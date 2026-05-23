@@ -20,7 +20,7 @@ namespace OpenCiv1
 			this.oParent = parent;
 			this.oCPU = parent.CPU;
 
-			string[] textSections = {"BLURB0", "BLURB1", "BLURB2", "BLURB3", "BLURB4", "ERROR", "HELP", "KING", "PRODUCE"};
+			/*string[] textSections = {"BLURB0", "BLURB1", "BLURB2", "BLURB3", "BLURB4", "ERROR", "HELP", "KING", "PRODUCE"};
 
 			for (int i = 0; i < textSections.Length; i++)
 			{
@@ -29,7 +29,7 @@ namespace OpenCiv1
 					ParseSectionFile(textSections[i]);
 				}
 				catch { }
-			}
+			}*/
 		}
 
 		public void ParseSectionFile(string section)
@@ -177,155 +177,28 @@ namespace OpenCiv1
 		}
 
 		/// <summary>
-		/// Draws a text in a block of maximum width
+		/// Trims (deletes) characters from the end of a string to a specified width in pixels
 		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="maxWidth"></param>
-		/// <param name="frontColor"></param>
-		/// <returns>The new Y position</returns>
-		public int F0_2f4d_0088_DrawTextBlock(int x, int y, string text, int maxWidth, byte frontColor)
+		/// <param name="text">The text to trim</param>
+		/// <param name="maxWidth">Maximum width of text in pixels</param>
+		public string F0_2f4d_04f7_TrimStringToWidth(string text, int maxWidth)
 		{
-			//this.oCPU.Log.EnterBlock($"F0_2f4d_0088_DrawTextBlock({maxWidth}, {x}, {y}, {frontColor})");
+			//this.oCPU.Log.EnterBlock($"F0_2f4d_04f7_TrimStringToWidth(0x{text:x4}, {maxWidth})");
 
 			// function body
-			int newY = y;
-			int lastSeparatorPosition = -1;
-			int currentPosition = 0;
-
-			// clean out text of unnecessary characters
-			text = text.Replace('\r', ' ').Replace("^\n", "\r").Replace('\n', ' ').Replace('\r', '\n').Replace('^', '\n');
-
-			while (text.IndexOf("  ") >= 0)
+			while (text.Length > 1 && this.oParent.DrawTools.F0_1182_00ef_GetStringWidth(text) > maxWidth)
 			{
-				text = text.Replace("  ", " ");
-			}
-
-			// we want to adamantly end our text with a line separator
-			if (!text.EndsWith('\n'))
-			{
-				text += '\n';
-			}
-
-			// process text block
-			int textLength = text.Length;
-
-			while (currentPosition < textLength && newY < 193)
-			{
-				int separatorPosition = text.IndexOfAny([' ', '\n'], lastSeparatorPosition + 1);
-
-				if (separatorPosition >= 0)
+				if (text[text.Length - 2] != ' ')
 				{
-					char separatorChar = text[separatorPosition];
-					string textPart = text.Substring(currentPosition, separatorPosition - currentPosition);
-					GSize textPartSize = this.oParent.Graphics.GetDrawStringSize(this.oParent.Var_aa_Screen0_Rectangle.FontID, textPart);
-
-					if (textPartSize.Width > maxWidth)
-					{
-						textPart = text.Substring(currentPosition, lastSeparatorPosition - currentPosition);
-
-						// Instruction address 0x2f4d:0x013b, size: 5
-						this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(textPart, x, newY, frontColor);
-
-						currentPosition = lastSeparatorPosition + 1;
-						lastSeparatorPosition = separatorPosition;
-						newY += textPartSize.Height;
-					}
-					else if (separatorChar == '\n')
-					{
-						// Instruction address 0x2f4d:0x013b, size: 5
-						this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(textPart, x, newY, frontColor);
-
-						currentPosition = separatorPosition + 1;
-						lastSeparatorPosition = separatorPosition;
-						newY += textPartSize.Height;
-					}
-					else
-					{
-						lastSeparatorPosition = separatorPosition;
-					}
+					text = text.Substring(0, text.Length - 2) + '.';
 				}
 				else
 				{
-					string textPart = text.Substring(currentPosition, textLength - currentPosition).Trim(' ', '\n');
-					GSize textPartSize = this.oParent.Graphics.GetDrawStringSize(this.oParent.Var_aa_Screen0_Rectangle.FontID, textPart);
-
-					// Instruction address 0x2f4d:0x013b, size: 5
-					this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(textPart, x, newY, frontColor);
-
-					currentPosition = textLength;
-					lastSeparatorPosition = textLength;
-					newY += textPartSize.Height;
-				}
-			}
-		
-			return newY;
-		}
-
-		public int GetTextBlockHeight(string text, int y, int maxWidth)
-		{
-			int newY = y;
-			int lastSeparatorPosition = -1;
-			int currentPosition = 0;
-
-			// clean out text of unnecessary characters
-			text = text.Replace('\r', ' ').Replace("^\n", "\r").Replace('\n', ' ').Replace('\r', '\n').Replace('^', '\n');
-
-			while (text.IndexOf("  ") >= 0)
-			{
-				text = text.Replace("  ", " ");
-			}
-
-			// we want to adamantly end our text with a line separator
-			if (!text.EndsWith('\n'))
-			{
-				text += '\n';
-			}
-
-			// process text block
-			int textLength = text.Length;
-
-			while (currentPosition < textLength && newY < 193)
-			{
-				int separatorPosition = text.IndexOfAny([' ', '\n'], lastSeparatorPosition + 1);
-
-				if (separatorPosition >= 0)
-				{
-					char separatorChar = text[separatorPosition];
-					string textPart = text.Substring(currentPosition, separatorPosition - currentPosition);
-					GSize textPartSize = this.oParent.Graphics.GetDrawStringSize(this.oParent.Var_aa_Screen0_Rectangle.FontID, textPart);
-
-					if (textPartSize.Width > maxWidth)
-					{
-						textPart = text.Substring(currentPosition, lastSeparatorPosition - currentPosition);
-
-						currentPosition = lastSeparatorPosition + 1;
-						lastSeparatorPosition = separatorPosition;
-						newY += textPartSize.Height;
-					}
-					else if (separatorChar == '\n')
-					{
-						currentPosition = separatorPosition + 1;
-						lastSeparatorPosition = separatorPosition;
-						newY += textPartSize.Height;
-					}
-					else
-					{
-						lastSeparatorPosition = separatorPosition;
-					}
-				}
-				else
-				{
-					string textPart = text.Substring(currentPosition, textLength - currentPosition);
-					GSize textPartSize = this.oParent.Graphics.GetDrawStringSize(this.oParent.Var_aa_Screen0_Rectangle.FontID, textPart);
-
-					currentPosition = textLength;
-					lastSeparatorPosition = textLength;
-					newY += textPartSize.Height;
+					text = text.Substring(0, text.Length - 1);
 				}
 			}
 
-			return newY - y;
+			return text;
 		}
 
 		/// <summary>
@@ -454,31 +327,6 @@ namespace OpenCiv1
 			for (int i = 0; i < Array_30ae.Length; i++)
 			{
 				text = text.Replace(Array_30ae[i], this.oParent.Array_30b8[i]);
-			}
-
-			return text;
-		}
-
-		/// <summary>
-		/// Trims (deletes) characters from the end of a string to a specified pixel width
-		/// </summary>
-		/// <param name="text">The text to trim</param>
-		/// <param name="maxWidth">Maximum width of text in pixels</param>
-		public string F0_2f4d_04f7_TrimStringToWidth(string text, int maxWidth)
-		{
-			//this.oCPU.Log.EnterBlock($"F0_2f4d_04f7_TrimStringToWidth(0x{text:x4}, {maxWidth})");
-
-			// function body
-			while (text.Length > 1 && this.oParent.DrawStringTools.F0_1182_00ef_GetStringWidth(text) > maxWidth)
-			{
-				if (text[text.Length - 2] != ' ')
-				{
-					text = text.Substring(0, text.Length - 2) + '.';
-				}
-				else
-				{
-					text = text.Substring(0, text.Length - 1);
-				}
 			}
 
 			return text;

@@ -5,14 +5,14 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Title>OpenCiv1 project - Open source preservation effort and rewrite of the iconic Civilization Game designed by Sid Meier and Bruce Shelley in year 1991</Title>
+    <Title>OpenCiv1 project - Free and Open Source (FOSS) preservation effort and rewrite of the iconic Civilization Game designed by Sid Meier and Bruce Shelley in year 1991</Title>
     <Version>1.475.6.7</Version>
-    <Copyright>Copyright (c) 2023-2024 by Rajko Horvat, Parts of the code Copyright (c) 1991 Microprose Software, Inc. and Take-Two Interactive Software, Inc.</Copyright>
+    <Copyright>Copyright (c) 2023-2026 by Rajko Horvat</Copyright>
     <PackageProjectUrl>https://codeberg.org/rhorvat/OpenCiv1</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://codeberg.org/rhorvat/OpenCiv1</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>game;retro;remake;civilization;retrogaming;4x-strategy-game;4x;retro-game;civilization-games;sid-meier-civilization;remake-games</PackageTags>
+    <PackageTags>4x;4x-strategy-game;civilization;civilization-games;game;remake;remake-game;remake-games;retro;retro-game;retro-games;retrogaming</PackageTags>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>

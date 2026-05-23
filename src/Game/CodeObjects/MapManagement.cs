@@ -179,7 +179,7 @@ namespace OpenCiv1
 				this.parent.CAPI.strcpy(0xba06, this.parent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.CPU.ReadString(this.CPU.DS.UInt16, 0xba06), 327 - cityInfo.ScreenPos.X));
 
 				// Instruction address 0x2aea:0x018d, size: 5
-				this.parent.DrawStringTools.F0_1182_0086_DrawStringWithShadow(0xba06,
+				this.parent.DrawTools.F0_1182_0086_DrawStringWithShadow(0xba06,
 					this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(cityInfo.ScreenPos.X - 8, 80, 999), cityInfo.ScreenPos.Y + 16, 11);
 			}
 
@@ -192,7 +192,7 @@ namespace OpenCiv1
 			int mapYOffset;
 
 			// Instruction address 0x2aea:0x01b9, size: 5
-			if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyEnum.Navigation))
+			if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Navigation))
 			{
 				yMap = 0;
 			}
@@ -641,7 +641,7 @@ namespace OpenCiv1
 								// Draw city size
 
 								// Instruction address 0x2aea:0x0d8d, size: 5
-								this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, ((citySize < 10) ? 6 : 3) + scrX, scrY + 5, 0);
+								this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, ((citySize < 10) ? 6 : 3) + scrX, scrY + 5, 0);
 							}
 
 							// Instruction address 0x2aea:0x0d9c, size: 3
@@ -747,14 +747,14 @@ namespace OpenCiv1
 				if ((unit.Status & 0x4) != 0)
 				{
 					// Instruction address 0x2aea:0x103d, size: 5
-					this.parent.DrawStringTools.F0_1182_0086_DrawStringWithShadowToScreen0("F", x + 4, y + 7, (byte)((playerID == 1) ? 9 : 15));
+					this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("F", x + 4, y + 7, (byte)((playerID == 1) ? 9 : 15));
 				}
 			}
 
 			if (playerID == this.parent.GameData.HumanPlayerID && unit.GoToDestination.X != -1)
 			{
 				// Instruction address 0x2aea:0x1085, size: 5
-				this.parent.DrawStringTools.F0_1182_0086_DrawStringWithShadowToScreen0("G", x + 4, y + 7, (byte)((playerID == 1) ? 9 : 15));
+				this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("G", x + 4, y + 7, (byte)((playerID == 1) ? 9 : 15));
 			}
 
 			if (((UnitStatusEnum)unit.Status & UnitStatusEnum.SettlerBuildMask) != 0 && this.parent.GameData.Units[unit.TypeID].MovementType != UnitMovementTypeEnum.Air)
@@ -782,7 +782,7 @@ namespace OpenCiv1
 				}
 
 				// Instruction address 0x2aea:0x1157, size: 5
-				this.parent.DrawStringTools.F0_1182_0086_DrawStringWithShadowToScreen0(status, x + 4, y + 7, (byte)((playerID == 1) ? 9 : 15));
+				this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0(status, x + 4, y + 7, (byte)((playerID == 1) ? 9 : 15));
 
 				// Instruction address 0x2aea:0x1172, size: 5
 				this.parent.MenuBoxDialog.F0_2d05_0a05_DrawRectangle(x - 1, y - 1, 15, 15, 7);

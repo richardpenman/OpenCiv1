@@ -445,47 +445,31 @@ namespace OpenCiv1
 		}
 
 		/// <summary>
-		/// Reads the palette from file and applies to screeen 0
+		/// Reads the palette from file and applies to screen 0
 		/// </summary>
 		/// <param name="filenamePtr"></param>
-		public void F0_2dc4_047d_ReadAndSetPalette(ushort filenamePtr)
+		public void F0_2dc4_047d_ReadAndSetPalette(string filename)
 		{
-			this.oCPU.Log.EnterBlock($"F0_2dc4_047d_ReadAndSetPalette(0x{filenamePtr:x4})");
+			//this.oCPU.Log.EnterBlock($"F0_2dc4_047d_ReadAndSetPalette(0x{filename:x4})");
 
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x2);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
+			byte[] palette;
 
 			// Instruction address 0x2dc4:0x0492, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, filenamePtr, 0xbdee);
+			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, filename, out palette);
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x0);
+			// 0xbdf4 - 0xbdee = 6
 
-		L049f:
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
-			this.oCPU.SI.UInt16 = this.oCPU.BX.UInt16;
+			for (int i = 0; i < 48; i++)
+			{
+				palette[6 + i] = this.oParent.Var_6b34[i];
+			}
 
-			this.oCPU.AX.LowUInt8 = this.oParent.Var_6b34[this.oCPU.SI.UInt16];
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xbdf4), this.oCPU.AX.LowUInt8);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 0x30);
-			if (this.oCPU.Flags.L) goto L049f;
-			
 			// Instruction address 0x2dc4:0x04b9, size: 5
-			this.oParent.Graphics.F0_VGA_0162_SetColorsFromColorStruct(0xbdee);
-			
-			// Instruction address 0x2dc4:0x04d2, size: 3
-			this.oParent.Graphics.SetPaletteColor(0x2d, GBitmap.Color18ToColor(0x33, 0x27, 0x19));
+			this.oParent.Graphics.F0_VGA_0162_SetColorsFromColorStruct(palette);
 
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F0_2dc4_047d_ReadAndSetPalette");
+			// Instruction address 0x2dc4:0x04d2, size: 3
+			this.oParent.Graphics.SetPaletteColor(45, GBitmap.Color18ToColor(51, 39, 25));
 		}
 
 		/// <summary>

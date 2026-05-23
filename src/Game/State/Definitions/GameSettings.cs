@@ -91,9 +91,9 @@ namespace OpenCiv1
 		}
 
 		/// <summary>
-		/// Shows the text from Civilopedia. Represents bit value 0x40
+		/// Shows the text from Encyclopedia. Represents bit value 0x40
 		/// </summary>
-		public bool CivilopediaText
+		public bool EncyclopediaText
 		{
 			get => (settingsValue & (1 << 6)) != 0;
 			set

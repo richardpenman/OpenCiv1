@@ -146,13 +146,13 @@ namespace OpenCiv1
 
 		L0355:
 			// Instruction address 0x0000:0x0362, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 184, 252);
+			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 184, 252);
 
 			// Instruction address 0x0000:0x0386, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 182, 248);
+			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 182, 248);
 
 			// Instruction address 0x0000:0x03aa, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 183, 250);
+			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 183, 250);
 
 			this.oParent.Var_aa_Screen0_Rectangle.ScreenID = this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x44));
 
@@ -338,13 +338,13 @@ namespace OpenCiv1
 
 		L0640:
 			// Instruction address 0x0000:0x064d, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 184, this.oCPU.AX.LowUInt8);
+			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 184, this.oCPU.AX.LowUInt8);
 
 			// Instruction address 0x0000:0x0671, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 182, 248);
+			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 182, 248);
 
 			// Instruction address 0x0000:0x0695, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 183, 250);
+			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 183, 250);
 
 			this.oParent.Var_aa_Screen0_Rectangle.ScreenID = this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x44));
 
@@ -880,11 +880,11 @@ namespace OpenCiv1
 
 		L0edb:
 			// Instruction address 0x0000:0x0eec, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0((ushort)(0xba06 + this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x23c))),
+			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0((ushort)(0xba06 + this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x23c))),
 				160, 184, this.oCPU.AX.LowUInt8);
 
 			// Instruction address 0x0000:0x0f14, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0((ushort)(0xba06 + this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x23c))),
+			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0((ushort)(0xba06 + this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x23c))),
 				160, 183, 60);
 
 			this.oParent.Var_aa_Screen0_Rectangle.ScreenID = this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x23a));
@@ -1150,11 +1150,11 @@ namespace OpenCiv1
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 32, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
 
 			// Instruction address 0x0000:0x13f3, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0((ushort)(this.oCPU.BP.UInt16 + this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x23c)) - 0x200),
+			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0((ushort)(this.oCPU.BP.UInt16 + this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x23c)) - 0x200),
 				160, 5, 11);
 
 			// Instruction address 0x0000:0x1410, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0((ushort)(this.oCPU.BP.UInt16 + this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x23c)) - 0x200),
+			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0((ushort)(this.oCPU.BP.UInt16 + this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x23c)) - 0x200),
 				160, 4, 15);
 
 			// Instruction address 0x0000:0x1428, size: 5
@@ -1264,14 +1264,14 @@ namespace OpenCiv1
 		L15f6:
 			// Instruction address 0x0000:0x15fd, size: 5
 			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.oParent.GameData.HumanPlayerID,
-				(TechnologyEnum)this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))) ? 1 : 0);
+				(TechnologyAdvanceEnum)this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))) ? 1 : 0);
 			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.E)
 				goto L161f;
 
 			// Instruction address 0x0000:0x1617, size: 5
 			this.oParent.CAPI.strcpy(0xba06, 
-				this.oParent.GameData.Technologies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))].Name);
+				this.oParent.GameData.TechnologyAdvances[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))].Name);
 
 		L161f:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))));
@@ -1327,15 +1327,15 @@ namespace OpenCiv1
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 6, 320, 20, this.oParent.Var_aa_Screen0_Rectangle, 0, 6);
 
 			// Instruction address 0x0000:0x16e5, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0((ushort)(0xba06 + this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))),
+			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0((ushort)(0xba06 + this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))),
 				160, 7, 15);
 
 			// Instruction address 0x0000:0x1700, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0((ushort)(0xba06 + this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))),
+			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0((ushort)(0xba06 + this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))),
 				160, 9, 13);
 
 			// Instruction address 0x0000:0x173b, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0((ushort)(0xba06 + this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))),
+			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0((ushort)(0xba06 + this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))),
 				160, 8, 14);
 
 			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));

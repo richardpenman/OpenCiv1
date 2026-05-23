@@ -154,7 +154,7 @@ namespace OpenCiv1
 			this.oCPU.WriteUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), this.oCPU.AX.LowUInt8);
 
 			// Instruction address 0x0000:0x01e0, size: 5
-			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.oParent.GameData.HumanPlayerID, TechnologyEnum.Invention) ? 1 : 0);
+			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.oParent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Invention) ? 1 : 0);
 			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.NE)
 			{
@@ -254,7 +254,7 @@ namespace OpenCiv1
 				(byte)this.oParent.GameData.Players[playerID].Nationality[0]);
 
 			// Instruction address 0x0000:0x031d, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 1, 0);
+			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 1, 0);
 
 		L0325:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xe), 0x0);
@@ -467,7 +467,7 @@ namespace OpenCiv1
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10), 0x10);
 
 			// Instruction address 0x0000:0x05ab, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("Population:", 242, 16, 0);
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0("Population:", 242, 16, 0);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10), 
 				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 0x8));
@@ -484,7 +484,7 @@ namespace OpenCiv1
 			if (this.oCPU.Flags.E) goto L0609;
 
 			// Instruction address 0x0000:0x0601, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 242, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 0);
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 242, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 0);
 
 		L0609:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 0x8));
@@ -519,7 +519,7 @@ namespace OpenCiv1
 
 		L067d:
 			// Instruction address 0x0000:0x0689, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 
 				242, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 
 				this.oCPU.AX.LowUInt8);
 
@@ -582,7 +582,7 @@ namespace OpenCiv1
 
 		L0750:
 			// Instruction address 0x0000:0x075c, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 
 				242,
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 
 				this.oCPU.AX.LowUInt8);
@@ -594,7 +594,7 @@ namespace OpenCiv1
 			if (this.oCPU.Flags.E) goto L0784;
 			
 			// Instruction address 0x0000:0x077c, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("Mass:", 242, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 0);
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0("Mass:", 242, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 0);
 
 		L0784:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10), 
@@ -619,7 +619,7 @@ namespace OpenCiv1
 			if (this.oCPU.Flags.E) goto L0817;
 
 			// Instruction address 0x0000:0x080f, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 242, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 0);
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 242, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 0);
 
 		L0817:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 0x8));
@@ -656,7 +656,7 @@ namespace OpenCiv1
 
 		L0891:
 			// Instruction address 0x0000:0x089d, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 
 				242, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), this.oCPU.AX.LowUInt8);
 
 		L08a5:
@@ -665,7 +665,7 @@ namespace OpenCiv1
 			if (this.oCPU.Flags.E) goto L08c5;
 
 			// Instruction address 0x0000:0x08bd, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("Flight Time:", 242, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 0);
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0("Flight Time:", 242, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 0);
 
 		L08c5:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10), 
@@ -713,7 +713,7 @@ namespace OpenCiv1
 			if (this.oCPU.Flags.E) goto L0993;
 
 			// Instruction address 0x0000:0x098b, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 242, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 0);
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 242, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 0);
 
 		L0993:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 0x10));
@@ -727,7 +727,7 @@ namespace OpenCiv1
 			if (this.oCPU.Flags.E) goto L09c8;
 
 			// Instruction address 0x0000:0x09c0, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("Prob. of Success", 242, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 0);
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0("Prob. of Success", 242, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 0);
 
 		L09c8:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 0x8));
@@ -746,7 +746,7 @@ namespace OpenCiv1
 			if (this.oCPU.Flags.E) goto L0a28;
 
 			// Instruction address 0x0000:0x0a20, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 242, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 0);
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 242, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 0);
 
 		L0a28:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), 0x10));
@@ -766,7 +766,7 @@ namespace OpenCiv1
 
 		L0a4f:
 			// Instruction address 0x0000:0x0a70, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(((this.oParent.GameData.Players[playerID].SpaceshipETAYear < oParent.GameData.Year) ? "Landed!" : "Launched!"),
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(((this.oParent.GameData.Players[playerID].SpaceshipETAYear < oParent.GameData.Year) ? "Landed!" : "Launched!"),
 				242,
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)),
 				0);
@@ -791,7 +791,7 @@ namespace OpenCiv1
 			if (param3 == 0) goto L0ada;
 
 			// Instruction address 0x0000:0x0ab7, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("LAUNCH", 256, 190, 0);
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0("LAUNCH", 256, 190, 0);
 
 			// Instruction address 0x0000:0x0ad2, size: 5
 			this.oParent.MenuBoxDialog.F0_2d05_0a05_DrawRectangle(242, 188, 76, 9, 0);
@@ -1173,7 +1173,7 @@ namespace OpenCiv1
 			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
 			// Instruction address 0x0000:0x0e59, size: 5
 			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID,
-				(TechnologyEnum)this.oCPU.ReadInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xe68))) ? 1 : 0);
+				(TechnologyAdvanceEnum)this.oCPU.ReadInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xe68))) ? 1 : 0);
 			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.NE)
 				goto L0e68;
@@ -1226,7 +1226,7 @@ namespace OpenCiv1
 			this.oParent.CAPI.strcat(0xba06, " build space ship.\n");
 
 			// Instruction address 0x0000:0x0f06, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 96, 15);
+			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 96, 15);
 
 			// Instruction address 0x0000:0x0f0e, size: 5
 			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
@@ -1676,7 +1676,7 @@ namespace OpenCiv1
 			this.oParent.CAPI.strcat(0xba06, " LAUNCH space ship!");
 
 			// Instruction address 0x0000:0x162d, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 92, 15);
+			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 92, 15);
 
 			// Instruction address 0x0000:0x163d, size: 5
 			this.oParent.CAPI.strcpy(0xba06, "Estimate arrival in ");
@@ -1689,7 +1689,7 @@ namespace OpenCiv1
 			this.oParent.CAPI.strcat(0xba06, ".\n");
 
 			// Instruction address 0x0000:0x1686, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 100, 15);
+			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 100, 15);
 
 			this.oParent.GameData.Players[playerID].SpaceshipLaunchYear = oParent.GameData.Year;
 

@@ -114,7 +114,7 @@ namespace OpenCiv1
 			}
 
 			// Instruction address 0x0000:0x018e, size: 5
-			this.oParent.LanguageTools.F0_2f4d_0088_DrawTextBlock(16, 40, this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 288, 0);
+			this.oParent.DrawTools.DrawTextBlock(16, 40, this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 288, 0);
 
 			this.oParent.Var_aa_Screen0_Rectangle.FontID = 5;
 
@@ -151,7 +151,7 @@ namespace OpenCiv1
 
 		L01e9:
 			// Instruction address 0x0000:0x01ed, size: 5
-			this.oParent.DrawStringTools.F0_1182_00ef_GetStringWidth(0xba06);
+			this.oParent.DrawTools.F0_1182_00ef_GetStringWidth(0xba06);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xe), this.oCPU.AX.UInt16);
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x12c);
@@ -165,7 +165,7 @@ namespace OpenCiv1
 			this.oParent.CAPI.strcat(0xba06, " News");
 
 			// Instruction address 0x0000:0x0221, size: 5
-			this.oParent.DrawStringTools.F0_1182_00ef_GetStringWidth(0xba06);
+			this.oParent.DrawTools.F0_1182_00ef_GetStringWidth(0xba06);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xe), this.oCPU.AX.UInt16);
 
@@ -174,14 +174,14 @@ namespace OpenCiv1
 			if (this.oCPU.Flags.GE) goto L0261;
 
 			// Instruction address 0x0000:0x0242, size: 5
-			this.oParent.DrawStringTools.F0_1182_002a_DrawString(",-.", 8, 11, 0);
+			this.oParent.DrawTools.F0_1182_002a_DrawString(",-.", 8, 11, 0);
 
 			// Instruction address 0x0000:0x0259, size: 5
-			this.oParent.DrawStringTools.F0_1182_002a_DrawString(",-.", 268, 11, 0);
+			this.oParent.DrawTools.F0_1182_002a_DrawString(",-.", 268, 11, 0);
 
 		L0261:
 			// Instruction address 0x0000:0x0270, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 11, 0);
+			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 11, 0);
 
 			// Instruction address 0x0000:0x027c, size: 5
 			this.oCPU.AX.UInt16 = (ushort)(this.oParent.CAPI.RNG.Next(2));
@@ -235,10 +235,10 @@ namespace OpenCiv1
 			this.oParent.Var_aa_Screen0_Rectangle.FontID = 3;
 
 			// Instruction address 0x0000:0x0308, size: 5
-			this.oParent.DrawStringTools.F0_1182_002a_DrawString(0xba06, 6, 3, 0);
+			this.oParent.DrawTools.F0_1182_002a_DrawString(0xba06, 6, 3, 0);
 
 			// Instruction address 0x0000:0x031f, size: 5
-			this.oParent.DrawStringTools.F0_1182_002a_DrawString(0xba06, 272, 3, 0);
+			this.oParent.DrawTools.F0_1182_002a_DrawString(0xba06, 272, 3, 0);
 			
 			this.oParent.Var_aa_Screen0_Rectangle.FontID = 1;
 
@@ -248,7 +248,7 @@ namespace OpenCiv1
 			this.oParent.CAPI.strcat(0xba06, "10 cents");
 
 			// Instruction address 0x0000:0x0354, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 272, 28, 0);
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 272, 28, 0);
 
 			// Instruction address 0x0000:0x0364, size: 5
 			this.oParent.CAPI.strcpy(0xba06, "January 1, ");
@@ -257,7 +257,7 @@ namespace OpenCiv1
 			this.oParent.CAPI.strcat(0xba06, this.oParent.Segment_1238.F0_1238_1720_GetCurrentYearAsString());
 
 			// Instruction address 0x0000:0x0380, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 8, 28, 0);
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 8, 28, 0);
 
 			this.oParent.Var_aa_Screen0_Rectangle.FontID = 2;
 
@@ -274,7 +274,7 @@ namespace OpenCiv1
 			this.oParent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey("KING", this.oCPU.ReadString(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)));
 
 			// Instruction address 0x0000:0x03d4, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 3, 0);
+			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 3, 0);
 
 			this.oParent.Var_aa_Screen0_Rectangle.FontID = 1;
 

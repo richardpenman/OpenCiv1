@@ -206,135 +206,135 @@ namespace OpenCiv1
 			new GPoint(-2, 1), new GPoint(-2, -1), new GPoint(0, 0) };
 
 		private UnitDefinition[] unitTypes = new UnitDefinition[] {
-			new UnitDefinition(UnitTypeEnum.Settlers, "Settlers", TechnologyEnum.NewFutureTechnology, UnitMovementTypeEnum.Land, 1, 0, 0, 1, 4, 0, 0, UnitAIRoleEnum.Settler, TechnologyEnum.None),	// 0
-			new UnitDefinition(UnitTypeEnum.Militia, "Militia", TechnologyEnum.Gunpowder, UnitMovementTypeEnum.Land, 1, 0, 1, 1, 1, 0, 0, UnitAIRoleEnum.Defense, TechnologyEnum.None),	// 1
-			new UnitDefinition(UnitTypeEnum.Phalanx, "Phalanx", TechnologyEnum.Gunpowder, UnitMovementTypeEnum.Land, 1, 0, 1, 2, 2, 0, 0, UnitAIRoleEnum.Defense, TechnologyEnum.BronzeWorking),	// 2
-			new UnitDefinition(UnitTypeEnum.Legion, "Legion", TechnologyEnum.Conscription, UnitMovementTypeEnum.Land, 1, 0, 3, 1, 2, 0, 0, UnitAIRoleEnum.LandAttack, TechnologyEnum.IronWorking),	// 3
-			new UnitDefinition(UnitTypeEnum.Musketeers, "Musketeers", TechnologyEnum.Conscription, UnitMovementTypeEnum.Land, 1, 0, 2, 3, 3, 0, 0, UnitAIRoleEnum.Defense, TechnologyEnum.Gunpowder),	// 4
-			new UnitDefinition(UnitTypeEnum.Riflemen, "Riflemen", TechnologyEnum.NewFutureTechnology, UnitMovementTypeEnum.Land, 1, 0, 3, 5, 3, 0, 0, UnitAIRoleEnum.Defense, TechnologyEnum.Conscription),	// 5
-			new UnitDefinition(UnitTypeEnum.Cavalry, "Cavalry", TechnologyEnum.Conscription, UnitMovementTypeEnum.Land, 2, 0, 2, 1, 2, 0, 0, UnitAIRoleEnum.LandAttack, TechnologyEnum.HorsebackRiding),	// 6
-			new UnitDefinition(UnitTypeEnum.Knights, "Knights", TechnologyEnum.Automobile, UnitMovementTypeEnum.Land, 2, 0, 4, 2, 4, 0, 0, UnitAIRoleEnum.LandAttack, TechnologyEnum.Chivalry),	// 7
-			new UnitDefinition(UnitTypeEnum.Catapult, "Catapult", TechnologyEnum.Metallurgy, UnitMovementTypeEnum.Land, 1, 0, 6, 1, 4, 0, 0, UnitAIRoleEnum.LandAttack, TechnologyEnum.Mathematics),	// 8
-			new UnitDefinition(UnitTypeEnum.Cannon, "Cannon", TechnologyEnum.Robotics, UnitMovementTypeEnum.Land, 1, 0, 8, 1, 4, 0, 0, UnitAIRoleEnum.LandAttack, TechnologyEnum.Metallurgy),	// 9
-			new UnitDefinition(UnitTypeEnum.Chariot, "Chariot", TechnologyEnum.Chivalry, UnitMovementTypeEnum.Land, 2, 0, 4, 1, 4, 0, 0, UnitAIRoleEnum.LandAttack, TechnologyEnum.TheWheel),	// 10
-			new UnitDefinition(UnitTypeEnum.Armor, "Armor", TechnologyEnum.NewFutureTechnology, UnitMovementTypeEnum.Land, 3, 0, 10, 5, 8, 0, 0, UnitAIRoleEnum.LandAttack, TechnologyEnum.Automobile),	// 11
-			new UnitDefinition(UnitTypeEnum.MechanicInfantry, "Mech. Inf.", TechnologyEnum.NewFutureTechnology, UnitMovementTypeEnum.Land, 3, 0, 6, 6, 5, 0, 0, UnitAIRoleEnum.Defense, TechnologyEnum.LaborUnion),	// 12
-			new UnitDefinition(UnitTypeEnum.Artillery, "Artillery", TechnologyEnum.NewFutureTechnology, UnitMovementTypeEnum.Land, 2, 0, 12, 2, 6, 0, 0, UnitAIRoleEnum.LandAttack, TechnologyEnum.Robotics),	// 13
-			new UnitDefinition(UnitTypeEnum.Fighter, "Fighter", TechnologyEnum.NewFutureTechnology, UnitMovementTypeEnum.Air, 10, 1, 4, 2, 6, 2, 0, UnitAIRoleEnum.AirAttack, TechnologyEnum.Flight),	// 14
-			new UnitDefinition(UnitTypeEnum.Bomber, "Bomber", TechnologyEnum.NewFutureTechnology, UnitMovementTypeEnum.Air, 8, 2, 12, 1, 12, 2, 0, UnitAIRoleEnum.LandAttack, TechnologyEnum.AdvancedFlight),	// 15
-			new UnitDefinition(UnitTypeEnum.Trireme, "Trireme", TechnologyEnum.Navigation, UnitMovementTypeEnum.Water, 3, 0, 1, 0, 4, 0, 2, UnitAIRoleEnum.SeaTransport, TechnologyEnum.Mapmaking),	// 16
-			new UnitDefinition(UnitTypeEnum.Sail, "Sail", TechnologyEnum.Magnetism, UnitMovementTypeEnum.Water, 3, 0, 1, 1, 4, 0, 3, UnitAIRoleEnum.SeaTransport, TechnologyEnum.Navigation),	// 17
-			new UnitDefinition(UnitTypeEnum.Frigate, "Frigate", TechnologyEnum.Industrialization, UnitMovementTypeEnum.Water, 3, 0, 2, 2, 4, 0, 4, UnitAIRoleEnum.SeaTransport, TechnologyEnum.Magnetism),	// 18
-			new UnitDefinition(UnitTypeEnum.Ironclad, "Ironclad", TechnologyEnum.Combustion, UnitMovementTypeEnum.Water, 4, 0, 4, 4, 6, 0, 0, UnitAIRoleEnum.SeaAttack, TechnologyEnum.SteamEngine),	// 19
-			new UnitDefinition(UnitTypeEnum.Cruiser, "Cruiser", TechnologyEnum.NewFutureTechnology, UnitMovementTypeEnum.Water, 6, 0, 6, 6, 8, 3, 0, UnitAIRoleEnum.SeaAttack, TechnologyEnum.Combustion),	// 20
-			new UnitDefinition(UnitTypeEnum.Battleship, "Battleship", TechnologyEnum.NewFutureTechnology, UnitMovementTypeEnum.Water, 4, 0, 18, 12, 16, 3, 0, UnitAIRoleEnum.SeaAttack, TechnologyEnum.Steel),	// 21
-			new UnitDefinition(UnitTypeEnum.Submarine, "Submarine", TechnologyEnum.NewFutureTechnology, UnitMovementTypeEnum.Water, 3, 0, 8, 2, 5, 3, 0, UnitAIRoleEnum.SeaAttack, TechnologyEnum.MassProduction),	// 22
-			new UnitDefinition(UnitTypeEnum.Carrier, "Carrier", TechnologyEnum.NewFutureTechnology, UnitMovementTypeEnum.Water, 5, 0, 1, 12, 16, 3, 0, UnitAIRoleEnum.SeaAttack, TechnologyEnum.AdvancedFlight),	// 23
-			new UnitDefinition(UnitTypeEnum.Transport, "Transport", TechnologyEnum.NewFutureTechnology, UnitMovementTypeEnum.Water, 4, 0, 0, 3, 5, 0, 8, UnitAIRoleEnum.SeaTransport, TechnologyEnum.Industrialization),	// 24
-			new UnitDefinition(UnitTypeEnum.Nuclear, "Nuclear", TechnologyEnum.NewFutureTechnology, UnitMovementTypeEnum.Air, 16, 1, 99, 0, 16, 0, 0, UnitAIRoleEnum.LandAttack, TechnologyEnum.Rocketry),	// 25
-			new UnitDefinition(UnitTypeEnum.Diplomat, "Diplomat", TechnologyEnum.NewFutureTechnology, UnitMovementTypeEnum.Land, 2, 0, 0, 0, 3, 0, 0, UnitAIRoleEnum.Civilian, TechnologyEnum.Writing),	// 26
-			new UnitDefinition(UnitTypeEnum.Caravan, "Caravan", TechnologyEnum.NewFutureTechnology, UnitMovementTypeEnum.Land, 1, 0, 0, 1, 5, 0, 0, UnitAIRoleEnum.Civilian, TechnologyEnum.Trade)}; // 27
+			new UnitDefinition(UnitTypeEnum.Settlers, "Settlers", TechnologyAdvanceEnum.NewFutureTechnology, UnitMovementTypeEnum.Land, 1, 0, 0, 1, 4, 0, 0, UnitAIRoleEnum.Settler, TechnologyAdvanceEnum.None),	// 0
+			new UnitDefinition(UnitTypeEnum.Militia, "Militia", TechnologyAdvanceEnum.Gunpowder, UnitMovementTypeEnum.Land, 1, 0, 1, 1, 1, 0, 0, UnitAIRoleEnum.Defense, TechnologyAdvanceEnum.None),	// 1
+			new UnitDefinition(UnitTypeEnum.Phalanx, "Phalanx", TechnologyAdvanceEnum.Gunpowder, UnitMovementTypeEnum.Land, 1, 0, 1, 2, 2, 0, 0, UnitAIRoleEnum.Defense, TechnologyAdvanceEnum.BronzeWorking),	// 2
+			new UnitDefinition(UnitTypeEnum.Legion, "Legion", TechnologyAdvanceEnum.Conscription, UnitMovementTypeEnum.Land, 1, 0, 3, 1, 2, 0, 0, UnitAIRoleEnum.LandAttack, TechnologyAdvanceEnum.IronWorking),	// 3
+			new UnitDefinition(UnitTypeEnum.Musketeers, "Musketeers", TechnologyAdvanceEnum.Conscription, UnitMovementTypeEnum.Land, 1, 0, 2, 3, 3, 0, 0, UnitAIRoleEnum.Defense, TechnologyAdvanceEnum.Gunpowder),	// 4
+			new UnitDefinition(UnitTypeEnum.Riflemen, "Riflemen", TechnologyAdvanceEnum.NewFutureTechnology, UnitMovementTypeEnum.Land, 1, 0, 3, 5, 3, 0, 0, UnitAIRoleEnum.Defense, TechnologyAdvanceEnum.Conscription),	// 5
+			new UnitDefinition(UnitTypeEnum.Cavalry, "Cavalry", TechnologyAdvanceEnum.Conscription, UnitMovementTypeEnum.Land, 2, 0, 2, 1, 2, 0, 0, UnitAIRoleEnum.LandAttack, TechnologyAdvanceEnum.HorsebackRiding),	// 6
+			new UnitDefinition(UnitTypeEnum.Knights, "Knights", TechnologyAdvanceEnum.Automobile, UnitMovementTypeEnum.Land, 2, 0, 4, 2, 4, 0, 0, UnitAIRoleEnum.LandAttack, TechnologyAdvanceEnum.Chivalry),	// 7
+			new UnitDefinition(UnitTypeEnum.Catapult, "Catapult", TechnologyAdvanceEnum.Metallurgy, UnitMovementTypeEnum.Land, 1, 0, 6, 1, 4, 0, 0, UnitAIRoleEnum.LandAttack, TechnologyAdvanceEnum.Mathematics),	// 8
+			new UnitDefinition(UnitTypeEnum.Cannon, "Cannon", TechnologyAdvanceEnum.Robotics, UnitMovementTypeEnum.Land, 1, 0, 8, 1, 4, 0, 0, UnitAIRoleEnum.LandAttack, TechnologyAdvanceEnum.Metallurgy),	// 9
+			new UnitDefinition(UnitTypeEnum.Chariot, "Chariot", TechnologyAdvanceEnum.Chivalry, UnitMovementTypeEnum.Land, 2, 0, 4, 1, 4, 0, 0, UnitAIRoleEnum.LandAttack, TechnologyAdvanceEnum.TheWheel),	// 10
+			new UnitDefinition(UnitTypeEnum.Armor, "Armor", TechnologyAdvanceEnum.NewFutureTechnology, UnitMovementTypeEnum.Land, 3, 0, 10, 5, 8, 0, 0, UnitAIRoleEnum.LandAttack, TechnologyAdvanceEnum.Automobile),	// 11
+			new UnitDefinition(UnitTypeEnum.MechanicInfantry, "Mech. Inf.", TechnologyAdvanceEnum.NewFutureTechnology, UnitMovementTypeEnum.Land, 3, 0, 6, 6, 5, 0, 0, UnitAIRoleEnum.Defense, TechnologyAdvanceEnum.LaborUnion),	// 12
+			new UnitDefinition(UnitTypeEnum.Artillery, "Artillery", TechnologyAdvanceEnum.NewFutureTechnology, UnitMovementTypeEnum.Land, 2, 0, 12, 2, 6, 0, 0, UnitAIRoleEnum.LandAttack, TechnologyAdvanceEnum.Robotics),	// 13
+			new UnitDefinition(UnitTypeEnum.Fighter, "Fighter", TechnologyAdvanceEnum.NewFutureTechnology, UnitMovementTypeEnum.Air, 10, 1, 4, 2, 6, 2, 0, UnitAIRoleEnum.AirAttack, TechnologyAdvanceEnum.Flight),	// 14
+			new UnitDefinition(UnitTypeEnum.Bomber, "Bomber", TechnologyAdvanceEnum.NewFutureTechnology, UnitMovementTypeEnum.Air, 8, 2, 12, 1, 12, 2, 0, UnitAIRoleEnum.LandAttack, TechnologyAdvanceEnum.AdvancedFlight),	// 15
+			new UnitDefinition(UnitTypeEnum.Trireme, "Trireme", TechnologyAdvanceEnum.Navigation, UnitMovementTypeEnum.Water, 3, 0, 1, 0, 4, 0, 2, UnitAIRoleEnum.SeaTransport, TechnologyAdvanceEnum.Mapmaking),	// 16
+			new UnitDefinition(UnitTypeEnum.Sail, "Sail", TechnologyAdvanceEnum.Magnetism, UnitMovementTypeEnum.Water, 3, 0, 1, 1, 4, 0, 3, UnitAIRoleEnum.SeaTransport, TechnologyAdvanceEnum.Navigation),	// 17
+			new UnitDefinition(UnitTypeEnum.Frigate, "Frigate", TechnologyAdvanceEnum.Industrialization, UnitMovementTypeEnum.Water, 3, 0, 2, 2, 4, 0, 4, UnitAIRoleEnum.SeaTransport, TechnologyAdvanceEnum.Magnetism),	// 18
+			new UnitDefinition(UnitTypeEnum.Ironclad, "Ironclad", TechnologyAdvanceEnum.Combustion, UnitMovementTypeEnum.Water, 4, 0, 4, 4, 6, 0, 0, UnitAIRoleEnum.SeaAttack, TechnologyAdvanceEnum.SteamEngine),	// 19
+			new UnitDefinition(UnitTypeEnum.Cruiser, "Cruiser", TechnologyAdvanceEnum.NewFutureTechnology, UnitMovementTypeEnum.Water, 6, 0, 6, 6, 8, 3, 0, UnitAIRoleEnum.SeaAttack, TechnologyAdvanceEnum.Combustion),	// 20
+			new UnitDefinition(UnitTypeEnum.Battleship, "Battleship", TechnologyAdvanceEnum.NewFutureTechnology, UnitMovementTypeEnum.Water, 4, 0, 18, 12, 16, 3, 0, UnitAIRoleEnum.SeaAttack, TechnologyAdvanceEnum.Steel),	// 21
+			new UnitDefinition(UnitTypeEnum.Submarine, "Submarine", TechnologyAdvanceEnum.NewFutureTechnology, UnitMovementTypeEnum.Water, 3, 0, 8, 2, 5, 3, 0, UnitAIRoleEnum.SeaAttack, TechnologyAdvanceEnum.MassProduction),	// 22
+			new UnitDefinition(UnitTypeEnum.Carrier, "Carrier", TechnologyAdvanceEnum.NewFutureTechnology, UnitMovementTypeEnum.Water, 5, 0, 1, 12, 16, 3, 0, UnitAIRoleEnum.SeaAttack, TechnologyAdvanceEnum.AdvancedFlight),	// 23
+			new UnitDefinition(UnitTypeEnum.Transport, "Transport", TechnologyAdvanceEnum.NewFutureTechnology, UnitMovementTypeEnum.Water, 4, 0, 0, 3, 5, 0, 8, UnitAIRoleEnum.SeaTransport, TechnologyAdvanceEnum.Industrialization),	// 24
+			new UnitDefinition(UnitTypeEnum.Nuclear, "Nuclear", TechnologyAdvanceEnum.NewFutureTechnology, UnitMovementTypeEnum.Air, 16, 1, 99, 0, 16, 0, 0, UnitAIRoleEnum.LandAttack, TechnologyAdvanceEnum.Rocketry),	// 25
+			new UnitDefinition(UnitTypeEnum.Diplomat, "Diplomat", TechnologyAdvanceEnum.NewFutureTechnology, UnitMovementTypeEnum.Land, 2, 0, 0, 0, 3, 0, 0, UnitAIRoleEnum.Civilian, TechnologyAdvanceEnum.Writing),	// 26
+			new UnitDefinition(UnitTypeEnum.Caravan, "Caravan", TechnologyAdvanceEnum.NewFutureTechnology, UnitMovementTypeEnum.Land, 1, 0, 0, 1, 5, 0, 0, UnitAIRoleEnum.Civilian, TechnologyAdvanceEnum.Trade)}; // 27
 
 		private ImprovementDefinition[] improvementTypes = new ImprovementDefinition[] {
-			new ImprovementDefinition(0, "NONE", 8, 0, TechnologyEnum.None, TechnologyEnum.None),
-			new ImprovementDefinition(1, "Palace", 20, 5, TechnologyEnum.Masonry, TechnologyEnum.None),
-			new ImprovementDefinition(2, "Barracks", 4, 0, TechnologyEnum.None, TechnologyEnum.None),
-			new ImprovementDefinition(3, "Granary", 6, 1, TechnologyEnum.Pottery, TechnologyEnum.None),
-			new ImprovementDefinition(4, "Temple", 4, 1, TechnologyEnum.CeremonialBurial, TechnologyEnum.None),
-			new ImprovementDefinition(5, "MarketPlace", 8, 1, TechnologyEnum.Currency, TechnologyEnum.None),
-			new ImprovementDefinition(6, "Library", 8, 1, TechnologyEnum.Writing, TechnologyEnum.None),
-			new ImprovementDefinition(7, "Courthouse", 8, 1, TechnologyEnum.CodeOfLaws, TechnologyEnum.None),
-			new ImprovementDefinition(8, "City Walls", 12, 2, TechnologyEnum.Masonry, TechnologyEnum.None),
-			new ImprovementDefinition(9, "Aqueduct", 12, 2, TechnologyEnum.Construction, TechnologyEnum.None),
-			new ImprovementDefinition(10, "Bank", 12, 3, TechnologyEnum.Banking, TechnologyEnum.None),
-			new ImprovementDefinition(11, "Cathedral", 16, 3, TechnologyEnum.Religion, TechnologyEnum.None),
-			new ImprovementDefinition(12, "University", 16, 3, TechnologyEnum.University, TechnologyEnum.None),
-			new ImprovementDefinition(13, "Mass Transit", 16, 4, TechnologyEnum.MassProduction, TechnologyEnum.None),
-			new ImprovementDefinition(14, "Colosseum", 10, 4, TechnologyEnum.Construction, TechnologyEnum.None),
-			new ImprovementDefinition(15, "Factory", 20, 4, TechnologyEnum.Industrialization, TechnologyEnum.None),
-			new ImprovementDefinition(16, "Mfg. Plant", 32, 6, TechnologyEnum.Robotics, TechnologyEnum.None),
-			new ImprovementDefinition(17, "SDI Defense", 20, 4, TechnologyEnum.Superconductor, TechnologyEnum.None),
-			new ImprovementDefinition(18, "Recycling Cntr.", 20, 2, TechnologyEnum.Recycling, TechnologyEnum.None),
-			new ImprovementDefinition(19, "Power Plant", 16, 4, TechnologyEnum.Refining, TechnologyEnum.None),
-			new ImprovementDefinition(20, "Hydro Plant", 24, 4, TechnologyEnum.Electronics, TechnologyEnum.None),
-			new ImprovementDefinition(21, "Nuclear Plant", 16, 2, TechnologyEnum.NuclearPower, TechnologyEnum.None),
-			new ImprovementDefinition(22, "SS Structural", 8, 0, TechnologyEnum.SpaceFlight, TechnologyEnum.None),
-			new ImprovementDefinition(23, "SS Component", 16, 0, TechnologyEnum.Plastics, TechnologyEnum.None),
-			new ImprovementDefinition(24, "SS Module", 32, 0, TechnologyEnum.Robotics, TechnologyEnum.None) };
+			new ImprovementDefinition(0, "NONE", 8, 0, TechnologyAdvanceEnum.None, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(1, "Palace", 20, 5, TechnologyAdvanceEnum.Masonry, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(2, "Barracks", 4, 0, TechnologyAdvanceEnum.None, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(3, "Granary", 6, 1, TechnologyAdvanceEnum.Pottery, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(4, "Temple", 4, 1, TechnologyAdvanceEnum.CeremonialBurial, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(5, "MarketPlace", 8, 1, TechnologyAdvanceEnum.Currency, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(6, "Library", 8, 1, TechnologyAdvanceEnum.Writing, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(7, "Courthouse", 8, 1, TechnologyAdvanceEnum.CodeOfLaws, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(8, "City Walls", 12, 2, TechnologyAdvanceEnum.Masonry, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(9, "Aqueduct", 12, 2, TechnologyAdvanceEnum.Construction, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(10, "Bank", 12, 3, TechnologyAdvanceEnum.Banking, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(11, "Cathedral", 16, 3, TechnologyAdvanceEnum.Religion, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(12, "University", 16, 3, TechnologyAdvanceEnum.University, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(13, "Mass Transit", 16, 4, TechnologyAdvanceEnum.MassProduction, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(14, "Colosseum", 10, 4, TechnologyAdvanceEnum.Construction, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(15, "Factory", 20, 4, TechnologyAdvanceEnum.Industrialization, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(16, "Mfg. Plant", 32, 6, TechnologyAdvanceEnum.Robotics, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(17, "SDI Defense", 20, 4, TechnologyAdvanceEnum.Superconductor, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(18, "Recycling Cntr.", 20, 2, TechnologyAdvanceEnum.Recycling, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(19, "Power Plant", 16, 4, TechnologyAdvanceEnum.Refining, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(20, "Hydro Plant", 24, 4, TechnologyAdvanceEnum.Electronics, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(21, "Nuclear Plant", 16, 2, TechnologyAdvanceEnum.NuclearPower, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(22, "SS Structural", 8, 0, TechnologyAdvanceEnum.SpaceFlight, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(23, "SS Component", 16, 0, TechnologyAdvanceEnum.Plastics, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(24, "SS Module", 32, 0, TechnologyAdvanceEnum.Robotics, TechnologyAdvanceEnum.None) };
 
-		private TechnologyDefinition[] technologyTypes = new TechnologyDefinition[] {
-			new TechnologyDefinition(TechnologyEnum.Alphabet, "Alphabet", TechnologyEnum.None, TechnologyEnum.None),
-			new TechnologyDefinition(TechnologyEnum.CodeOfLaws, "Code of Laws", TechnologyEnum.Alphabet, TechnologyEnum.None),
-			new TechnologyDefinition(TechnologyEnum.Currency, "Currency", TechnologyEnum.BronzeWorking, TechnologyEnum.None),
-			new TechnologyDefinition(TechnologyEnum.AtomicTheory, "Atomic Theory", TechnologyEnum.TheoryOfGravity, TechnologyEnum.Physics),
-			new TechnologyDefinition(TechnologyEnum.Democracy, "Democracy", TechnologyEnum.Philosophy, TechnologyEnum.Literacy),
-			new TechnologyDefinition(TechnologyEnum.Monarchy, "Monarchy", TechnologyEnum.CeremonialBurial, TechnologyEnum.CodeOfLaws),
-			new TechnologyDefinition(TechnologyEnum.Astronomy, "Astronomy", TechnologyEnum.Mysticism, TechnologyEnum.Mathematics),
-			new TechnologyDefinition(TechnologyEnum.Mapmaking, "MapMaking", TechnologyEnum.Alphabet, TechnologyEnum.None),
-			new TechnologyDefinition(TechnologyEnum.Navigation, "Navigation", TechnologyEnum.Mapmaking, TechnologyEnum.Astronomy),
-			new TechnologyDefinition(TechnologyEnum.Mathematics, "Mathematics", TechnologyEnum.Alphabet, TechnologyEnum.Masonry),
-			new TechnologyDefinition(TechnologyEnum.Medicine, "Medicine", TechnologyEnum.Philosophy, TechnologyEnum.Trade),
-			new TechnologyDefinition(TechnologyEnum.Physics, "Physics", TechnologyEnum.Mathematics, TechnologyEnum.Navigation),
-			new TechnologyDefinition(TechnologyEnum.Engineering, "Engineering", TechnologyEnum.TheWheel, TechnologyEnum.Construction),
-			new TechnologyDefinition(TechnologyEnum.University, "University", TechnologyEnum.Mathematics, TechnologyEnum.Philosophy),
-			new TechnologyDefinition(TechnologyEnum.Magnetism, "Magnetism", TechnologyEnum.Navigation, TechnologyEnum.Physics),
-			new TechnologyDefinition(TechnologyEnum.Electronics, "Electronics", TechnologyEnum.Engineering, TechnologyEnum.Electricity),
-			new TechnologyDefinition(TechnologyEnum.Masonry, "Masonry", TechnologyEnum.None, TechnologyEnum.None),
-			new TechnologyDefinition(TechnologyEnum.BronzeWorking, "Bronze Working", TechnologyEnum.None, TechnologyEnum.None),
-			new TechnologyDefinition(TechnologyEnum.IronWorking, "Iron Working", TechnologyEnum.BronzeWorking, TechnologyEnum.None),
-			new TechnologyDefinition(TechnologyEnum.BridgeBuilding, "Bridge Building", TechnologyEnum.IronWorking, TechnologyEnum.Construction),
-			new TechnologyDefinition(TechnologyEnum.Invention, "Invention", TechnologyEnum.Engineering, TechnologyEnum.Literacy),
-			new TechnologyDefinition(TechnologyEnum.Computers, "Computers", TechnologyEnum.Mathematics, TechnologyEnum.Electronics),
-			new TechnologyDefinition(TechnologyEnum.Writing, "Writing", TechnologyEnum.Alphabet, TechnologyEnum.None),
-			new TechnologyDefinition(TechnologyEnum.SteamEngine, "Steam Engine", TechnologyEnum.Physics, TechnologyEnum.Invention),
-			new TechnologyDefinition(TechnologyEnum.Trade, "Trade", TechnologyEnum.Currency, TechnologyEnum.CodeOfLaws),
-			new TechnologyDefinition(TechnologyEnum.CeremonialBurial, "Ceremonial Burial", TechnologyEnum.None, TechnologyEnum.None),
-			new TechnologyDefinition(TechnologyEnum.Mysticism, "Mysticism", TechnologyEnum.CeremonialBurial, TechnologyEnum.None),
-			new TechnologyDefinition(TechnologyEnum.NuclearFission, "Nuclear Fission", TechnologyEnum.MassProduction, TechnologyEnum.AtomicTheory),
-			new TechnologyDefinition(TechnologyEnum.Philosophy, "Philosophy", TechnologyEnum.Mysticism, TechnologyEnum.Literacy),
-			new TechnologyDefinition(TechnologyEnum.Religion, "Religion", TechnologyEnum.Philosophy, TechnologyEnum.Writing),
-			new TechnologyDefinition(TechnologyEnum.Literacy, "Literacy", TechnologyEnum.Writing, TechnologyEnum.CodeOfLaws),
-			new TechnologyDefinition(TechnologyEnum.HorsebackRiding, "Horseback Riding", TechnologyEnum.None, TechnologyEnum.None),
-			new TechnologyDefinition(TechnologyEnum.Feudalism, "Feudalism", TechnologyEnum.Masonry, TechnologyEnum.Monarchy),
-			new TechnologyDefinition(TechnologyEnum.TheWheel, "The Wheel", TechnologyEnum.None, TechnologyEnum.None),
-			new TechnologyDefinition(TechnologyEnum.Gunpowder, "Gunpowder", TechnologyEnum.Invention, TechnologyEnum.IronWorking),
-			new TechnologyDefinition(TechnologyEnum.Industrialization, "Industrialization", TechnologyEnum.Railroad, TechnologyEnum.Banking),
-			new TechnologyDefinition(TechnologyEnum.Chemistry, "Chemistry", TechnologyEnum.University, TechnologyEnum.Medicine),
-			new TechnologyDefinition(TechnologyEnum.Combustion, "Combustion", TechnologyEnum.Refining, TechnologyEnum.Explosives),
-			new TechnologyDefinition(TechnologyEnum.Flight, "Flight", TechnologyEnum.Combustion, TechnologyEnum.Physics),
-			new TechnologyDefinition(TechnologyEnum.AdvancedFlight, "Advanced Flight", TechnologyEnum.Flight, TechnologyEnum.Electricity),
-			new TechnologyDefinition(TechnologyEnum.SpaceFlight, "Space Flight", TechnologyEnum.Computers, TechnologyEnum.Rocketry),
-			new TechnologyDefinition(TechnologyEnum.MassProduction, "Mass Production", TechnologyEnum.Automobile, TechnologyEnum.TheCorporation),
-			new TechnologyDefinition(TechnologyEnum.Pottery, "Pottery", TechnologyEnum.None, TechnologyEnum.None),
-			new TechnologyDefinition(TechnologyEnum.Communism, "Communism", TechnologyEnum.Philosophy, TechnologyEnum.Industrialization),
-			new TechnologyDefinition(TechnologyEnum.TheRepublic, "The Republic", TechnologyEnum.CodeOfLaws, TechnologyEnum.Literacy),
-			new TechnologyDefinition(TechnologyEnum.Construction, "Construction", TechnologyEnum.Masonry, TechnologyEnum.Currency),
-			new TechnologyDefinition(TechnologyEnum.Rocketry, "Rocketry", TechnologyEnum.AdvancedFlight, TechnologyEnum.Electronics),
-			new TechnologyDefinition(TechnologyEnum.TheCorporation, "The Corporation", TechnologyEnum.Banking, TechnologyEnum.Industrialization),
-			new TechnologyDefinition(TechnologyEnum.Metallurgy, "Metallurgy", TechnologyEnum.Gunpowder, TechnologyEnum.University),
-			new TechnologyDefinition(TechnologyEnum.Railroad, "RailRoad", TechnologyEnum.SteamEngine, TechnologyEnum.BridgeBuilding),
-			new TechnologyDefinition(TechnologyEnum.NuclearPower, "Nuclear Power", TechnologyEnum.NuclearFission, TechnologyEnum.Electronics),
-			new TechnologyDefinition(TechnologyEnum.TheoryOfGravity, "Theory of Gravity", TechnologyEnum.Astronomy, TechnologyEnum.University),
-			new TechnologyDefinition(TechnologyEnum.Steel, "Steel", TechnologyEnum.Metallurgy, TechnologyEnum.Industrialization),
-			new TechnologyDefinition(TechnologyEnum.Banking, "Banking", TechnologyEnum.Trade, TechnologyEnum.TheRepublic),
-			new TechnologyDefinition(TechnologyEnum.Electricity, "Electricity", TechnologyEnum.Metallurgy, TechnologyEnum.Magnetism),
-			new TechnologyDefinition(TechnologyEnum.Refining, "Refining", TechnologyEnum.Chemistry, TechnologyEnum.TheCorporation),
-			new TechnologyDefinition(TechnologyEnum.Explosives, "Explosives", TechnologyEnum.Gunpowder, TechnologyEnum.Chemistry),
-			new TechnologyDefinition(TechnologyEnum.Superconductor, "SuperConductor", TechnologyEnum.Plastics, TechnologyEnum.MassProduction),
-			new TechnologyDefinition(TechnologyEnum.Automobile, "Automobile", TechnologyEnum.Combustion, TechnologyEnum.Steel),
-			new TechnologyDefinition(TechnologyEnum.GeneticEngineering, "Genetic Engineering", TechnologyEnum.Medicine, TechnologyEnum.TheCorporation),
-			new TechnologyDefinition(TechnologyEnum.Plastics, "Plastics", TechnologyEnum.Refining, TechnologyEnum.SpaceFlight),
-			new TechnologyDefinition(TechnologyEnum.Recycling, "Recycling", TechnologyEnum.MassProduction, TechnologyEnum.Democracy),
-			new TechnologyDefinition(TechnologyEnum.Chivalry, "Chivalry", TechnologyEnum.Feudalism, TechnologyEnum.HorsebackRiding),
-			new TechnologyDefinition(TechnologyEnum.Robotics, "Robotics", TechnologyEnum.Plastics, TechnologyEnum.Computers),
-			new TechnologyDefinition(TechnologyEnum.Conscription, "Conscription", TechnologyEnum.TheRepublic, TechnologyEnum.Explosives),
-			new TechnologyDefinition(TechnologyEnum.LaborUnion, "Labor Union", TechnologyEnum.MassProduction, TechnologyEnum.Communism),
-			new TechnologyDefinition(TechnologyEnum.FusionPower, "Fusion Power", TechnologyEnum.NuclearPower, TechnologyEnum.Superconductor),
-			new TechnologyDefinition(TechnologyEnum.FutureTechnology1, "1", TechnologyEnum.NewFutureTechnology, TechnologyEnum.NewFutureTechnology),
-			new TechnologyDefinition(TechnologyEnum.FutureTechnology2, "2", TechnologyEnum.NewFutureTechnology, TechnologyEnum.NewFutureTechnology),
-			new TechnologyDefinition(TechnologyEnum.FutureTechnology3, "3", TechnologyEnum.NewFutureTechnology, TechnologyEnum.NewFutureTechnology),
-			new TechnologyDefinition(TechnologyEnum.FutureTechnology4, "4", TechnologyEnum.NewFutureTechnology, TechnologyEnum.NewFutureTechnology),
-			new TechnologyDefinition(TechnologyEnum.FutureTechnology5, "Future Tech.", TechnologyEnum.NewFutureTechnology, TechnologyEnum.NewFutureTechnology)};
+		private TechnologyAdvanceDefinition[] technologyAdvanceTypes = new TechnologyAdvanceDefinition[] {
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Alphabet, "Alphabet", TechnologyAdvanceEnum.None, TechnologyAdvanceEnum.None),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.CodeOfLaws, "Code of Laws", TechnologyAdvanceEnum.Alphabet, TechnologyAdvanceEnum.None),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Currency, "Currency", TechnologyAdvanceEnum.BronzeWorking, TechnologyAdvanceEnum.None),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.AtomicTheory, "Atomic Theory", TechnologyAdvanceEnum.TheoryOfGravity, TechnologyAdvanceEnum.Physics),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Democracy, "Democracy", TechnologyAdvanceEnum.Philosophy, TechnologyAdvanceEnum.Literacy),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Monarchy, "Monarchy", TechnologyAdvanceEnum.CeremonialBurial, TechnologyAdvanceEnum.CodeOfLaws),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Astronomy, "Astronomy", TechnologyAdvanceEnum.Mysticism, TechnologyAdvanceEnum.Mathematics),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Mapmaking, "MapMaking", TechnologyAdvanceEnum.Alphabet, TechnologyAdvanceEnum.None),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Navigation, "Navigation", TechnologyAdvanceEnum.Mapmaking, TechnologyAdvanceEnum.Astronomy),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Mathematics, "Mathematics", TechnologyAdvanceEnum.Alphabet, TechnologyAdvanceEnum.Masonry),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Medicine, "Medicine", TechnologyAdvanceEnum.Philosophy, TechnologyAdvanceEnum.Trade),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Physics, "Physics", TechnologyAdvanceEnum.Mathematics, TechnologyAdvanceEnum.Navigation),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Engineering, "Engineering", TechnologyAdvanceEnum.TheWheel, TechnologyAdvanceEnum.Construction),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.University, "University", TechnologyAdvanceEnum.Mathematics, TechnologyAdvanceEnum.Philosophy),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Magnetism, "Magnetism", TechnologyAdvanceEnum.Navigation, TechnologyAdvanceEnum.Physics),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Electronics, "Electronics", TechnologyAdvanceEnum.Engineering, TechnologyAdvanceEnum.Electricity),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Masonry, "Masonry", TechnologyAdvanceEnum.None, TechnologyAdvanceEnum.None),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.BronzeWorking, "Bronze Working", TechnologyAdvanceEnum.None, TechnologyAdvanceEnum.None),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.IronWorking, "Iron Working", TechnologyAdvanceEnum.BronzeWorking, TechnologyAdvanceEnum.None),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.BridgeBuilding, "Bridge Building", TechnologyAdvanceEnum.IronWorking, TechnologyAdvanceEnum.Construction),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Invention, "Invention", TechnologyAdvanceEnum.Engineering, TechnologyAdvanceEnum.Literacy),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Computers, "Computers", TechnologyAdvanceEnum.Mathematics, TechnologyAdvanceEnum.Electronics),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Writing, "Writing", TechnologyAdvanceEnum.Alphabet, TechnologyAdvanceEnum.None),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.SteamEngine, "Steam Engine", TechnologyAdvanceEnum.Physics, TechnologyAdvanceEnum.Invention),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Trade, "Trade", TechnologyAdvanceEnum.Currency, TechnologyAdvanceEnum.CodeOfLaws),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.CeremonialBurial, "Ceremonial Burial", TechnologyAdvanceEnum.None, TechnologyAdvanceEnum.None),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Mysticism, "Mysticism", TechnologyAdvanceEnum.CeremonialBurial, TechnologyAdvanceEnum.None),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.NuclearFission, "Nuclear Fission", TechnologyAdvanceEnum.MassProduction, TechnologyAdvanceEnum.AtomicTheory),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Philosophy, "Philosophy", TechnologyAdvanceEnum.Mysticism, TechnologyAdvanceEnum.Literacy),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Religion, "Religion", TechnologyAdvanceEnum.Philosophy, TechnologyAdvanceEnum.Writing),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Literacy, "Literacy", TechnologyAdvanceEnum.Writing, TechnologyAdvanceEnum.CodeOfLaws),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.HorsebackRiding, "Horseback Riding", TechnologyAdvanceEnum.None, TechnologyAdvanceEnum.None),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Feudalism, "Feudalism", TechnologyAdvanceEnum.Masonry, TechnologyAdvanceEnum.Monarchy),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.TheWheel, "The Wheel", TechnologyAdvanceEnum.None, TechnologyAdvanceEnum.None),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Gunpowder, "Gunpowder", TechnologyAdvanceEnum.Invention, TechnologyAdvanceEnum.IronWorking),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Industrialization, "Industrialization", TechnologyAdvanceEnum.Railroad, TechnologyAdvanceEnum.Banking),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Chemistry, "Chemistry", TechnologyAdvanceEnum.University, TechnologyAdvanceEnum.Medicine),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Combustion, "Combustion", TechnologyAdvanceEnum.Refining, TechnologyAdvanceEnum.Explosives),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Flight, "Flight", TechnologyAdvanceEnum.Combustion, TechnologyAdvanceEnum.Physics),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.AdvancedFlight, "Advanced Flight", TechnologyAdvanceEnum.Flight, TechnologyAdvanceEnum.Electricity),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.SpaceFlight, "Space Flight", TechnologyAdvanceEnum.Computers, TechnologyAdvanceEnum.Rocketry),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.MassProduction, "Mass Production", TechnologyAdvanceEnum.Automobile, TechnologyAdvanceEnum.TheCorporation),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Pottery, "Pottery", TechnologyAdvanceEnum.None, TechnologyAdvanceEnum.None),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Communism, "Communism", TechnologyAdvanceEnum.Philosophy, TechnologyAdvanceEnum.Industrialization),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.TheRepublic, "The Republic", TechnologyAdvanceEnum.CodeOfLaws, TechnologyAdvanceEnum.Literacy),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Construction, "Construction", TechnologyAdvanceEnum.Masonry, TechnologyAdvanceEnum.Currency),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Rocketry, "Rocketry", TechnologyAdvanceEnum.AdvancedFlight, TechnologyAdvanceEnum.Electronics),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.TheCorporation, "The Corporation", TechnologyAdvanceEnum.Banking, TechnologyAdvanceEnum.Industrialization),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Metallurgy, "Metallurgy", TechnologyAdvanceEnum.Gunpowder, TechnologyAdvanceEnum.University),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Railroad, "RailRoad", TechnologyAdvanceEnum.SteamEngine, TechnologyAdvanceEnum.BridgeBuilding),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.NuclearPower, "Nuclear Power", TechnologyAdvanceEnum.NuclearFission, TechnologyAdvanceEnum.Electronics),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.TheoryOfGravity, "Theory of Gravity", TechnologyAdvanceEnum.Astronomy, TechnologyAdvanceEnum.University),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Steel, "Steel", TechnologyAdvanceEnum.Metallurgy, TechnologyAdvanceEnum.Industrialization),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Banking, "Banking", TechnologyAdvanceEnum.Trade, TechnologyAdvanceEnum.TheRepublic),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Electricity, "Electricity", TechnologyAdvanceEnum.Metallurgy, TechnologyAdvanceEnum.Magnetism),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Refining, "Refining", TechnologyAdvanceEnum.Chemistry, TechnologyAdvanceEnum.TheCorporation),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Explosives, "Explosives", TechnologyAdvanceEnum.Gunpowder, TechnologyAdvanceEnum.Chemistry),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Superconductor, "SuperConductor", TechnologyAdvanceEnum.Plastics, TechnologyAdvanceEnum.MassProduction),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Automobile, "Automobile", TechnologyAdvanceEnum.Combustion, TechnologyAdvanceEnum.Steel),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.GeneticEngineering, "Genetic Engineering", TechnologyAdvanceEnum.Medicine, TechnologyAdvanceEnum.TheCorporation),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Plastics, "Plastics", TechnologyAdvanceEnum.Refining, TechnologyAdvanceEnum.SpaceFlight),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Recycling, "Recycling", TechnologyAdvanceEnum.MassProduction, TechnologyAdvanceEnum.Democracy),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Chivalry, "Chivalry", TechnologyAdvanceEnum.Feudalism, TechnologyAdvanceEnum.HorsebackRiding),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Robotics, "Robotics", TechnologyAdvanceEnum.Plastics, TechnologyAdvanceEnum.Computers),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.Conscription, "Conscription", TechnologyAdvanceEnum.TheRepublic, TechnologyAdvanceEnum.Explosives),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.LaborUnion, "Labor Union", TechnologyAdvanceEnum.MassProduction, TechnologyAdvanceEnum.Communism),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.FusionPower, "Fusion Power", TechnologyAdvanceEnum.NuclearPower, TechnologyAdvanceEnum.Superconductor),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.FutureTechnology1, "1", TechnologyAdvanceEnum.NewFutureTechnology, TechnologyAdvanceEnum.NewFutureTechnology),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.FutureTechnology2, "2", TechnologyAdvanceEnum.NewFutureTechnology, TechnologyAdvanceEnum.NewFutureTechnology),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.FutureTechnology3, "3", TechnologyAdvanceEnum.NewFutureTechnology, TechnologyAdvanceEnum.NewFutureTechnology),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.FutureTechnology4, "4", TechnologyAdvanceEnum.NewFutureTechnology, TechnologyAdvanceEnum.NewFutureTechnology),
+			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.FutureTechnology5, "Future Tech.", TechnologyAdvanceEnum.NewFutureTechnology, TechnologyAdvanceEnum.NewFutureTechnology)};
 
 		private TerrainModification[] terrainModifications = new TerrainModification[] {
 			new TerrainModification(TerrainTypeEnum.Desert, -2, 5, -2, 5, 0, 0),
@@ -378,28 +378,28 @@ namespace OpenCiv1
 			new TerrainDefinition(TerrainTypeEnum.ResourceRiver, "River", 1, 3, 2, 1, 1, 2, 9)};
 
 		private ImprovementDefinition[] wonderTypes = new ImprovementDefinition[] {
-			new ImprovementDefinition(0, "NONE", 8, 0, TechnologyEnum.None, TechnologyEnum.None),
-			new ImprovementDefinition(1, "Pyramids", 30, 0, TechnologyEnum.Masonry, TechnologyEnum.Communism),
-			new ImprovementDefinition(2, "Hanging Gardens", 30, 0, TechnologyEnum.Pottery, TechnologyEnum.Invention),
-			new ImprovementDefinition(3, "Colossus", 20, 0, TechnologyEnum.BronzeWorking, TechnologyEnum.Electricity),
-			new ImprovementDefinition(4, "Lighthouse", 20, 0, TechnologyEnum.Mapmaking, TechnologyEnum.Magnetism),
-			new ImprovementDefinition(5, "Great Library", 30, 0, TechnologyEnum.Literacy, TechnologyEnum.University),
-			new ImprovementDefinition(6, "Oracle", 30, 0, TechnologyEnum.Mysticism, TechnologyEnum.Religion),
-			new ImprovementDefinition(7, "Great Wall", 30, 0, TechnologyEnum.Masonry, TechnologyEnum.Gunpowder),
-			new ImprovementDefinition(8, "Magellan's Expedition", 40, 0, TechnologyEnum.Navigation, TechnologyEnum.None),
-			new ImprovementDefinition(9, "Michelangelo's Chapel", 30, 0, TechnologyEnum.Religion, TechnologyEnum.Communism),
-			new ImprovementDefinition(10, "Copernicus' Observatory", 30, 0, TechnologyEnum.Astronomy, TechnologyEnum.Automobile), // !!! By manual it should obsolete after the development of Automobile
-			new ImprovementDefinition(11, "Shakespeare's Theatre", 40, 0, TechnologyEnum.Medicine, TechnologyEnum.Electronics),
-			new ImprovementDefinition(12, "Isaac Newton's College", 40, 0, TechnologyEnum.TheoryOfGravity, TechnologyEnum.NuclearFission),
-			new ImprovementDefinition(13, "J.S.Bach's Cathedral", 40, 0, TechnologyEnum.Religion, TechnologyEnum.None),
-			new ImprovementDefinition(14, "Darwin's Voyage", 30, 0, TechnologyEnum.Railroad, TechnologyEnum.None),
-			new ImprovementDefinition(15, "Hoover Dam", 60, 0, TechnologyEnum.Electronics, TechnologyEnum.None),
-			new ImprovementDefinition(16, "Women's Suffrage", 60, 0, TechnologyEnum.Industrialization, TechnologyEnum.None),
-			new ImprovementDefinition(17, "Manhattan Project", 60, 0, TechnologyEnum.NuclearFission, TechnologyEnum.None),
-			new ImprovementDefinition(18, "United Nations", 60, 0, TechnologyEnum.Communism, TechnologyEnum.None),
-			new ImprovementDefinition(19, "Apollo Program", 60, 0, TechnologyEnum.SpaceFlight, TechnologyEnum.None),
-			new ImprovementDefinition(20, "SETI Program", 60, 0, TechnologyEnum.Computers, TechnologyEnum.None),
-			new ImprovementDefinition(21, "Cure for Cancer", 60, 0, TechnologyEnum.GeneticEngineering, TechnologyEnum.None) };
+			new ImprovementDefinition(0, "NONE", 8, 0, TechnologyAdvanceEnum.None, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(1, "Pyramids", 30, 0, TechnologyAdvanceEnum.Masonry, TechnologyAdvanceEnum.Communism),
+			new ImprovementDefinition(2, "Hanging Gardens", 30, 0, TechnologyAdvanceEnum.Pottery, TechnologyAdvanceEnum.Invention),
+			new ImprovementDefinition(3, "Colossus", 20, 0, TechnologyAdvanceEnum.BronzeWorking, TechnologyAdvanceEnum.Electricity),
+			new ImprovementDefinition(4, "Lighthouse", 20, 0, TechnologyAdvanceEnum.Mapmaking, TechnologyAdvanceEnum.Magnetism),
+			new ImprovementDefinition(5, "Great Library", 30, 0, TechnologyAdvanceEnum.Literacy, TechnologyAdvanceEnum.University),
+			new ImprovementDefinition(6, "Oracle", 30, 0, TechnologyAdvanceEnum.Mysticism, TechnologyAdvanceEnum.Religion),
+			new ImprovementDefinition(7, "Great Wall", 30, 0, TechnologyAdvanceEnum.Masonry, TechnologyAdvanceEnum.Gunpowder),
+			new ImprovementDefinition(8, "Magellan's Expedition", 40, 0, TechnologyAdvanceEnum.Navigation, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(9, "Michelangelo's Chapel", 30, 0, TechnologyAdvanceEnum.Religion, TechnologyAdvanceEnum.Communism),
+			new ImprovementDefinition(10, "Copernicus' Observatory", 30, 0, TechnologyAdvanceEnum.Astronomy, TechnologyAdvanceEnum.Automobile), // !!! By manual it should obsolete after the development of Automobile
+			new ImprovementDefinition(11, "Shakespeare's Theatre", 40, 0, TechnologyAdvanceEnum.Medicine, TechnologyAdvanceEnum.Electronics),
+			new ImprovementDefinition(12, "Isaac Newton's College", 40, 0, TechnologyAdvanceEnum.TheoryOfGravity, TechnologyAdvanceEnum.NuclearFission),
+			new ImprovementDefinition(13, "J.S.Bach's Cathedral", 40, 0, TechnologyAdvanceEnum.Religion, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(14, "Darwin's Voyage", 30, 0, TechnologyAdvanceEnum.Railroad, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(15, "Hoover Dam", 60, 0, TechnologyAdvanceEnum.Electronics, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(16, "Women's Suffrage", 60, 0, TechnologyAdvanceEnum.Industrialization, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(17, "Manhattan Project", 60, 0, TechnologyAdvanceEnum.NuclearFission, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(18, "United Nations", 60, 0, TechnologyAdvanceEnum.Communism, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(19, "Apollo Program", 60, 0, TechnologyAdvanceEnum.SpaceFlight, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(20, "SETI Program", 60, 0, TechnologyAdvanceEnum.Computers, TechnologyAdvanceEnum.None),
+			new ImprovementDefinition(21, "Cure for Cancer", 60, 0, TechnologyAdvanceEnum.GeneticEngineering, TechnologyAdvanceEnum.None) };
 
 		public GameData()
 		{
@@ -522,9 +522,9 @@ namespace OpenCiv1
 			get => this.wonderTypes;
 		}
 
-		public TechnologyDefinition[] Technologies
+		public TechnologyAdvanceDefinition[] TechnologyAdvances
 		{
-			get => this.technologyTypes;
+			get => this.technologyAdvanceTypes;
 		}
 	}
 }

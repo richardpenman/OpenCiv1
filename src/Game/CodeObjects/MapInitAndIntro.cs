@@ -1335,7 +1335,7 @@ namespace OpenCiv1
 					if (this.animationStage != 2 && this.storyTimeIndex < 40)
 					{
 						// Instruction address 0x0000:0x18df, size: 5
-						this.parent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(this.storyText, 160, 160, 3);
+						this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(this.storyText, 160, 160, 3);
 
 						// Instruction address 0x0000:0x18eb, size: 5
 						this.parent.CommonTools.F0_1182_0134_WaitTimer(5);
@@ -1367,13 +1367,13 @@ namespace OpenCiv1
 						this.parent.CommonTools.F0_1182_0134_WaitTimer(10);
 
 						// Instruction address 0x0000:0x196b, size: 5
-						this.parent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(this.storyText, 160, 160, 3);
+						this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(this.storyText, 160, 160, 3);
 
 						// Instruction address 0x0000:0x1977, size: 5
 						this.parent.CommonTools.F0_1182_0134_WaitTimer(5);
 
 						// Instruction address 0x0000:0x198c, size: 5
-						this.parent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(this.storyText, 160, 160, 11);
+						this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(this.storyText, 160, 160, 11);
 
 						// Instruction address 0x0000:0x199e, size: 5
 						if (this.storyText.Length > 3)

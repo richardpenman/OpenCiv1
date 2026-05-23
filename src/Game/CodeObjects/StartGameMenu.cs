@@ -166,7 +166,7 @@ namespace OpenCiv1
 			this.parent.GameData.GameSettingFlags.Animations = true;
 			this.parent.GameData.GameSettingFlags.Sound = true;
 			this.parent.GameData.GameSettingFlags.EnemyMoves = true;
-			this.parent.GameData.GameSettingFlags.CivilopediaText = true;
+			this.parent.GameData.GameSettingFlags.EncyclopediaText = true;
 			this.parent.GameData.GameSettingFlags.BuildPalace = true;
 
 			if (this.parent.Var_1a30_SoundDriverType == 'N')
@@ -288,7 +288,7 @@ namespace OpenCiv1
 			}
 
 			// Instruction address 0x0000:0x0587, size: 5
-			this.parent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(
+			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(
 				this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Nation, 46, 92, 15);
 
 			for (int i = 0; i < 8; i++)
@@ -349,10 +349,10 @@ namespace OpenCiv1
 			for (int i = 0; i < 72; i++)
 			{
 				// Instruction address 0x0000:0x06bd, size: 5
-				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, (TechnologyEnum)i))
+				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, (TechnologyAdvanceEnum)i))
 				{
 					// Instruction address 0x0000:0x06d7, size: 5
-					this.parent.CAPI.strcat(0xba06, this.parent.GameData.Technologies[i].Name);
+					this.parent.CAPI.strcat(0xba06, this.parent.GameData.TechnologyAdvances[i].Name);
 
 					// Instruction address 0x0000:0x06e7, size: 5
 					this.parent.CAPI.strcat(0xba06, ", ");
@@ -398,7 +398,7 @@ namespace OpenCiv1
 
 			// Init text fix, we don't want to cut lines here
 			// Instruction address 0x0000:0x07b0, size: 5
-			this.parent.LanguageTools.F0_2f4d_0088_DrawTextBlock(88, 81, this.CPU.ReadString(this.CPU.DS.UInt16, 0xba06).Replace('^', '\n'), 150, 0);
+			this.parent.DrawTools.DrawTextBlock(88, 81, this.CPU.ReadString(this.CPU.DS.UInt16, 0xba06).Replace('^', '\n'), 150, 0);
 
 			// Instruction address 0x0000:0x07b8, size: 5
 			this.parent.MainCode.F0_11a8_0250_ShowMouse();
@@ -486,13 +486,13 @@ namespace OpenCiv1
 					for (int i = 0; i < 72; i++)
 					{
 						// Instruction address 0x0000:0x0967, size: 5
-						if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, (TechnologyEnum)i) &&
+						if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, (TechnologyAdvanceEnum)i) &&
 							(this.parent.GameData.TechnologyFirstDiscoveredBy[i] & 0x7) != 0 &&
 							(this.parent.GameData.TechnologyFirstDiscoveredBy[i] & 0x7) != this.parent.GameData.HumanPlayerID &&
 							this.parent.CAPI.RNG.Next(2) == 0)
 						{
 							// Instruction address 0x0000:0x09b2, size: 5
-							this.parent.Segment_1ade.F0_1ade_1d2e(playerID, (TechnologyEnum)i, playerID);
+							this.parent.Segment_1ade.F0_1ade_1d2e(playerID, (TechnologyAdvanceEnum)i, playerID);
 						}
 					}
 				}
@@ -1204,7 +1204,7 @@ namespace OpenCiv1
 			else
 			{
 				// Instruction address 0x0000:0x1b48, size: 5
-				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(parent.GameData.HumanPlayerID, TechnologyEnum.Invention))
+				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Invention))
 				{
 					ancientGovernment = false;
 				}
@@ -1250,7 +1250,7 @@ namespace OpenCiv1
 				this.parent.Var_aa_Screen0_Rectangle.FontID = 6;
 
 				// Instruction address 0x0000:0x1c58, size: 5
-				this.parent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0("New Cabinet:", 160, 102, 0);
+				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("New Cabinet:", 160, 102, 0);
 
 				this.parent.Var_aa_Screen0_Rectangle.FontID = 2;
 
@@ -1267,7 +1267,7 @@ namespace OpenCiv1
 					this.CPU.WriteUInt8(this.CPU.DS.UInt16, (ushort)(0xba06 + this.parent.CAPI.strlen(0xba06) - 1), 0x0);
 
 					// Instruction address 0x0000:0x1c7c, size: 5
-					this.parent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, (80 * i) + 40, ((i & 1) != 0) ? 186 : 180, 0);
+					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, (80 * i) + 40, ((i & 1) != 0) ? 186 : 180, 0);
 				}
 
 				this.parent.Var_aa_Screen0_Rectangle.FontID = 1;

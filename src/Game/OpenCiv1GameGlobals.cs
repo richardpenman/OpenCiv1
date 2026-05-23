@@ -129,7 +129,10 @@ namespace OpenCiv1
 		public int Var_3484 = -1;
 		public GPoint[] Array_35da = { new(0, 0), new(36, 19), new(45, 22), new(38, 15), new(41, 24), new(12, 18), new(39, 18), new(57, 24), 
 			new(0, 0), new(44, 12), new(42, 42), new(33, 16), new(5, 23), new(66, 19), new(31, 14), new(49, 19) };
+
+		public int Var_3934 = -1;
 		public int Var_3936 = -1;
+		public int Var_3c62 = 0;
 		public int Var_5402 = 0;
 		public int Var_5403 = 0;
 		public int Var_586e_MouseNewX = 0;
@@ -183,11 +186,13 @@ namespace OpenCiv1
 		public int Var_d2de = 0;
 		public int Var_d2e0 = 0;
 		public int Var_d2f6 = 0;
+
 		/// <summary>X coordinate of the top left cell in map view</summary>
 		public int Var_d4cc_MapViewX = 0;
 		/// <summary>Y coordinate of the top left cell in map view</summary>
-		public int[] Array_d4ce = new int[320];
 		public int Var_d75e_MapViewY = 0;
+
+		public int[] Array_d4ce = new int[320];
 		public bool Var_d760_HumanPlayerMessageFlag = false;
 		public ushort Var_d768 = 0;
 		public bool Var_d76a_EarthMap = false;

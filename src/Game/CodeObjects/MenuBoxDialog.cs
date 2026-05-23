@@ -223,7 +223,7 @@ namespace OpenCiv1
 				GSize helpSize = this.parent.Graphics.GetDrawStringSize(this.parent.Var_aa_Screen0_Rectangle.FontID, helpText);
 
 				// Instruction address 0x2d05:0x0787, size: 5
-				this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(helpText, contentLeft + contentWidth - helpSize.Width, contentTop + contentHeight - helpSize.Height, 10);
+				this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(helpText, contentLeft + contentWidth - helpSize.Width, contentTop + contentHeight - helpSize.Height, 10);
 
 				this.parent.Var_aa_Screen0_Rectangle.FontID = fontID;
 			}
@@ -260,12 +260,12 @@ namespace OpenCiv1
 					if (lineHeight > 9)
 					{
 						// Instruction address 0x2d05:0x08c6, size: 5
-						this.parent.DrawStringTools.F0_1182_0086_DrawStringWithShadowToScreen0(menuItem, contentLeft, contentTop + (i * lineHeight), (byte)textColor);
+						this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0(menuItem, contentLeft, contentTop + (i * lineHeight), (byte)textColor);
 					}
 					else
 					{
 						// Instruction address 0x2d05:0x08c6, size: 5
-						this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(menuItem, contentLeft, contentTop + (i * lineHeight), (byte)textColor);
+						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(menuItem, contentLeft, contentTop + (i * lineHeight), (byte)textColor);
 					}
 				}
 				else
@@ -273,12 +273,12 @@ namespace OpenCiv1
 					if ((this.parent.Var_b276_MenuBoxDisabledOptions & (0x1 << optionIndex)) != 0)
 					{
 						// Instruction address 0x2d05:0x0834, size: 5
-						this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(menuItem, contentLeft, contentTop + (i * lineHeight), 4);
+						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(menuItem, contentLeft, contentTop + (i * lineHeight), 4);
 					}
 					else
 					{
 						// Instruction address 0x2d05:0x0834, size: 5
-						this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(menuItem, contentLeft, contentTop + (i * lineHeight), 0);
+						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(menuItem, contentLeft, contentTop + (i * lineHeight), 0);
 					}
 				}
 			}

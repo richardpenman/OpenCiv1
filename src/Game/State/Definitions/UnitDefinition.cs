@@ -7,7 +7,7 @@ namespace OpenCiv1
 		// Total size: 34 bytes
 		public UnitTypeEnum UnitType = UnitTypeEnum.None;
 		public string Name = ""; // (12 bytes)
-		public TechnologyEnum CancelTechnology = TechnologyEnum.None;
+		public TechnologyAdvanceEnum CancelTechnology = TechnologyAdvanceEnum.None;
 		public UnitMovementTypeEnum MovementType = UnitMovementTypeEnum.Land;
 		public short MoveCount = 0;
 		public short TurnsOutside = 0;
@@ -17,15 +17,15 @@ namespace OpenCiv1
 		public short SightRange = 0;
 		public short TransportCapacity = 0;
 		public UnitAIRoleEnum AIRole = UnitAIRoleEnum.Settler;
-		public TechnologyEnum RequiredTechnology = TechnologyEnum.None;
+		public TechnologyAdvanceEnum RequiredTechnology = TechnologyAdvanceEnum.None;
 
 		public UnitDefinition()
 		{ }
 
-		public UnitDefinition(UnitTypeEnum unitType, string name, TechnologyEnum cancelTechnology, UnitMovementTypeEnum movementType,
+		public UnitDefinition(UnitTypeEnum unitType, string name, TechnologyAdvanceEnum cancelTechnology, UnitMovementTypeEnum movementType,
 			short moveCount, short turnsOutside, short attackStrength, short defenseStrength,
 			short cost, short sightRange, short transportCapacity, UnitAIRoleEnum aiRole,
-			TechnologyEnum requiredTechnology)
+			TechnologyAdvanceEnum requiredTechnology)
 		{
 			this.UnitType= unitType;
 			this.Name = name;
@@ -47,7 +47,7 @@ namespace OpenCiv1
 			UnitDefinition ud = new UnitDefinition();
 
 			ud.Name = GameLoadAndSave.ReadString(stream, 12);
-			ud.CancelTechnology = (TechnologyEnum)GameLoadAndSave.ReadInt16(stream);
+			ud.CancelTechnology = (TechnologyAdvanceEnum)GameLoadAndSave.ReadInt16(stream);
 			ud.MovementType = (UnitMovementTypeEnum)GameLoadAndSave.ReadInt16(stream);
 			ud.MoveCount = GameLoadAndSave.ReadInt16(stream);
 			ud.TurnsOutside = GameLoadAndSave.ReadInt16(stream);
@@ -57,7 +57,7 @@ namespace OpenCiv1
 			ud.SightRange = GameLoadAndSave.ReadInt16(stream);
 			ud.TransportCapacity = GameLoadAndSave.ReadInt16(stream);
 			ud.AIRole = (UnitAIRoleEnum)GameLoadAndSave.ReadInt16(stream);
-			ud.RequiredTechnology = (TechnologyEnum)GameLoadAndSave.ReadInt16(stream);
+			ud.RequiredTechnology = (TechnologyAdvanceEnum)GameLoadAndSave.ReadInt16(stream);
 
 			return ud;
 		}

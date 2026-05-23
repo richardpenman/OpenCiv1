@@ -247,21 +247,21 @@ namespace OpenCiv1
 
 			// Instruction address 0x0000:0x0222, size: 5
 			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x26)),
-				(TechnologyEnum)((short)this.oCPU.DX.UInt16)) ? 1 : 0);
+				(TechnologyAdvanceEnum)((short)this.oCPU.DX.UInt16)) ? 1 : 0);
 			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.E)
 				goto L01fd;
 
 			// Instruction address 0x0000:0x0234, size: 5
 			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID,
-				(TechnologyEnum)this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))) ? 1 : 0);
+				(TechnologyAdvanceEnum)this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))) ? 1 : 0);
 			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.NE)
 				goto L01fd;
 
 			// Instruction address 0x0000:0x0249, size: 5
 			this.oParent.Segment_1ade.F0_1ade_1d2e(playerID,
-				(TechnologyEnum)this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)),
+				(TechnologyAdvanceEnum)this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x26)));
 
 			// Instruction address 0x0000:0x025e, size: 5
@@ -272,7 +272,7 @@ namespace OpenCiv1
 
 			// Instruction address 0x0000:0x0284, size: 5
 			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.GameData.Technologies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Name);
+				this.oParent.GameData.TechnologyAdvances[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Name);
 
 			// Instruction address 0x0000:0x0294, size: 5
 			this.oParent.CAPI.strcat(0xba06, ".\n");
@@ -1302,7 +1302,7 @@ namespace OpenCiv1
 			this.oParent.Var_aa_Screen0_Rectangle.FontID = 6;
 
 			// Instruction address 0x0000:0x0fc9, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 4, 0);
+			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 4, 0);
 
 			this.oParent.Var_aa_Screen0_Rectangle.FontID = 1;
 

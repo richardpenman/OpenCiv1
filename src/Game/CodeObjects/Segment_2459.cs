@@ -697,21 +697,21 @@ namespace OpenCiv1
 		L072d:
 			// Instruction address 0x2459:0x0734, size: 5
 			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID1,
-				(TechnologyEnum)this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x98))) ? 1 : 0);
+				(TechnologyAdvanceEnum)this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x98))) ? 1 : 0);
 			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.NE)
 				goto L07b9;
 
 			// Instruction address 0x2459:0x0747, size: 5
 			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID2,
-				(TechnologyEnum)this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x98))) ? 1 : 0);
+				(TechnologyAdvanceEnum)this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x98))) ? 1 : 0);
 			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.E)
 				goto L07b9;
 
 			// Instruction address 0x2459:0x0762, size: 5
 			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.GameData.Technologies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x98))].Name);
+				this.oParent.GameData.TechnologyAdvances[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x98))].Name);
 
 			// Instruction address 0x2459:0x0772, size: 5
 			this.oParent.CAPI.strcat(0xba06, "\n ");
@@ -749,8 +749,7 @@ namespace OpenCiv1
 			if (playerID1 != this.oParent.GameData.HumanPlayerID) goto L0823;
 
 		L07d3:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x3934), 0xffff);
-			if (this.oCPU.Flags.NE) goto L07ed;
+			if (this.oParent.Var_3934 != -1) goto L07ed;
 
 			// Instruction address 0x2459:0x07e6, size: 5
 			this.oCPU.AX.Int16 = (short)this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 80, 32);
@@ -770,7 +769,7 @@ namespace OpenCiv1
 
 			// Instruction address 0x2459:0x0818, size: 5
 			this.oParent.Segment_1ade.F0_1ade_1d2e(playerID1,
-				(TechnologyEnum)this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 + this.oCPU.SI.UInt16 - 0x94)), playerID2);
+				(TechnologyAdvanceEnum)this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 + this.oCPU.SI.UInt16 - 0x94)), playerID2);
 			
 			goto L08c1;
 
@@ -787,13 +786,12 @@ namespace OpenCiv1
 
 			// Instruction address 0x2459:0x085e, size: 5
 			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.GameData.Technologies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Name);
+				this.oParent.GameData.TechnologyAdvances[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Name);
 
 			// Instruction address 0x2459:0x086e, size: 5
 			this.oParent.CAPI.strcat(0xba06, ".\n");
 
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x3934), 0xffff);
-			if (this.oCPU.Flags.NE) goto L088d;
+			if (this.oParent.Var_3934 != -1) goto L088d;
 
 			// Instruction address 0x2459:0x0886, size: 5
 			this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 80, 80);
@@ -806,7 +804,7 @@ namespace OpenCiv1
 		L08a1:
 			// Instruction address 0x2459:0x08aa, size: 5
 			this.oParent.Segment_1ade.F0_1ade_1d2e(playerID1,
-				(TechnologyEnum)this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), playerID2);
+				(TechnologyAdvanceEnum)this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), playerID2);
 			
 			// Instruction address 0x2459:0x08b9, size: 5
 			this.oParent.Segment_25fb.F0_25fb_3459(playerID1, -1);
@@ -972,7 +970,7 @@ namespace OpenCiv1
 
 		L0a12:
 			// Instruction address 0x2459:0x0a24, size: 5
-			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.oParent.GameData.Cities[cityID].PlayerID, TechnologyEnum.Railroad) ? 1 : 0);
+			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.oParent.GameData.Cities[cityID].PlayerID, TechnologyAdvanceEnum.Railroad) ? 1 : 0);
 			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.E)
 				goto L0a3c;
@@ -985,7 +983,7 @@ namespace OpenCiv1
 
 		L0a3c:
 			// Instruction address 0x2459:0x0a4e, size: 5
-			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.oParent.GameData.Cities[cityID].PlayerID, TechnologyEnum.Flight) ? 1 : 0);
+			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.oParent.GameData.Cities[cityID].PlayerID, TechnologyAdvanceEnum.Flight) ? 1 : 0);
 			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.E)
 				goto L0a66;

@@ -350,14 +350,14 @@ namespace OpenCiv1
 			if (this.parent.Var_db3e_MouseYPos < 8)
 			{
 				// Instruction address 0x1403:0x0707, size: 5
-				this.parent.Segment_2c84.F0_2c84_0000_ShowTopMenu(playerID, unitID, -1);
+				this.parent.GameMenus.F0_2c84_0000_ShowTopMenu(playerID, unitID, -1);
 
 				// Instruction address 0x1403:0x070f, size: 5
 				F0_1403_4545_EmptyKeyboardAndMouse();
 
-				if (this.CPU.ReadInt16(this.CPU.DS.UInt16, 0xd4ca) != -1)
+				if (this.parent.GameMenus.Var_d4ca_MenuShortcutKey != -1)
 				{
-					command = this.CPU.ReadUInt16(this.CPU.DS.UInt16, 0xd4ca);
+					command = this.parent.GameMenus.Var_d4ca_MenuShortcutKey;
 
 					if (unitID < 128) goto Label152;
 					goto Label674;
@@ -474,7 +474,7 @@ namespace OpenCiv1
 					this.parent.MainCode.F0_11a8_0268_HideMouse();
 
 					// Instruction address 0x1403:0x09b4, size: 5
-					this.parent.Encyclopedia.F8_0000_062a((int)this.parent.MapManagement.GetTerrainType(local_1c, local_26), 3);
+					this.parent.Encyclopedia.F8_0000_062a_DisplayEncyclopediaTopic(EncyclopediaTopicEnum.TerrainType, (int)this.parent.MapManagement.GetTerrainType(local_1c, local_26));
 
 					// Instruction address 0x1403:0x09c5, size: 5
 					this.parent.Segment_1238.F0_1238_1b44();
@@ -757,7 +757,7 @@ namespace OpenCiv1
 						{
 							if (this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(local_2c, local_30).HasFlag(TerrainImprovementFlagsEnum.City) ||
 								this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(local_2c, local_30).HasFlag(TerrainImprovementFlagsEnum.Fortress) ||
-								!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyEnum.Construction))
+								!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Construction))
 							{
 								this.parent.GameData.Players[playerID].Units[unitID].Status &= 0x3f;
 								this.parent.GameData.Players[playerID].Units[unitID].SpecialMoves = 0;
@@ -1099,7 +1099,7 @@ namespace OpenCiv1
 						newImprovements = this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(local_2c, local_30);
 
 						if ((newImprovements.HasFlag(TerrainImprovementFlagsEnum.Road) &&
-							(!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyEnum.Railroad) || 
+							(!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Railroad) || 
 							newImprovements.HasFlag(TerrainImprovementFlagsEnum.City))) || newImprovements.HasFlag(TerrainImprovementFlagsEnum.RailRoad))
 						{
 							this.parent.GameData.Players[playerID].Units[unitID].Status &= 0xfd;
@@ -1112,7 +1112,7 @@ namespace OpenCiv1
 						{
 							newTerrainType = this.parent.MapManagement.GetTerrainType(local_2c, local_30);
 
-							if (newTerrainType != TerrainTypeEnum.River || this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyEnum.BridgeBuilding))
+							if (newTerrainType != TerrainTypeEnum.River || this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.BridgeBuilding))
 							{
 								this.parent.GameData.Players[playerID].Units[unitID].Status |= 2;
 								this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves = 0;
@@ -2169,11 +2169,11 @@ namespace OpenCiv1
 				// Alt + W
 				case 0x1100:
 					// Instruction address 0x1403:0x3a84, size: 5
-					this.parent.Segment_2c84.F0_2c84_0000_ShowTopMenu(playerID, unitID, 3);
+					this.parent.GameMenus.F0_2c84_0000_ShowTopMenu(playerID, unitID, 3);
 
-					if (this.CPU.ReadInt16(this.CPU.DS.UInt16, 0xd4ca) != -1)
+					if (this.parent.GameMenus.Var_d4ca_MenuShortcutKey != -1)
 					{
-						command = this.CPU.ReadUInt16(this.CPU.DS.UInt16, 0xd4ca);
+						command = this.parent.GameMenus.Var_d4ca_MenuShortcutKey;
 						goto Label152;
 					}
 					break;
@@ -2199,11 +2199,11 @@ namespace OpenCiv1
 				// Alt + O
 				case 0x1800:
 					// Instruction address 0x1403:0x3a5a, size: 5
-					this.parent.Segment_2c84.F0_2c84_0000_ShowTopMenu(playerID, unitID, 1);
+					this.parent.GameMenus.F0_2c84_0000_ShowTopMenu(playerID, unitID, 1);
 
-					if (this.CPU.ReadInt16(this.CPU.DS.UInt16, 0xd4ca) != -1)
+					if (this.parent.GameMenus.Var_d4ca_MenuShortcutKey != -1)
 					{
-						command = this.CPU.ReadUInt16(this.CPU.DS.UInt16, 0xd4ca);
+						command = this.parent.GameMenus.Var_d4ca_MenuShortcutKey;
 						goto Label152;
 					}
 					break;
@@ -2211,11 +2211,11 @@ namespace OpenCiv1
 				// Alt + A
 				case 0x1e00:
 					// Instruction address 0x1403:0x3a6f, size: 5
-					this.parent.Segment_2c84.F0_2c84_0000_ShowTopMenu(playerID, unitID, 2);
+					this.parent.GameMenus.F0_2c84_0000_ShowTopMenu(playerID, unitID, 2);
 
-					if (this.CPU.ReadInt16(this.CPU.DS.UInt16, 0xd4ca) != -1)
+					if (this.parent.GameMenus.Var_d4ca_MenuShortcutKey != -1)
 					{
-						command = this.CPU.ReadUInt16(this.CPU.DS.UInt16, 0xd4ca);
+						command = this.parent.GameMenus.Var_d4ca_MenuShortcutKey;
 						goto Label152;
 					}
 					break;
@@ -2231,11 +2231,11 @@ namespace OpenCiv1
 				// Alt + G
 				case 0x2200:
 					// Instruction address 0x1403:0x3a45, size: 5
-					this.parent.Segment_2c84.F0_2c84_0000_ShowTopMenu(playerID, unitID, 0);
+					this.parent.GameMenus.F0_2c84_0000_ShowTopMenu(playerID, unitID, 0);
 
-					if (this.CPU.ReadInt16(this.CPU.DS.UInt16, 0xd4ca) != -1)
+					if (this.parent.GameMenus.Var_d4ca_MenuShortcutKey != -1)
 					{
-						command = this.CPU.ReadUInt16(this.CPU.DS.UInt16, 0xd4ca);
+						command = this.parent.GameMenus.Var_d4ca_MenuShortcutKey;
 						goto Label152;
 					}
 					break;
@@ -2249,11 +2249,11 @@ namespace OpenCiv1
 				// Alt + C
 				case 0x2e00:
 					// Instruction address 0x1403:0x3a99, size: 5
-					this.parent.Segment_2c84.F0_2c84_0000_ShowTopMenu(playerID, unitID, 4);
+					this.parent.GameMenus.F0_2c84_0000_ShowTopMenu(playerID, unitID, 4);
 
-					if (this.CPU.ReadInt16(this.CPU.DS.UInt16, 0xd4ca) != -1)
+					if (this.parent.GameMenus.Var_d4ca_MenuShortcutKey != -1)
 					{
-						command = this.CPU.ReadUInt16(this.CPU.DS.UInt16, 0xd4ca);
+						command = this.parent.GameMenus.Var_d4ca_MenuShortcutKey;
 						goto Label152;
 					}
 					break;
@@ -2726,11 +2726,11 @@ namespace OpenCiv1
 			if (unitID == 128)
 			{
 				// Instruction address 0x1403:0x409a, size: 5
-				this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("End of Turn", 4, 124, 0);
+				this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("End of Turn", 4, 124, 0);
 				// Instruction address 0x1403:0x40b1, size: 5
-				this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("Press Enter", 4, 136, 0);
+				this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("Press Enter", 4, 136, 0);
 				// Instruction address 0x1403:0x44f5, size: 5
-				this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("to continue", 4, 144, 0);
+				this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("to continue", 4, 144, 0);
 			}
 			else
 			{
@@ -2741,21 +2741,21 @@ namespace OpenCiv1
 					// Instruction address 0x1403:0x40dc, size: 5
 					this.parent.CAPI.strcpy(0xba06, this.parent.GameData.Players[playerID].Nationality);
 					// Instruction address 0x1403:0x40f3, size: 5
-					this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 4, 99, 0);
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 4, 99, 0);
 
 					Local_a += 8;
 
 					// Instruction address 0x1403:0x411d, size: 5
 					this.parent.CAPI.strcpy(0xba06, this.parent.GameData.Units[this.parent.GameData.Players[playerID].Units[unitID].TypeID].Name);
 					// Instruction address 0x1403:0x4133, size: 5
-					this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 4, Local_a, 0);
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 4, Local_a, 0);
 
 					Local_a += 8;
 
 					if ((this.parent.GameData.Players[playerID].Units[unitID].Status & 0x20) != 0)
 					{
 						// Instruction address 0x1403:0x4154, size: 5
-						this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("Veteran", 8, Local_a, 0);
+						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("Veteran", 8, Local_a, 0);
 
 						Local_a += 8;
 					}
@@ -2792,7 +2792,7 @@ namespace OpenCiv1
 					}
 
 					// Instruction address 0x1403:0x4285, size: 5
-					this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 4, Local_a, 0);
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 4, Local_a, 0);
 
 					Local_a += 8;
 
@@ -2801,7 +2801,7 @@ namespace OpenCiv1
 					// Instruction address 0x1403:0x42ac, size: 5
 					this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName(this.parent.GameData.Players[playerID].Units[unitID].HomeCityID));
 					// Instruction address 0x1403:0x42c2, size: 5
-					this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 4, Local_a, 0);
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 4, Local_a, 0);
 
 					Local_a += 8;
 
@@ -2814,7 +2814,7 @@ namespace OpenCiv1
 					// Instruction address 0x1403:0x430f, size: 5
 					this.parent.CAPI.strcat(0xba06, ")");
 					// Instruction address 0x1403:0x4325, size: 5
-					this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 4, Local_a, 0);
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 4, Local_a, 0);
 
 					Local_a += 8;
 
@@ -2824,7 +2824,7 @@ namespace OpenCiv1
 					if ((Local_10 & 0x10) != 0)
 					{
 						// Instruction address 0x1403:0x4371, size: 5
-						this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("(RailRoad)", 4, Local_a, 0);
+						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("(RailRoad)", 4, Local_a, 0);
 
 						Local_a += 8;
 					}
@@ -2833,7 +2833,7 @@ namespace OpenCiv1
 						if ((Local_10 & 0x8) != 0)
 						{
 							// Instruction address 0x1403:0x4371, size: 5
-							this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("(Road)", 4, Local_a, 0);
+							this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("(Road)", 4, Local_a, 0);
 
 							Local_a += 8;
 						}
@@ -2842,7 +2842,7 @@ namespace OpenCiv1
 					if ((Local_10 & 0x2) != 0)
 					{
 						// Instruction address 0x1403:0x43a6, size: 5
-						this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("(Irrigation)", 4, Local_a, 0);
+						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("(Irrigation)", 4, Local_a, 0);
 
 						Local_a += 8;
 					}
@@ -2851,7 +2851,7 @@ namespace OpenCiv1
 						if ((Local_10 & 0x4) != 0)
 						{
 							// Instruction address 0x1403:0x43a6, size: 5
-							this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("(Mining)", 4, Local_a, 0);
+							this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("(Mining)", 4, Local_a, 0);
 
 							Local_a += 8;
 						}
@@ -2860,7 +2860,7 @@ namespace OpenCiv1
 					if ((Local_10 & 0x40) != 0)
 					{
 						// Instruction address 0x1403:0x43c6, size: 5
-						this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("(Pollution)", 4, Local_a, 0);
+						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("(Pollution)", 4, Local_a, 0);
 
 						Local_a += 8;
 					}
@@ -2919,7 +2919,7 @@ namespace OpenCiv1
 					if (Local_4 != -1 && Local_4 != unitID)
 					{
 						// Instruction address 0x1403:0x44f5, size: 5
-						this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("+", 74, 192, 0);
+						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("+", 74, 192, 0);
 					}
 				}
 			}

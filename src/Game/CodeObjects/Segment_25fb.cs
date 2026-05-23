@@ -751,7 +751,7 @@ namespace OpenCiv1
 
 			L06ef:
 			// Instruction address 0x25fb:0x06f6, size: 5
-			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyEnum.Mapmaking) ? 1 : 0);
+			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Mapmaking) ? 1 : 0);
 			if (this.oCPU.AX.UInt16 != 0)
 			{
 				this.oCPU.AX.UInt16 = 0x5;
@@ -876,7 +876,7 @@ namespace OpenCiv1
 			if (this.oParent.Var_e3c2 > 0) goto L08b2;
 
 			// Instruction address 0x25fb:0x085e, size: 5
-			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyEnum.TheRepublic) ? 1 : 0);
+			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.TheRepublic) ? 1 : 0);
 			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.E)
 				goto L0876;
@@ -890,7 +890,7 @@ namespace OpenCiv1
 
 		L0876:
 			// Instruction address 0x25fb:0x087d, size: 5
-			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyEnum.Communism) ? 1 : 0);
+			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Communism) ? 1 : 0);
 			if (this.oCPU.AX.UInt16 == 0 ||
 				this.oParent.GameData.Players[playerID].CityCount <= 10)
 				goto L089a;
@@ -902,7 +902,7 @@ namespace OpenCiv1
 
 		L089a:
 			// Instruction address 0x25fb:0x08a1, size: 5
-			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyEnum.Monarchy) ? 1 : 0);
+			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Monarchy) ? 1 : 0);
 			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.E)
 				goto L08c1;
@@ -3362,7 +3362,7 @@ namespace OpenCiv1
 
 		L1fdf:
 			// Instruction address 0x25fb:0x1fe6, size: 5
-			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyEnum.Monarchy) ? 1 : 0);
+			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Monarchy) ? 1 : 0);
 
 			if (this.oCPU.AX.UInt16 == 0)
 			{
@@ -3494,7 +3494,7 @@ namespace OpenCiv1
 			if (this.oCPU.Flags.E) goto L213b;
 
 			// Instruction address 0x25fb:0x2106, size: 5
-			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyEnum.Railroad) ? 1 : 0);
+			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Railroad) ? 1 : 0);
 			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.E)
 				goto L213b;
@@ -3591,7 +3591,7 @@ namespace OpenCiv1
 			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
 
 			// Instruction address 0x25fb:0x21ea, size: 5
-			if (!this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyEnum.Monarchy))
+			if (!this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Monarchy))
 			{
 				this.oCPU.BX.UInt16 = (ushort)this.oParent.GameData.TerrainModifications[this.oCPU.SI.UInt16].AICanImproveBeforeMonarchy;
 			}
@@ -3728,7 +3728,7 @@ namespace OpenCiv1
 			if (this.oCPU.Flags.NE) goto L233c;
 
 			// Instruction address 0x25fb:0x232d, size: 5
-			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyEnum.BridgeBuilding) ? 1 : 0);
+			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.BridgeBuilding) ? 1 : 0);
 			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.NE)
 				goto L233c;

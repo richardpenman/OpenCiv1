@@ -1,5 +1,3 @@
-using System;
-using IRB.VirtualCPU;
 using OpenCiv1.Graphics;
 
 namespace OpenCiv1
@@ -7,7 +5,6 @@ namespace OpenCiv1
 	public class UnitManagement
 	{
 		private OpenCiv1Game parent;
-		private VCPU CPU;
 
 		private bool Var_20f4 = false;
 		private int Var_6530 = 0;
@@ -16,7 +13,6 @@ namespace OpenCiv1
 		public UnitManagement(OpenCiv1Game parent)
 		{
 			this.parent = parent;
-			this.CPU = parent.CPU;
 		}
 
 		/// <summary>
@@ -503,7 +499,7 @@ namespace OpenCiv1
 				if (unitID >= 128)
 				{
 					// Instruction address 0x1866:0x0bd9, size: 5
-					this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("End of Turn", 4, 124, 7);
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("End of Turn", 4, 124, 7);
 				}
 				else
 				{
@@ -545,7 +541,7 @@ namespace OpenCiv1
 				if (unitID >= 128)
 				{
 					// Instruction address 0x1866:0x0c95, size: 5
-					this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("End of Turn", 4, 124, 0);
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("End of Turn", 4, 124, 0);
 				}
 				else
 				{
@@ -1825,14 +1821,14 @@ namespace OpenCiv1
 			}
 
 			// Compile a list of yet undiscovered technologies that have all of the prerequisites
-			List<TechnologyEnum> undiscoveredTech = new();
+			List<TechnologyAdvanceEnum> undiscoveredTech = new();
 
-			foreach (TechnologyEnum technology in Enum.GetValues(typeof(TechnologyEnum)))
+			foreach (TechnologyAdvanceEnum technology in Enum.GetValues(typeof(TechnologyAdvanceEnum)))
 			{
-				if (technology != TechnologyEnum.None && technology != TechnologyEnum.NewFutureTechnology &&
+				if (technology != TechnologyAdvanceEnum.None && technology != TechnologyAdvanceEnum.NewFutureTechnology &&
 					!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, technology) &&
-					this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, this.parent.GameData.Technologies[(int)technology].RequiresTechnology1) &&
-					this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, this.parent.GameData.Technologies[(int)technology].RequiresTechnology2))
+					this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, this.parent.GameData.TechnologyAdvances[(int)technology].RequiresTechnologyAdvance1) &&
+					this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, this.parent.GameData.TechnologyAdvances[(int)technology].RequiresTechnologyAdvance2))
 				{
 					undiscoveredTech.Add(technology);
 				}
@@ -2017,13 +2013,13 @@ namespace OpenCiv1
 				}
 
 				// Instruction address 0x1866:0x2079, size: 5
-				this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 128, unitYPos, 15);
+				this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 128, unitYPos, 15);
 
 				// Instruction address 0x1866:0x209c, size: 5
 				this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName(this.parent.GameData.Players[playerID].Units[nextUnitID].HomeCityID));
 
 				// Instruction address 0x1866:0x20b7, size: 5
-				this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 128, unitYPos + 8, 14);
+				this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 128, unitYPos + 8, 14);
 
 				nextUnitID = this.parent.GameData.Players[playerID].Units[nextUnitID].NextUnitID;
 

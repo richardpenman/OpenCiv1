@@ -1,5 +1,6 @@
 ## About
-<p>OpenCiv1 project is an open source preservation effort and rewrite of the iconic <a href="https://en.wikipedia.org/wiki/Civilization_(video_game)" target="_blank">Civilization game</a> designed by Sid Meier and Bruce Shelley in year 1991.</p>
+
+<p>OpenCiv1 project is a Free and Open Source (<a href="https://www.gnu.org/philosophy/free-sw.html" target="_blank_">FOSS</a>) preservation effort and rewrite of the iconic <a href="https://en.wikipedia.org/wiki/Civilization_(video_game)" target="_blank">Civilization game</a> designed by Sid Meier and Bruce Shelley in year 1991.</p>
 <p>If you like games, and want to preserve our gaming heritage, please support: <a href="https://www.stopkillinggames.com/en" target="_blank">The Stop Killing Games Campaign</a></p>
 <p><b>The final source code for the game, according to the sources from MicroProse Software, Inc. is lost forever.</b> The only copy that remains is the game prototype source code on Sid Meier's own IBM PC on which he designed the game (<a href="https://www.youtube.com/watch?v=XwUM33VJRbY" target="_blank">Video in which Sid Meier talks about his IBM PCs</a>).
 <ul>
@@ -15,13 +16,15 @@
 </ul>
 
 ## Project reviews
+
 <ul>
 <li><a href="https://gigazine.net/gsc_news/en/20240129-openciv1/" target="_blank">OpenCiv1 is a project that disassembles the first 'Civilization' and makes it open source, by logu_ii (from Jan 29, 2024)</a></li>
 <li><a href="https://thepixelspulse.com/posts/openciv1-rewrite-modernizing-civilization-1/" target="_blank">OpenCiv1 Rewrite: A Blueprint for Modernizing Civilization 1, by gaming-insider (from March 28, 2026)</a></li>
 </ul>
 
 ## Copyright considerations
-<p>The sole purpose of this preservation project is to provide an Open source code and resources to the game which is considered abandoned for at least 30 years since in that time the publishing company and/or its successor(s) that released the original game did not provide any updates or support and the successor publishing company is not selling that particular game for a least 20 years.</p>
+
+<p>The sole purpose of this preservation project is to provide a Free and Open Source (FOSS) code and resources to the game which is considered abandoned for at least 30 years since in that time the publishing company and/or its successor(s) that released the original game did not provide any updates or support and the successor publishing company is not selling that particular game for a least 20 years.</p>
 What this project will not do:
 <ul>
 <li>Copy any of the original game source code or it's executable code,</li>
@@ -35,11 +38,13 @@ What this project will not do:
 <b>This is the reason that not a single file from the Original game is included in this Repository as they are copyrighted.</b></p>
 
 ## Current status
+
 <p><b>The game is in working state</b>, but you have to legally own the Original game (the .txt, .pic and .pal files have to be present).</p>
-<p>The part of the game assembly code is emulated with Virtual CPU, and the rest of the code has been rewritten from scratch until all of the code is replaced with new copyright free code. 
+<p>The part of the game assembly code is emulated with Virtual CPU, and the rest of the code has been rewritten from scratch until all of the code is replaced with new copyright free code.
 The other resources (like graphics, music and text) will also be completely replaced with copyright free resources before publishing the complete game.</p>
 
 ## How to Contribute to this project
+
 <p>Anyone can contribute to this repository in accordance with these <a href="https://codeberg.org/rhorvat/OpenCiv1/src/branch/master/CONTRIBUTING/CONTRIBUTING.md">Contributing guidelines</a></p>
 Currently, you can contribute to this repository in one of the following ways:
 <ul>
@@ -50,8 +55,13 @@ Currently, you can contribute to this repository in one of the following ways:
 </ul>
 
 ## Frequently asked questions
+
 <p><b>Q:</b> Why did you use C#, instead of C and x86 assembly in which the Original game is written?</p>
 <b>A:</b> I have chosen C# because it's platform independent, secure, flexible, managed, popular, modern and API rich language.
+
+***
+<p><b>Q:</b> Why this rewrite takes so long?</p>
+<b>A:</b> This rewrite takes so long because the code is not simply copied (like when, for example, decompiled) which produces derivative work. <b>The code is completely rewritten using creative process which of course takes time to complete and which (when completed) does not produce a derivative work.</b>
 
 ***
 <p><b>Q:</b> Why does the OpenCiv1 differs, in some aspects, from the Original game?</p>
@@ -66,8 +76,8 @@ Currently, you can contribute to this repository in one of the following ways:
 
 ***
 <p><b>Q:</b> Will OpenCiv1 source code be identical to the Original game source code?</p>
-<p><b>A:</b> No. The OpenCiv1 source code does not contain any of the original source code. 
-The rewritten code performs the same function (as the original code does), but the code is completely different and under MIT license. 
+<p><b>A:</b> No. The OpenCiv1 source code does not contain any of the original source code.
+The rewritten code performs the same function (as the original code does), but the code is completely different and under MIT license.
 MicroProse and its successors never released the original source code which remains protected under copyright laws to this day.</p>
 
 ***
@@ -91,15 +101,17 @@ MicroProse and its successors never released the original source code which rema
 </ul>
 
 ## Dependencies
+
 <ul>
 <li>.NET Core 8</li>
-<li>Visual C++ 2015-2019 redistributable (on some Windows machines)</li>
 </ul>
 
 ## How to run the release version of OpenCiv1
+
 <p>The files from the Release should be copied directly into installed and working Original game directory. The game can be run by running the OpenCiv1 executable.</p>
 
 ## How to compile the code (.NET Core 8 SDK required)
+
 If you want to Debug (or Compile) the code with Visual Studio 2022 Community Edition, it is assumed that:
 <ul>
 <li>For debugging purposes you have installed Original game at 'c:\Dos\Civ1\', or at '~/Dos/Civ1/' if you are using Linux (be careful of uppercase files!).
@@ -113,9 +125,11 @@ You can also compile with CLI method:
 </ul>
 
 ## Project milestones
+
 <p>The goal is to completely rewrite the code (first stage), fix the bugs and port the code to a modern platform (second stage).</p>
 
 ### Milestones for a first stage
+
 <ul>
 <li>Reaching the initial playability of the game (passed),</li>
 <li>Rewrite of the game code, functionalities and features (in progress...),</li>
@@ -123,6 +137,7 @@ You can also compile with CLI method:
 </ul>
 
 ### Planned milestones for a second stage
+
 <b>What will change in the new version:</b>
 <ul>
 <li>Porting to Razor platform (Web interface, online gaming),</li>
@@ -142,6 +157,7 @@ You can also compile with CLI method:
 </ul>
 
 ## Current screenshots of the OpenCiv1 game
+
 <p align="center">
 <img src="src/Resources/Screenshots/Screenshot1.png" alt="Screenshot 1" width="400" />
 <img src="src/Resources/Screenshots/Screenshot2.png" alt="Screenshot 2" width="400" />

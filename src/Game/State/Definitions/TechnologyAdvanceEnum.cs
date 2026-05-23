@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OpenCiv1
+﻿namespace OpenCiv1
 {
-	public enum TechnologyEnum
+	public enum TechnologyAdvanceEnum
 	{
 		None = -1,
 		Alphabet = 0,

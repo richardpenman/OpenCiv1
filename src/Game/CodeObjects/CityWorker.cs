@@ -196,25 +196,25 @@ namespace OpenCiv1
 				if (!city.HasImprovement(ImprovementEnum.MassTransit))
 				{
 					// Instruction address 0x1d12:0x035e, size: 5
-					if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyEnum.Industrialization))
+					if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Industrialization))
 					{
 						this.parent.Var_b882++;
 					}
 
 					// Instruction address 0x1d12:0x037a, size: 5
-					if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyEnum.Automobile))
+					if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Automobile))
 					{
 						this.parent.Var_b882++;
 					}
 
 					// Instruction address 0x1d12:0x0396, size: 5
-					if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyEnum.MassProduction))
+					if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.MassProduction))
 					{
 						this.parent.Var_b882++;
 					}
 
 					// Instruction address 0x1d12:0x03b2, size: 5
-					if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyEnum.Plastics))
+					if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Plastics))
 					{
 						this.parent.Var_b882++;
 					}
@@ -290,7 +290,7 @@ namespace OpenCiv1
 					this.parent.CAPI.strcat(0xba06, ")");
 
 					// Instruction address 0x1d12:0x056f, size: 5
-					this.parent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 104, 2, 15);
+					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 104, 2, 15);
 
 					// Instruction address 0x1d12:0x0587, size: 5
 					F0_1d12_70cb_FillRectangleWithPattern(127, 23, 208, 104);
@@ -1022,7 +1022,7 @@ namespace OpenCiv1
 					}
 					else
 					{
-						if ((this.parent.GameData.GetImprovementType(-city.CurrentProductionID).Price * local_4a) <= city.ShieldsCount)
+						if ((this.parent.GameData.GetImprovementType(-city.CurrentProductionID).Cost * local_4a) <= city.ShieldsCount)
 						{
 							local_e8 = -city.CurrentProductionID;
 
@@ -1072,7 +1072,7 @@ namespace OpenCiv1
 									city.AddImprovement(City.BitToImprovementEnum(local_e8 - 1));
 								}
 
-								city.ShieldsCount -= (short)(this.parent.GameData.GetImprovementType(-city.CurrentProductionID).Price * local_4a);
+								city.ShieldsCount -= (short)(this.parent.GameData.GetImprovementType(-city.CurrentProductionID).Cost * local_4a);
 
 								if ((this.parent.GameData.PlayerFlags & (1 << this.Var_6548_PlayerID)) != 0 || local_e8 > 24)
 								{
@@ -1132,7 +1132,7 @@ namespace OpenCiv1
 
 										if (local_c8 != 0 && local_e8 < 24)
 										{
-											city.ShieldsCount += (short)(this.parent.GameData.GetImprovementType(local_e8).Price * local_4a);
+											city.ShieldsCount += (short)(this.parent.GameData.GetImprovementType(local_e8).Cost * local_4a);
 
 											if (city.CurrentProductionID <= -22 && city.CurrentProductionID >= -24)
 											{
@@ -1148,7 +1148,7 @@ namespace OpenCiv1
 												goto L1feb;
 
 											// Instruction address 0x1d12:0x1f5d, size: 5
-											if (!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyEnum.SpaceFlight))
+											if (!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.SpaceFlight))
 												goto L2010;
 
 											if (this.parent.GameData.AISpaceshipSuccessRate > 75)
@@ -1327,7 +1327,7 @@ namespace OpenCiv1
 						{
 							// Instruction address 0x1d12:0x24a7, size: 5
 							local_cc = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(
-								(this.parent.GameData.GetImprovementType(-city.CurrentProductionID).Price * local_4a) - city.ShieldsCount,
+								(this.parent.GameData.GetImprovementType(-city.CurrentProductionID).Cost * local_4a) - city.ShieldsCount,
 								0, this.parent.GameData.Players[this.Var_6548_PlayerID].Coins / 8);
 						}
 
@@ -1594,7 +1594,7 @@ namespace OpenCiv1
 				}
 
 				// Instruction address 0x1d12:0x2d27, size: 5
-				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyEnum.Religion))
+				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Religion))
 				{
 					if (city.HasImprovement(ImprovementEnum.Cathedral))
 					{
@@ -1621,14 +1621,14 @@ namespace OpenCiv1
 				if (city.HasImprovement(ImprovementEnum.Temple))
 				{
 					// Instruction address 0x1d12:0x2dd6, size: 5
-					if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyEnum.Mysticism))
+					if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Mysticism))
 					{
 						this.parent.Var_70e4 -= 2;
 					}
 					else
 					{
 						// Instruction address 0x1d12:0x2df6, size: 5
-						if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyEnum.CeremonialBurial))
+						if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.CeremonialBurial))
 						{
 							this.parent.Var_70e4--;
 						}
@@ -1638,7 +1638,7 @@ namespace OpenCiv1
 					if (F0_1d12_6c97_PlayerHasWonder(this.Var_6548_PlayerID, WonderEnum.Oracle))
 					{
 						// Instruction address 0x1d12:0x2e2a, size: 5
-						if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyEnum.Mysticism))
+						if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Mysticism))
 						{
 							this.parent.Var_70e4 -= 2;
 						}
@@ -1814,7 +1814,7 @@ namespace OpenCiv1
 					F0_1d12_6ed4_DrawResources(cityID, 100, local_42, local_8, 92);
 
 					// Instruction address 0x1d12:0x32a5, size: 5
-					this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("WONDERS", 190, local_42 + 5, 15);
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("WONDERS", 190, local_42 + 5, 15);
 
 					local_42 += 16;
 
@@ -2053,7 +2053,7 @@ namespace OpenCiv1
 						this.CPU.WriteUInt8(this.CPU.DS.UInt16, 0xba0a, 0x0);
 
 						// Instruction address 0x1d12:0x39b4, size: 5
-						this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, local_fa, local_100 + 15, 0);
+						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, local_fa, local_100 + 15, 0);
 
 						Arr_74[local_4e] = i;
 
@@ -2110,7 +2110,7 @@ namespace OpenCiv1
 								local_e8 = i + 24;
 
 								// Instruction address 0x1d12:0x3b40, size: 5
-								this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(
+								this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
 									this.parent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.parent.GameData.Wonders[i + 1].Name.ToUpper(), 63), 253, local_e4 + 2, 15);
 
 								// Instruction address 0x1d12:0x3b69, size: 5
@@ -2146,7 +2146,7 @@ namespace OpenCiv1
 									309, local_e4 + 1, this.parent.Array_d4ce[11]);
 
 								// Instruction address 0x1d12:0x3c46, size: 5
-								this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(
+								this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
 									this.parent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.parent.GameData.GetImprovementType(i + 1).Name, 56), 253, local_e4 + 2, 15);
 
 								// Instruction address 0x1d12:0x3c6f, size: 5
@@ -2179,7 +2179,7 @@ namespace OpenCiv1
 					}
 					else
 					{
-						local_de = this.parent.GameData.GetImprovementType(-city.CurrentProductionID).Price;
+						local_de = this.parent.GameData.GetImprovementType(-city.CurrentProductionID).Cost;
 					}
 
 					// Instruction address 0x1d12:0x3d7a, size: 5
@@ -2209,7 +2209,7 @@ namespace OpenCiv1
 					else
 					{
 						// Instruction address 0x1d12:0x3edd, size: 5
-						this.parent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(
+						this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(
 							this.parent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.parent.GameData.GetImprovementType(-city.CurrentProductionID).Name, 86), 274, 100, 15);
 					}
 
@@ -2241,7 +2241,7 @@ namespace OpenCiv1
 					this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 2, 106, 91, (local_4a * local_fc) + 12, 1);
 
 					// Instruction address 0x1d12:0x3fcd, size: 5
-					this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("Food Storage", 8, 108, 15);
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("Food Storage", 8, 108, 15);
 
 					// Instruction address 0x1d12:0x3ffc, size: 5
 					F0_1d12_710d_FillRectangleWithPattern(3, 115, (city.ActualSize * local_e8) + 9, (local_4a * local_fc) + 2);
@@ -2273,7 +2273,7 @@ namespace OpenCiv1
 					this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 2, 23, 122, 9, 1);
 
 					// Instruction address 0x1d12:0x4108, size: 5
-					this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("City Resources", 8, local_fc, 15);
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("City Resources", 8, local_fc, 15);
 
 					local_fc += 8;
 
@@ -2474,7 +2474,7 @@ namespace OpenCiv1
 							if (this.Var_2496 == 0)
 							{
 								// Instruction address 0x1d12:0x4765, size: 5
-								this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 98, (i * 6) + 179, 10);
+								this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 98, (i * 6) + 179, 10);
 							}
 						}
 					}
@@ -2683,7 +2683,7 @@ namespace OpenCiv1
 						}
 						else
 						{
-							local_106 = this.parent.GameData.GetImprovementType(-city.CurrentProductionID).Price;
+							local_106 = this.parent.GameData.GetImprovementType(-city.CurrentProductionID).Cost;
 
 							// Instruction address 0x1d12:0x4ca0, size: 5
 							local_e8 = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange((10 * local_106) - city.ShieldsCount, 0, 999) * 2;
@@ -3319,7 +3319,7 @@ namespace OpenCiv1
 						this.parent.CAPI.strcat(0xba06, " for ");
 
 						// Instruction address 0x1d12:0x5802, size: 5
-						this.parent.CAPI.strcat(0xba06, this.parent.CAPI.itoa(10 * this.parent.GameData.GetImprovementType(local_bc + 1).Price, 10));
+						this.parent.CAPI.strcat(0xba06, this.parent.CAPI.itoa(10 * this.parent.GameData.GetImprovementType(local_bc + 1).Cost, 10));
 
 						// Instruction address 0x1d12:0x5812, size: 5
 						this.parent.CAPI.strcat(0xba06, "$?\n No.\n Yes.\n");
@@ -3334,7 +3334,7 @@ namespace OpenCiv1
 						goto L58a1;
 
 					L5844:
-						this.parent.GameData.Players[this.Var_6548_PlayerID].Coins += (short)(10 * this.parent.GameData.GetImprovementType(local_bc + 1).Price);
+						this.parent.GameData.Players[this.Var_6548_PlayerID].Coins += (short)(10 * this.parent.GameData.GetImprovementType(local_bc + 1).Cost);
 						city.RemoveImprovement(City.BitToImprovementEnum(local_bc));
 						city.StatusFlag |= 0x80;
 
@@ -3854,7 +3854,7 @@ namespace OpenCiv1
 			L62f5:
 				// Instruction address 0x1d12:0x62fd, size: 5
 				if (!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID,
-					(TechnologyEnum)this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].ResearchTechnologyID))
+					(TechnologyAdvanceEnum)this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].ResearchTechnologyID))
 					goto L630d;
 
 				goto L6327;
@@ -4032,7 +4032,7 @@ namespace OpenCiv1
 
 			L6679:
 				// Instruction address 0x1d12:0x6681, size: 5
-				if (!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyEnum.FusionPower))
+				if (!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.FusionPower))
 					goto L6691;
 
 				goto L672d;
@@ -4102,7 +4102,7 @@ namespace OpenCiv1
 
 			L67c7:
 				// Instruction address 0x1d12:0x67cf, size: 5
-				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyEnum.Gunpowder))
+				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Gunpowder))
 					goto L67df;
 
 				goto L67e9;
@@ -4112,7 +4112,7 @@ namespace OpenCiv1
 
 			L67e9:
 				// Instruction address 0x1d12:0x67f1, size: 5
-				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyEnum.Combustion))
+				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Combustion))
 					goto L6801;
 
 				goto L680b;
@@ -4148,7 +4148,7 @@ namespace OpenCiv1
 				// Instruction address 0x1d12:0x68a7, size: 5
 				this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
 
-				this.parent.GameData.Players[this.Var_6548_PlayerID].Coins += (short)(10 * this.parent.GameData.GetImprovementType(local_bc + 1).Price);
+				this.parent.GameData.Players[this.Var_6548_PlayerID].Coins += (short)(10 * this.parent.GameData.GetImprovementType(local_bc + 1).Cost);
 
 				goto L6736;
 
@@ -4468,7 +4468,7 @@ namespace OpenCiv1
 				// Instruction address 0x1d12:0x6cb9, size: 5
 				ImprovementDefinition wonder = this.parent.GameData.Wonders[(int)wonderType];
 
-				if (wonder.ObsoletesAfterTechnology != TechnologyEnum.None &&
+				if (wonder.ObsoletesAfterTechnology != TechnologyAdvanceEnum.None &&
 					this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(i, wonder.ObsoletesAfterTechnology))
 				{
 					break;
@@ -4501,7 +4501,7 @@ namespace OpenCiv1
 			for (i = 1; i < 8; i++)
 			{
 				// Instruction address 0x1d12:0x6d15, size: 5
-				if (this.parent.GameData.Wonders[wonderID].ObsoletesAfterTechnology != TechnologyEnum.None &&
+				if (this.parent.GameData.Wonders[wonderID].ObsoletesAfterTechnology != TechnologyAdvanceEnum.None &&
 					this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology((short)i, this.parent.GameData.Wonders[wonderID].ObsoletesAfterTechnology))
 				{
 					break;
@@ -4753,39 +4753,36 @@ namespace OpenCiv1
 		/// <summary>
 		/// ?
 		/// </summary>
-		/// <param name="xPosSrc"></param>
-		/// <param name="xPosDst"></param>
-		/// <param name="yPosDst"></param>
-		public void F0_1d12_7045(short xPosSrc, short xPosDst, short yPosDst)
+		/// <param name="xSrc"></param>
+		/// <param name="xDst"></param>
+		/// <param name="yDst"></param>
+		public void F0_1d12_7045(int xSrc, int xDst, int yDst)
 		{
-			this.CPU.Log.EnterBlock($"F0_1d12_7045({xPosSrc}, {xPosDst}, {yPosDst})");
+			//this.CPU.Log.EnterBlock($"F0_1d12_7045({xPosSrc}, {xPosDst}, {yPosDst})");
 
 			// function body
-			if (xPosSrc < 22 || xPosSrc > 24)
+			if (xSrc < 22 || xSrc > 24)
 			{
-				xPosSrc--;
+				xSrc--;
 
-				if (xPosSrc >= 24)
+				if (xSrc >= 24)
 				{
-					xPosSrc -= 3;
+					xSrc -= 3;
 				}
 
-				if (xPosSrc >= 40)
+				if (xSrc >= 40)
 				{
 					// Instruction address 0x1d12:0x70c1, size: 5
-					this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19e8_Screen2_Rectangle, ((xPosSrc & 1) * 19) + 161, 100, 18, 10,
-						this.parent.Var_aa_Screen0_Rectangle, xPosDst, yPosDst);
+					this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19e8_Screen2_Rectangle, ((xSrc & 1) * 19) + 161, 100, 18, 10,
+						this.parent.Var_aa_Screen0_Rectangle, xDst, yDst);
 				}
 				else
 				{
 					// Instruction address 0x1d12:0x70c1, size: 5
-					this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19e8_Screen2_Rectangle, ((xPosSrc / 5) * 19) + 161, ((xPosSrc % 5) * 10) + 50, 18, 10,
-						this.parent.Var_aa_Screen0_Rectangle, xPosDst, yPosDst);
+					this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19e8_Screen2_Rectangle, ((xSrc / 5) * 19) + 161, ((xSrc % 5) * 10) + 50, 18, 10,
+						this.parent.Var_aa_Screen0_Rectangle, xDst, yDst);
 				}
 			}
-
-			// Far return
-			this.CPU.Log.ExitBlock("F0_1d12_7045");
 		}
 
 		/// <summary>
@@ -4889,7 +4886,7 @@ namespace OpenCiv1
 				xPos1, yPos, xPos1, yPos1, (ushort)((mode < 0x8) ? 8 : (mode - 8)));
 
 			// Instruction address 0x1d12:0x72ae, size: 5
-			this.parent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(stringPtr,
+			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(stringPtr,
 				((xPos + xPos1) / 2) + 1, ((yPos + yPos1) / 2) - 2, (byte)(mode ^ 8));
 
 			// Far return

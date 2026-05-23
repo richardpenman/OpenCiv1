@@ -1,1881 +1,951 @@
-using IRB.VirtualCPU;
+using System.Text;
+using IRB.Collections.Generic;
+using IRB.Collections.Generic.Trees;
 using OpenCiv1.Graphics;
 
 namespace OpenCiv1
 {
 	public class Encyclopedia
 	{
-		private OpenCiv1Game oParent;
-		private VCPU oCPU;
+		private OpenCiv1Game parent;
+
+		private string[] Array_3c64_GameConcepts = ["Veteran Units", "Fortify", "Irrigation", "Mining", "Roads", "RailRoads", 
+			"Anarchy", "Despotism", "Monarchy", "Communism", "Republic", "Democracy", "Fortress", "Pillage", "Disband", 
+			"Pollution", "Sentry", "Luxuries", "Taxes", "Science", "Trade Routes"];
+		private int Var_6808 = 0;
+
+		private int[] technologyAdvanceFileID = [24, 32, 11, 65, 26, 36, 13, 59, 53, 44, 39, 5, 1, 51, 4, 35, 16, 50, 52, 38, 29, 49, 22, 0, 21, 10, 
+			33, 60, 19, 37, 45, 12, 15, 43, 30, 40, 2, 41, 17, 27, 18, 3, 61, 56, 57, 6, 34, 55, 14, 62, 20, 58, 23, 8, 64, 66, 63, 31, 9, 
+			48, 42, 7, 47, 54, 28, 25, 46, -1, 4, 21, 19, 14];
+		private int[] unitTypeFileID = [4, 21, 19, 14, 24, 15, 13, 18, 16, 17, 8, 9, 12, 26, 20, 6, 1, 22, 25, 23, 11, 0, 10, 5, 2, 3, 27, 7];
+		private int[] terrainTypeFileID = [6, 7, 8, 9, 10, 11, 0, 2, 3, 1, 4, 5];
 
 		public Encyclopedia(OpenCiv1Game parent)
 		{
-			this.oParent = parent;
-			this.oCPU = parent.CPU;
+			this.parent = parent;
 		}
 
 		/// <summary>
-		/// Shows one of the Civilopedia windows and handles player input.
+		/// Shows one of the Encyclopedia topics and handles player input
 		/// </summary>
-		/// <param name="windowIndex">window index to show</param>
-		public void F8_0000_0000_ShowCivilopedia(short windowIndex)
+		/// <param name="topicType">Encyclopedia topic to show</param>
+		public void F8_0000_0000_ShowEncyclopediaByTopic(EncyclopediaTopicEnum topicType)
 		{
-			this.oCPU.Log.EnterBlock($"F8_0000_0000_ShowCivilopedia({windowIndex})");
+			//this.oCPU.Log.EnterBlock($"F8_0000_0000_ShowEncyclopedia({windowIndex})");
 
 			// function body
 			// Instruction address 0x0000:0x0006, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_065f_StopPaletteCycleSlots();
+			this.parent.Segment_2dc4.F0_2dc4_065f_StopPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x000b, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
+			this.parent.MainCode.F0_11a8_0268_HideMouse();
 
-			short var1 = 0;
-			short var2;
+			int itemStartIndex = 0;
+			int result = 0;
 
-			do
+			while (result != -2)
 			{
-				var2 = (short)F8_0000_0066_ShowCivilopediaWindow(var1, windowIndex);
+				result = F8_0000_0066_ShowEncyclopediaWindow(topicType, itemStartIndex);
 
-				if (var2 == -1)
+				if (result == -1)
 				{
-					if (this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x6808) == 0)
+					if (this.Var_6808 == 0)
 					{
-						var1 = 0;
+						itemStartIndex = 0;
 					}
 					else
 					{
-						var1 += 78;
+						itemStartIndex += 78;
 					}
 				}
-			} while (var2 != -2);
+			}
 
 			// Instruction address 0x0000:0x0053, size: 5
-			this.oParent.Segment_1238.F0_1238_1b44();
+			this.parent.Segment_1238.F0_1238_1b44();
 
 			// Instruction address 0x0000:0x0058, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_0626_StartPaletteCycleSlots();
+			this.parent.Segment_2dc4.F0_2dc4_0626_StartPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x005d, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
-
-			// Far return
-			this.oCPU.Log.ExitBlock("F8_0000_0000_ShowCivilopedia");
+			this.parent.MainCode.F0_11a8_0250_ShowMouse();
 		}
 
 		/// <summary>
-		/// Show specified civilopedia window.
+		/// Show specified Encyclopedia window.
 		/// </summary>
-		/// <param name="param1"></param>
-		/// <param name="windowIndex">window to show</param>
+		/// <param name="topicType">window to show</param>
+		/// <param name="topicStartIndex"></param>
 		/// <returns></returns>
-		private ushort F8_0000_0066_ShowCivilopediaWindow(short param1, short windowIndex)
+		private int F8_0000_0066_ShowEncyclopediaWindow(EncyclopediaTopicEnum topicType, int topicStartIndex)
 		{
-			this.oCPU.Log.EnterBlock($"F8_0000_0066({param1}, {windowIndex})");
+			//this.oCPU.Log.EnterBlock($"F8_0000_0066({itemStartIndex}, {windowIndex})");
 
 			// function body
-			string sTemp1, sTemp2, sTemp3;
-
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x5c);
-			this.oCPU.PUSH_UInt16(this.oCPU.DI.UInt16);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
+			string topicText;
+			string oldTopicText = "a";
+			int x;
+			int y;
+			int selectedTopicIndex;
+			int topicCount;
 
 			// Instruction address 0x0000:0x0082, size: 5
-			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 14);
-
-			// Instruction address 0x0000:0x0092, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x4c), "a");
+			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 14);
 
 			// Instruction address 0x0000:0x00b2, size: 5
-			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 60, 2, 200, 9, 15);
+			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 60, 2, 200, 9, 15);
 
 			// Instruction address 0x0000:0x00c9, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0("ENCYCLOPAEDIA of CIVILIZATION", 161, 4, 0);
+			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Game Encyclopedia", 161, 4, 0);
 
 			// Instruction address 0x0000:0x00e1, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0("ENCYCLOPAEDIA of CIVILIZATION", 160, 3, 10);
+			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Game Encyclopedia", 160, 3, 10);
 
 			// Instruction address 0x0000:0x00f9, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("EXIT", 286, 4, 12);
+			this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("EXIT", 286, 4, 12);
 
-			if (windowIndex == -1)
+			if (topicType == EncyclopediaTopicEnum.AllTopics)
 			{
 				// Instruction address 0x0000:0x0117, size: 5
-				this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("MORE", 8, 4, 12);
+				this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("MORE", 8, 4, 12);
 			}
 
 			// Instruction address 0x0000:0x0137, size: 5
-			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 2, 14, 316, 184, 15);
+			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 2, 14, 316, 184, 15);
 
-			this.oCPU.AX.UInt16 = (ushort)(windowIndex > 0 ? 150 : 100);
+			BKeyValuePair<EncyclopediaTopicEnum, int>[] displayItems = new BKeyValuePair<EncyclopediaTopicEnum, int>[200];
+			int topicNameMaximumWidth = ((topicType != EncyclopediaTopicEnum.AllTopics && topicType != EncyclopediaTopicEnum.TechnologyAdvance) ? 150 : 100);
+			y = 16;
+			topicCount = 0;
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e), 0xa);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50), 0x10);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58), 0x0);
-
-		L015f:
-			// Instruction address 0x0000:0x0167, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x32), "zzz");
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x5a), 0xffff);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34), 0xffff);
-
-			if (windowIndex == 0)
+			for (x = 10; x < 300;)
 			{
-				goto L0185;
+				// Instruction address 0x0000:0x0167, size: 5
+				topicText = "zzz";
+
+				int topicIndex = -1;
+				EncyclopediaTopicEnum itemTopic = EncyclopediaTopicEnum.AllTopics;
+
+				if (topicType == EncyclopediaTopicEnum.AllTopics || topicType == EncyclopediaTopicEnum.TechnologyAdvance)
+				{
+					for (int j = 0; j < 67; j++)
+					{
+						// Instruction address 0x0000:0x019b, size: 5
+						if (string.Compare(this.parent.GameData.TechnologyAdvances[j].Name, oldTopicText, true) > 0 &&
+							string.Compare(this.parent.GameData.TechnologyAdvances[j].Name, topicText, true) < 0)
+						{
+							itemTopic = EncyclopediaTopicEnum.TechnologyAdvance;
+							topicIndex = j;
+							topicText = this.parent.GameData.TechnologyAdvances[j].Name;
+						}
+					}
+				}
+
+				if (topicType == EncyclopediaTopicEnum.AllTopics || topicType == EncyclopediaTopicEnum.CityImprovement)
+				{
+					for (int j = 1; j < 46; j++)
+					{
+						if (string.Compare(this.parent.GameData.GetImprovementType(j).Name, oldTopicText, true) > 0 &&
+							string.Compare(this.parent.GameData.GetImprovementType(j).Name, topicText, true) < 0)
+						{
+							itemTopic = EncyclopediaTopicEnum.CityImprovement;
+							topicIndex = j;
+
+							// Instruction address 0x0000:0x0228, size: 5
+							topicText = this.parent.GameData.GetImprovementType(j).Name;
+						}
+					}
+				}
+
+				if (topicType == EncyclopediaTopicEnum.AllTopics || topicType == EncyclopediaTopicEnum.UnitType)
+				{
+					for (int j = 0; j < 28; j++)
+					{
+						if (string.Compare(this.parent.GameData.Units[j].Name, oldTopicText, true) > 0 &&
+							string.Compare(this.parent.GameData.Units[j].Name, topicText, true) < 0)
+						{
+							itemTopic = EncyclopediaTopicEnum.UnitType;
+							topicIndex = j;
+
+							// Instruction address 0x0000:0x0288, size: 5
+							topicText = this.parent.GameData.Units[j].Name;
+						}
+					}
+				}
+
+				if (topicType == EncyclopediaTopicEnum.AllTopics || topicType == EncyclopediaTopicEnum.TerrainType)
+				{
+					for (int j = 0; j < 12; j++)
+					{
+						// Instruction address 0x0000:0x02bb, size: 5
+						if (string.Compare(this.parent.GameData.Terrains[j].Name, oldTopicText, true) > 0 &&
+							string.Compare(this.parent.GameData.Terrains[j].Name, topicText, true) < 0)
+						{
+							itemTopic = EncyclopediaTopicEnum.TerrainType;
+							topicIndex = j;
+
+							// Instruction address 0x0000:0x02e8, size: 5
+							topicText = this.parent.GameData.Terrains[j].Name;
+						}
+					}
+				}
+
+				if (topicType == EncyclopediaTopicEnum.AllTopics || topicType == EncyclopediaTopicEnum.GameConcept)
+				{
+					for (int j = 0; j < 21; j++)
+					{
+						if (string.Compare(Array_3c64_GameConcepts[j], oldTopicText, true) > 0 &&
+							string.Compare(Array_3c64_GameConcepts[j], topicText, true) < 0)
+						{
+							itemTopic = EncyclopediaTopicEnum.GameConcept;
+							topicIndex = j;
+
+							// Instruction address 0x0000:0x0348, size: 5
+							topicText = Array_3c64_GameConcepts[j];
+						}
+					}
+				}
+
+				if (itemTopic == EncyclopediaTopicEnum.AllTopics)
+					break;
+
+				if (topicCount >= topicStartIndex)
+				{
+					// Instruction address 0x0000:0x0396, size: 5
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(this.parent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(topicText, topicNameMaximumWidth), x, y, 0);
+
+					displayItems[topicCount - topicStartIndex] = new BKeyValuePair<EncyclopediaTopicEnum, int>(itemTopic, topicIndex);
+
+					y += 7;
+
+					if (y > 192)
+					{
+						x += topicNameMaximumWidth;
+						y = 16;
+					}
+				}
+
+				topicCount++;
+				oldTopicText = topicText;
 			}
 
-			if (windowIndex != -1)
+			if (x >= 300)
 			{
-				goto L01d9;
+				this.Var_6808 = 1;
+			}
+			else
+			{
+				this.Var_6808 = 0;
 			}
 
-		L0185:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52), 0x0);
-
-		L018a:
-			this.oCPU.AX.UInt16 = 0x16;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-
-			// Instruction address 0x0000:0x019b, size: 5
-			this.oParent.CAPI.stricmp(this.oParent.GameData.Technologies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52))].Name,
-				(ushort)(this.oCPU.BP.UInt16 - 0x4c));
-
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.LE) goto L01d0;
-
-			// Instruction address 0x0000:0x01ac, size: 5
-			this.oParent.CAPI.stricmp(this.oParent.GameData.Technologies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52))].Name,
-				(ushort)(this.oCPU.BP.UInt16 - 0x32));
-
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.GE) goto L01d0;
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x5a), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34), 0x0);
-
-			// Instruction address 0x0000:0x01c8, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x32),
-				this.oParent.GameData.Technologies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52))].Name);
-
-		L01d0:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52)), 0x43);
-			if (this.oCPU.Flags.L) goto L018a;
-
-			L01d9:
-			if (windowIndex == 1)
-			{
-				goto L01e5;
-			}
-
-			if (windowIndex != -1)
-			{
-				goto L0239;
-			}
-
-		L01e5:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52), 0x1);
-
-		L01ea:
-			// Instruction address 0x0000:0x01fb, size: 5
-			this.oParent.CAPI.stricmp(this.oParent.GameData.GetImprovementType(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52))).Name, (ushort)(this.oCPU.BP.UInt16 - 0x4c));
-
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.LE) goto L0230;
-
-			// Instruction address 0x0000:0x020c, size: 5
-			this.oParent.CAPI.stricmp(this.oParent.GameData.GetImprovementType(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52))).Name, (ushort)(this.oCPU.BP.UInt16 - 0x32));
-
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.GE) goto L0230;
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x5a), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34), 0x1);
-
-			// Instruction address 0x0000:0x0228, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x32), this.oParent.GameData.GetImprovementType(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52))).Name);
-
-		L0230:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52)), 0x2d);
-			if (this.oCPU.Flags.LE) goto L01ea;
-
-			L0239:
-			if (windowIndex == 2)
-			{
-				goto L0245;
-			}
-
-			if (windowIndex == -1)
-			{
-				goto L0299;
-			}
-
-		L0245:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52), 0x0);
-
-		L024a:
-			this.oCPU.AX.UInt16 = 0x22;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-
-			sTemp1 = this.oParent.GameData.Units[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52))].Name;
-			sTemp2 = this.oCPU.ReadString(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4c));
-			sTemp3 = this.oCPU.ReadString(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x32));
-
-			if (string.Compare(sTemp1, sTemp2, true) > 0 && string.Compare(sTemp1, sTemp3, true) < 0)
-			{
-				this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52));
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x5a), this.oCPU.AX.UInt16);
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34), 0x2);
-
-				// Instruction address 0x0000:0x0288, size: 5
-				this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x32), sTemp1);
-			}
-		
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52)), 0x1c);
-			if (this.oCPU.Flags.L) goto L024a;
-
-		L0299:
-			if (windowIndex == 3)
-			{
-				goto L02a5;
-			}
-
-			if (windowIndex != -1)
-			{
-				goto L02f9; 
-			}
-
-		L02a5:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52), 0x0);
-
-		L02aa:
-			this.oCPU.AX.UInt16 = 0x13;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-
-			// Instruction address 0x0000:0x02bb, size: 5
-			this.oParent.CAPI.stricmp(this.oParent.GameData.Terrains[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52))].Name, 
-				(ushort)(this.oCPU.BP.UInt16 - 0x4c));
-
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.LE) goto L02f0;
-
-			// Instruction address 0x0000:0x02cc, size: 5
-			this.oParent.CAPI.stricmp(this.oParent.GameData.Terrains[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52))].Name, 
-				(ushort)(this.oCPU.BP.UInt16 - 0x32));
-
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.GE) goto L02f0;
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x5a), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34), 0x3);
-
-			// Instruction address 0x0000:0x02e8, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x32), 
-				this.oParent.GameData.Terrains[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52))].Name);
-
-		L02f0:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52)), 0xc);
-			if (this.oCPU.Flags.L) goto L02aa;
-
-		L02f9:
-			if (windowIndex == 4)
-			{
-				goto L0305;
-			}
-
-			if (windowIndex != -1)
-			{
-				goto L0359;
-			}
-
-		L0305:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52), 0x0);
-
-		L030a:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, 0x3c64);
-			// Instruction address 0x0000:0x0319, size: 5
-			this.oParent.CAPI.stricmp(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, this.oCPU.SI.UInt16), (ushort)(this.oCPU.BP.UInt16 - 0x4c));
-
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.LE) goto L0350;
-
-			// Instruction address 0x0000:0x032b, size: 5
-			this.oParent.CAPI.stricmp(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, this.oCPU.SI.UInt16), (ushort)(this.oCPU.BP.UInt16 - 0x32));
-
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.GE) goto L0350;
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x5a), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34), 0x4);
-
-			// Instruction address 0x0000:0x0348, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x32), this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, this.oCPU.SI.UInt16));
-
-		L0350:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52)), 0x15);
-			if (this.oCPU.Flags.L) goto L030a;
-
-		L0359:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34)), 0xffff);
-			if (this.oCPU.Flags.NE) goto L0362;
-			goto L03f1;
-
-		L0362:
-			this.oCPU.AX.UInt16 = (ushort)param1;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58)), this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.L) goto L03d4;
-
-			// Instruction address 0x0000:0x0381, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x18), this.oParent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.oCPU.ReadString(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x32)),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a))));
-
-			// Instruction address 0x0000:0x0396, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0((ushort)(this.oCPU.BP.UInt16 - 0x18),
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e)),
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50)),
-				0);
-
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58));
-			this.oCPU.SI.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SI.UInt16, (ushort)param1);
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x5a));
-			this.oCPU.ES.UInt16 = 0x3772; // segment
-			this.oCPU.WriteUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x1c80), this.oCPU.AX.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34));
-			this.oCPU.ES.UInt16 = 0x3772; // segment
-			this.oCPU.WriteUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x36fc), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50)), 0x7));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50)), 0xc0);
-			if (this.oCPU.Flags.LE) goto L03d4;
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e)), this.oCPU.AX.UInt16));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50), 0x10);
-
-		L03d4:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58))));
-
-			// Instruction address 0x0000:0x03df, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x4c), (ushort)(this.oCPU.BP.UInt16 - 0x32));
-
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e)), 0x12c);
-			if (this.oCPU.Flags.GE) goto L03f1;
-			goto L015f;
-
-		L03f1:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e)), 0x12c);
-			if (this.oCPU.Flags.L) goto L03fd;
-			this.oCPU.AX.UInt16 = 0x1;
-			goto L03ff;
-
-		L03fd:
-			this.oCPU.AX.UInt16 = 0;
-
-		L03ff:
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x6808, this.oCPU.AX.UInt16);
-
-			if (this.oParent.Var_1a3c_MouseAvailable) goto L040c;
-			goto L0492;
-
-		L040c:
 			// Instruction address 0x0000:0x040c, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
+			this.parent.MainCode.F0_11a8_0250_ShowMouse();
 
-		L0411:
-			// Instruction address 0x0000:0x0411, size: 5
-			this.oParent.MainCode.F0_11a8_0223_UpdateMouseState();
+			while (true)
+			{
+				// Instruction address 0x0000:0x0411, size: 5
+				this.parent.MainCode.F0_11a8_0223_UpdateMouseState();
 
-			if (this.oParent.Var_db3a_MouseButton != 0) goto L0426;
+				if (this.parent.Var_db3a_MouseButton != 0 || this.parent.CAPI.kbhit() != 0)
+				{
+					x = (this.parent.Var_db3c_MouseXPos - 10) / topicNameMaximumWidth;
 
-			// Instruction address 0x0000:0x041d, size: 5
-			this.oParent.CAPI.kbhit();
+					if (this.parent.Var_db3e_MouseYPos >= 16)
+					{
+						y = (this.parent.Var_db3e_MouseYPos - 16) / 7;
+					}
+					else
+					{
+						y = -1;
+					}
 
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L0411;
+					selectedTopicIndex = (26 * x) + y;
 
-		L0426:
-			this.oCPU.AX.Int16 = (short)this.oParent.Var_db3c_MouseXPos;
-			this.oCPU.AX.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.AX.UInt16, 0xa);
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.CX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a));
-			this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e), this.oCPU.AX.UInt16);
-			
-			if (this.oParent.Var_db3e_MouseYPos < 16) goto L044d;
+					// Instruction address 0x0000:0x045e, size: 5
+					this.parent.MainCode.F0_11a8_0268_HideMouse();
 
-			this.oCPU.AX.Int16 = (short)this.oParent.Var_db3e_MouseYPos;
-			this.oCPU.AX.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.AX.UInt16, 0x10);
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.CX.UInt16 = 0x7;
-			this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50), this.oCPU.AX.UInt16);
-			goto L0452;
+					if (this.parent.Var_db3a_MouseButton == 2)
+					{
+						y = -1;
+						x = 2;
+					}
 
-		L044d:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50), 0xffff);
+					if (this.parent.CAPI.kbhit() != 0)
+					{
+						// Instruction address 0x0000:0x0480, size: 5
+						this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
 
-		L0452:
-			this.oCPU.AX.UInt16 = 0x1a;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e)));
-			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50)));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x56), this.oCPU.AX.UInt16);
+						y = -1;
+						x = 2;
+					}
 
-			// Instruction address 0x0000:0x045e, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
+					if (y < 0 || topicCount - topicStartIndex > selectedTopicIndex)
+					{
+						if (y >= 0)
+						{
+							F8_0000_062a_DisplayEncyclopediaTopic(displayItems[selectedTopicIndex].Key, displayItems[selectedTopicIndex].Value);
+						}
+						else
+						{
+							if (x != 0)
+							{
+								selectedTopicIndex = -2;
+							}
+							else
+							{
+								selectedTopicIndex = -1;
+							}
+						}
 
-			if (this.oParent.Var_db3a_MouseButton != 2) goto L0474;
+						// Instruction address 0x0000:0x061c, size: 5
+						this.parent.CheckPlayerTurn.F0_1403_4545_EmptyKeyboardAndMouse();
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50), 0xffff);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e), 0x2);
+						return selectedTopicIndex;
+					}
 
-		L0474:
-			// Instruction address 0x0000:0x0474, size: 5
-			this.oParent.CAPI.kbhit();
-
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.NE) goto L0480;
-			goto L05b7;
-
-		L0480:
-			// Instruction address 0x0000:0x0480, size: 5
-			this.oParent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50), 0xffff);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e), 0x2);
-			goto L05b7;
-
-		L0492:
-			this.oCPU.AX.UInt16 = 0;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e), this.oCPU.AX.UInt16);
-
-		L049a:
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e));
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, 0x8);
-			
-			this.oCPU.AX.UInt16 = 0x7;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50)));
-			this.oCPU.DI.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.DI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.DI.UInt16, 0xf);
-
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a));
-			this.oCPU.AX.UInt16 = this.oCPU.DEC_UInt16(this.oCPU.AX.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.DEC_UInt16(this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x5c), this.oCPU.AX.UInt16);
-
-			// Instruction address 0x0000:0x04cd, size: 5
-			this.oParent.Graphics.F0_VGA_009a_ReplaceColor(this.oParent.Var_aa_Screen0_Rectangle, 
-				(short)this.oCPU.SI.UInt16, (short)this.oCPU.DI.UInt16,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x5c)), 8, 15, 10);
-
-			// Instruction address 0x0000:0x04d5, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54), this.oCPU.AX.UInt16);
-
-			// Instruction address 0x0000:0x04f2, size: 5
-			this.oParent.Graphics.F0_VGA_009a_ReplaceColor(this.oParent.Var_aa_Screen0_Rectangle, 
-				(short)this.oCPU.SI.UInt16, (short)this.oCPU.DI.UInt16,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x5c)), 8, 10, 15);
-
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54));
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x4800);
-			if (this.oCPU.Flags.E) goto L0513;
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x4b00);
-			if (this.oCPU.Flags.E) goto L057f;
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x4d00);
-			if (this.oCPU.Flags.E) goto L0538;
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x5000);
-			if (this.oCPU.Flags.E) goto L0553;
-			goto L052c;
-
-		L0513:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50)), 0x0);
-			if (this.oCPU.Flags.E) goto L051e;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50), this.oCPU.DEC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50))));
-			goto L052c;
-
-		L051e:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e)), 0x0);
-			if (this.oCPU.Flags.E) goto L052c;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e), this.oCPU.DEC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e))));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50), 0x19);
-
-		L052c:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54)), 0x6d);
-			if (this.oCPU.Flags.NE) goto L058a;
-			this.oCPU.AX.UInt16 = 0xffff;
-			goto L0624;
-
-		L0538:
-			this.oCPU.AX.UInt16 = 0x1a;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e)));
-			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50)));
-			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, 0x1a);
-			this.oCPU.CX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58));
-			this.oCPU.CX.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.CX.UInt16, (ushort)param1);
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, this.oCPU.CX.UInt16);
-			if (this.oCPU.Flags.GE) goto L052c;
-
-		L054e:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e))));
-			goto L052c;
-
-		L0553:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58));
-			this.oCPU.SI.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SI.UInt16, (ushort)param1);
-			this.oCPU.AX.UInt16 = 0x1a;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e)));
-			this.oCPU.DI.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.DI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.DI.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50)));
-			this.oCPU.DI.UInt16 = this.oCPU.INC_UInt16(this.oCPU.DI.UInt16);
-			this.oCPU.CMP_UInt16(this.oCPU.DI.UInt16, this.oCPU.SI.UInt16);
-			if (this.oCPU.Flags.GE) goto L052c;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50)), 0x19);
-			if (this.oCPU.Flags.GE) goto L0578;
-			this.oCPU.CMP_UInt16(this.oCPU.DI.UInt16, this.oCPU.SI.UInt16);
-			if (this.oCPU.Flags.GE) goto L0578;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50))));
-			goto L052c;
-
-		L0578:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50), 0x0);
-			goto L054e;
-
-		L057f:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e)), 0x0);
-			if (this.oCPU.Flags.E) goto L052c;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e), this.oCPU.DEC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e))));
-			goto L052c;
-
-		L058a:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54)), 0x1b);
-			if (this.oCPU.Flags.E) goto L0596;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54)), 0x78);
-			if (this.oCPU.Flags.NE) goto L059c;
-
-		L0596:
-			this.oCPU.AX.UInt16 = 0xfffe;
-			goto L0624;
-
-		L059c:
-			this.oCPU.AX.UInt16 = 0x1a;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e)));
-			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50)));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x56), this.oCPU.AX.UInt16);
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54)), 0xd);
-			if (this.oCPU.Flags.E) goto L05b7;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54)), 0x20);
-			if (this.oCPU.Flags.E) goto L05b7;
-			goto L049a;
-
-		L05b7:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50)), 0x0);
-			if (this.oCPU.Flags.L) goto L05cc;
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58));
-			this.oCPU.AX.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.AX.UInt16, (ushort)param1);
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x56)));
-			if (this.oCPU.Flags.G) goto L05cc;
-			this.oCPU.AX.UInt16 = 0;
-			goto L0624;
-
-		L05cc:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50)), 0x0);
-			if (this.oCPU.Flags.L) goto L060b;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xe17c), 0x3);
-			if (this.oCPU.Flags.E) goto L05eb;
-
-		L05eb:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x56));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-
-			this.oCPU.ES.UInt16 = 0x3772; // segment
-			F8_0000_062a(this.oCPU.ReadInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x1c80)),
-				this.oCPU.ReadInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x36fc)));
-			
-			goto L061c;
-
-		L060b:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4e)), 0x0);
-			if (this.oCPU.Flags.E) goto L0616;
-			this.oCPU.AX.UInt16 = 0xfffe;
-			goto L0619;
-
-		L0616:
-			this.oCPU.AX.UInt16 = 0xffff;
-
-		L0619:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x56), this.oCPU.AX.UInt16);
-
-		L061c:
-			// Instruction address 0x0000:0x061c, size: 5
-			this.oParent.CheckPlayerTurn.F0_1403_4545_EmptyKeyboardAndMouse();
-
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x56));
-
-		L0624:
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.DI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F8_0000_0066");
-
-			return this.oCPU.AX.UInt16;
+					return 0;
+				}
+			}
 		}
 
 		/// <summary>
 		/// ?
 		/// </summary>
-		/// <param name="topicID"></param>
-		/// <param name="encyclopediaID"></param>
-		public void F8_0000_062a(int topicID, int encyclopediaID)
+		/// <param name="topicType"></param>
+		/// <param name="topicIndex"></param>
+		public void F8_0000_062a_DisplayEncyclopediaTopic(EncyclopediaTopicEnum topicType, int topicIndex)
 		{
-			this.oCPU.Log.EnterBlock($"F8_0000_062a({topicID}, {encyclopediaID})");
+			//this.oCPU.Log.EnterBlock($"F8_0000_062a({topicIndex}, {topicID})");
 
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x34);
-			this.oCPU.PUSH_UInt16(this.oCPU.DI.UInt16);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
+			if (topicType == EncyclopediaTopicEnum.AllTopics)
+				return;
 
 			// Instruction address 0x0000:0x063a, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_065f_StopPaletteCycleSlots();
+			this.parent.Segment_2dc4.F0_2dc4_065f_StopPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x063f, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
+			this.parent.MainCode.F0_11a8_0268_HideMouse();
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 0xffff);
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xe17c), 0x3);
-			if (this.oCPU.Flags.E) goto L066d;
+			int colour = 15;
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 1);
+			if (this.parent.Var_3c62 != 0)
+			{
+				colour = 255;
+			}
+			else
+			{
+				colour = 253;
 
-		L066d:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0xf);
+				// Instruction address 0x0000:0x0696, size: 5
+				this.parent.Graphics.SetPaletteColor(253, GBitmap.Color18ToColor(61, 61, 61));
+			}
 
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x3c62), 0x0);
-			if (this.oCPU.Flags.E) goto L0687;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0xff);
-			goto L069e;
-
-		L0687:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0xfd);
-
-			// Instruction address 0x0000:0x0696, size: 5
-			this.oParent.Graphics.SetPaletteColor(0xfd, GBitmap.Color18ToColor(0x3d, 0x3d, 0x3d));
-
-		L069e:
 			// Instruction address 0x0000:0x06b1, size: 5
-			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200,
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
+			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, (byte)colour);
 
 			// Instruction address 0x0000:0x06b9, size: 5
-			this.oParent.UnitManagement.F0_1866_260e();
+			this.parent.UnitManagement.F0_1866_260e();
 
-			this.oParent.Var_aa_Screen0_Rectangle.FontID = 7;
+			this.parent.Var_aa_Screen0_Rectangle.FontID = 7;
 
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x32), 0xcc);
+			string topicName = "";
 			
-			if (encyclopediaID != 2) goto L06dc;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x32), 0xe0);
+			int xPosition = 204;
 
-		L06dc:
-			if (encyclopediaID == 4) goto L06f5;
+			if (topicType == EncyclopediaTopicEnum.UnitType)
+			{
+				xPosition = 224;
+			}
 
-			if (encyclopediaID != 1) goto L06ee;
+			if (topicType == EncyclopediaTopicEnum.GameConcept || 
+				(topicType != EncyclopediaTopicEnum.CityImprovement && this.parent.Var_3c62 != 0) || 
+				(topicIndex > 24 || this.parent.Var_3c62 != 0))
+			{
+				xPosition = 160;
+			}
 
-			if (topicID > 24) goto L06f5;
+			switch (topicType)
+			{
+				case EncyclopediaTopicEnum.TechnologyAdvance:
+					if (this.parent.Var_3c62 == 0)
+					{
+						int fileID = F8_0000_16c4_GetTechnologyAdvanceFileID(topicIndex);
 
-		L06ee:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x3c62), 0x0);
-			if (this.oCPU.Flags.E) goto L06fa;
+						// Instruction address 0x0000:0x0760, size: 5
+						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, $"ICONPG{(fileID / 9) + 1}.PIC", 0);
 
-		L06f5:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x32), 0xa0);
+						// Instruction address 0x0000:0x076c, size: 5
+						this.parent.Segment_2dc4.F0_2dc4_047d_ReadAndSetPalette("ICONPG1.PAL");
 
-		L06fa:
-			this.oCPU.AX.Int16 = (short)encyclopediaID;
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L0724;
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
-			if (this.oCPU.Flags.NE) goto L0709;
-			goto L08ea;
+						F8_0000_16f7_DrawEncyclopediaImage(((fileID % 3) * 111) + 1, (((fileID % 9) / 3) * 69) + 1, 110, 68, 62, 42);
+					}
 
-		L0709:
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x2);
-			if (this.oCPU.Flags.NE) goto L0711;
-			goto L09d8;
+					// Instruction address 0x0000:0x07da, size: 5
+					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Technology Advance", xPosition, 36, 7);
 
-		L0711:
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x3);
-			if (this.oCPU.Flags.NE) goto L0719;
-			goto L0aac;
+					topicName = this.parent.GameData.TechnologyAdvances[topicIndex].Name;
 
-		L0719:
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x4);
-			if (this.oCPU.Flags.NE) goto L0721;
-			goto L0b8f;
+					break;
 
-		L0721:
-			goto L07e2;
+				case EncyclopediaTopicEnum.CityImprovement:
+					if (topicIndex > 1 && topicIndex <= 21 && this.parent.Var_3c62 == 0)
+					{
+						// Instruction address 0x0000:0x0928, size: 5
+						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "CITYPIX2.PIC", 0);
 
-		L0724:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x3c62), 0x0);
-			if (this.oCPU.Flags.E) goto L072e;
-			goto L07b5;
+						// Instruction address 0x0000:0x0934, size: 5
+						this.parent.Segment_2dc4.F0_2dc4_047d_ReadAndSetPalette("HILL.PAL");
 
-		L072e:
-			F8_0000_16c4(topicID);
-			
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34), this.oCPU.AX.UInt16);
+						// Instruction address 0x0000:0x0973, size: 5
+						int bitmapID = this.parent.Graphics.F0_VGA_0b85_ScreenToBitmap(1, (((topicIndex - 2) >> 2) * 50) + 1, (((topicIndex - 2) & 0x3) * 50) + 1, 49, 49);
 
-			// Instruction address 0x0000:0x0743, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "iconpg1.pic");
+						// Instruction address 0x0000:0x0992, size: 5
+						this.parent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, 37, 17, bitmapID);
 
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34));
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.CX.UInt16 = 0x9;
-			this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba0c, this.oCPU.ADD_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, 0xba0c), this.oCPU.AX.LowUInt8));
+						// Instruction address 0x0000:0x099d, size: 5
+						this.parent.Segment_2dc4.F0_2dc4_0523_FreeResource(bitmapID, "Encyclopedia");
+					}
 
-			// Instruction address 0x0000:0x0760, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, 0xba06, 0);
+					if (topicIndex > 24)
+					{
+						// Instruction address 0x0000:0x07da, size: 5
+						this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Wonder of the World", xPosition, 36, 7);
+					}
+					else
+					{
+						// Instruction address 0x0000:0x07da, size: 5
+						this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("City Improvement", xPosition, 36, 7);
+					}
 
-			// Instruction address 0x0000:0x076c, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_047d_ReadAndSetPalette(0x3ce6);
+					topicName = this.parent.GameData.GetImprovementType(topicIndex).Name;
 
-			F8_0000_16f7(
-				((this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34)) % 3) * 111) + 1,
-				(((this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34)) % 9) / 3) * 69) + 1,
-				110, 68, 62, 42);
+					break;
 
-		L07b5:
-			// Instruction address 0x0000:0x07c3, size: 5
-			this.oParent.CAPI.strcpy(0xba06, this.oParent.GameData.Technologies[topicID].Name);
+				case EncyclopediaTopicEnum.UnitType:
+					if (this.parent.Var_3c62 == 0)
+					{
+						int fileID = F8_0000_1790_GetUnitTypeFileID(topicIndex);
 
-			// Instruction address 0x0000:0x07da, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0("Civilization Advance", this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x32)), 36, 7);
+						// Instruction address 0x0000:0x0a14, size: 5
+						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, $"ICONPG{(char)('A' + (fileID / 6))}.PIC", 0);
 
-		L07e2:
-			this.oParent.Var_aa_Screen0_Rectangle.FontID = 6;
+						// Instruction address 0x0000:0x0a20, size: 5
+						this.parent.Segment_2dc4.F0_2dc4_047d_ReadAndSetPalette("ICONPGA.PAL");
 
-			// Instruction address 0x0000:0x07f9, size: 5
-			this.oParent.CAPI.strupr(0xba06);
+						F8_0000_16f7_DrawEncyclopediaImage(((fileID & 1) * 160) + 1, ((fileID % 6) >> 1) * 61, 158, 61, 88, 42);
+					}
+
+					// Instruction address 0x0000:0x0a87, size: 5
+					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Unit Type", xPosition, 36, 7);
+
+					// Instruction address 0x0000:0x0aa4, size: 5
+					this.parent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+						216, 48, this.parent.Array_d4ce[96 + topicIndex]);
+
+					topicName = this.parent.GameData.Units[topicIndex].Name;
+
+					break;
+
+				case EncyclopediaTopicEnum.TerrainType:
+					if (this.parent.Var_3c62 == 0)
+					{
+						byte[] palette;
+
+						int fileID = F8_0000_17c3_GetTerrainTypeFileID(topicIndex);
+
+						// Instruction address 0x0000:0x0ae8, size: 5
+						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, $"ICONPGT{((fileID / 6) + 1)}.PIC", 0);
+
+						// Instruction address 0x0000:0x0aff, size: 5
+						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "sp256.pal", out palette);
+
+						// Instruction address 0x0000:0x0b0b, size: 5
+						this.parent.Graphics.F0_VGA_0162_SetColorsFromColorStruct(palette);
+
+						// Instruction address 0x0000:0x0b1d, size: 5
+						this.parent.Graphics.SetPaletteColor(253, GBitmap.Color18ToColor(61, 61, 61));
+
+						F8_0000_16f7_DrawEncyclopediaImage(((fileID % 3) * 107) + 1, (((fileID % 6) / 3) * 87) + 5, 106, 77, 76, 46);
+					}
+
+					// Instruction address 0x0000:0x07da, size: 5
+					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Terrain Type", xPosition, 36, 7);
+
+					// Instruction address 0x0000:0x0b76, size: 5
+					topicName = this.parent.GameData.Terrains[topicIndex].Name;
+
+					break;
+
+				case EncyclopediaTopicEnum.GameConcept:
+					// Instruction address 0x0000:0x07da, size: 5
+					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Game Concept", xPosition, 36, 7);
+
+					// Instruction address 0x0000:0x0b9c, size: 5
+					topicName = Array_3c64_GameConcepts[topicIndex];
+
+					break;
+			}
+
+			this.parent.Var_aa_Screen0_Rectangle.FontID = 6;
 
 			// Instruction address 0x0000:0x0802, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x32)), 20, 0);
+			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(topicName, xPosition, 20, 0);
 
-			this.oParent.Var_aa_Screen0_Rectangle.FontID = 7;
+			this.parent.Var_aa_Screen0_Rectangle.FontID = 7;
+			
+			int yPosition = 76;
 
-			// Instruction address 0x0000:0x081b, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x2c), "*");
-
-			// Instruction address 0x0000:0x082b, size: 5
-			this.oParent.CAPI.strcat((ushort)(this.oCPU.BP.UInt16 - 0x2c), 0xba06);
-
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 0x4c);
-
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), 0x0);
-			if (this.oCPU.Flags.NE) goto L0846;
-			goto L08e4;
-
-		L0846:
-			if (this.oParent.GameData.GameSettingFlags.CivilopediaText)
+			if (this.parent.GameData.GameSettingFlags.EncyclopediaText && topicType != EncyclopediaTopicEnum.TerrainType)
 			{
-				string content = this.oParent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey($"BLURB{encyclopediaID}", 
-					this.oCPU.ReadString(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2c)));
+				string content = this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey($"BLURB{topicType}", $"*{topicName.ToUpper()}");
 
 				// Instruction address 0x0000:0x0855, size: 5
-				if ( !string.IsNullOrEmpty(content))
+				if (!string.IsNullOrEmpty(content))
 				{
 					// Instruction address 0x0000:0x0870, size: 5
-					this.oParent.LanguageTools.F0_2f4d_0088_DrawTextBlock(12, 76, content, 296, 1);
+					this.parent.DrawTools.DrawTextBlock(12, 76, content, 296, 1);
 
 					// Instruction address 0x0000:0x0878, size: 5
-					this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+					this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 					// Instruction address 0x0000:0x0894, size: 5
-					this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 8, 76, 304, 116,
-						this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
+					this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 8, 76, 304, 116, (byte)colour);
 				}
 			}
 
-			// Instruction address 0x0000:0x08a4, size: 5
-			this.oParent.CAPI.strcat((ushort)(this.oCPU.BP.UInt16 - 0x2c), "2");
-
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-			
-			if (encyclopediaID == 0) goto L08e4;
-
-			// Instruction address 0x0000:0x08d6, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.LanguageTools.F0_2f4d_0088_DrawTextBlock(12, 
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)),
-				this.oParent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey($"BLURB{encyclopediaID}", this.oCPU.ReadString(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2c))),
-				288, 1);
-
-			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, 0x8);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), this.oCPU.AX.UInt16);
-
-		L08e4:
-			this.oCPU.AX.Int16 = (short)encyclopediaID;
-			goto L1636;
-
-		L08ea:
-			if (topicID > 1) goto L090d;
-			goto L09a5;
-
-		L090d:
-			if (topicID <= 21) goto L0916;
-			goto L09a5;
-
-		L0916:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x3c62), 0x0);
-			if (this.oCPU.Flags.E) goto L0920;
-			goto L09a5;
-
-		L0920:
-			// Instruction address 0x0000:0x0928, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, 0x3d07, 0);
-
-			// Instruction address 0x0000:0x0934, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_047d_ReadAndSetPalette(0x3d14);
-
-			this.oCPU.SI.Int16 = (short)topicID;
-			this.oCPU.SI.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SI.UInt16, 0x2);
-			
-			// Instruction address 0x0000:0x0973, size: 5
-			this.oParent.Graphics.F0_VGA_0b85_ScreenToBitmap(1,
-				(ushort)(((this.oCPU.SI.UInt16 >> 2) * 0x32) + 1),
-				(ushort)(((this.oCPU.SI.UInt16 & 3) * 0x32) + 1),
-				0x31, 0x31);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa), this.oCPU.AX.UInt16);
-
-			// Instruction address 0x0000:0x0992, size: 5
-			this.oParent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
-				37, 17,
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa)));
-
-			// Instruction address 0x0000:0x099d, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_0523_FreeResource(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa)), "");
-
-		L09a5:
-			// Instruction address 0x0000:0x09b3, size: 5
-			this.oParent.CAPI.strcpy(0xba06, this.oParent.GameData.GetImprovementType(topicID).Name);
-
-			if (topicID > 24)
+			if (topicType != EncyclopediaTopicEnum.TechnologyAdvance && topicType != EncyclopediaTopicEnum.TerrainType)
 			{
-				// Instruction address 0x0000:0x07da, size: 5
-				this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0("Wonder of the World", this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x32)), 36, 7);
-			}
-			else
-			{
-				// Instruction address 0x0000:0x07da, size: 5
-				this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0("City Improvement", this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x32)), 36, 7);
+				// Instruction address 0x0000:0x08d6, size: 5
+				yPosition = this.parent.DrawTools.DrawTextBlock(12, yPosition,
+					this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey($"BLURB{topicType}", $"*{topicName.ToUpper()}2"), 288, 1);
+
+				yPosition += 8;
 			}
 
-			goto L07e2;
-
-		L09d8:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x3c62), 0x0);
-			if (this.oCPU.Flags.E) goto L09e2;
-			goto L0a62;
-
-		L09e2:
-			F8_0000_1790(topicID);
-			
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34), this.oCPU.AX.UInt16);
-
-			// Instruction address 0x0000:0x09f7, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "iconpga.pic");
-
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34));
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.CX.UInt16 = 0x6;
-			this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba0c, this.oCPU.ADD_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, 0xba0c), this.oCPU.AX.LowUInt8));
-
-			// Instruction address 0x0000:0x0a14, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, 0xba06, 0);
-
-			// Instruction address 0x0000:0x0a20, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_047d_ReadAndSetPalette(0x3d4e);
-
-			F8_0000_16f7(
-				(ushort)(((this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34)) & 1) * 160) + 1),
-				(ushort)(((this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34)) % 6) >> 1) * 61),
-				158, 61, 88, 42);
-
-		L0a62:
-			// Instruction address 0x0000:0x0a70, size: 5
-			this.oParent.CAPI.strcpy(0xba06, this.oParent.GameData.Units[topicID].Name);
-
-			// Instruction address 0x0000:0x0a87, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0("Military Unit", this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x32)), 36, 7);
-
-			// Instruction address 0x0000:0x0aa4, size: 5
-			this.oParent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
-				216, 48, this.oParent.Array_d4ce[96 + topicID]);
-			goto L07e2;
-
-		L0aac:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x3c62), 0x0);
-			if (this.oCPU.Flags.E) goto L0ab6;
-			goto L0b68;
-
-		L0ab6:
-			F8_0000_17c3(topicID);
-			
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34), this.oCPU.AX.UInt16);
-
-			// Instruction address 0x0000:0x0acb, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "iconpgt1.pic");
-
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34));
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.CX.UInt16 = 0x6;
-			this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba0d, this.oCPU.ADD_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, 0xba0d), this.oCPU.AX.LowUInt8));
-
-			// Instruction address 0x0000:0x0ae8, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, 0xba06, 0);
-
-			// Instruction address 0x0000:0x0aff, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, 0x3d75, 0xc5be);
-
-			// Instruction address 0x0000:0x0b0b, size: 5
-			this.oParent.Graphics.F0_VGA_0162_SetColorsFromColorStruct(0xc5be);
-			
-			// Instruction address 0x0000:0x0b1d, size: 5
-			this.oParent.Graphics.SetPaletteColor(0xfd, GBitmap.Color18ToColor(0x3d, 0x3d, 0x3d));
-
-			F8_0000_16f7(
-				(ushort)(((this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34)) % 3) * 107) + 1),
-				(ushort)((((this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34)) % 6) / 3) * 87) + 5),
-				106, 77, 76, 46);
-
-		L0b68:
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0);
-
-			// Instruction address 0x0000:0x0b76, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.GameData.Terrains[topicID].Name);
-
-			// Instruction address 0x0000:0x07da, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0("Terrain Type", this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x32)), 36, 7);
-
-			goto L07e2;
-
-		L0b8f:
-			this.oCPU.BX.Int16 = (short)topicID;
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-			// Instruction address 0x0000:0x0b9c, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0x3c64)));
-
-			// Instruction address 0x0000:0x07da, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0("Game Concept", this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x32)), 36, 7);
-
-			goto L07e2;
-
-		L0bb5:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x8));
-
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
-			TechnologyDefinition tech1 = this.oParent.GameData.Technologies[topicID];
-
-			if (tech1.RequiresTechnology1 != TechnologyEnum.None)
+			switch (topicType)
 			{
-				// Instruction address 0x0000:0x0bd7, size: 5
-				this.oParent.CAPI.strcpy(0xba06, "Requires ");
+				case EncyclopediaTopicEnum.TechnologyAdvance:
+					yPosition += 8;
 
-				// Instruction address 0x0000:0x0beb, size: 5
-				this.oParent.CAPI.strcat(0xba06, this.oParent.GameData.Technologies[(int)tech1.RequiresTechnology1].Name);
+					TechnologyAdvanceDefinition tech1 = this.parent.GameData.TechnologyAdvances[topicIndex];
 
-				if (tech1.RequiresTechnology2 != TechnologyEnum.None)
-				{
-					// Instruction address 0x0000:0x0c0c, size: 5
-					this.oParent.CAPI.strcat(0xba06, " and ");
+					if (tech1.RequiresTechnologyAdvance1 != TechnologyAdvanceEnum.None)
+					{
+						// Instruction address 0x0000:0x0c37, size: 5
+						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+							$"Requires {this.parent.GameData.TechnologyAdvances[(int)tech1.RequiresTechnologyAdvance1].Name}" +
+								$"{((tech1.RequiresTechnologyAdvance2 != TechnologyAdvanceEnum.None) ? $" and {this.parent.GameData.TechnologyAdvances[(int)tech1.RequiresTechnologyAdvance2].Name}" : "")}",
+							32, yPosition, 1);
+					}
 
-					// Instruction address 0x0000:0x0c20, size: 5
-					this.oParent.CAPI.strcat(0xba06, this.oParent.GameData.Technologies[(int)tech1.RequiresTechnology2].Name);
-				}
+					yPosition += 16;
+
+					// Instruction address 0x0000:0x0c52, size: 5
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("Allows: ", 32, yPosition, 1);
+
+					yPosition += 8;
+
+					int oldYPosition = yPosition;
+
+					for (int i = 0; i < 72; i++)
+					{
+						tech1 = this.parent.GameData.TechnologyAdvances[i];
+
+						if (tech1.RequiresTechnologyAdvance1 == (TechnologyAdvanceEnum)topicIndex)
+						{
+							// Instruction address 0x0000:0x0cd9, size: 5
+							this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+								$"{tech1.Name}" +
+								$"{((tech1.RequiresTechnologyAdvance2 != TechnologyAdvanceEnum.None) ? $" (with {this.parent.GameData.TechnologyAdvances[(int)tech1.RequiresTechnologyAdvance2].Name})" : "")}",
+								40, yPosition, 9);
+
+							yPosition += 8;
+						}
+
+						if (tech1.RequiresTechnologyAdvance2 == (TechnologyAdvanceEnum)topicIndex)
+						{
+							// Instruction address 0x0000:0x0d55, size: 5
+							this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+								$"{tech1.Name}" +
+								$"{((tech1.RequiresTechnologyAdvance1 != TechnologyAdvanceEnum.None) ? $" (with {this.parent.GameData.TechnologyAdvances[(int)tech1.RequiresTechnologyAdvance1].Name})" : "")}",
+								40, yPosition, 9);
+
+							yPosition += 8;
+						}
+					}
+
+					yPosition += 4;
+
+					for (int i = 0; i < 28; i++)
+					{
+						if (this.parent.GameData.Units[i].RequiredTechnology == (TechnologyAdvanceEnum)topicIndex)
+						{
+							// Instruction address 0x0000:0x0da3, size: 5
+							this.parent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+								40, yPosition - 4, this.parent.Array_d4ce[64 + i + (this.parent.GameData.HumanPlayerID * 32)]);
+
+							// Instruction address 0x0000:0x0ddc, size: 5
+							this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{this.parent.GameData.Units[i].Name} unit", 60, yPosition, 12);
+
+							yPosition += 12;
+						}
+					}
+
+					for (int i = 1; i < 46; i++)
+					{
+						if ((int)this.parent.GameData.GetImprovementType(i).RequiresTechnology == topicIndex)
+						{
+							// Instruction address 0x0000:0x0e4a, size: 5
+							this.parent.CityWorker.F0_1d12_7045(i, 40, yPosition - 2);
+
+							// Instruction address 0x0000:0x0e17, size: 5
+							this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+								$"{this.parent.GameData.GetImprovementType(i).Name}{((i > 24) ? " Wonder" : " improvement")}", 60, yPosition, 2);
+
+							yPosition += 12;
+						}
+					}
+
+					if (oldYPosition + 4 == yPosition)
+					{
+						// Instruction address 0x0000:0x0e8c, size: 5
+						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("Allows: ", 32, yPosition - 12, (byte)colour);
+					}
+
+					int technologyAcquiredFrom = this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].TechnologyAcquiredFrom[topicIndex];
+
+					switch (technologyAcquiredFrom)
+					{
+						case -2:
+							// Instruction address 0x0000:0x0f20, size: 5
+							this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("(from Great Library)", xPosition, 48, 7);
+
+							break;
+
+						case -1:
+							break;
+
+						case 0:
+							// Instruction address 0x0000:0x0f20, size: 5
+							this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("(Discovered)", xPosition, 48, 7);
+
+							break;
+
+						default:
+							// Instruction address 0x0000:0x0f20, size: 5
+							this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(
+								$"(Taken from {this.parent.GameData.Players[technologyAcquiredFrom].Nation})", xPosition, 48, 7);
+
+							break;
+					}
+					break;
+
+				case EncyclopediaTopicEnum.CityImprovement:
+					if (this.parent.GameData.GetImprovementType(topicIndex).RequiresTechnology != TechnologyAdvanceEnum.None)
+					{
+						// Instruction address 0x0000:0x0f75, size: 5
+						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+							$"Requires {this.parent.GameData.TechnologyAdvances[(int)this.parent.GameData.GetImprovementType(topicIndex).RequiresTechnology].Name}", 12, yPosition, 9);
+					}
+					else
+					{
+						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Requires no Advancement", 12, yPosition, 9);
+
+					}
+
+					yPosition += 8;
+
+					// Instruction address 0x0000:0x0fd5, size: 5
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+						$"Cost: {10 * this.parent.GameData.GetImprovementType(topicIndex).Cost} shields.", 12, yPosition, 9);
+
+					yPosition += 8;
+
+					// Instruction address 0x0000:0x101e, size: 5
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+						$"Maintenance: {this.parent.GameData.GetImprovementType(topicIndex).MaintenanceCost} shields.", 12, yPosition, 12);
+
+					yPosition += 8;
+
+					break;
+
+				case EncyclopediaTopicEnum.UnitType:
+					// Instruction address 0x0000:0x1081, size: 5
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+						$"Required technology: " +
+						$"{((this.parent.GameData.Units[topicIndex].RequiredTechnology == TechnologyAdvanceEnum.None) ? "None" :
+						this.parent.GameData.TechnologyAdvances[(int)this.parent.GameData.Units[topicIndex].RequiredTechnology].Name)}" +
+						$"{((topicIndex == 25) ? " and Nuclear Fission" : "")}",
+						100, yPosition, 9);
+
+					yPosition += 8;
+
+					// Instruction address 0x0000:0x10e9, size: 5
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+						$"Cost: {10 * this.parent.GameData.Units[topicIndex].Cost} shields.", 100, yPosition, 9);
+
+					yPosition += 8;
+
+					// Instruction address 0x0000:0x1135, size: 5
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Attack Strength: {this.parent.GameData.Units[topicIndex].AttackStrength}", 100, yPosition, 12);
+
+					yPosition += 8;
+
+					// Instruction address 0x0000:0x1181, size: 5
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+						$"Defense Strength: {this.parent.GameData.Units[topicIndex].DefenseStrength}", 100, yPosition, 12);
+
+					yPosition += 8;
+
+					// Instruction address 0x0000:0x101e, size: 5
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+						$"Moves: {this.parent.GameData.Units[topicIndex].MoveCount}", 100, yPosition, 0);
+
+					yPosition += 8;
+
+					break;
+
+				case EncyclopediaTopicEnum.TerrainType:
+					for (int i = topicIndex; i <= topicIndex + 12; i += 12)
+					{
+						if (i == topicIndex || this.parent.GameData.Terrains[topicIndex].Food != 2)
+						{
+							// Instruction address 0x0000:0x1206, size: 5
+							this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(this.parent.GameData.Terrains[i].Name, 12, yPosition, 1);
+
+							yPosition += 8;
+
+							if (this.parent.GameData.Terrains[i].Food == 0 && this.parent.GameData.TerrainModifications[topicIndex].IrrigationEffect < -1)
+							{
+								StringBuilder description = new();
+
+								description.Append($"Food: {this.parent.GameData.Terrains[i].Food}{((this.parent.GameData.Terrains[i].Food >= 3) ? "*" : "")}");
+
+								if (this.parent.GameData.TerrainModifications[topicIndex].IrrigationEffect < -1)
+								{
+									// Instruction address 0x0000:0x1296, size: 5
+									description.Append($" ({this.parent.GameData.Terrains[i].Food - this.parent.GameData.TerrainModifications[topicIndex].IrrigationEffect - 1}");
+									description.Append((this.parent.GameData.Terrains[i].Food >= 2) ? "*" : "");
+									description.Append(" with Irrigation)");
+								}
+
+								// Instruction address 0x0000:0x12fb, size: 5
+								description.Append(" units.");
+
+								// Instruction address 0x0000:0x1312, size: 5
+								this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(description.ToString(), 16, yPosition, 9);
+
+								yPosition += 8;
+							}
+
+							if (this.parent.GameData.Terrains[i].Production != 0 || this.parent.GameData.TerrainModifications[topicIndex].MiningEffect < -1)
+							{
+								StringBuilder description = new();
+
+								description.Append($"Production: {((topicIndex == 2 || topicIndex == 11) ? "0/" : "")}{this.parent.GameData.Terrains[i].Production}");
+
+								if (this.parent.GameData.TerrainModifications[topicIndex].MiningEffect < -1)
+								{
+									description.Append($" ({this.parent.GameData.Terrains[i].Production - this.parent.GameData.TerrainModifications[topicIndex].MiningEffect - 1}");
+
+									if (this.parent.GameData.Terrains[i].Production - this.parent.GameData.TerrainModifications[topicIndex].MiningEffect - 1 >= 3)
+									{
+										description.Append("*");
+									}
+
+									description.Append(" with Mining)");
+								}
+
+								// Instruction address 0x0000:0x1410, size: 5
+								description.Append(" units.");
+
+								// Instruction address 0x0000:0x1427, size: 5
+								this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(description.ToString(), 16, yPosition, 9);
+
+								yPosition += 8;
+							}
+
+							if (this.parent.GameData.Terrains[i].Trade != 0 || topicIndex <= 2)
+							{
+								StringBuilder description = new();
+
+								description.Append($"Trade: {this.parent.GameData.Terrains[i].Trade}{((this.parent.GameData.Terrains[i].Trade != 0) ? "%" : "")}");
+								
+								if (this.parent.GameData.Terrains[i].Trade >= 3)
+								{
+									description.Append("*");
+								}
+
+								if (topicIndex <= 2)
+								{
+									description.Append($" ({this.parent.GameData.Terrains[i].Trade + 1}% with Roads)");
+								}
+
+								// Instruction address 0x0000:0x151d, size: 5
+								this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(description.ToString(), 16, yPosition, 9);
+
+								yPosition += 8;
+							}
+
+							if (i == 7)
+							{
+								// Instruction address 0x0000:0x153e, size: 5
+								this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("nothing", 16, yPosition, 9);
+
+								yPosition += 8;
+							}
+
+							yPosition += 4;
+						}
+					}
+
+					// Instruction address 0x0000:0x156f, size: 5
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("*  -1 if government is Despotism/Anarchy.", 16, yPosition, 9);
+
+					yPosition += 8;
+
+					// Instruction address 0x0000:0x158a, size: 5
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("%  +1 if government is Republic/Democracy.", 16, yPosition, 9);
+
+					yPosition += 12;
+
+					// Instruction address 0x0000:0x15ed, size: 5
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+						$"Movement cost: {this.parent.GameData.Terrains[topicIndex].MovementCost} MP", 12, yPosition, 12);
+
+					yPosition += 8;
+
+					// Instruction address 0x0000:0x101e, size: 5
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+						$"Defense bonus: +{(50 * this.parent.GameData.Terrains[topicIndex].DefenseBonus) - 100}%", 12, yPosition, 12);
+
+					yPosition += 8;
+
+					break;
 			}
 
-			// Instruction address 0x0000:0x0c37, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 32, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 1);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x10));
-
-			// Instruction address 0x0000:0x0c52, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("Allows: ", 32, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 1);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x8));
-
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x30), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e), 0x0);
-
-		L0c69:
-			tech1 = this.oParent.GameData.Technologies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e))];
-
-			if (tech1.RequiresTechnology1 == (TechnologyEnum)topicID)
-			{
-				// Instruction address 0x0000:0x0c85, size: 5
-				this.oParent.CAPI.strcpy(0xba06, tech1.Name);
-
-				if (tech1.RequiresTechnology2 != TechnologyEnum.None)
-				{
-					// Instruction address 0x0000:0x0c9c, size: 5
-					this.oParent.CAPI.strcat(0xba06, " (with ");
-
-					// Instruction address 0x0000:0x0cb2, size: 5
-					this.oParent.CAPI.strcat(0xba06, this.oParent.GameData.Technologies[(int)tech1.RequiresTechnology2].Name);
-
-					// Instruction address 0x0000:0x0cc2, size: 5
-					this.oParent.CAPI.strcat(0xba06, ")");
-				}
-
-				// Instruction address 0x0000:0x0cd9, size: 5
-				this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 40, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 9);
-
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc),
-					this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x8));
-			}
-
-			if (tech1.RequiresTechnology2 == (TechnologyEnum)topicID)
-			{
-				// Instruction address 0x0000:0x0d01, size: 5
-				this.oParent.CAPI.strcpy(0xba06, tech1.Name);
-
-				if (tech1.RequiresTechnology1 != TechnologyEnum.None)
-				{
-					// Instruction address 0x0000:0x0d18, size: 5
-					this.oParent.CAPI.strcat(0xba06, " (with ");
-
-					// Instruction address 0x0000:0x0d2e, size: 5
-					this.oParent.CAPI.strcat(0xba06, this.oParent.GameData.Technologies[(int)tech1.RequiresTechnology1].Name);
-
-					// Instruction address 0x0000:0x0d3e, size: 5
-					this.oParent.CAPI.strcat(0xba06, ")");
-				}
-
-				// Instruction address 0x0000:0x0d55, size: 5
-				this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 40, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 9);
-
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x8));
-			}
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)), 72);
-			if (this.oCPU.Flags.GE) goto L0d6d;
-			goto L0c69;
-
-		L0d6d:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x4));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e), 0x0);
-
-		L0d76:
-			this.oCPU.AX.UInt16 = 0x22;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-
-			if (this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e))].RequiredTechnology == (TechnologyEnum)topicID)
-			{
-				// Instruction address 0x0000:0x0da3, size: 5
-				this.oParent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
-					40, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)) - 4,
-					this.oParent.Array_d4ce[64 + this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)) +
-						(this.oParent.GameData.HumanPlayerID * 32)]);
-
-				// Instruction address 0x0000:0x0db5, size: 5
-				this.oParent.CAPI.strcpy(0xba06, this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e))].Name);
-
-				// Instruction address 0x0000:0x0dc5, size: 5
-				this.oParent.CAPI.strcat(0xba06, " unit");
-
-				// Instruction address 0x0000:0x0ddc, size: 5
-				this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 60, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 12);
-
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc),
-					this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0xc));
-			}
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)), 0x1c);
-			if (this.oCPU.Flags.L) goto L0d76;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e), 0x1);
-			goto L0e26;
-
-		L0df8:
-			// Instruction address 0x0000:0x0e00, size: 5
-			this.oParent.CAPI.strcat(0xba06, " Wonder");
-
-		L0dfb:
-			// Instruction address 0x0000:0x0e17, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 60, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 2);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0xc));
-
-		L0e23:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e))));
-
-		L0e26:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)), 0x2d);
-			if (this.oCPU.Flags.G) goto L0e6f;
-
-			this.oCPU.AX.UInt16 = 0x1e;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-
-			if ((int)this.oParent.GameData.GetImprovementType(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e))).RequiresTechnology != topicID)
-				goto L0e23;
-
-			// Instruction address 0x0000:0x0e4a, size: 5
-			this.oParent.CityWorker.F0_1d12_7045(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)),
-				40, (short)(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)) - 2));
-
-			// Instruction address 0x0000:0x0e5c, size: 5
-			this.oParent.CAPI.strcpy(0xba06, this.oParent.GameData.GetImprovementType(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e))).Name);
-
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)), 0x18);
-			if (this.oCPU.Flags.G) goto L0df8;
-
-			// Instruction address 0x0000:0x0e00, size: 5
-			this.oParent.CAPI.strcat(0xba06, " improvement");
-
-			goto L0dfb;
-
-		L0e6f:
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x30));
-			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, 0x4);
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)));
-			if (this.oCPU.Flags.NE) goto L0e94;
-
-			// Instruction address 0x0000:0x0e8c, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("Allows: ", 
-				32, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)) - 12,
-				(byte)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
-
-		L0e94:
-			this.oCPU.AX.UInt16 = (ushort)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].TechnologyAcquiredFrom[topicID];
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0xfffe);
-			if (this.oCPU.Flags.E) goto L0f01;
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0xffff);
-			if (this.oCPU.Flags.E) goto L0f2b;
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L0f32;
-
-			// Instruction address 0x0000:0x0ec0, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "(Taken from ");
-
-			// Instruction address 0x0000:0x0eea, size: 5
-			this.oParent.CAPI.strcat(0xba06, 
-				this.oParent.GameData.Players[this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].TechnologyAcquiredFrom[topicID]].Nation);
-
-			// Instruction address 0x0000:0x0efa, size: 5
-			this.oParent.CAPI.strcat(0xba06, ")");
-			goto L0f11;
-
-		L0f01:
-			// Instruction address 0x0000:0x0f09, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "(from Great Library)");
-
-		L0f11:
-			// Instruction address 0x0000:0x0f20, size: 5
-			this.oParent.DrawStringTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x32)), 48, 7);
-
-			goto L1655;
-
-		L0f2b:
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-			goto L0f11;
-
-		L0f32:
-			// Instruction address 0x0000:0x0f09, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "(Discovered)");
-
-			goto L0f11;
-
-		L0f37:
-			// Instruction address 0x0000:0x0f3f, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Requires ");
-
-			this.oCPU.AX.UInt16 = 0x1e;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, (ushort)((short)topicID));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-
-			// Instruction address 0x0000:0x0f5e, size: 5
-			this.oParent.CAPI.strcat(0xba06, 
-				this.oParent.GameData.Technologies[(int)this.oParent.GameData.GetImprovementType(topicID).RequiresTechnology].Name);
-
-			// Instruction address 0x0000:0x0f75, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 12, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 9);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x8));
-
-			// Instruction address 0x0000:0x0f89, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Cost: ");
-
-			// Instruction address 0x0000:0x0fae, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.CAPI.itoa(10 * this.oParent.GameData.GetImprovementType(topicID).Price, 10));
-
-			// Instruction address 0x0000:0x0fbe, size: 5
-			this.oParent.CAPI.strcat(0xba06, " shields.");
-
-			// Instruction address 0x0000:0x0fd5, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 12, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 9);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x8));
-
-			// Instruction address 0x0000:0x0fe9, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Maintenance: $");
-
-			// Instruction address 0x0000:0x100a, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.CAPI.itoa(this.oParent.GameData.GetImprovementType(topicID).MaintenanceCost, 10));
-
-		L1005:
-			// Instruction address 0x0000:0x101e, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 12, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 12);
-
-		L1019:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x8));
-			goto L1655;
-
-		L102d:
-			// Instruction address 0x0000:0x1035, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Required technology: ");
-
-			if (this.oParent.GameData.Units[topicID].RequiredTechnology == TechnologyEnum.None)
-			{
-				this.oParent.CAPI.strcat(0xba06, "None");
-			}
-			else
-			{
-				// Instruction address 0x0000:0x1054, size: 5
-				this.oParent.CAPI.strcat(0xba06,
-					this.oParent.GameData.Technologies[(int)this.oParent.GameData.Units[topicID].RequiredTechnology].Name);
-			}
-
-			if (topicID != 25) goto L1072;
-
-			// Instruction address 0x0000:0x106a, size: 5
-			this.oParent.CAPI.strcat(0xba06, " and Nuclear Fission");
-
-		L1072:
-			// Instruction address 0x0000:0x1081, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 100, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 9);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x8));
-
-			// Instruction address 0x0000:0x1095, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Cost: ");
-
-			this.oCPU.AX.UInt16 = 0x22;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, (ushort)((short)topicID));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-
-			// Instruction address 0x0000:0x10c2, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(10 * this.oParent.GameData.Units[topicID].Cost, 10));
-
-			// Instruction address 0x0000:0x10d2, size: 5
-			this.oParent.CAPI.strcat(0xba06, " resources.");
-
-			// Instruction address 0x0000:0x10e9, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 100, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 9);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x8));
-
-			// Instruction address 0x0000:0x10fd, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Attack Strength: ");
-
-			// Instruction address 0x0000:0x111e, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.GameData.Units[topicID].AttackStrength, 10));
-
-			// Instruction address 0x0000:0x1135, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 100, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 12);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x8));
-
-			// Instruction address 0x0000:0x1149, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Defense Strength: ");
-
-			// Instruction address 0x0000:0x116a, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.GameData.Units[topicID].DefenseStrength, 10));
-
-			// Instruction address 0x0000:0x1181, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 100, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 12);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x8));
-
-			// Instruction address 0x0000:0x1195, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Movement Rate: ");
-
-			// Instruction address 0x0000:0x11b6, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.GameData.Units[topicID].MoveCount, 10));
-
-			// Instruction address 0x0000:0x101e, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 100, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0);
-
-			goto L1019;
-
-		L11ca:
-			this.oCPU.AX.Int16 = (short)topicID;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), this.oCPU.AX.UInt16);
-			goto L1552;
-
-		L11d3:
-			this.oCPU.AX.Int16 = (short)topicID;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L11ed;
-
-			this.oCPU.AX.UInt16 = 0x13;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, (ushort)((short)topicID));
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-
-			if (this.oParent.GameData.Terrains[topicID].Food == 2)
-				goto L154e;
-
-		L11ed:
-			this.oCPU.AX.UInt16 = 0x13;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-
-			// Instruction address 0x0000:0x1206, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(
-				this.oParent.GameData.Terrains[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Name, 
-				12, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 1);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x8));
-
-			if (this.oParent.GameData.Terrains[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Food == 0 &&
-				this.oParent.GameData.TerrainModifications[topicID].IrrigationEffect >= -1)
-				goto L131e;
-
-			// Instruction address 0x0000:0x1233, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Food: ");
-
-			this.oCPU.AX.UInt16 = 0x13;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-
-			// Instruction address 0x0000:0x1260, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.GameData.Terrains[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Food, 10));
-
-			if (this.oParent.GameData.Terrains[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Food >= 3)
-			{
-				// Instruction address 0x0000:0x1275, size: 5
-				this.oParent.CAPI.strcat(0xba06, "*");
-			}
-
-			this.oCPU.AX.UInt16 = 0xc;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, (ushort)((short)topicID));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-
-			if (this.oParent.GameData.TerrainModifications[topicID].IrrigationEffect < -1)
-			{
-				// Instruction address 0x0000:0x1296, size: 5
-				this.oParent.CAPI.strcat(0xba06, " (");
-
-				this.oCPU.AX.UInt16 = 0x13;
-				this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-				this.oCPU.DI.UInt16 = this.oCPU.AX.UInt16;
-
-				// Instruction address 0x0000:0x12c6, size: 5
-				this.oParent.CAPI.strcat(0xba06,
-					this.oParent.CAPI.itoa(this.oParent.GameData.Terrains[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Food -
-						this.oParent.GameData.TerrainModifications[topicID].IrrigationEffect - 1, 10));
-
-				if (this.oParent.GameData.Terrains[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Food >= 2)
-				{
-					// Instruction address 0x0000:0x12db, size: 5
-					this.oParent.CAPI.strcat(0xba06, "*");
-				}
-
-				// Instruction address 0x0000:0x12eb, size: 5
-				this.oParent.CAPI.strcat(0xba06, " with Irrigation)");
-			}
-
-			// Instruction address 0x0000:0x12fb, size: 5
-			this.oParent.CAPI.strcat(0xba06, " units.");
-
-			// Instruction address 0x0000:0x1312, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 16, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 9);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x8));
-
-		L131e:
-			this.oCPU.AX.UInt16 = 0x13;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-
-			if (this.oParent.GameData.Terrains[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Production != 0)
-				goto L133f;
-
-			if (this.oParent.GameData.TerrainModifications[topicID].MiningEffect >= -1)
-				goto L1433;
-
-		L133f:
-			// Instruction address 0x0000:0x1347, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Production: ");
-
-			if (topicID == 2) goto L135b;
-
-			if (topicID != 11) goto L136b;
-
-		L135b:
-			// Instruction address 0x0000:0x1363, size: 5
-			this.oParent.CAPI.strcat(0xba06, "0/");
-
-		L136b:
-			this.oCPU.AX.UInt16 = 0x13;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-
-			// Instruction address 0x0000:0x1390, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.GameData.Terrains[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Production, 10));
-
-			this.oCPU.AX.UInt16 = 0xc;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, (ushort)((short)topicID));
-			this.oCPU.DI.UInt16 = this.oCPU.AX.UInt16;
-
-			if (this.oParent.GameData.TerrainModifications[topicID].MiningEffect >= -1)
-				goto L1408;
-
-			// Instruction address 0x0000:0x13b1, size: 5
-			this.oParent.CAPI.strcat(0xba06, " (");
-
-			// Instruction address 0x0000:0x13d5, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.GameData.Terrains[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Production -
-						this.oParent.GameData.TerrainModifications[topicID].MiningEffect - 1, 10));
-
-			this.oCPU.AX.LowUInt8 = (byte)this.oParent.GameData.Terrains[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Production;
-			this.oCPU.CBW(this.oCPU.AX);
-			this.oCPU.AX.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.AX.UInt16, (ushort)this.oParent.GameData.TerrainModifications[topicID].MiningEffect);
-			this.oCPU.AX.UInt16 = this.oCPU.DEC_UInt16(this.oCPU.AX.UInt16);
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x3);
-			if (this.oCPU.Flags.L) goto L13f8;
-
-			// Instruction address 0x0000:0x13f0, size: 5
-			this.oParent.CAPI.strcat(0xba06, "*");
-
-		L13f8:
-			// Instruction address 0x0000:0x1400, size: 5
-			this.oParent.CAPI.strcat(0xba06, " with Mining)");
-
-		L1408:
-			// Instruction address 0x0000:0x1410, size: 5
-			this.oParent.CAPI.strcat(0xba06, " units.");
-
-			// Instruction address 0x0000:0x1427, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 16, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 9);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x8));
-
-		L1433:
-			this.oCPU.AX.UInt16 = 0x13;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-
-			if (this.oParent.GameData.Terrains[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Trade == 0 && topicID > 2)
-				goto L1529;
-
-			// Instruction address 0x0000:0x1453, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Trade: ");
-
-			this.oCPU.AX.UInt16 = 0x13;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-
-			// Instruction address 0x0000:0x1480, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.GameData.Terrains[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Trade, 10));
-
-			if (this.oParent.GameData.Terrains[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Trade == 0)
-				goto L149d;
-
-			// Instruction address 0x0000:0x1495, size: 5
-			this.oParent.CAPI.strcat(0xba06, "%");
-
-		L149d:
-			this.oCPU.AX.UInt16 = 0x13;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-
-			if (this.oParent.GameData.Terrains[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Trade >= 3)
-			{
-				// Instruction address 0x0000:0x14b4, size: 5
-				this.oParent.CAPI.strcat(0xba06, "*");
-			}
-		
-			if (topicID > 2) goto L150e;
-
-			// Instruction address 0x0000:0x14ca, size: 5
-			this.oParent.CAPI.strcat(0xba06, " (");
-
-			// Instruction address 0x0000:0x14f6, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.GameData.Terrains[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Trade + 1, 10));
-
-			// Instruction address 0x0000:0x1506, size: 5
-			this.oParent.CAPI.strcat(0xba06, "% with Roads)");
-
-		L150e:
-			// Instruction address 0x0000:0x151d, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 16, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 9);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x8));
-
-		L1529:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x7);
-			if (this.oCPU.Flags.NE) goto L154a;
-
-			// Instruction address 0x0000:0x153e, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("nothing", 16, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 9);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x8));
-
-		L154a:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x4));
-
-		L154e:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0xc));
-
-		L1552:
-			this.oCPU.AX.Int16 = (short)topicID;
-			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, 0xc);
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-			if (this.oCPU.Flags.L) goto L1560;
-			goto L11d3;
-
-		L1560:
-			// Instruction address 0x0000:0x156f, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("*  -1 if government is Despotism/Anarchy.", 16, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 9);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x8));
-
-			// Instruction address 0x0000:0x158a, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("%  +1 if government is Republic/Democracy.", 16, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 9);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0xc));
-
-			// Instruction address 0x0000:0x159e, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Movement cost: ");
-
-			this.oCPU.AX.UInt16 = 0x13;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, (ushort)((short)topicID));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-
-			// Instruction address 0x0000:0x15c9, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.GameData.Terrains[topicID].MovementCost, 10));
-
-			// Instruction address 0x0000:0x15d9, size: 5
-			this.oParent.CAPI.strcat(0xba06, " MP");
-
-			// Instruction address 0x0000:0x15ed, size: 5
-			this.oParent.DrawStringTools.F0_1182_005c_DrawStringToScreen0(0xba06, 12, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 12);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0x8));
-
-			// Instruction address 0x0000:0x1601, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Defense bonus: +");
-
-			// Instruction address 0x0000:0x1628, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa((short)((50 * this.oParent.GameData.Terrains[topicID].DefenseBonus) - 100), 10));
-
-			// Instruction address 0x0000:0x100a, size: 5
-			this.oParent.CAPI.strcat(0xba06, "%");
-			goto L1005;
-
-		L1636:
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.NE) goto L163d;
-			goto L0bb5;
-
-		L163d:
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
-			if (this.oCPU.Flags.NE) goto L1645;
-			goto L0f37;
-
-		L1645:
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x2);
-			if (this.oCPU.Flags.NE) goto L164d;
-			goto L102d;
-
-		L164d:
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x3);
-			if (this.oCPU.Flags.NE) goto L1655;
-			goto L11ca;
-
-		L1655:
-			this.oParent.Var_aa_Screen0_Rectangle.FontID = 1;
+			this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
 			// Instruction address 0x0000:0x165e, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
+			this.parent.MainCode.F0_11a8_0250_ShowMouse();
 
 			// Instruction address 0x0000:0x1663, size: 5
-			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+			this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			// Instruction address 0x0000:0x1668, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
+			this.parent.MainCode.F0_11a8_0268_HideMouse();
 
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6));
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
-			if (this.oCPU.Flags.NE) goto L168b;
-			this.oCPU.DX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.DX.UInt16, this.oCPU.DX.UInt16);
-			if (this.oCPU.Flags.NE) goto L168b;
+			this.parent.Var_3c62 = 0;
 
-		L168b:
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x3c62, 0x0);
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x3934), 0xffff);
-			if (this.oCPU.Flags.NE) goto L16b9;
+			if (this.parent.Var_3934 == -1)
+			{
+				// Instruction address 0x0000:0x16ac, size: 5
+				this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 8, 8, 304, 184, (byte)colour);
 
-			// Instruction address 0x0000:0x16ac, size: 5
-			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 8, 8, 304, 184,
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
-
-			// Instruction address 0x0000:0x16b4, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_0626_StartPaletteCycleSlots();
-
-		L16b9:
+				// Instruction address 0x0000:0x16b4, size: 5
+				this.parent.Segment_2dc4.F0_2dc4_0626_StartPaletteCycleSlots();
+			}
+		
 			// Instruction address 0x0000:0x16b9, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
-
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.DI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F8_0000_062a");
+			this.parent.MainCode.F0_11a8_0250_ShowMouse();
 		}
 
 		/// <summary>
 		/// ?
 		/// </summary>
-		/// <param name="topicID"></param>
+		/// <param name="topicIndex"></param>
 		/// <returns></returns>
-		public ushort F8_0000_16c4(int topicID)
+		public int F8_0000_16c4_GetTechnologyAdvanceFileID(int topicIndex)
 		{
-			this.oCPU.Log.EnterBlock($"F8_0000_16c4({topicID})");
+			//this.oCPU.Log.EnterBlock($"F8_0000_16c4({topicID})");
 
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x2);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x0);
-			goto L16d4;
+			for (int i = 0; i < 72; i++)
+			{
+				if (technologyAdvanceFileID[i] == topicIndex)
+				{
+					return i;
+				}
+			}
 
-		L16d1:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))));
-
-		L16d4:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 0x48);
-			if (this.oCPU.Flags.GE) goto L16f0;
-
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
-			this.oCPU.ES.UInt16 = 0x371e; // segment
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.ES.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0x0));
-			this.oCPU.CBW(this.oCPU.AX);
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, (ushort)((short)topicID));
-			if (this.oCPU.Flags.NE) goto L16d1;
-
-			this.oCPU.AX.UInt16 = this.oCPU.BX.UInt16;
-			goto L16f3;
-
-		L16f0:
-			this.oCPU.AX.UInt16 = 0xffff;
-
-		L16f3:
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-
-			// Far return
-			this.oCPU.Log.ExitBlock("F8_0000_16c4");
-
-			return this.oCPU.AX.UInt16;
+			return -1;
 		}
 
 		/// <summary>
 		/// ?
 		/// </summary>
-		/// <param name="xPos"></param>
-		/// <param name="yPos"></param>
+		/// <param name="topicIndex"></param>
+		/// <returns></returns>
+		public int F8_0000_1790_GetUnitTypeFileID(int topicIndex)
+		{
+			//this.oCPU.Log.EnterBlock($"F8_0000_1790({topicID})");
+
+			// function body
+			for (int i = 0; i < 28; i++)
+			{
+				if (unitTypeFileID[i] == topicIndex)
+				{
+					return i;
+				}
+			}
+
+			return -1;
+		}
+
+		/// <summary>
+		/// ?
+		/// </summary>
+		/// <param name="topicIndex"></param>
+		/// <returns></returns>
+		public int F8_0000_17c3_GetTerrainTypeFileID(int topicIndex)
+		{
+			//this.oCPU.Log.EnterBlock($"F8_0000_17c3({topicID})");
+
+			// function body
+			for (int i = 0; i < 12; i++)
+			{
+				if (terrainTypeFileID[i] == topicIndex)
+				{
+					return i;
+				}
+			}
+
+			return -1;
+		}
+
+		/// <summary>
+		/// Draws encyclopedia image from Screen 0
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <param name="xOffset"></param>
 		/// <param name="yOffset"></param>
-		public void F8_0000_16f7(int xPos, int yPos, int width, int height, int xOffset, int yOffset)
+		public void F8_0000_16f7_DrawEncyclopediaImage(int x, int y, int width, int height, int xOffset, int yOffset)
 		{
-			this.oCPU.Log.EnterBlock($"F8_0000_16f7({xPos}, {yPos}, {width}, {height}, {xOffset}, {yOffset})");
+			//this.oCPU.Log.EnterBlock($"F8_0000_16f7({x}, {y}, {width}, {height}, {xOffset}, {yOffset})");
 
 			// function body
-			if (xPos + width > 319)
+			if (x + width > 319)
 			{
-				width = 319 - xPos;
+				width = 319 - x;
 			}
 
-			if (yPos + height > 199)
+			if (y + height > 199)
 			{
-				height = 199 - yPos;
+				height = 199 - y;
 			}
 			
 			if (xOffset < width / 2)
 			{
-				xPos += (width / 2) - xOffset;
+				x += (width / 2) - xOffset;
 				width = xOffset * 2;
 			}
 		
 			// Instruction address 0x0000:0x1783, size: 5
-			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle,
-				xPos, yPos, width, height, this.oParent.Var_aa_Screen0_Rectangle, xOffset - (width / 2), yOffset - (height /2));
-
-			// Far return
-			this.oCPU.Log.ExitBlock("F8_0000_16f7");
-		}
-
-		/// <summary>
-		/// ?
-		/// </summary>
-		/// <param name="topicID"></param>
-		/// <returns></returns>
-		public ushort F8_0000_1790(int topicID)
-		{
-			this.oCPU.Log.EnterBlock($"F8_0000_1790({topicID})");
-
-			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x2);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x0);
-			goto L17a0;
-
-		L179d:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))));
-
-		L17a0:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 0x1c);
-			if (this.oCPU.Flags.GE) goto L17bc;
-
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
-			this.oCPU.ES.UInt16 = 0x371e; // segment
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.ES.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0x44));
-			this.oCPU.CBW(this.oCPU.AX);
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, (ushort)((short)topicID));
-			if (this.oCPU.Flags.NE) goto L179d;
-			this.oCPU.AX.UInt16 = this.oCPU.BX.UInt16;
-			goto L17bf;
-
-		L17bc:
-			this.oCPU.AX.UInt16 = 0xffff;
-
-		L17bf:
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-
-			// Far return
-			this.oCPU.Log.ExitBlock("F8_0000_1790");
-
-			return this.oCPU.AX.UInt16;
-		}
-
-		/// <summary>
-		/// ?
-		/// </summary>
-		/// <param name="topicID"></param>
-		/// <returns></returns>
-		public ushort F8_0000_17c3(int topicID)
-		{
-			this.oCPU.Log.EnterBlock($"F8_0000_17c3({topicID})");
-
-			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x2);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x0);
-			goto L17d3;
-
-		L17d0:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))));
-
-		L17d3:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 0xc);
-			if (this.oCPU.Flags.GE) goto L17ef;
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
-			this.oCPU.ES.UInt16 = 0x371e; // segment
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.ES.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0x61));
-			this.oCPU.CBW(this.oCPU.AX);
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, (ushort)((short)topicID));
-			if (this.oCPU.Flags.NE) goto L17d0;
-			this.oCPU.AX.UInt16 = this.oCPU.BX.UInt16;
-			goto L17f2;
-
-		L17ef:
-			this.oCPU.AX.UInt16 = 0xffff;
-
-		L17f2:
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-
-			// Far return
-			this.oCPU.Log.ExitBlock("F8_0000_17c3");
-
-			return this.oCPU.AX.UInt16;
+			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle,
+				x, y, width, height, this.parent.Var_aa_Screen0_Rectangle, xOffset - (width / 2), yOffset - (height /2));
 		}
 	}
 }

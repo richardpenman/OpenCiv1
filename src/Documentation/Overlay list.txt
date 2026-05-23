@@ -9,7 +9,7 @@ Overlay 4	In-game help
 Overlay 5	Start game menu, difficulty, civilizations, name...
 Overlay 6	Meet with king (emissary)
 Overlay 7	Game and map initialization, intro
-Overlay 8	Civilopedia
+Overlay 8	Encyclopedia
 Overlay 9	Game replay
 Overlay 10	Which Army (City Status)
 Overlay 11	Load and save game dialog and code
