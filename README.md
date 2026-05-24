@@ -61,7 +61,8 @@ Currently, you can contribute to this repository in one of the following ways:
 
 ***
 <p><b>Q:</b> Why this rewrite takes so long?</p>
-<b>A:</b> This rewrite takes so long because the code is not simply copied (like when, for example, decompiled) which produces derivative work. <b>The code is completely rewritten using creative process which of course takes time to complete and which (when completed) does not produce a derivative work.</b>
+<p><b>A:</b> This rewrite takes so long because the code is not simply copied (like when, for example, decompiled) which produces derivative work. <b>The code is completely rewritten using creative process which of course takes time to complete and which (when completed) does not produce a derivative work.</b></p>
+<p><b>To give you a perspective of the scope of the project there was an <u>excruciating &#x7E;140,000 lines of assembly instructions</u>. I have single handendly rewritten &#x7E;100,000 lines, and only &#x7E;40,000, or less, lines remain (that is about 82%/28% ratio).</b></p>
 
 ***
 <p><b>Q:</b> Why does the OpenCiv1 differs, in some aspects, from the Original game?</p>
@@ -140,7 +141,7 @@ You can also compile with CLI method:
 
 <b>What will change in the new version:</b>
 <ul>
-<li>Porting to Razor platform (Web interface, online gaming),</li>
+<li>Porting to JS (or equivalent) + CSS + HTML web application which works online as well as offline (Online gaming, Multiplayer, etc.),</li>
 <li>HQ Graphics (the new graphics will be as close as possible to the spirit of the original version),</li>
 <li>HQ Audio (the new Audio will be as close as possible to the spirit of the original version),</li>
 <li>Some text where appropriate,</li>

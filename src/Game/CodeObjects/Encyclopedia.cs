@@ -1,6 +1,5 @@
 using System.Text;
 using IRB.Collections.Generic;
-using IRB.Collections.Generic.Trees;
 using OpenCiv1.Graphics;
 
 namespace OpenCiv1
