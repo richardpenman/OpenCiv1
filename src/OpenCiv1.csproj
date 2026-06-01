@@ -84,6 +84,7 @@
     <None Remove="..\README.md" />
 	<None Remove="..\CONTRIBUTING\code_of_conduct.md" />
 	<None Remove="..\CONTRIBUTING\CONTRIBUTING.md" />
+	<None Remove="..\CONTRIBUTING\roadmap.md" />
   </ItemGroup>
 
   <ItemGroup>
@@ -97,6 +98,9 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
     <Content Include="..\CONTRIBUTING\CONTRIBUTING.md">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\CONTRIBUTING\roadmap.md">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

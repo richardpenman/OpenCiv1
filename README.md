@@ -45,7 +45,8 @@ The other resources (like graphics, music and text) will also be completely repl
 
 ## How to Contribute to this project
 
-<p>Anyone can contribute to this repository in accordance with these <a href="https://codeberg.org/rhorvat/OpenCiv1/src/branch/master/CONTRIBUTING/CONTRIBUTING.md">Contributing guidelines</a></p>
+<p>Anyone can contribute to this repository in accordance with these <a href="https://codeberg.org/rhorvat/OpenCiv1/src/branch/master/CONTRIBUTING/CONTRIBUTING.md">Contributing guidelines</a>.</br>
+The more detailed current project <a href="https://codeberg.org/rhorvat/OpenCiv1/src/branch/master/CONTRIBUTING/roadmap.md">roadmap is here</a>.</p>
 Currently, you can contribute to this repository in one of the following ways:
 <ul>
 <li>By testing the game functionality and submitting Issues,</li>
@@ -127,13 +128,15 @@ You can also compile with CLI method:
 
 ## Project milestones
 
-<p>The goal is to completely rewrite the code (first stage), fix the bugs and port the code to a modern platform (second stage).</p>
+<p>The goal is to completely rewrite the code and fix the bugs (first stage), and port the code to a modern platform (second stage).</p>
+<p>The more detailed current project <a href="https://codeberg.org/rhorvat/OpenCiv1/src/branch/master/CONTRIBUTING/roadmap.md">roadmap is here</a>.</p>
 
 ### Milestones for a first stage
 
 <ul>
 <li>Reaching the initial playability of the game (passed),</li>
 <li>Rewrite of the game code, functionalities and features (in progress... only 27% of the code left to rewrite),</li>
+<li>Test game functionalities for game fidelity and bugs,</li>
 <li>Archive the game code.</li>
 </ul>
 
