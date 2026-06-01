@@ -102,7 +102,7 @@ namespace OpenCiv1
 					this.oParent.CheckPlayerTurn.F0_1403_4060(this.oParent.GameData.HumanPlayerID, 0);
 
 					// Show UI help on first turn
-					this.oParent.MainIntro.F2_0000_17d9();
+					this.oParent.MainIntro.F2_0000_17d9_ShowInstantAdviceElements();
 
 					// Instruction address 0x1238:0x0138, size: 3
 					F0_1238_1b44();
@@ -166,7 +166,7 @@ namespace OpenCiv1
 							// Instruction address 0x1238:0x0205, size: 5
 							this.oParent.MainCode.F0_11a8_0268_HideMouse();
 
-							this.oParent.MainIntro.F2_0000_152a();
+							this.oParent.MainIntro.F2_0000_152a_EndGame_PlayerLost();
 
 							// Game state = player lost (-1)
 							this.oParent.Var_dc48_GameEndType = -1;
@@ -432,7 +432,7 @@ namespace OpenCiv1
 			if (this.oParent.GameData.Year >= 2080 - (20 * this.oParent.GameData.DifficultyLevel))
 			{
 				// Instruction address 0x1238:0x06ce, size: 5
-				this.oParent.CAPI.strcpy(0xba06, this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, (ushort)(0x19b2 + (humanPlayer.GovernmentType * 2))));
+				this.oParent.CAPI.strcpy(0xba06, this.oParent.Array_19b2_GovernmentTypeNames[humanPlayer.GovernmentType]);
 
 				// Instruction address 0x1238:0x06de, size: 5
 				this.oParent.CAPI.strcat(0xba06, " ");
@@ -470,7 +470,7 @@ namespace OpenCiv1
 
 				if (playerIDSpaceVictory != -1)
 				{
-					this.oParent.MainIntro.F2_0000_0bd7((short)playerIDSpaceVictory);
+					this.oParent.MainIntro.F2_0000_0bd7_EndGame_SpaceVictory((short)playerIDSpaceVictory);
 
 					// Instruction address 0x1238:0x0792, size: 3
 					F0_1238_1b44();
@@ -2177,7 +2177,7 @@ namespace OpenCiv1
 			this.oParent.Segment_2dc4.F0_2dc4_065f_StopPaletteCycleSlots();
 
 			// Instruction address 0x1238:0x1c09, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "back0a.pal");
+			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "BACK0A.PAL");
 
 			this.oCPU.SI.UInt16 = (ushort)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType;
 			this.oCPU.AX.UInt16 = this.oCPU.SI.UInt16;

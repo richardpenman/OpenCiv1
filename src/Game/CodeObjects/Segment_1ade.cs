@@ -2369,8 +2369,8 @@ namespace OpenCiv1
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x42), 0x0);
 			
 			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].ResearchTechnologyID == 71) goto L16f1;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xdeba), 0x3);
-			if (this.oCPU.Flags.LE) goto L16f1;
+			
+			if (this.oParent.Var_deba <= 3) goto L16f1;
 
 			if (!this.oParent.GameData.GameSettingFlags.Animations) goto L16f1;
 
@@ -2386,7 +2386,7 @@ namespace OpenCiv1
 			this.oParent.MainCode.F0_11a8_0268_HideMouse();
 
 			// Instruction address 0x1ade:0x1707, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "discovr1.pic");
+			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "DISCOVR1.PIC");
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12), 0x0);
 
@@ -2478,7 +2478,7 @@ namespace OpenCiv1
 			this.oParent.Var_aa_Screen0_Rectangle.FontID = 1;
 
 			// Instruction address 0x1ade:0x18a4, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "iconpg1.pic");
+			this.oParent.CAPI.strcpy(0xba06, "ICONPG1.PIC");
 
 			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x44));
 			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
@@ -2495,7 +2495,7 @@ namespace OpenCiv1
 				110, 68, 174, (this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)) != 0 ? 87 : 96));
 
 			// Instruction address 0x1ade:0x1948, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x8), ".pal");
+			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x8), ".PAL");
 
 			// Instruction address 0x1ade:0x1958, size: 5
 			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, (ushort)(this.oCPU.BP.UInt16 - 0x10), 0xc1d6);

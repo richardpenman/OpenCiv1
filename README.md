@@ -133,7 +133,7 @@ You can also compile with CLI method:
 
 <ul>
 <li>Reaching the initial playability of the game (passed),</li>
-<li>Rewrite of the game code, functionalities and features (in progress...),</li>
+<li>Rewrite of the game code, functionalities and features (in progress... only 27% of the code left to rewrite),</li>
 <li>Archive the game code.</li>
 </ul>
 

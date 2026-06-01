@@ -456,7 +456,7 @@ namespace OpenCiv1
 						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, $"ICONPGT{((fileID / 6) + 1)}.PIC", 0);
 
 						// Instruction address 0x0000:0x0aff, size: 5
-						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "sp256.pal", out palette);
+						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SP256.PAL", out palette);
 
 						// Instruction address 0x0000:0x0b0b, size: 5
 						this.parent.Graphics.F0_VGA_0162_SetColorsFromColorStruct(palette);

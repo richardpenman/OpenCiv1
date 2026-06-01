@@ -715,7 +715,7 @@ namespace OpenCiv1
 			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[12] > 0)
 			{
 				// Instruction address 0x0000:0x08b6, size: 5
-				this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "cbacks0.pic");
+				this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "CBACKS0.PIC");
 
 				this.oCPU.AX.LowUInt8 = (byte)((sbyte)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[12]);
 				this.oCPU.AX.LowUInt8 = this.oCPU.ADD_UInt8(this.oCPU.AX.LowUInt8, 0x30);
@@ -1051,7 +1051,7 @@ namespace OpenCiv1
 				goto L0c94;
 
 			// Instruction address 0x0000:0x0bee, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "cbrush0.pic");
+			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "CBRUSH0.PIC");
 
 			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[11] != 0)
 			{
@@ -1108,8 +1108,7 @@ namespace OpenCiv1
 
 			this.oParent.Var_aa_Screen0_Rectangle.ScreenID = 0;
 
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xdeba), 0x7);
-			if (this.oCPU.Flags.LE) goto L0cc1;
+			if (this.oParent.Var_deba <= 7) goto L0cc1;
 
 			// Instruction address 0x0000:0x0cb9, size: 5
 			this.oParent.CommonTools.F0_1000_04d4_TransformPaletteToColor(5, Color.FromRgb(0, 0, 0));
@@ -1568,7 +1567,7 @@ namespace OpenCiv1
 			if (this.oCPU.Flags.E) goto L104b;
 
 			// Instruction address 0x0000:0x1069, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "castle0.pic");
+			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "CASTLE0.PIC");
 
 			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a));
 			this.oCPU.AX.LowUInt8 = this.oCPU.ADD_UInt8(this.oCPU.AX.LowUInt8, 0x30);

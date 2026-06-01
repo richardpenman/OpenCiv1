@@ -1315,7 +1315,7 @@ namespace OpenCiv1
 				if (this.animationStage == 0)
 				{
 					// Instruction address 0x0000:0x1869, size: 5
-					this.storyFile = FileReader.GetFile($"{this.parent.ResourcePath}story.txt");
+					this.storyFile = FileReader.GetStreamReader($"{this.parent.ResourcePath}STORY.TXT");
 
 					this.animationStage = 1;
 					this.storyText = "";
@@ -1397,7 +1397,7 @@ namespace OpenCiv1
 							if (this.buildImageIndex < 9)
 							{
 								// Instruction address 0x0000:0x19e3, size: 5
-								string imageFileName = $"birth{this.buildImageIndex}.pic";
+								string imageFileName = $"BIRTH{this.buildImageIndex}.PIC";
 
 								for (int i = 1; i <= this.paletteSlotCount; i++)
 								{
@@ -1417,7 +1417,7 @@ namespace OpenCiv1
 								this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19e8_Screen2_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 
 								// Instruction address 0x0000:0x1a73, size: 5
-								imageFileName = imageFileName.Replace(".pic", ".pal");
+								imageFileName = imageFileName.Replace(".PIC", ".PAL");
 
 								byte[] palette;
 								// Instruction address 0x0000:0x1a83, size: 5
@@ -1426,13 +1426,13 @@ namespace OpenCiv1
 								// Instruction address 0x0000:0x1a93, size: 5
 								this.parent.CommonTools.F0_1000_04aa_TransformPalette(8, palette);
 
-								PaletteCycleInfo[] paletteslots = this.storyImagePaletteCycles[this.buildImageIndex - 1];
+								PaletteCycleInfo[] paletteSlots = this.storyImagePaletteCycles[this.buildImageIndex - 1];
 
-								this.paletteSlotCount = paletteslots.Length;
+								this.paletteSlotCount = paletteSlots.Length;
 
-								for (int i = 0; i < paletteslots.Length; i++)
+								for (int i = 0; i < paletteSlots.Length; i++)
 								{
-									PaletteCycleInfo paletteSlot = paletteslots[i];
+									PaletteCycleInfo paletteSlot = paletteSlots[i];
 
 									this.parent.CommonTools.F0_1000_0382_AddPaletteCycleSlot(i + 1, paletteSlot.Speed, (byte)paletteSlot.FromIndex, (byte)paletteSlot.ToIndex);
 								}

@@ -1206,7 +1206,7 @@ namespace OpenCiv1
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x18), (ushort)this.oParent.GameData.GameSettingFlags.Value);
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x28bc, 0x1);
 
-			if (this.oCPU.ReadInt16(this.oCPU.DS.UInt16, 0xdeba) > 1) goto L0e6a;
+			if (this.oParent.Var_deba > 1) goto L0e6a;
 
 			//this.oParent.CivState.GameSettingFlags.Value &= 0x7ff7;
 			this.oParent.GameData.GameSettingFlags.Animations = false;

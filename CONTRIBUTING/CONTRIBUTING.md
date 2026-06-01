@@ -2,12 +2,12 @@
 
 Anyone can contribute to this repository in accordance with these rules:
 <ul>
-<li>All communication between contributors must be conducted in accordance with this repository 
-	<a href="https://github.com/rajko-horvat/OpenCiv1/blob/master/.github/code_of_conduct.md">Code Of Conduct</a>,</li>
+<li>All communication between contributors must be conducted in accordance with this repository
+    <a href="https://codeberg.org/rhorvat/OpenCiv1/src/branch/master/CONTRIBUTING/code_of_conduct.md">Code Of Conduct</a>,</li>
 <li>There must not be any copyrighted material contributed to this repository that would violate any of its licenses, or the license of the copyrighed material that is being contributed,</li>
 <li>The contributed material must be released under the same license as this repository (MIT license), or a compatible one,</li>
-<li>Contributed code changes and 'Default' game behaviour must preserve Original Game behaviour and design as much as possible, 
-	except for purposes of adding an additional functionality (which follows in the spirit of the original Game) or bug fixes (There can be additional custom Behaviour themes),</li>
+<li>Contributed code changes and 'Default' game behaviour must preserve Original Game behaviour and design as much as possible,
+    except for purposes of adding an additional functionality (which follows in the spirit of the original Game) or bug fixes (There can be additional custom Behaviour themes),</li>
 <li>The 'Default' Visual and Audio theme must preserve the 'Original Game appearance and feel' as much as possible (There can be additional custom Visual and Audio themes).</li>
 </ul>
 

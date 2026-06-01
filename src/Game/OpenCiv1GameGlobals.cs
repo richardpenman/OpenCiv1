@@ -72,6 +72,8 @@ namespace OpenCiv1
 		public int Var_1a3e = 0;
 		public int Var_1ae0 = 0;
 
+		public string[] Array_19b2_GovernmentTypeNames = ["Mr.", "Emperor", "King", "Comrade", "President", "President"];
+
 		// Convert pixel value to actual TerrainTypeEnum value
 		public TerrainTypeEnum[] PixelValuesToTerrainTypes = {
 			TerrainTypeEnum.Invalid,	// Undefined0 = 0
@@ -194,8 +196,8 @@ namespace OpenCiv1
 
 		public int[] Array_d4ce = new int[320];
 		public bool Var_d760_HumanPlayerMessageFlag = false;
-		public ushort Var_d768 = 0;
 		public bool Var_d76a_EarthMap = false;
+		public int Var_deba = 0;
 		public int Var_d7f0 = 0;
 		public bool Var_d806_DebugFlag = false;
 

@@ -1413,7 +1413,7 @@ namespace OpenCiv1
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x32), this.oCPU.AX.UInt16);
 
 			// Instruction address 0x0000:0x0f9e, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "king00.pic");
+			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "KING00.PIC");
 
 			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x32));
 			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
@@ -1453,7 +1453,7 @@ namespace OpenCiv1
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
 
 			// Instruction address 0x0000:0x10a9, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x24), "slam2.pic");
+			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x24), "SLAM2.PIC");
 
 			// Instruction address 0x0000:0x10ce, size: 5
 			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0x85, (ushort)(this.oCPU.BP.UInt16 - 0x24), 0);

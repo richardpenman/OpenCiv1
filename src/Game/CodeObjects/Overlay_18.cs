@@ -144,7 +144,7 @@ namespace OpenCiv1
 			if (this.oCPU.Flags.LE) goto L018f;
 
 			// Instruction address 0x0000:0x01bc, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "back0a.pal");
+			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "BACK0A.PAL");
 
 			this.oCPU.AX.UInt16 = (ushort)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType;
 			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);

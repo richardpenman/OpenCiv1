@@ -49,11 +49,11 @@ namespace OpenCiv1
 		/// </summary>
 		public void LoadEarthMap()
 		{
-			GBitmap? earthMap = GBitmap.FromPICFile(this.parent.ResourcePath + "map.pic", true);
+			GBitmap? earthMap = GBitmap.FromPICFile(this.parent.ResourcePath + "MAP.PIC", true);
 
 			if (earthMap == null)
 			{
-				throw new Exception("Can't find Earth map.pic image file");
+				throw new Exception("Can't find Earth 'MAP.PIC' image file");
 			}
 			else
 			{

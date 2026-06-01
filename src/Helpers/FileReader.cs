@@ -2,7 +2,7 @@ namespace OpenCiv1
 {
 	public static class FileReader
 	{
-		public static StreamReader GetFile(string path)
+		public static StreamReader GetStreamReader(string path)
 		{
 			string dir = Path.GetDirectoryName(path)!;
 			string file = Path.GetFileName(path);

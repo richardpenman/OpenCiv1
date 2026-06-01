@@ -511,7 +511,7 @@ namespace OpenCiv1
 					if (wonderID != -3)
 					{
 						// Instruction address 0x0000:0x0e6c, size: 5
-						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "hill.pic", 1);
+						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "HILL.PIC", 1);
 					}
 
 					// Instruction address 0x0000:0x0e8c, size: 5
@@ -522,7 +522,7 @@ namespace OpenCiv1
 						byte[] palette;
 
 						// Instruction address 0x0000:0x0ea9, size: 5
-						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "hill.pal", out palette);
+						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "HILL.PAL", out palette);
 
 						// Instruction address 0x0000:0x0eb9, size: 5
 						this.parent.CommonTools.F0_1000_04aa_TransformPalette(15, palette);

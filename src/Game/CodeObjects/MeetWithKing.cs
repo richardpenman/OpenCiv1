@@ -1549,10 +1549,8 @@ namespace OpenCiv1
 			// Instruction address 0x0000:0x1169, size: 5
 			this.oParent.CAPI.strcat(0xba06, " people and their most\nwise and munificent leader:\n");
 
-			this.oCPU.BX.UInt16 = (ushort)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType;
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 			// Instruction address 0x0000:0x1185, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0x19b2)));
+			this.oParent.CAPI.strcat(0xba06, this.oParent.Array_19b2_GovernmentTypeNames[this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType]);
 
 			// Instruction address 0x0000:0x1195, size: 5
 			this.oParent.CAPI.strcat(0xba06, " ");
@@ -2138,10 +2136,8 @@ namespace OpenCiv1
 			this.oCPU.SI.Int16 = (short)playerID;
 			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
 
-			this.oCPU.BX.UInt16 = (ushort)this.oParent.GameData.Players[playerID].GovernmentType;
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 			// Instruction address 0x0000:0x18ef, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0x19b2)));
+			this.oParent.CAPI.strcat(0xba06, this.oParent.Array_19b2_GovernmentTypeNames[this.oParent.GameData.Players[playerID].GovernmentType]);
 
 			// Instruction address 0x0000:0x18ff, size: 5
 			this.oParent.CAPI.strcat(0xba06, ": ");
@@ -2164,10 +2160,8 @@ namespace OpenCiv1
 			// Instruction address 0x0000:0x1947, size: 5
 			this.oParent.CAPI.strcat(0xba06, ", ruler\nand ");
 
-			this.oCPU.BX.UInt16 = (ushort)this.oParent.GameData.Players[playerID].GovernmentType;
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 			// Instruction address 0x0000:0x195d, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0x19b2)));
+			this.oParent.CAPI.strcat(0xba06, this.oParent.Array_19b2_GovernmentTypeNames[this.oParent.GameData.Players[playerID].GovernmentType]);
 
 			// Instruction address 0x0000:0x191f, size: 5
 			this.oParent.CAPI.strcat(0xba06, " ");
@@ -2181,10 +2175,8 @@ namespace OpenCiv1
 			this.oCPU.SI.Int16 = (short)playerID;
 			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
 
-			this.oCPU.BX.UInt16 = (ushort)this.oParent.GameData.Players[playerID].GovernmentType;
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 			// Instruction address 0x0000:0x198d, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0x19b2)));
+			this.oParent.CAPI.strcat(0xba06, this.oParent.Array_19b2_GovernmentTypeNames[this.oParent.GameData.Players[playerID].GovernmentType]);
 
 			// Instruction address 0x0000:0x199d, size: 5
 			this.oParent.CAPI.strcat(0xba06, ": ");
@@ -2584,7 +2576,7 @@ namespace OpenCiv1
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x67f0, 0);
 
 			// Instruction address 0x0000:0x1e4b, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "govt0a.pic");
+			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "GOVT0A.PIC");
 
 			this.oCPU.AX.UInt16 = (ushort)this.oParent.GameData.Players[playerID].GovernmentType;
 			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
@@ -2634,7 +2626,7 @@ namespace OpenCiv1
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x67f8, this.oCPU.AX.UInt16);
 			
 			// Instruction address 0x0000:0x1f10, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "king00.pic");
+			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "KING00.PIC");
 
 			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x67f8);
 			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
@@ -2718,7 +2710,7 @@ namespace OpenCiv1
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
 
 			// Instruction address 0x0000:0x207e, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "govt0a.pic");
+			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "GOVT0A.PIC");
 
 			this.oCPU.SI.UInt16 = (ushort)this.oParent.GameData.Players[playerID].GovernmentType;
 			this.oCPU.AX.UInt16 = this.oCPU.SI.UInt16;
@@ -2816,7 +2808,7 @@ namespace OpenCiv1
 			this.oParent.MainCode.F0_11a8_0268_HideMouse();
 
 			// Instruction address 0x0000:0x21ca, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0xe), "back0a.pic");
+			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0xe), "BACK0A.PIC");
 
 			this.oCPU.SI.UInt16 = (ushort)this.oParent.GameData.Players[playerID].GovernmentType;
 			this.oCPU.AX.UInt16 = this.oCPU.SI.UInt16;
@@ -2868,7 +2860,7 @@ namespace OpenCiv1
 			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x7), "pal");
 
 			// Instruction address 0x0000:0x228d, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x1c), "king00.pal");
+			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x1c), "KING00.PAL");
 
 			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x67f8);
 			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);

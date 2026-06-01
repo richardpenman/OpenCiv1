@@ -35,9 +35,9 @@ namespace OpenCiv1
 		/// </summary>
 		/// <param name="cityID"></param>
 		/// <param name="flag"></param>
-		public ushort F0_1d12_0045_ProcessCityState(int cityID, short flag)
+		public int F0_1d12_0045_ProcessCityState(int cityID, int flag)
 		{
-			this.CPU.Log.EnterBlock($"F0_1d12_0045({cityID}, {flag})");
+			//this.CPU.Log.EnterBlock($"F0_1d12_0045({cityID}, {flag})");
 
 			// function body
 			int local_2;
@@ -3753,7 +3753,7 @@ namespace OpenCiv1
 				if (this.parent.GameData.GameSettingFlags.Animations)
 				{
 					this.parent.CityView.F19_0000_0000_ShowCityLayout(cityID, -2,
-						$"'We love the {this.CPU.ReadString(this.CPU.DS.UInt16, this.CPU.ReadUInt16(this.CPU.DS.UInt16, (ushort)(0x19b2 + this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType * 2)))}'\n"+
+						$"'We love the {this.parent.Array_19b2_GovernmentTypeNames[this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType]}'\n"+
 						$"day celebrated in\n{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}!\n");
 
 					this.parent.CityView.F19_0000_1ae1_LoveOurLeaderAnimation();
@@ -3764,7 +3764,7 @@ namespace OpenCiv1
 				else
 				{
 					this.CPU.WriteString(VCPU.ToLinearAddress(this.CPU.DS.UInt16, 0xba06),
-						$"'We love the {this.CPU.ReadString(this.CPU.DS.UInt16, this.CPU.ReadUInt16(this.CPU.DS.UInt16, (ushort)(0x19b2 + this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType * 2)))}'\n" +
+						$"'We love the {this.parent.Array_19b2_GovernmentTypeNames[this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType]}'\n" +
 						$"day celebrated in\n{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}!\n");
 					this.parent.Overlay_21.F21_0000_0000(cityID);
 				}
@@ -3820,10 +3820,8 @@ namespace OpenCiv1
 				// Instruction address 0x1d12:0x6265, size: 5
 				this.parent.CAPI.strcpy(0xba06, "'We love the ");
 
-				this.CPU.BX.UInt16 = (ushort)this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType;
-				this.CPU.BX.UInt16 = this.CPU.SHL_UInt16(this.CPU.BX.UInt16, 0x1);
 				// Instruction address 0x1d12:0x6281, size: 5
-				this.parent.CAPI.strcat(0xba06, this.CPU.ReadUInt16(this.CPU.DS.UInt16, (ushort)(this.CPU.BX.UInt16 + 0x19b2)));
+				this.parent.CAPI.strcat(0xba06, this.parent.Array_19b2_GovernmentTypeNames[this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType]);
 
 				// Instruction address 0x1d12:0x6291, size: 5
 				this.parent.CAPI.strcat(0xba06, "'\ncelebration canceled\nin ");
@@ -4173,14 +4171,11 @@ namespace OpenCiv1
 				this.parent.MainCode.F0_11a8_0250_ShowMouse();
 
 				// !!! Do we really need to return a value?
-				this.CPU.AX.UInt16 = (ushort)((short)(this.parent.Var_70e2 - this.parent.Var_70e4));
+				this.CPU.AX.Int16 = (short)(this.parent.Var_70e2 - this.parent.Var_70e4);
 			}
 
 		L6927:
-			// Far return
-			this.CPU.Log.ExitBlock("F0_1d12_0045");
-
-			return this.CPU.AX.UInt16;
+			return this.CPU.AX.Int16;
 		}
 
 		/// <summary>
@@ -4209,9 +4204,9 @@ namespace OpenCiv1
 		/// <param name="cityID"></param>
 		/// <param name="cityOffset"></param>
 		/// <param name="flag"></param>
-		private void F0_1d12_692d_CityResources(int cityID, int cityOffset, short flag)
+		private void F0_1d12_692d_CityResources(int cityID, int cityOffset, int flag)
 		{
-			this.CPU.Log.EnterBlock($"F0_1d12_692d_CityResources({cityID}, {cityOffset}, {flag})");
+			//this.CPU.Log.EnterBlock($"F0_1d12_692d_CityResources({cityID}, {cityOffset}, {flag})");
 
 			// function body
 			int local_4;
@@ -4298,9 +4293,6 @@ namespace OpenCiv1
 			}
 
 			this.Var_2494 = 0;
-
-			// Far return
-			this.CPU.Log.ExitBlock("F0_1d12_692d_CityResources");
 		}
 
 		/// <summary>
@@ -4491,9 +4483,9 @@ namespace OpenCiv1
 		/// </summary>
 		/// <param name="wonderID"></param>
 		/// <returns></returns>
-		private short F0_1d12_6cf3_GetWonderCityID(short wonderID)
+		private int F0_1d12_6cf3_GetWonderCityID(short wonderID)
 		{
-			this.CPU.Log.EnterBlock($"F0_1d12_6cf3_GetWonderCityID({wonderID})");
+			//this.CPU.Log.EnterBlock($"F0_1d12_6cf3_GetWonderCityID({wonderID})");
 
 			// function body
 			int i;
@@ -4510,17 +4502,12 @@ namespace OpenCiv1
 
 			if (i < 8)
 			{
-				this.CPU.AX.UInt16 = 0xffff;
+				return -1;
 			}
 			else
 			{
-				this.CPU.AX.UInt16 = (ushort)this.parent.GameData.WonderCityID[wonderID];
+				return this.parent.GameData.WonderCityID[wonderID];
 			}
-
-			// Far return
-			this.CPU.Log.ExitBlock("F0_1d12_6cf3_GetWonderCityID");
-
-			return (short)this.CPU.AX.UInt16;
 		}
 
 		/// <summary>
@@ -4530,7 +4517,7 @@ namespace OpenCiv1
 		/// <param name="yPos"></param>
 		public void F0_1d12_6d33(int xPos, int yPos)
 		{
-			this.CPU.Log.EnterBlock($"F0_1d12_6d33({xPos}, {yPos})");
+			//this.CPU.Log.EnterBlock($"F0_1d12_6d33({xPos}, {yPos})");
 
 			// function body
 			// Instruction address 0x1d12:0x6d3c, size: 5
@@ -4543,10 +4530,7 @@ namespace OpenCiv1
 				this.parent.MapManagement.F0_2aea_1601_UpdateVisibleCellStatus(xPos, yPos);
 
 				this.parent.GameData.PollutedSquareCount++;
-			}
-		
-			// Far return
-			this.CPU.Log.ExitBlock("F0_1d12_6d33");
+			}		
 		}
 
 		/// <summary>
@@ -4556,7 +4540,7 @@ namespace OpenCiv1
 		/// <param name="flag"></param>
 		public void F0_1d12_6d6e_SetSpecialWorkerFlags(int position, int flag)
 		{
-			this.CPU.Log.EnterBlock($"F0_1d12_6d6e_SetSpecialWorkerFlags({position}, {flag})");
+			//this.CPU.Log.EnterBlock($"F0_1d12_6d6e_SetSpecialWorkerFlags({position}, {flag})");
 
 			// function body
 			if (position < 8)
@@ -4564,10 +4548,7 @@ namespace OpenCiv1
 				this.parent.GameData.Cities[this.Var_653e_CityID].SpecialWorkerFlags &= (ushort)(~(0x3 << (position * 2)));
 
 				this.parent.GameData.Cities[this.Var_653e_CityID].SpecialWorkerFlags |= (ushort)((flag & 0x3) << (position * 2));
-			}
-		
-			// Far return
-			this.CPU.Log.ExitBlock("F0_1d12_6d6e_SetSpecialWorkerFlags");
+			}		
 		}
 
 		/// <summary>
@@ -4575,24 +4556,19 @@ namespace OpenCiv1
 		/// </summary>
 		/// <param name="position"></param>
 		/// <returns></returns>
-		public ushort F0_1d12_6da1_GetSpecialWorkerFlags(int position)
+		public int F0_1d12_6da1_GetSpecialWorkerFlags(int position)
 		{
-			this.CPU.Log.EnterBlock($"F0_1d12_6da1_GetSpecialWorkerFlags({position})");
+			//this.CPU.Log.EnterBlock($"F0_1d12_6da1_GetSpecialWorkerFlags({position})");
 
 			// function body
 			if (position < 8)
 			{
-				this.CPU.AX.UInt16 = (ushort)((this.parent.GameData.Cities[this.Var_653e_CityID].SpecialWorkerFlags >> (position * 2)) & 0x3);
+				return ((this.parent.GameData.Cities[this.Var_653e_CityID].SpecialWorkerFlags >> (position * 2)) & 0x3);
 			}
 			else
 			{
-				this.CPU.AX.UInt16 = 0x1;
-			}
-		
-			// Far return
-			this.CPU.Log.ExitBlock("F0_1d12_6da1_GetSpecialWorkerFlags");
-
-			return this.CPU.AX.UInt16;
+				return 1;
+			}		
 		}
 
 		/// <summary>
@@ -4602,7 +4578,7 @@ namespace OpenCiv1
 		/// <returns></returns>
 		private int F0_1d12_6dcc_GetWorkerCountByType(ushort workerType)
 		{
-			this.CPU.Log.EnterBlock($"F0_1d12_6dcc_GetWorkerCountByType({workerType})");
+			//this.CPU.Log.EnterBlock($"F0_1d12_6dcc_GetWorkerCountByType({workerType})");
 
 			// function body
 			int workerCount = 0;
@@ -4616,9 +4592,6 @@ namespace OpenCiv1
 				}
 			}
 
-			// Far return
-			this.CPU.Log.ExitBlock("F0_1d12_6dcc_GetWorkerCountByType");
-
 			return workerCount;
 		}
 
@@ -4629,7 +4602,7 @@ namespace OpenCiv1
 		/// <param name="param2"></param>
 		private void F0_1d12_6dfe(int cityID, int size)
 		{
-			this.CPU.Log.EnterBlock($"F0_1d12_6dfe({cityID}, {size})");
+			//this.CPU.Log.EnterBlock($"F0_1d12_6dfe({cityID}, {size})");
 
 			// function body
 			while (this.Var_6542 >= 0 && this.parent.Var_70e4 < this.Var_6542)
@@ -4663,9 +4636,6 @@ namespace OpenCiv1
 				// Instruction address 0x1d12:0x6e98, size: 5
 				this.parent.Var_70e4 = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(this.parent.Var_70e4, 0, this.parent.GameData.Cities[cityID].ActualSize);
 			}
-
-			// Far return
-			this.CPU.Log.ExitBlock("F0_1d12_6dfe");
 		}
 
 		/// <summary>
@@ -4679,7 +4649,7 @@ namespace OpenCiv1
 		/// <returns></returns>
 		public int F0_1d12_6ed4_DrawResources(int cityID, int xPos, int yPos, int param4, int width)
 		{
-			this.CPU.Log.EnterBlock($"F0_1d12_6ed4_DrawResources({cityID}, {xPos}, {yPos}, {param4}, {width})");
+			//this.CPU.Log.EnterBlock($"F0_1d12_6ed4_DrawResources({cityID}, {xPos}, {yPos}, {param4}, {width})");
 
 			// function body
 			int citySize = this.parent.GameData.Cities[cityID].ActualSize;
@@ -4744,9 +4714,6 @@ namespace OpenCiv1
 				xPos += xSpacing;
 			}
 
-			// Far return
-			this.CPU.Log.ExitBlock("F0_1d12_6ed4_DrawResources");
-
 			return xSpacing;
 		}
 
@@ -4794,7 +4761,7 @@ namespace OpenCiv1
 		/// <param name="yPos2"></param>
 		private void F0_1d12_70cb_FillRectangleWithPattern(int xPos1, int yPos1, int xPos2, int yPos2)
 		{
-			this.CPU.Log.EnterBlock($"F0_1d12_70cb_FillRectangleWithPattern({xPos1}, {yPos1}, {xPos2}, {yPos2})");
+			//this.CPU.Log.EnterBlock($"F0_1d12_70cb_FillRectangleWithPattern({xPos1}, {yPos1}, {xPos2}, {yPos2})");
 
 			// function body			
 			int iWidth = xPos2 - xPos1;
@@ -4805,9 +4772,6 @@ namespace OpenCiv1
 
 			// Instruction address 0x1d12:0x7104, size: 5
 			this.parent.MenuBoxDialog.F0_2d05_0a05_DrawRectangle(xPos1, yPos1, iWidth, iHeight, 1);
-
-			// Far return
-			this.CPU.Log.ExitBlock("F0_1d12_70cb_FillRectangleWithPattern");
 		}
 
 		/// <summary>
@@ -4819,7 +4783,7 @@ namespace OpenCiv1
 		/// <param name="height"></param>
 		private void F0_1d12_710d_FillRectangleWithPattern(int xPos, int yPos, int width, int height)
 		{
-			this.CPU.Log.EnterBlock($"F0_1d12_710d_FillRectangleWithPattern({xPos}, {yPos}, {width}, {height})");
+			//this.CPU.Log.EnterBlock($"F0_1d12_710d_FillRectangleWithPattern({xPos}, {yPos}, {width}, {height})");
 
 			// function body
 			int iRectYPos = yPos;
@@ -4846,9 +4810,6 @@ namespace OpenCiv1
 				iRectYPos += iCellHeight;
 				iRectHeight -= iCellHeight;
 			}
-
-			// Far return
-			this.CPU.Log.ExitBlock("F0_1d12_710d_FillRectangleWithPattern");
 		}
 
 		/// <summary>
@@ -4862,7 +4823,7 @@ namespace OpenCiv1
 		/// <param name="mode"></param>
 		public void F0_1d12_71bf_DrawFilledRectangleWithCenteredText(int xPos, int yPos, int xPos1, int yPos1, ushort stringPtr, ushort mode)
 		{
-			this.CPU.Log.EnterBlock($"F0_1d12_71bf({xPos}, {yPos}, {xPos1}, {yPos1}, 0x{stringPtr:x4}, {mode})");
+			//this.CPU.Log.EnterBlock($"F0_1d12_71bf({xPos}, {yPos}, {xPos1}, {yPos1}, 0x{stringPtr:x4}, {mode})");
 
 			// function body
 			// Instruction address 0x1d12:0x71e8, size: 5
@@ -4888,9 +4849,6 @@ namespace OpenCiv1
 			// Instruction address 0x1d12:0x72ae, size: 5
 			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(stringPtr,
 				((xPos + xPos1) / 2) + 1, ((yPos + yPos1) / 2) - 2, (byte)(mode ^ 8));
-
-			// Far return
-			this.CPU.Log.ExitBlock("F0_1d12_71bf");
 		}
 
 		/// <summary>
@@ -4898,7 +4856,7 @@ namespace OpenCiv1
 		/// </summary>
 		private void F0_1d12_72b7_DrawCityWorldMap()
 		{
-			this.CPU.Log.EnterBlock("F0_1d12_72b7()");
+			//this.CPU.Log.EnterBlock("F0_1d12_72b7()");
 
 			// function body
 			// Instruction address 0x1d12:0x72d4, size: 5
@@ -4936,9 +4894,6 @@ namespace OpenCiv1
 
 			// Instruction address 0x1d12:0x73e1, size: 5
 			this.parent.MenuBoxDialog.F0_2d05_0a05_DrawRectangle(100, 117, 121, 75, 9);
-
-			// Far return
-			this.CPU.Log.ExitBlock("F0_1d12_72b7");
 		}
 
 		/// <summary>
@@ -4949,7 +4904,7 @@ namespace OpenCiv1
 		/// <param name="mode"></param>
 		private void F0_1d12_73ea_DrawCityRectangle(int xPos, int yPos, ushort mode)
 		{
-			this.CPU.Log.EnterBlock($"F0_1d12_73ea({xPos}, {yPos}, {mode})");
+			//this.CPU.Log.EnterBlock($"F0_1d12_73ea({xPos}, {yPos}, {mode})");
 
 			// function body
 			if (this.Var_2496 == 2)
@@ -4962,9 +4917,6 @@ namespace OpenCiv1
 				this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle,
 					((xPos * 3) / 2) + 101, ((yPos * 3) / 2) + 118, 2, 2, mode);
 			}
-
-			// Far return
-			this.CPU.Log.ExitBlock("F0_1d12_73ea");
 		}
 	}
 }

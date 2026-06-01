@@ -173,19 +173,19 @@ namespace OpenCiv1
 		#region File operations
 		public static string GetDOSFileName(string path)
 		{
-			string sPath = path;
+			string filename = path;
 
-			if (sPath.IndexOf(':') == 1)
+			if (filename.IndexOf(':') == 1)
 			{
-				sPath = sPath.Substring(2);
+				filename = filename.Substring(2);
 			}
 
-			if (sPath.IndexOf('\\') > 0)
+			if (filename.IndexOf('\\') > 0)
 			{
-				sPath = sPath.Substring(sPath.LastIndexOf('\\') + 1);
+				filename = filename.Substring(filename.LastIndexOf('\\') + 1);
 			}
 
-			return sPath;
+			return filename.ToUpper();
 		}
 
 		public short fopen(ushort filenamePtr, ushort modePtr)

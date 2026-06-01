@@ -31,10 +31,10 @@ namespace OpenCiv1
 			this.parent.Var_1a30_SoundDriverType = 'N';
 			this.parent.Var_1a3c_MouseAvailable = true;
 
-			this.parent.MainIntro.F2_0000_0000();
+			this.parent.MainIntro.F2_0000_0000_ShowMainGameIntro();
 
 			// Instruction address 0x11a8:0x010b, size: 5
-			this.parent.Var_6e92_MouseIconHandle = this.parent.Graphics.LoadIcon("torch.pic");
+			this.parent.Var_6e92_MouseIconHandle = this.parent.Graphics.LoadIcon("TORCH.PIC");
 
 			// Instruction address 0x11a8:0x0122, size: 5
 			this.parent.CommonTools.F0_1000_163e_InitMouse();
@@ -226,7 +226,7 @@ namespace OpenCiv1
 						this.parent.CommonTools.F0_1000_0846(0);
 
 						// Instruction address 0x11a8:0x054e, size: 5
-						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "sp299.pic", 0);
+						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "SP299.PIC", 0);
 
 						// Instruction address 0x11a8:0x0576, size: 5
 						this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 160, 50, 160, 150, this.parent.Var_19e8_Screen2_Rectangle, 160, 50);
@@ -261,7 +261,7 @@ namespace OpenCiv1
 						this.parent.CommonTools.F0_1000_0846(0);
 
 						// Instruction address 0x11a8:0x054e, size: 5
-						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "sp299.pic", 0);
+						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "SP299.PIC", 0);
 
 						// Instruction address 0x11a8:0x0576, size: 5
 						this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 160, 50, 160, 150, this.parent.Var_19e8_Screen2_Rectangle, 160, 50);
@@ -279,7 +279,7 @@ namespace OpenCiv1
 						this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
 						// Instruction address 0x11a8:0x05e1, size: 5
-						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "custom.pic", 1);
+						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "CUSTOM.PIC", 1);
 
 						// Instruction address 0x11a8:0x0611, size: 5
 						this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
@@ -379,7 +379,7 @@ namespace OpenCiv1
 						this.parent.CommonTools.F0_1000_0846(0);
 
 						// Instruction address 0x11a8:0x054e, size: 5
-						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "sp299.pic", 0);
+						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "SP299.PIC", 0);
 
 						// Instruction address 0x11a8:0x0576, size: 5
 						this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 160, 50, 160, 150, this.parent.Var_19e8_Screen2_Rectangle, 160, 50);
@@ -420,7 +420,7 @@ namespace OpenCiv1
 			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
 			// Instruction address 0x11a8:0x0867, size: 5
-			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "sp257.pic", 1);
+			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SP257.PIC", 1);
 
 			// Instruction address 0x11a8:0x086f, size: 5
 			this.parent.Segment_2dc4.F0_2dc4_05dd_AddPaletteCycleSlots();
@@ -443,7 +443,7 @@ namespace OpenCiv1
 			if (this.parent.GameData.TurnCount == 0)
 			{
 				// Instruction address 0x11a8:0x08a8, size: 5
-				this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "diffs.pic", 1);
+				this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "DIFFS.PIC", 1);
 
 				this.parent.StartGameMenu.F5_0000_0000_InitNewGameData();
 			}

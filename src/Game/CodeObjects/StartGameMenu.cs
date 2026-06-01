@@ -1008,7 +1008,7 @@ namespace OpenCiv1
 
 			// function body
 			// Instruction address 0x0000:0x147c, size: 5
-			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "sp299.pic", 0);
+			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "SP299.PIC", 0);
 
 			// Instruction address 0x0000:0x14a4, size: 5
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 160, 50, 160, 150, this.parent.Var_19e8_Screen2_Rectangle, 160, 50);
@@ -1020,7 +1020,7 @@ namespace OpenCiv1
 			}
 
 			// Instruction address 0x0000:0x14f7, size: 5
-			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "ter257.pic", 0);
+			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "TER257.PIC", 0);
 
 			for (int i = 0; i < 10; i++)
 			{
@@ -1062,12 +1062,12 @@ namespace OpenCiv1
 			}
 
 			// Instruction address 0x0000:0x16c2, size: 5
-			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "sp257.pic", 0);
+			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "SP257.PIC", 0);
 
 			byte[] palette;
 
 			// Instruction address 0x0000:0x16d2, size: 5
-			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "sp256.pal", out palette); // 0xbdee
+			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SP256.PAL", out palette); // 0xbdee
 
 			if (palette.Length > 53)
 			{
@@ -1211,7 +1211,7 @@ namespace OpenCiv1
 			}
 
 			// Instruction address 0x0000:0x1b60, size: 5
-			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, $"govt{governmentTypeID}{(ancientGovernment ? 'a' : 'm')}.pic", 0);
+			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, $"GOVT{governmentTypeID}{(ancientGovernment ? 'A' : 'M')}.PIC", 0);
 
 			// Instruction address 0x0000:0x1b84, size: 5
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 160, 60, this.parent.Var_19e8_Screen2_Rectangle, 160, 140);
