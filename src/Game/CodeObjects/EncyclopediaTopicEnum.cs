@@ -2,11 +2,11 @@
 {
 	public enum EncyclopediaTopicEnum
 	{
-		AllTopics,
-		TechnologyAdvance,
-		CityImprovement,
-		UnitType,
-		TerrainType,
-		GameConcept
+		AllTopics = 0,
+		TechnologyAdvance = 1,
+		CityImprovement = 2,
+		UnitType = 3,
+		TerrainType = 4,
+		GameConcept = 5
 	}
 }

@@ -2,7 +2,7 @@
 
 <ul>
 <li>Reaching the initial playability of the game (passed),</li>
-<li>Rewrite of the game code, functionalities and features (in progress... only 27% of the code left to rewrite):</li>
+<li>Rewrite of the game code, functionalities and features (in progress... only 26.8% of the code left to rewrite):</li>
 <ul>
 <li>Rewrite disassembly to native C#: phase out VCPU and CAPI namespaces entirely,</li>
 <li>Recheck the variable types,</li>

@@ -22,7 +22,7 @@ namespace OpenCiv1
 		private Segment_1238 oSegment_1238;
 		private MenuBoxDialog menuBoxDialog;
 		private CheckPlayerTurn checkPlayerTurn;
-		private Segment_2dc4 oSegment_2dc4;
+		private GameTools gameTools;
 		private DrawTools drawTools;
 		private ImageTools imageTools;
 		private LanguageTools languageTools;
@@ -136,7 +136,7 @@ namespace OpenCiv1
 			this.oSegment_1238 = new Segment_1238(this);
 			this.menuBoxDialog = new MenuBoxDialog(this);
 			this.checkPlayerTurn = new CheckPlayerTurn(this);
-			this.oSegment_2dc4 = new Segment_2dc4(this);
+			this.gameTools = new GameTools(this);
 			this.drawTools = new DrawTools(this);
 			this.imageTools = new ImageTools(this);
 			this.languageTools = new LanguageTools(this);
@@ -224,7 +224,7 @@ namespace OpenCiv1
 
 		public void Start()
 		{
-			#region Check Resources
+			#region Check if all resources are present
 			// Check for Default directory and individual Resource files
 			if (!string.IsNullOrEmpty(this.gameResourcePath) && !Directory.Exists(this.gameResourcePath))
 			{
@@ -452,9 +452,9 @@ namespace OpenCiv1
 			get { return this.checkPlayerTurn; }
 		}
 
-		public Segment_2dc4 Segment_2dc4
+		public GameTools GameTools
 		{
-			get { return this.oSegment_2dc4; }
+			get { return this.gameTools; }
 		}
 
 		public DrawTools DrawTools

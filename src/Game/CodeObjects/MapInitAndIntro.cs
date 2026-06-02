@@ -974,7 +974,7 @@ namespace OpenCiv1
 						}
 
 						// Instruction address 0x0000:0x1111, size: 5
-						totalLocationScore = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange((totalLocationScore - 120) / 8, 1, 15) / 2 + 8;
+						totalLocationScore = this.parent.GameTools.F0_2dc4_007c_CheckValueRange((totalLocationScore - 120) / 8, 1, 15) / 2 + 8;
 
 						// !!! Sets build score to both 80,0 & 80,50
 						this.map.SetBuildLocationScore(i, j, totalLocationScore);

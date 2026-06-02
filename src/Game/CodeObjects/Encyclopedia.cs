@@ -34,7 +34,7 @@ namespace OpenCiv1
 
 			// function body
 			// Instruction address 0x0000:0x0006, size: 5
-			this.parent.Segment_2dc4.F0_2dc4_065f_StopPaletteCycleSlots();
+			this.parent.GameTools.F0_2dc4_065f_StopPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x000b, size: 5
 			this.parent.MainCode.F0_11a8_0268_HideMouse();
@@ -63,7 +63,7 @@ namespace OpenCiv1
 			this.parent.Segment_1238.F0_1238_1b44();
 
 			// Instruction address 0x0000:0x0058, size: 5
-			this.parent.Segment_2dc4.F0_2dc4_0626_StartPaletteCycleSlots();
+			this.parent.GameTools.F0_2dc4_0626_StartPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x005d, size: 5
 			this.parent.MainCode.F0_11a8_0250_ShowMouse();
@@ -320,7 +320,7 @@ namespace OpenCiv1
 				return;
 
 			// Instruction address 0x0000:0x063a, size: 5
-			this.parent.Segment_2dc4.F0_2dc4_065f_StopPaletteCycleSlots();
+			this.parent.GameTools.F0_2dc4_065f_StopPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x063f, size: 5
 			this.parent.MainCode.F0_11a8_0268_HideMouse();
@@ -374,7 +374,7 @@ namespace OpenCiv1
 						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, $"ICONPG{(fileID / 9) + 1}.PIC", 0);
 
 						// Instruction address 0x0000:0x076c, size: 5
-						this.parent.Segment_2dc4.F0_2dc4_047d_ReadAndSetPalette("ICONPG1.PAL");
+						this.parent.GameTools.F0_2dc4_047d_ReadAndSetPalette("ICONPG1.PAL");
 
 						F8_0000_16f7_DrawEncyclopediaImage(((fileID % 3) * 111) + 1, (((fileID % 9) / 3) * 69) + 1, 110, 68, 62, 42);
 					}
@@ -393,7 +393,7 @@ namespace OpenCiv1
 						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "CITYPIX2.PIC", 0);
 
 						// Instruction address 0x0000:0x0934, size: 5
-						this.parent.Segment_2dc4.F0_2dc4_047d_ReadAndSetPalette("HILL.PAL");
+						this.parent.GameTools.F0_2dc4_047d_ReadAndSetPalette("HILL.PAL");
 
 						// Instruction address 0x0000:0x0973, size: 5
 						int bitmapID = this.parent.Graphics.F0_VGA_0b85_ScreenToBitmap(1, (((topicIndex - 2) >> 2) * 50) + 1, (((topicIndex - 2) & 0x3) * 50) + 1, 49, 49);
@@ -402,7 +402,7 @@ namespace OpenCiv1
 						this.parent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, 37, 17, bitmapID);
 
 						// Instruction address 0x0000:0x099d, size: 5
-						this.parent.Segment_2dc4.F0_2dc4_0523_FreeResource(bitmapID, "Encyclopedia");
+						this.parent.GameTools.F0_2dc4_0523_FreeResource(bitmapID, "Encyclopedia");
 					}
 
 					if (topicIndex > 24)
@@ -429,7 +429,7 @@ namespace OpenCiv1
 						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, $"ICONPG{(char)('A' + (fileID / 6))}.PIC", 0);
 
 						// Instruction address 0x0000:0x0a20, size: 5
-						this.parent.Segment_2dc4.F0_2dc4_047d_ReadAndSetPalette("ICONPGA.PAL");
+						this.parent.GameTools.F0_2dc4_047d_ReadAndSetPalette("ICONPGA.PAL");
 
 						F8_0000_16f7_DrawEncyclopediaImage(((fileID & 1) * 160) + 1, ((fileID % 6) >> 1) * 61, 158, 61, 88, 42);
 					}
@@ -496,7 +496,7 @@ namespace OpenCiv1
 
 			if (this.parent.GameData.GameSettingFlags.EncyclopediaText && topicType != EncyclopediaTopicEnum.TerrainType)
 			{
-				string content = this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey($"BLURB{topicType}", $"*{topicName.ToUpper()}");
+				string content = this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey($"BLURB{((int)topicType) - 1}", $"*{topicName.ToUpper()}");
 
 				// Instruction address 0x0000:0x0855, size: 5
 				if (!string.IsNullOrEmpty(content))
@@ -842,7 +842,7 @@ namespace OpenCiv1
 				this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 8, 8, 304, 184, (byte)colour);
 
 				// Instruction address 0x0000:0x16b4, size: 5
-				this.parent.Segment_2dc4.F0_2dc4_0626_StartPaletteCycleSlots();
+				this.parent.GameTools.F0_2dc4_0626_StartPaletteCycleSlots();
 			}
 		
 			// Instruction address 0x0000:0x16b9, size: 5

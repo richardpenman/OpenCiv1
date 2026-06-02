@@ -346,5 +346,41 @@ namespace OpenCiv1
 
 			return newY - y;
 		}
+
+		/// <summary>
+		/// Fills a rectangle with default pattern
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		public void FillRectangleWithPattern(int x, int y, int width, int height)
+		{
+			// function body
+			int currentY = y;
+			int currentHeight = height;
+
+			while (currentHeight > 0)
+			{
+				int cellHeight = Math.Min(currentHeight, 16);
+				int currentX = x;
+				int CurrentWidth = width;
+
+				while (CurrentWidth > 0)
+				{
+					int iCellWidth = Math.Min(CurrentWidth, 32);
+
+					// Instruction address 0x2dc4:0x0435, size: 5
+					this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19e8_Screen2_Rectangle,
+						288, 120, iCellWidth, cellHeight, this.parent.Var_aa_Screen0_Rectangle, currentX, currentY);
+
+					currentX += iCellWidth;
+					CurrentWidth -= iCellWidth;
+				}
+
+				currentY += cellHeight;
+				currentHeight -= cellHeight;
+			}
+		}
 	}
 }

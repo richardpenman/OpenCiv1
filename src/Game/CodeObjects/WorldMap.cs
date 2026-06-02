@@ -194,7 +194,7 @@ namespace OpenCiv1
 			if (this.oCPU.Flags.E) goto L020f;
 
 			// Instruction address 0x0000:0x01c0, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_00ba_GetCityID(
+			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_00ba_GetCityByLocation(
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)));
 
@@ -1499,8 +1499,10 @@ namespace OpenCiv1
 			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
 
 			// Instruction address 0x0000:0x1079, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_02cd(
+			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_02cd_GetPlayerTotalPopulationCount(
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x56)));
+
+			this.oParent.CAPI.strcat(0xba06, this.oParent.GameTools.F0_2dc4_0337_PopulationValueToString(this.oCPU.AX.Int16));
 
 			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x56));
 			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
@@ -1702,7 +1704,7 @@ namespace OpenCiv1
 			this.oCPU.SI.UInt16 = (ushort)((this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x56)) << 1) + 
 				this.oCPU.BP.UInt16 - 0xa8);
 			// Instruction address 0x0000:0x1368, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(this.oCPU.ReadInt16(this.oCPU.DS.UInt16, this.oCPU.SI.UInt16), 0, 100);
+			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_007c_CheckValueRange(this.oCPU.ReadInt16(this.oCPU.DS.UInt16, this.oCPU.SI.UInt16), 0, 100);
 
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, this.oCPU.SI.UInt16, this.oCPU.AX.UInt16);
 			this.oCPU.AX.UInt16 = (ushort)playerID;
@@ -1851,7 +1853,7 @@ namespace OpenCiv1
 				this.oCPU.BP.UInt16);
 
 			// Instruction address 0x0000:0x15b5, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(
+			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_007c_CheckValueRange(
 				this.oCPU.ReadInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 - 0x10)), 20, 99);
 
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 - 0xa8), this.oCPU.AX.UInt16);

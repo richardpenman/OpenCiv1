@@ -56,14 +56,9 @@ namespace OpenCiv1
 			// Instruction address 0x0000:0x00b6, size: 5
 			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 16, 24, 15);
 
-			// Instruction address 0x0000:0x00c6, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Population: ");
-
-			// Instruction address 0x0000:0x00d1, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_02cd(playerID);
-
 			// Instruction address 0x0000:0x00e9, size: 5
-			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 16, 32, 15);
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+				$"Population: {this.oParent.GameTools.F0_2dc4_0337_PopulationValueToString(this.oParent.GameTools.F0_2dc4_02cd_GetPlayerTotalPopulationCount(playerID))}", 16, 32, 15);
 
 			// Instruction address 0x0000:0x00f9, size: 5
 			this.oParent.CAPI.strcpy(0xba06, "Treasury: $");

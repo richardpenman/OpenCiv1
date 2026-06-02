@@ -43,7 +43,7 @@ namespace OpenCiv1
 			this.parent.CommonTools.F0_1000_0000_InitializeTimer();
 
 			// Instruction address 0x0000:0x01c8, size: 5
-			this.parent.Segment_2dc4.F0_2dc4_0042_Randomize();
+			this.parent.GameTools.F0_2dc4_0042_Randomize();
 
 			// Instruction address 0x0000:0x01e0, size: 5
 			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
@@ -305,7 +305,7 @@ namespace OpenCiv1
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
 			// Instruction address 0x0000:0x0bca, size: 5
-			this.parent.Segment_2dc4.F0_2dc4_0523_FreeResource(logoBitmapID, "ShowMainIntro");
+			this.parent.GameTools.F0_2dc4_0523_FreeResource(logoBitmapID, "ShowMainIntro");
 		}
 
 		/// <summary>
@@ -327,7 +327,7 @@ namespace OpenCiv1
 				bitmaps[i] = this.parent.Graphics.F0_VGA_0b85_ScreenToBitmap(1, ((i % 6) * 50) + 1, ((i / 6) * 50) + 1, 49, 49);
 			}
 
-			this.parent.Segment_2dc4.F0_2dc4_065f_StopPaletteCycleSlots();
+			this.parent.GameTools.F0_2dc4_065f_StopPaletteCycleSlots();
 			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 236);
 			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "PLANET1.PIC", 1);
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 24, 320, 176, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
@@ -444,7 +444,7 @@ namespace OpenCiv1
 
 			for (int i = 0; i < 24; i++)
 			{
-				this.parent.Segment_2dc4.F0_2dc4_0523_FreeResource(bitmaps[i], "EndGame_SpaceVictory");
+				this.parent.GameTools.F0_2dc4_0523_FreeResource(bitmaps[i], "EndGame_SpaceVictory");
 			}
 
 			// Show static narrative text animation
@@ -523,7 +523,7 @@ namespace OpenCiv1
 
 			this.parent.Segment_1238.F0_1238_1beb();
 
-			this.parent.Segment_2dc4.F0_2dc4_05dd_AddPaletteCycleSlots();
+			this.parent.GameTools.F0_2dc4_05dd_AddPaletteCycleSlots();
 		}
 
 		/// <summary>
@@ -535,7 +535,7 @@ namespace OpenCiv1
 
 			// function body
 			// Instruction address 0x0000:0x1530, size: 5
-			this.parent.Segment_2dc4.F0_2dc4_065f_StopPaletteCycleSlots();
+			this.parent.GameTools.F0_2dc4_065f_StopPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x155a, size: 5
 			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);

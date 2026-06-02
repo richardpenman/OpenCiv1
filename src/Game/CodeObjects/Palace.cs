@@ -47,7 +47,7 @@ namespace OpenCiv1
 			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
 			// Instruction address 0x0000:0x0075, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_065f_StopPaletteCycleSlots();
+			this.oParent.GameTools.F0_2dc4_065f_StopPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x0091, size: 5
 			this.oParent.CommonTools.F0_1000_0a32_PlayTune(
@@ -272,7 +272,7 @@ namespace OpenCiv1
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
 
 			// Instruction address 0x0000:0x0347, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(
+			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_007c_CheckValueRange(
 				this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)) + 2] + 1,
 				1, 4);
 
@@ -534,7 +534,7 @@ namespace OpenCiv1
 
 		L06ae:
 			// Instruction address 0x0000:0x06b6, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_0523_FreeResource(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x6828), "Palace");
+			this.oParent.GameTools.F0_2dc4_0523_FreeResource(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x6828), "Palace");
 
 			// Instruction address 0x0000:0x06be, size: 5
 			this.oParent.CheckPlayerTurn.F0_1403_4545_EmptyKeyboardAndMouse();
@@ -1044,7 +1044,7 @@ namespace OpenCiv1
 			}
 
 			// Instruction address 0x0000:0x0bc8, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_0523_FreeResource(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x6828), "Palace2");
+			this.oParent.GameTools.F0_2dc4_0523_FreeResource(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x6828), "Palace2");
 
 			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[11] == 0  &&
 				this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[13] == 0)
@@ -1100,7 +1100,7 @@ namespace OpenCiv1
 			}
 
 			// Instruction address 0x0000:0x0c8c, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_0523_FreeResource(this.oCPU.AX.UInt16, "");
+			this.oParent.GameTools.F0_2dc4_0523_FreeResource(this.oCPU.AX.UInt16, "");
 
 		L0c94:
 			this.oCPU.CMP_UInt16(flag, 0x0);

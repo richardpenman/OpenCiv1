@@ -993,7 +993,7 @@ namespace OpenCiv1
 			this.oCPU.DI.UInt16 = this.oCPU.AX.UInt16;
 
 			// Instruction address 0x0000:0x0a88, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_0289_GetShortestDistance(
+			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_0289_GetShortestDistance(
 				this.oParent.GameData.Cities[cityID].Position.X,
 				this.oParent.GameData.Cities[cityID].Position.Y,
 				this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Position.X,
@@ -1372,7 +1372,7 @@ namespace OpenCiv1
 			if (this.oCPU.Flags.LE) goto L0f6a;
 
 			// Instruction address 0x0000:0x0f5a, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(
+			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_007c_CheckValueRange(
 				this.oCPU.ReadInt16(this.oCPU.DS.UInt16, 0x5116) + 2, 8, 99);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)), this.oCPU.AX.UInt16));
@@ -1514,7 +1514,7 @@ namespace OpenCiv1
 			if (this.oParent.GameData.PeaceTurnCount == 0) goto L11e3;
 
 			// Instruction address 0x0000:0x1191, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(this.oParent.GameData.PeaceTurnCount * 3, 0, 100);
+			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_007c_CheckValueRange(this.oParent.GameData.PeaceTurnCount * 3, 0, 100);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16), this.oCPU.AX.UInt16);
 
@@ -1639,7 +1639,7 @@ namespace OpenCiv1
 			if (this.oParent.GameData.Players[0].Score > 0)
 			{
 				// Instruction address 0x0000:0x139f, size: 5
-				this.oParent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(this.oParent.GameData.Players[0].Score / 4, 0, 250);
+				this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_007c_CheckValueRange(this.oParent.GameData.Players[0].Score / 4, 0, 250);
 
 				// Instruction address 0x0000:0x13b4, size: 5
 				this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 35, 192, (short)this.oCPU.AX.UInt16, 7, 11);

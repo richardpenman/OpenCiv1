@@ -316,9 +316,9 @@ namespace OpenCiv1
 			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)));
 			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
 			this.oCPU.ES.UInt16 = 0x3772; // segment
-			
+
 			// Instruction address 0x0000:0x03a9, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_0337(this.oCPU.ReadInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37de)));
+			this.oParent.CAPI.strcat(0xba06, this.oParent.GameTools.F0_2dc4_0337_PopulationValueToString(this.oCPU.ReadInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37de))));
 
 			// Instruction address 0x0000:0x03b9, size: 5
 			this.oParent.CAPI.strcat(0xba06, ", Score: ");
@@ -516,9 +516,11 @@ namespace OpenCiv1
 			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xd766);
 			this.oCPU.WriteUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37dc), this.oCPU.AX.UInt16);
 			this.oCPU.WriteInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37d8), oParent.GameData.Year);
-			
+
 			// Instruction address 0x0000:0x05ec, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_02cd(this.oParent.GameData.HumanPlayerID);
+			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_02cd_GetPlayerTotalPopulationCount(this.oParent.GameData.HumanPlayerID);
+
+			this.oParent.CAPI.strcat(0xba06, this.oParent.GameTools.F0_2dc4_0337_PopulationValueToString(this.oCPU.AX.Int16));
 
 			this.oCPU.ES.UInt16 = 0x3772; // segment
 			this.oCPU.WriteUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37de), this.oCPU.AX.UInt16);
@@ -657,7 +659,7 @@ namespace OpenCiv1
 			this.oParent.Var_aa_Screen0_Rectangle.FontID = 7;
 
 			// Instruction address 0x0000:0x0757, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_03ce_FillRectangleWithPattern(80, 4, 160, 27);
+			this.oParent.DrawTools.FillRectangleWithPattern(80, 4, 160, 27);
 
 			// Instruction address 0x0000:0x0777, size: 5
 			this.oParent.MenuBoxDialog.F0_2d05_0a66_DrawShadowRectangle(80, 4, 159, 26, 11, 8);
@@ -970,7 +972,7 @@ namespace OpenCiv1
 				this.oParent.Var_e8b8, 160);
 
 			// Instruction address 0x0000:0x0bd9, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(
+			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_007c_CheckValueRange(
 				this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))].ActualSize * 8, 
 				0, 160);
 

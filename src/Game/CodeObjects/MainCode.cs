@@ -423,7 +423,7 @@ namespace OpenCiv1
 			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SP257.PIC", 1);
 
 			// Instruction address 0x11a8:0x086f, size: 5
-			this.parent.Segment_2dc4.F0_2dc4_05dd_AddPaletteCycleSlots();
+			this.parent.GameTools.F0_2dc4_05dd_AddPaletteCycleSlots();
 
 			// Instruction address 0x11a8:0x0875, size: 3
 			F0_11a8_0250_ShowMouse();

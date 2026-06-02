@@ -146,7 +146,7 @@ namespace OpenCiv1
 					if (this.parent.GameData.Cities[i].StatusFlag != 0xff && i != city.ID)
 					{
 						// Instruction address 0x1d12:0x01a2, size: 5
-						local_b0 = this.parent.Segment_2dc4.F0_2dc4_0289_GetShortestDistance(
+						local_b0 = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(
 							city.Position.X,
 							city.Position.Y,
 							this.parent.GameData.Cities[i].Position.X,
@@ -284,7 +284,7 @@ namespace OpenCiv1
 					this.parent.CAPI.strcat(0xba06, " (Pop:");
 
 					// Instruction address 0x1d12:0x0547, size: 5
-					this.parent.Segment_2dc4.F0_2dc4_0337(local_e8);
+					this.parent.CAPI.strcat(0xba06, this.parent.GameTools.F0_2dc4_0337_PopulationValueToString(local_e8));
 
 					// Instruction address 0x1d12:0x0557, size: 5
 					this.parent.CAPI.strcat(0xba06, ")");
@@ -698,21 +698,21 @@ namespace OpenCiv1
 							local_4 = F0_1d12_6abc_GetCityResourceCount(this.Var_6548_PlayerID, this.Var_653e_CityID, local_c6, local_d2, CityResourceTypeEnum.Food);
 
 							// Instruction address 0x1d12:0x1151, size: 5
-							local_d4 = local_4 * (16 / this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(
+							local_d4 = local_4 * (16 / this.parent.GameTools.F0_2dc4_007c_CheckValueRange(
 								this.parent.Var_70da_Arr[0] - (city.ActualSize * 2) - (local_48 * this.parent.Var_e3c6), 1, 99));
 
 							// Instruction address 0x1d12:0x1190, size: 5
 							local_c = F0_1d12_6abc_GetCityResourceCount(this.Var_6548_PlayerID, this.Var_653e_CityID, local_c6, local_d2, CityResourceTypeEnum.Production);
 
 							// Instruction address 0x1d12:0x11af, size: 5
-							local_d4 += ((city.ActualSize * 3) / this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(
+							local_d4 += ((city.ActualSize * 3) / this.parent.GameTools.F0_2dc4_007c_CheckValueRange(
 								this.parent.Var_70da_Arr[1] - this.parent.Var_d2f6, 1, 99)) * local_c;
 
 							// Instruction address 0x1d12:0x11dc, size: 5
 							local_46 = F0_1d12_6abc_GetCityResourceCount(this.Var_6548_PlayerID, this.Var_653e_CityID, local_c6, local_d2, CityResourceTypeEnum.Trade);
 
 							// Instruction address 0x1d12:0x11f7, size: 5
-							local_d4 += ((city.ActualSize * 2) / this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(this.parent.Var_70da_Arr[2], 1, 99)) * local_46;
+							local_d4 += ((city.ActualSize * 2) / this.parent.GameTools.F0_2dc4_007c_CheckValueRange(this.parent.Var_70da_Arr[2], 1, 99)) * local_46;
 
 							if (local_d4 > local_d6)
 							{
@@ -813,7 +813,7 @@ namespace OpenCiv1
 				}
 
 				// Instruction address 0x1d12:0x1484, size: 5
-				local_ac = (short)this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(local_ac, 0, local_f8);
+				local_ac = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(local_ac, 0, local_f8);
 				local_10a = this.parent.Var_70da_Arr[1];
 				local_a = this.parent.Var_70da_Arr[2];
 
@@ -919,7 +919,7 @@ namespace OpenCiv1
 											if (this.parent.GameData.Cities[i].PlayerID != this.parent.GameData.HumanPlayerID || this.parent.GameData.Cities[i].StatusFlag != 0xff)
 											{
 												// Instruction address 0x1d12:0x1898, size: 5
-												local_e8 = (short)this.parent.Segment_2dc4.F0_2dc4_0177(this.Var_6548_PlayerID, local_ba,
+												local_e8 = this.parent.GameTools.F0_2dc4_0177_FindNearestPlayerUnit(this.Var_6548_PlayerID, local_ba,
 													this.parent.GameData.Cities[i].Position.X,
 													this.parent.GameData.Cities[i].Position.Y);
 
@@ -1326,7 +1326,7 @@ namespace OpenCiv1
 						if ((city.StatusFlag & 0x1) != 0 && city.CurrentProductionID < 0 && city.ShieldsCount != 0)
 						{
 							// Instruction address 0x1d12:0x24a7, size: 5
-							local_cc = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(
+							local_cc = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(
 								(this.parent.GameData.GetImprovementType(-city.CurrentProductionID).Cost * local_4a) - city.ShieldsCount,
 								0, this.parent.GameData.Players[this.Var_6548_PlayerID].Coins / 8);
 						}
@@ -1336,7 +1336,7 @@ namespace OpenCiv1
 							(city.StatusFlag & 0x10) != 0) && city.CurrentProductionID >= 0 && city.ShieldsCount != 0)
 						{
 							// Instruction address 0x1d12:0x2530, size: 5
-							local_cc = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(
+							local_cc = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(
 								(this.parent.GameData.Units[city.CurrentProductionID].Cost * local_4a) - city.ShieldsCount,
 								0, this.parent.GameData.Players[this.Var_6548_PlayerID].Coins / 3);
 						}
@@ -1344,7 +1344,7 @@ namespace OpenCiv1
 						if (city.CurrentProductionID == -1 && city.ShieldsCount != 0)
 						{
 							// Instruction address 0x1d12:0x2591, size: 5
-							local_cc = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(
+							local_cc = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(
 								(this.parent.GameData.Units[city.CurrentProductionID].Cost * local_4a) - city.ShieldsCount,
 								0, this.parent.GameData.Players[this.Var_6548_PlayerID].Coins / 3);
 						}
@@ -1352,7 +1352,7 @@ namespace OpenCiv1
 						if (city.CurrentProductionID >= 0 && city.StatusFlag == 0x19 && this.parent.GameData.Players[this.Var_6548_PlayerID].ActiveUnits[(int)UnitTypeEnum.Nuclear] == 0 && city.ShieldsCount != 0)
 						{
 							// Instruction address 0x1d12:0x260d, size: 5
-							local_cc = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(
+							local_cc = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(
 								(this.parent.GameData.Units[city.CurrentProductionID].Cost * local_4a) - city.ShieldsCount,
 								0, this.parent.GameData.Players[this.Var_6548_PlayerID].Coins / 4);
 						}
@@ -1452,7 +1452,7 @@ namespace OpenCiv1
 				}
 
 				// Instruction address 0x1d12:0x2960, size: 5
-				this.parent.Var_70da_Arr[3] = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(
+				this.parent.Var_70da_Arr[3] = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(
 					((-(this.parent.GameData.Players[this.Var_6548_PlayerID].ScienceTaxRate +
 						this.parent.GameData.Players[this.Var_6548_PlayerID].TaxRate - 10) *
 						(this.parent.Var_70da_Arr[2] - this.parent.Var_d2e0)) + 5) / 10,
@@ -1460,7 +1460,7 @@ namespace OpenCiv1
 
 				// !!! Minimum value is greater than maximum value, why?
 				// Instruction address 0x1d12:0x2999, size: 5
-				this.parent.Var_e17a = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(
+				this.parent.Var_e17a = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(
 					((this.parent.GameData.Players[this.Var_6548_PlayerID].TaxRate * (this.parent.Var_70da_Arr[2] - this.parent.Var_d2e0)) + 5) / 10,
 					0, this.parent.Var_70da_Arr[2] - this.parent.Var_70da_Arr[3] - this.parent.Var_d2e0);
 
@@ -1727,7 +1727,7 @@ namespace OpenCiv1
 					}
 
 					// Instruction address 0x1d12:0x3079, size: 5
-					this.parent.Var_70e4 -= this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(local_e6, 0, this.parent.Var_70e4);
+					this.parent.Var_70e4 -= this.parent.GameTools.F0_2dc4_007c_CheckValueRange(local_e6, 0, this.parent.Var_70e4);
 				}
 				else
 				{
@@ -1890,7 +1890,7 @@ namespace OpenCiv1
 										this.parent.GameData.Players[this.Var_6548_PlayerID].Units[j].TypeID < 26)
 									{
 										// Instruction address 0x1d12:0x3513, size: 5
-										local_b2 = this.parent.Segment_2dc4.F0_2dc4_0289_GetShortestDistance(
+										local_b2 = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(
 											city.Position.X,
 											city.Position.Y,
 											this.parent.GameData.Players[this.Var_6548_PlayerID].Units[j].Position.X,
@@ -2077,7 +2077,7 @@ namespace OpenCiv1
 					}
 
 					// Instruction address 0x1d12:0x3a2c, size: 5
-					this.parent.Var_e3c2 += this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(this.parent.Var_deb8, 0, city.ActualSize);
+					this.parent.Var_e3c2 += this.parent.GameTools.F0_2dc4_007c_CheckValueRange(this.parent.Var_deb8, 0, city.ActualSize);
 
 					if (city.HasImprovement(ImprovementEnum.MarketPlace))
 					{
@@ -2183,7 +2183,7 @@ namespace OpenCiv1
 					}
 
 					// Instruction address 0x1d12:0x3d7a, size: 5
-					local_44 = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(((local_de - 1) / 10) + 1, ((city.ShieldsCount - 1) / 100) + 1, 99);
+					local_44 = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(((local_de - 1) / 10) + 1, ((city.ShieldsCount - 1) / 100) + 1, 99);
 					local_e8 = 80 / local_4a;
 					local_f6 = (((local_44 * 8) - 8) / local_44) + (local_4a * local_e8);
 					local_fc = (((local_de - 1) / local_44) * 8) + 8;
@@ -2228,7 +2228,7 @@ namespace OpenCiv1
 					// Instruction address 0x1d12:0x3f7b, size: 5
 					if (city.ActualSize != 0)
 					{
-						local_e8 = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(80 / city.ActualSize, 1, 8);
+						local_e8 = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(80 / city.ActualSize, 1, 8);
 					}
 					else
 					{
@@ -2253,7 +2253,7 @@ namespace OpenCiv1
 					}
 
 					// Instruction address 0x1d12:0x406a, size: 5
-					int iTemp = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(city.FoodCount, 0, (city.ActualSize + 1) * local_4a);
+					int iTemp = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(city.FoodCount, 0, (city.ActualSize + 1) * local_4a);
 
 					for (int i = 0; i < iTemp; i++)
 					{
@@ -2285,15 +2285,15 @@ namespace OpenCiv1
 						{
 							// Instruction address 0x1d12:0x416d, size: 5
 							// Instruction address 0x1d12:0x4181, size: 5
-							local_e8 = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(
-								116 / (this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(this.parent.Var_70da_Arr[i], 
+							local_e8 = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(
+								116 / (this.parent.GameTools.F0_2dc4_007c_CheckValueRange(this.parent.Var_70da_Arr[i], 
 									(city.ActualSize * 2) + (local_48 * this.parent.Var_e3c6), 999) + 1),
 								1, 8);
 						}
 						else
 						{
 							// Instruction address 0x1d12:0x41ac, size: 5
-							local_e8 = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(116 / (this.parent.Var_70da_Arr[i] + 1), 1, 8);
+							local_e8 = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(116 / (this.parent.Var_70da_Arr[i] + 1), 1, 8);
 						}
 
 						for (int j = 0; j < this.parent.Var_70da_Arr[i]; j++)
@@ -2333,7 +2333,7 @@ namespace OpenCiv1
 					local_d8 = 8;
 
 					// Instruction address 0x1d12:0x42a6, size: 5
-					local_e8 = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(
+					local_e8 = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(
 						224 / (this.parent.Var_70da_Arr[3] + this.parent.Var_70e6 + this.parent.Var_e17a + this.parent.Var_d2e0 + 2), 1, 16);
 
 					for (int i = 0; i < this.parent.Var_70da_Arr[3]; i++)
@@ -2378,7 +2378,7 @@ namespace OpenCiv1
 					if ((city.ActualSize * 2) + (local_48 * this.parent.Var_e3c6) > this.parent.Var_70da_Arr[0])
 					{
 						// Instruction address 0x1d12:0x43ed, size: 5
-						local_e8 = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(116 / ((city.ActualSize * 2) + (local_48 * this.parent.Var_e3c6) + 1), 1, 8);
+						local_e8 = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(116 / ((city.ActualSize * 2) + (local_48 * this.parent.Var_e3c6) + 1), 1, 8);
 
 						for (int i = this.parent.Var_70da_Arr[0]; i < (city.ActualSize * 2) + (local_48 * this.parent.Var_e3c6); i++)
 						{
@@ -2397,7 +2397,7 @@ namespace OpenCiv1
 					if (this.parent.Var_70da_Arr[1] < this.parent.Var_d2f6)
 					{
 						// Instruction address 0x1d12:0x44b9, size: 5
-						local_e8 = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(116 / (this.parent.Var_70da_Arr[1] + 1), 1, 8);
+						local_e8 = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(116 / (this.parent.Var_70da_Arr[1] + 1), 1, 8);
 
 						for (int i = this.parent.Var_70da_Arr[1]; i < this.parent.Var_d2f6; i++)
 						{
@@ -2416,7 +2416,7 @@ namespace OpenCiv1
 					if (this.parent.Var_d2e0 != 0)
 					{
 						// Instruction address 0x1d12:0x455a, size: 5
-						local_e8 = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(116 / (this.parent.Var_70da_Arr[2] + 1), 1, 8);
+						local_e8 = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(116 / (this.parent.Var_70da_Arr[2] + 1), 1, 8);
 
 						// Instruction address 0x1d12:0x4598, size: 5
 						this.parent.Graphics.F0_VGA_009a_ReplaceColor(this.parent.Var_aa_Screen0_Rectangle,
@@ -2432,7 +2432,7 @@ namespace OpenCiv1
 					local_f4 = F0_1d12_6ed4_DrawResources(cityID, 8, 8, local_8, 192);
 
 					// Instruction address 0x1d12:0x45f3, size: 5
-					local_e8 = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange((city.ActualSize * 8) + 24, 0, 128);
+					local_e8 = this.parent.GameTools.F0_2dc4_007c_CheckValueRange((city.ActualSize * 8) + 24, 0, 128);
 
 					for (int i = 0; i < 3; i++)
 					{
@@ -2492,8 +2492,8 @@ namespace OpenCiv1
 
 						// Instruction address 0x1d12:0x47ef, size: 5
 						// Instruction address 0x1d12:0x4802, size: 5
-						local_fc = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(
-							100 / this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(local_e0, 1, 99), 1, 8);
+						local_fc = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(
+							100 / this.parent.GameTools.F0_2dc4_007c_CheckValueRange(local_e0, 1, 99), 1, 8);
 
 						for (int i = 0; i < local_e0; i++)
 						{
@@ -2677,7 +2677,7 @@ namespace OpenCiv1
 							local_106 = this.parent.GameData.Units[city.CurrentProductionID].Cost;
 
 							// Instruction address 0x1d12:0x4c3d, size: 5
-							local_e8 = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange((10 * local_106) - city.ShieldsCount, 0, 999);
+							local_e8 = this.parent.GameTools.F0_2dc4_007c_CheckValueRange((10 * local_106) - city.ShieldsCount, 0, 999);
 
 							local_e8 = (local_e8 * local_e8) / 20 + local_e8 * 2;
 						}
@@ -2686,7 +2686,7 @@ namespace OpenCiv1
 							local_106 = this.parent.GameData.GetImprovementType(-city.CurrentProductionID).Cost;
 
 							// Instruction address 0x1d12:0x4ca0, size: 5
-							local_e8 = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange((10 * local_106) - city.ShieldsCount, 0, 999) * 2;
+							local_e8 = this.parent.GameTools.F0_2dc4_007c_CheckValueRange((10 * local_106) - city.ShieldsCount, 0, 999) * 2;
 
 							if ((-city.CurrentProductionID) > 21)
 							{
@@ -2906,7 +2906,7 @@ namespace OpenCiv1
 						}
 
 						// Instruction address 0x1d12:0x5151, size: 5
-						local_106 = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(local_ea, 0, local_4e - 1);
+						local_106 = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(local_ea, 0, local_4e - 1);
 
 						if (local_fc == '\n' || local_fc == ' ')
 						{
@@ -2984,7 +2984,7 @@ namespace OpenCiv1
 
 					L52f3:
 						// Instruction address 0x1d12:0x5301, size: 5
-						local_106 = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(local_ea, 0, local_b4 - 1);
+						local_106 = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(local_ea, 0, local_b4 - 1);
 
 						if (local_fc == '\n') goto L5740;
 
@@ -4612,12 +4612,12 @@ namespace OpenCiv1
 			}
 
 			// Instruction address 0x1d12:0x6e16, size: 5
-			this.parent.Var_70e2 = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(this.parent.Var_70e2, 0, this.parent.GameData.Cities[cityID].ActualSize);
+			this.parent.Var_70e2 = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(this.parent.Var_70e2, 0, this.parent.GameData.Cities[cityID].ActualSize);
 			// Instruction address 0x1d12:0x6e98, size: 5
-			this.parent.Var_70e4 = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(this.parent.Var_70e4, 0, this.parent.GameData.Cities[cityID].ActualSize);
+			this.parent.Var_70e4 = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(this.parent.Var_70e4, 0, this.parent.GameData.Cities[cityID].ActualSize);
 
 			// Instruction address 0x1d12:0x6ebb, size: 5
-			while ((this.parent.Var_70e2 + this.parent.Var_70e4) > this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(this.parent.GameData.Cities[cityID].ActualSize - size, 0, 99))
+			while ((this.parent.Var_70e2 + this.parent.Var_70e4) > this.parent.GameTools.F0_2dc4_007c_CheckValueRange(this.parent.GameData.Cities[cityID].ActualSize - size, 0, 99))
 			{
 				if (this.Var_6542 > 0)
 				{
@@ -4628,13 +4628,13 @@ namespace OpenCiv1
 					this.parent.Var_70e2--;
 
 					// Instruction address 0x1d12:0x6e74, size: 5
-					this.parent.Var_70e2 = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(this.parent.Var_70e2, 0, this.parent.GameData.Cities[cityID].ActualSize);
+					this.parent.Var_70e2 = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(this.parent.Var_70e2, 0, this.parent.GameData.Cities[cityID].ActualSize);
 				}
 
 				this.parent.Var_70e4--;
 
 				// Instruction address 0x1d12:0x6e98, size: 5
-				this.parent.Var_70e4 = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(this.parent.Var_70e4, 0, this.parent.GameData.Cities[cityID].ActualSize);
+				this.parent.Var_70e4 = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(this.parent.Var_70e4, 0, this.parent.GameData.Cities[cityID].ActualSize);
 			}
 		}
 

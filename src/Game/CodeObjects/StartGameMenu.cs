@@ -46,7 +46,7 @@ namespace OpenCiv1
 				if (this.parent.Var_db3c_MouseXPos < 135)
 				{
 					// Instruction address 0x0000:0x0090, size: 5
-					this.parent.GameData.DifficultyLevel = (short)this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange((this.parent.Var_db3e_MouseYPos - 12) / 35, 0, 4);
+					this.parent.GameData.DifficultyLevel = (short)this.parent.GameTools.F0_2dc4_007c_CheckValueRange((this.parent.Var_db3e_MouseYPos - 12) / 35, 0, 4);
 				}
 			}
 
@@ -97,7 +97,7 @@ namespace OpenCiv1
 			while (this.parent.GameData.AIOpponentCount == -1);
 
 			// Instruction address 0x0000:0x01a8, size: 5
-			this.parent.GameData.AIOpponentCount = (short)this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(6 - this.parent.GameData.AIOpponentCount, 2, 6);
+			this.parent.GameData.AIOpponentCount = (short)this.parent.GameTools.F0_2dc4_007c_CheckValueRange(6 - this.parent.GameData.AIOpponentCount, 2, 6);
 			this.parent.GameData.ActiveCivilizations = (short)(0xff >> (6 - this.parent.GameData.AIOpponentCount));
 
 			// Instruction address 0x0000:0x01c1, size: 5
@@ -543,7 +543,7 @@ namespace OpenCiv1
 					yStart = this.parent.CAPI.RNG.Next(34) + 8;
 
 					int distance;
-					int cityID = (short)this.parent.Segment_2dc4.F0_2dc4_0102(xStart, yStart);
+					int cityID = this.parent.GameTools.F0_2dc4_0102_FindNearestCity(xStart, yStart);
 
 					if (cityID == -1)
 					{
@@ -552,7 +552,7 @@ namespace OpenCiv1
 					else
 					{
 						// Instruction address 0x0000:0x0abf, size: 5
-						distance = this.parent.Segment_2dc4.F0_2dc4_0289_GetShortestDistance(xStart, yStart,
+						distance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(xStart, yStart,
 							this.parent.GameData.Cities[cityID].Position.X, this.parent.GameData.Cities[cityID].Position.Y);
 					}
 
@@ -561,7 +561,7 @@ namespace OpenCiv1
 						for (int j = 1; j < playerID; j++)
 						{
 							// Instruction address 0x0000:0x0af2, size: 5
-							int newDistance = this.parent.Segment_2dc4.F0_2dc4_0289_GetShortestDistance(xStart, yStart,
+							int newDistance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(xStart, yStart,
 								this.parent.GameData.Players[j].Units[0].Position.X, this.parent.GameData.Players[j].Units[0].Position.Y);
 
 							if (newDistance < distance)
@@ -657,7 +657,7 @@ namespace OpenCiv1
 					for (int i = 0; i < 128; i++)
 					{
 						if (this.parent.GameData.Players[0].Units[i].TypeID != -1 &&
-							this.parent.Segment_2dc4.F0_2dc4_0289_GetShortestDistance(xStart, yStart,
+							this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(xStart, yStart,
 								this.parent.GameData.Players[0].Units[i].Position.X, this.parent.GameData.Players[0].Units[i].Position.Y) < 9)
 						{
 							// Instruction address 0x0000:0x0e18, size: 5

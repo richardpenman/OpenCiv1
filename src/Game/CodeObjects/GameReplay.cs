@@ -554,8 +554,8 @@ namespace OpenCiv1
 			this.oParent.CAPI.strcat(0xba06, " cities; ");
 
 			// Instruction address 0x0000:0x064e, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_0337(
-				this.oCPU.ReadInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)) + this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)));
+			this.oParent.CAPI.strcat(0xba06, this.oParent.GameTools.F0_2dc4_0337_PopulationValueToString(
+				this.oCPU.ReadInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)) + this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10))));
 
 			// Instruction address 0x0000:0x0405, size: 5
 			this.oParent.CAPI.strcat(0xba06, " population");
@@ -957,7 +957,7 @@ namespace OpenCiv1
 			if (this.oCPU.Flags.E) goto L0ab6;
 
 			// Instruction address 0x0000:0x0a97, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_0289_GetShortestDistance(
+			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_0289_GetShortestDistance(
 				xPos, yPos,
 				this.oCPU.ReadInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x100)), this.oCPU.ReadInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x200)));
 
@@ -1008,22 +1008,22 @@ namespace OpenCiv1
 
 		L0ada:
 			// Instruction address 0x0000:0x0ae8, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(xPos - 5, 0, 80);
+			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_007c_CheckValueRange(xPos - 5, 0, 80);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.AX.UInt16);
 
 			// Instruction address 0x0000:0x0b01, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(xPos + 5, 0, 80);
+			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_007c_CheckValueRange(xPos + 5, 0, 80);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), this.oCPU.AX.UInt16);
 
 			// Instruction address 0x0000:0x0b1b, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(yPos - 5, 2, 49);
+			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_007c_CheckValueRange(yPos - 5, 2, 49);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8), this.oCPU.AX.UInt16);
 
 			// Instruction address 0x0000:0x0b35, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(yPos + 5, 2, 49);
+			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_007c_CheckValueRange(yPos + 5, 2, 49);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa), this.oCPU.AX.UInt16);
 
@@ -1317,7 +1317,7 @@ namespace OpenCiv1
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x680e, 0x1);
 
 			// Instruction address 0x0000:0x0dea, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_065f_StopPaletteCycleSlots();
+			this.oParent.GameTools.F0_2dc4_065f_StopPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x0def, size: 5
 			this.oParent.MainCode.F0_11a8_0268_HideMouse();
@@ -1679,7 +1679,7 @@ namespace OpenCiv1
 				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x30)));
 
 			// Instruction address 0x0000:0x14d1, size: 5
-			this.oParent.Segment_2dc4.F0_2dc4_0523_FreeResource(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)), "");
+			this.oParent.GameTools.F0_2dc4_0523_FreeResource(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)), "");
 
 			// Instruction address 0x0000:0x14dd, size: 5
 			this.oParent.CommonTools.F0_1000_0a32_PlayTune(1, 0);

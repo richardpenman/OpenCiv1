@@ -519,7 +519,7 @@ namespace OpenCiv1
 			if (mode == 7 && this.parent.Var_2f98_PatternAvailable)
 			{
 				// Instruction address 0x2d05:0x098c, size: 5
-				this.parent.Segment_2dc4.F0_2dc4_03ce_FillRectangleWithPattern(x, y, width, height);
+				this.parent.DrawTools.FillRectangleWithPattern(x, y, width, height);
 			}
 			else
 			{
@@ -550,7 +550,7 @@ namespace OpenCiv1
 			if (mode == 7 && this.parent.Var_2f98_PatternAvailable)
 			{
 				// Instruction address 0x2d05:0x098c, size: 5
-				this.parent.Segment_2dc4.F0_2dc4_03ce_FillRectangleWithPattern(x + 1, y + 1, width, height);
+				this.parent.DrawTools.FillRectangleWithPattern(x + 1, y + 1, width, height);
 			}
 			else
 			{

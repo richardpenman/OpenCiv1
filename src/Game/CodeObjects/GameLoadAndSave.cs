@@ -164,7 +164,7 @@ namespace OpenCiv1
 			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 15);
 
 			// Instruction address 0x0000:0x03d3, size: 5
-			this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = this.parent.Segment_2dc4.F0_2dc4_007c_CheckValueRange(this.gameIndex, 0, 3);
+			this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(this.gameIndex, 0, 3);
 
 			if (!autoSave)
 			{
