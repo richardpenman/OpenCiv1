@@ -1,15 +1,10 @@
-﻿using IRB.Collections.Generic;
-using OpenCiv1;
+﻿using OpenCiv1;
 using System.Collections;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Numerics;
-using System.Xml.Serialization;
 
 namespace IRB.Collections.Generic
 {
 	/// <summary>
-	/// This serializable class replaces the need for Enum bitwise [Flags] operator
+	/// This serializable class replaces the need for Enum bit wise [Flags] operator
 	/// It encapsulates all methods needed for such purpose
 	/// </summary>
 	/// <typeparam name="T">The base Enum type for this class</typeparam>

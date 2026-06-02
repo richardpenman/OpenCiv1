@@ -114,7 +114,7 @@ MicroProse and its successors never released the original source code which rema
 
 ## How to compile the code (.NET Core 8 SDK required)
 
-If you want to Debug (or Compile) the code with Visual Studio 2022 Community Edition, it is assumed that:
+If you want to Debug (or Compile) the code with VSCodium, Visual Studio Code or Visual Studio Community Edition, it is assumed that:
 <ul>
 <li>For debugging purposes you have installed Original game at 'c:\Dos\Civ1\', or at '~/Dos/Civ1/' if you are using Linux (be careful of uppercase files!).
 It is where its home directory resides (Images, palettes, text and save games are loaded/saved there, for now).</li>
