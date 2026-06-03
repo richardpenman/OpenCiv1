@@ -1,4 +1,4 @@
-﻿using OpenCiv1.Graphics;
+﻿using OpenCivOne.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class AStar1
 	{

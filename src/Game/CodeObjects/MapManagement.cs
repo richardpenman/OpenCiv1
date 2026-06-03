@@ -1,9 +1,9 @@
 using IRB.VirtualCPU;
-using OpenCiv1.Graphics;
+using OpenCivOne.Graphics;
 using System;
 using System.Numerics;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class MapManagement
 	{
@@ -23,7 +23,7 @@ namespace OpenCiv1
 		// Layer 9: Per-Civ land exploration and active units, 160:0
 		// Layer 10: Mini-map render, 240:0
 
-		private OpenCiv1Game parent;
+		private OpenCivOneGame parent;
 		private GameData gameData;
 		private VCPU CPU;
 
@@ -34,7 +34,7 @@ namespace OpenCiv1
 		/// <summary>Number of cities currently visible on the screen</summary>
 		private List<CityInfo> VisibleCities = new List<CityInfo>();
 
-		public MapManagement(OpenCiv1Game parent)
+		public MapManagement(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 			this.gameData = parent.GameData;

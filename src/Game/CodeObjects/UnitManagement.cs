@@ -1,16 +1,16 @@
-using OpenCiv1.Graphics;
+using OpenCivOne.Graphics;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class UnitManagement
 	{
-		private OpenCiv1Game parent;
+		private OpenCivOneGame parent;
 
 		private bool Var_20f4 = false;
 		private int Var_6530 = 0;
 		private int Var_6534 = 0;
 
-		public UnitManagement(OpenCiv1Game parent)
+		public UnitManagement(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 		}

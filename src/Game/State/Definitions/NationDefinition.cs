@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class NationDefinition
 	{

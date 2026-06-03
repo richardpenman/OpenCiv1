@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Reflection.Metadata.Ecma335;
 using IRB.Collections.Generic;
-using OpenCiv1.Graphics;
+using OpenCivOne.Graphics;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class City
 	{

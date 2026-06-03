@@ -1,14 +1,14 @@
 using IRB.VirtualCPU;
-using OpenCiv1.UI;
+using OpenCivOne.UI;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class TextBoxDialogs
 	{
-		private OpenCiv1Game parent;
+		private OpenCivOneGame parent;
 		private VCPU CPU;
 
-		public TextBoxDialogs(OpenCiv1Game parent)
+		public TextBoxDialogs(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 			this.CPU = parent.CPU;

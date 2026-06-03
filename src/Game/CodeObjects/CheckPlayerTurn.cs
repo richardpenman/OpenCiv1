@@ -1,13 +1,13 @@
 using IRB.VirtualCPU;
-using OpenCiv1.Graphics;
+using OpenCivOne.Graphics;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class CheckPlayerTurn
 	{
-		private OpenCiv1Game parent;
+		private OpenCivOneGame parent;
 
-		public CheckPlayerTurn(OpenCiv1Game parent)
+		public CheckPlayerTurn(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 		}

@@ -2,14 +2,14 @@ using System;
 using Avalonia.Media;
 using IRB.VirtualCPU;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class GameReplay
 	{
-		private OpenCiv1Game oParent;
+		private OpenCivOneGame oParent;
 		private VCPU oCPU;
 
-		public GameReplay(OpenCiv1Game parent)
+		public GameReplay(OpenCivOneGame parent)
 		{
 			this.oParent = parent;
 			this.oCPU = parent.CPU;

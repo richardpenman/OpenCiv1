@@ -1,7 +1,7 @@
 ﻿using System;
 using IRB.Collections.Generic;
 
-namespace OpenCiv1.Graphics
+namespace OpenCivOne.Graphics
 {
 	[Serializable]
 	public class GFont

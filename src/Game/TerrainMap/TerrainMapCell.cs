@@ -1,9 +1,9 @@
 ﻿using IRB.Collections.Generic;
-using OpenCiv1.Graphics;
+using OpenCivOne.Graphics;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	[Serializable]
 	public class TerrainMapCell : IEquatable<TerrainMapCell>

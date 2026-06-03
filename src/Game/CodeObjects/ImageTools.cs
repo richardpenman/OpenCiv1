@@ -1,18 +1,18 @@
 using System;
 using IRB.VirtualCPU;
-using OpenCiv1.Graphics;
+using OpenCivOne.Graphics;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	/// <summary>
 	/// Image loading functions - RLE and LZW compression was used
 	/// </summary>
 	public class ImageTools
 	{
-		private OpenCiv1Game parent;
+		private OpenCivOneGame parent;
 		private VCPU CPU;
 
-		public ImageTools(OpenCiv1Game parent)
+		public ImageTools(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 			this.CPU = parent.CPU;

@@ -1,14 +1,14 @@
 using IRB.VirtualCPU;
-using OpenCiv1.Graphics;
+using OpenCivOne.Graphics;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class Segment_2459
 	{
-		private OpenCiv1Game oParent;
+		private OpenCivOneGame oParent;
 		private VCPU oCPU;
 
-		public Segment_2459(OpenCiv1Game parent)
+		public Segment_2459(OpenCivOneGame parent)
 		{
 			this.oParent = parent;
 			this.oCPU = parent.CPU;

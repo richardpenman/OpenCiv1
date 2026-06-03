@@ -3,13 +3,13 @@ using System.IO.Compression;
 using IRB.VirtualCPU;
 using IRB.Collections.Generic;
 using Avalonia.Media;
-using OpenCiv1.Resources;
+using OpenCivOne.Resources;
 
-namespace OpenCiv1.Graphics
+namespace OpenCivOne.Graphics
 {
 	public class GDriver
 	{
-		private OpenCiv1Game oParent;
+		private OpenCivOneGame oParent;
 		private VCPU oCPU;
 
 		private BDictionary<int, GBitmap> aScreens = new BDictionary<int, GBitmap>();
@@ -17,7 +17,7 @@ namespace OpenCiv1.Graphics
 		private BDictionary<int, GBitmap> aBitmaps = new BDictionary<int, GBitmap>();
 		private GFonts aFonts;
 
-		public GDriver(OpenCiv1Game parent)
+		public GDriver(OpenCivOneGame parent)
 		{
 			this.oParent = parent;
 			this.oCPU = parent.CPU;

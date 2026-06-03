@@ -1,12 +1,12 @@
 using IRB.VirtualCPU;
-using OpenCiv1.Graphics;
+using OpenCivOne.Graphics;
 using System;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class CityView
 	{
-		private OpenCiv1Game parent;
+		private OpenCivOneGame parent;
 		private VCPU CPU;
 
 		private int[] Array_4f42_Offsets = { -96, -36, 0, -56};
@@ -39,7 +39,7 @@ namespace OpenCiv1
 			new(63, 1, 124, 54),
 			new(240, 60, 266, 114)};
 
-		public CityView(OpenCiv1Game parent)
+		public CityView(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 			this.CPU = parent.CPU;

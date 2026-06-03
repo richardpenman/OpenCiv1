@@ -1,7 +1,7 @@
 ﻿using Avalonia;
-using OpenCiv1.UI;
+using OpenCivOne.UI;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
     public static class Program
 	{

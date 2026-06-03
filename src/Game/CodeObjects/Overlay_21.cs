@@ -1,13 +1,13 @@
 using IRB.VirtualCPU;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class Overlay_21
 	{
-		private OpenCiv1Game oParent;
+		private OpenCivOneGame oParent;
 		private VCPU oCPU;
 
-		public Overlay_21(OpenCiv1Game parent)
+		public Overlay_21(OpenCivOneGame parent)
 		{
 			this.oParent = parent;
 			this.oCPU = parent.CPU;

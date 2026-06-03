@@ -4,7 +4,7 @@ using System.IO.Compression;
 using System.Xml.Serialization;
 using IRB.Collections.Generic;
 
-namespace OpenCiv1.Graphics
+namespace OpenCivOne.Graphics
 {
 	public class GFonts: BDictionary<int, GFont>
 	{

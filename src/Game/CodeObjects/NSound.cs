@@ -1,14 +1,14 @@
 using IRB.VirtualCPU;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class NSound
 	{
-		private OpenCiv1Game parent;
+		private OpenCivOneGame parent;
 		private VCPU CPU;
 		private ushort bufferPosition = 0;
 
-		public NSound(OpenCiv1Game parent)
+		public NSound(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 			this.CPU = parent.CPU;

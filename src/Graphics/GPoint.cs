@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace OpenCiv1.Graphics
+namespace OpenCivOne.Graphics
 {
 	/// <summary>Represents an X and Y coordinate that define a point in a two-dimensional plane</summary>
 	[Serializable]

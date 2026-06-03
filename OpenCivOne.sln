@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenCiv1", "src\OpenCiv1.csproj", "{55F5F1A4-2E16-46FC-90E1-8E8E52869226}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenCivOne", "src\OpenCivOne.csproj", "{55F5F1A4-2E16-46FC-90E1-8E8E52869226}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

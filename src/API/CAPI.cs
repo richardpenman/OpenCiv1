@@ -3,15 +3,15 @@ using System.IO;
 using System.Text;
 using IRB.VirtualCPU;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class CAPI
 	{
-		private OpenCiv1Game oParent;
+		private OpenCivOneGame oParent;
 		private VCPU oCPU;
 		private RandomMT19937 oRNG = new RandomMT19937();
 
-		public CAPI(OpenCiv1Game parent)
+		public CAPI(OpenCivOneGame parent)
 		{
 			this.oParent = parent;
 			this.oCPU = parent.CPU;

@@ -1,6 +1,6 @@
 ﻿using Avalonia.Media;
 
-namespace OpenCiv1.Graphics
+namespace OpenCivOne.Graphics
 {
 	public class PaletteCycleSlot
 	{

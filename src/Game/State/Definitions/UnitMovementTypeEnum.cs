@@ -1,4 +1,4 @@
-﻿namespace OpenCiv1
+﻿namespace OpenCivOne
 {
 	public enum UnitMovementTypeEnum
 	{

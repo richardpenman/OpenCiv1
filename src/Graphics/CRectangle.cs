@@ -1,6 +1,6 @@
 ﻿using IRB.VirtualCPU;
 
-namespace OpenCiv1.Graphics
+namespace OpenCivOne.Graphics
 {
 	public class CRectangle
 	{

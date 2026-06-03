@@ -1,12 +1,12 @@
 using System.Text;
 using IRB.Collections.Generic;
-using OpenCiv1.Graphics;
+using OpenCivOne.Graphics;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class Encyclopedia
 	{
-		private OpenCiv1Game parent;
+		private OpenCivOneGame parent;
 
 		private string[] Array_3c64_GameConcepts = ["Veteran Units", "Fortify", "Irrigation", "Mining", "Roads", "RailRoads", 
 			"Anarchy", "Despotism", "Monarchy", "Communism", "Republic", "Democracy", "Fortress", "Pillage", "Disband", 
@@ -19,7 +19,7 @@ namespace OpenCiv1
 		private int[] unitTypeFileID = [4, 21, 19, 14, 24, 15, 13, 18, 16, 17, 8, 9, 12, 26, 20, 6, 1, 22, 25, 23, 11, 0, 10, 5, 2, 3, 27, 7];
 		private int[] terrainTypeFileID = [6, 7, 8, 9, 10, 11, 0, 2, 3, 1, 4, 5];
 
-		public Encyclopedia(OpenCiv1Game parent)
+		public Encyclopedia(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 		}
@@ -516,7 +516,7 @@ namespace OpenCiv1
 			{
 				// Instruction address 0x0000:0x08d6, size: 5
 				yPosition = this.parent.DrawTools.DrawTextBlock(12, yPosition,
-					this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey($"BLURB{topicType}", $"*{topicName.ToUpper()}2"), 288, 1);
+					this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey($"BLURB{((int)topicType - 1)}", $"*{topicName.ToUpper()}2"), 288, 1);
 
 				yPosition += 8;
 			}

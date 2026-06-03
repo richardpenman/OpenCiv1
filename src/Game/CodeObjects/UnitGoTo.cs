@@ -1,8 +1,8 @@
 using System;
 using IRB.VirtualCPU;
-using OpenCiv1.Graphics;
+using OpenCivOne.Graphics;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	/// <summary>
 	/// This class encapsulates new GoTo algorithm.
@@ -10,7 +10,7 @@ namespace OpenCiv1
 	/// </summary>
 	public class UnitGoTo
 	{
-		private OpenCiv1Game parent;
+		private OpenCivOneGame parent;
 		private GameData gameData;
 
 		private int Var_6590_DestinationX = -1;
@@ -25,7 +25,7 @@ namespace OpenCiv1
 		public int[,] Arr_db44_LandPath = new int[20, 13]; // Divided by 4
 		public int[,] Arr_7f38_WaterPath = new int[20, 13]; // Divided by 4
 
-		public UnitGoTo(OpenCiv1Game parent)
+		public UnitGoTo(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 			this.gameData = parent.GameData;
@@ -115,7 +115,7 @@ namespace OpenCiv1
 				if (unit.GoToPath.Count == 0)
 				{
 					// We couldn't find a path for a destination
-					unit.GoToDestination = OpenCiv1Game.InvalidPosition;
+					unit.GoToDestination = OpenCivOneGame.InvalidPosition;
 					unit.GoToPath.Clear();
 					unit.GoToNextDirection = -1;
 				}
@@ -187,7 +187,7 @@ namespace OpenCiv1
 
 			int distance = -1;
 
-			if (unit.GoToDestination != OpenCiv1Game.InvalidPosition && unit.GoToPath.Count > 0 && unit.GoToPath.Count < maxMoves)
+			if (unit.GoToDestination != OpenCivOneGame.InvalidPosition && unit.GoToPath.Count > 0 && unit.GoToPath.Count < maxMoves)
 			{
 				distance = unit.GoToPath.Count;
 			}
@@ -236,7 +236,7 @@ namespace OpenCiv1
 
 			FindGoToPath(unit, false);
 
-			return unit.GoToDestination != OpenCiv1Game.InvalidPosition && unit.GoToPath.Count > 0 && unit.GoToPath.Count < maxMoves;
+			return unit.GoToDestination != OpenCivOneGame.InvalidPosition && unit.GoToPath.Count > 0 && unit.GoToPath.Count < maxMoves;
 		}
 
 		#region AStar (A*) Path finding algorithm
@@ -247,7 +247,7 @@ namespace OpenCiv1
 		/// <param name="testVisibility">ID of the unit</param>
 		private void FindGoToPath(Unit unit, bool testVisibility)
 		{
-			if (unit.GoToDestination != OpenCiv1Game.InvalidPosition)
+			if (unit.GoToDestination != OpenCivOneGame.InvalidPosition)
 			{
 				bool destinationReached = false; // remains false if we can't find a path to a destination
 				TerrainMapGroupTypeEnum group1; // The unit can move on this terrain type
@@ -442,7 +442,7 @@ namespace OpenCiv1
 				// This may happen when there is no way to destination cell
 				if (!destinationReached)
 				{
-					unit.GoToDestination = OpenCiv1Game.InvalidPosition;
+					unit.GoToDestination = OpenCivOneGame.InvalidPosition;
 				}
 				else
 				{
@@ -579,7 +579,7 @@ namespace OpenCiv1
 		public int F0_2e31_000e_GetNextMove(int playerID, int unitID)
 		{
 			//this.oParent.GoToLog.EnterBlock($"F0_2e31_000e({playerID}, {unitID})");
-			//OpenCiv1Game.LogUnit(this.oParent, this.oParent.GoToLog, playerID, unitID, this.oParent.GameData.HumanPlayerID);
+			//OpenCivOneGame.LogUnit(this.oParent, this.oParent.GoToLog, playerID, unitID, this.oParent.GameData.HumanPlayerID);
 
 			// function body
 			Unit unit;
@@ -769,7 +769,7 @@ namespace OpenCiv1
 		private bool F0_2e31_05e6(Unit unit)
 		{
 			//this.oParent.GoToLog.EnterBlock($"F0_2e31_05e6({playerID}, {unitID})");
-			//OpenCiv1Game.LogUnit(this.oParent, this.oParent.GoToLog, playerID, unitID, this.oParent.GameData.HumanPlayerID);
+			//OpenCivOneGame.LogUnit(this.oParent, this.oParent.GoToLog, playerID, unitID, this.oParent.GameData.HumanPlayerID);
 
 			// function body
 			bool waterUnit = this.parent.GameData.Units[unit.TypeID].MovementType == UnitMovementTypeEnum.Water;
@@ -1095,7 +1095,7 @@ namespace OpenCiv1
 		private int F0_2e31_0c1d_FindShortestPath(Unit unit, short param3)
 		{
 			//this.oParent.GoToLog.EnterBlock($"F0_2e31_0c1d({playerID}, {unitID}, {param3})");
-			//OpenCiv1Game.LogUnit(this.oParent, this.oParent.GoToLog, playerID, unitID, this.oParent.GameData.HumanPlayerID);
+			//OpenCivOneGame.LogUnit(this.oParent, this.oParent.GoToLog, playerID, unitID, this.oParent.GameData.HumanPlayerID);
 
 			// function body
 			bool waterUnit = this.parent.GameData.Units[unit.TypeID].MovementType == UnitMovementTypeEnum.Water;

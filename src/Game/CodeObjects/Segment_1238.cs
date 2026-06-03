@@ -1,16 +1,16 @@
 using Avalonia.Media;
 using IRB.VirtualCPU;
-using OpenCiv1.Graphics;
+using OpenCivOne.Graphics;
 using System;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class Segment_1238
 	{
-		private OpenCiv1Game oParent;
+		private OpenCivOneGame oParent;
 		private VCPU oCPU;
 
-		public Segment_1238(OpenCiv1Game parent)
+		public Segment_1238(OpenCivOneGame parent)
 		{
 			this.oParent = parent;
 			this.oCPU = parent.CPU;

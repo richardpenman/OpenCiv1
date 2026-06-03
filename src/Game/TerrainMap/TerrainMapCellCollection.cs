@@ -1,4 +1,4 @@
-﻿using OpenCiv1.Graphics;
+﻿using OpenCivOne.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class TerrainMapCellCollection : ICollection<TerrainMapCell>
 	{
@@ -44,7 +44,7 @@ namespace OpenCiv1
 			{
 				TerrainMapCell cell = this.aCells[i];
 
-				cell.ParentPos = OpenCiv1Game.InvalidPosition;
+				cell.ParentPos = OpenCivOneGame.InvalidPosition;
 				cell.GCost = double.MaxValue;
 				cell.HCost = double.MaxValue;
 				cell.FCost = double.MaxValue;

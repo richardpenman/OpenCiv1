@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class GameSettings
 	{

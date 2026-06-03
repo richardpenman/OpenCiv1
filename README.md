@@ -1,17 +1,17 @@
 ## About
 
-<p>OpenCiv1 project is a Free and Open Source (<a href="https://www.gnu.org/philosophy/free-sw.html" target="_blank_">FOSS</a>) preservation effort and rewrite of the iconic <a href="https://en.wikipedia.org/wiki/Civilization_(video_game)" target="_blank">Civilization game</a> designed by Sid Meier and Bruce Shelley in year 1991.</p>
+<p>OpenCivOne (OpenCiv1) project is a Free and Open Source (<a href="https://www.gnu.org/philosophy/free-sw.html" target="_blank_">FOSS</a>) preservation effort and rewrite of the iconic <a href="https://en.wikipedia.org/wiki/Civilization_(video_game)" target="_blank">Civilization game</a> designed by Sid Meier and Bruce Shelley in year 1991.</p>
 <p>If you like games, and want to preserve our gaming heritage, please support: <a href="https://www.stopkillinggames.com/en" target="_blank">The Stop Killing Games Campaign</a></p>
 <p><b>The final source code for the game, according to the sources from MicroProse Software, Inc. is lost forever.</b> The only copy that remains is the game prototype source code on Sid Meier's own IBM PC on which he designed the game (<a href="https://www.youtube.com/watch?v=XwUM33VJRbY" target="_blank">Video in which Sid Meier talks about his IBM PCs</a>).
 <ul>
-<li>The OpenCiv1 uses .NET 8 and Avalonia UI framework and is OS independent. It is currently compatible with desktops: Windows, Linux and MacOSX.</li>
+<li>The OpenCivOne uses .NET 8 and Avalonia UI framework and is OS independent. It is currently compatible with desktops: Windows, Linux and MacOSX.</li>
 <p align="center">
 <img src="src/Resources/Screenshots/Windows.png" alt="Windows OS" width="260" />
 <img src="src/Resources/Screenshots/Linux.png" alt="Linux OS" width="260" />
 <img src="src/Resources/Screenshots/MacOSX.png" alt="MacOSX OS" width="260" /></p>
 <li>The game logic is <b>Based on Original 1991 DOS Civilization game version 475.05</b>.</li>
-<li>The game is still very popular and easy to play. But the obsolescence of DOS or Windows 16-bit platform and the bugs that have never been fixed are hindering the popularity of the game. <a href="https://forums.civfanatics.com/threads/dos-civilization-1-1991-bug-s-discussion-what-should-be-fixed-in-openciv1.688773/" target="_blank">Original game bug(s) discussion page</a></li>
-<li>The news, discussions about this project and release news are published regularly on <a href="https://forums.civfanatics.com/threads/rewrite-of-civilization-1-source-code-openciv1-project.682623/" target="_blank">Civilization Fanatics Forum page</a></li>
+<li>The game is still very popular and easy to play. But the obsolescence of DOS or Windows 16-bit platform and the bugs that have never been fixed are hindering the popularity of the game. <a href="https://forums.civfanatics.com/threads/dos-civilization-1-1991-bug-s-discussion-what-should-be-fixed-in-opencivone.688773/" target="_blank">Original game bug(s) discussion page</a></li>
+<li>The news, discussions about this project and release news are published regularly on <a href="https://forums.civfanatics.com/threads/opencivone-project-free-and-open-source-foss-preservation-effort-and-rewrite-of-the-iconic-1991-civilization-game.682623/" target="_blank">Civilization Fanatics OpenCivOne Forum page</a></li>
 <li>For contact purposes openciv1@yahoo.com public email address can be used.</li>
 </ul>
 
@@ -34,7 +34,7 @@ What this project will not do:
 </ul>
 
 <p><b>The available source code and resources are not a full working copy of the game.</b>
-<b>To run OpenCiv1 you are legally required to own your own copy of the Original game.</b>
+<b>To run OpenCivOne you are legally required to own your own copy of the Original game.</b>
 <b>This is the reason that not a single file from the Original game is included in this Repository as they are copyrighted.</b></p>
 
 ## Current status
@@ -45,8 +45,8 @@ The other resources (like graphics, music and text) will also be completely repl
 
 ## How to Contribute to this project
 
-<p>Anyone can contribute to this repository in accordance with these <a href="https://codeberg.org/rhorvat/OpenCiv1/src/branch/master/CONTRIBUTING/CONTRIBUTING.md">Contributing guidelines</a>.</br>
-The more detailed current project <a href="https://codeberg.org/rhorvat/OpenCiv1/src/branch/master/CONTRIBUTING/roadmap.md">roadmap is here</a>.</p>
+<p>Anyone can contribute to this repository in accordance with these <a href="https://codeberg.org/rhorvat/OpenCivOne/src/branch/master/CONTRIBUTING/CONTRIBUTING.md">Contributing guidelines</a>.</br>
+The more detailed current project <a href="https://codeberg.org/rhorvat/OpenCivOne/src/branch/master/CONTRIBUTING/roadmap.md">roadmap is here</a>.</p>
 Currently, you can contribute to this repository in one of the following ways:
 <ul>
 <li>By testing the game functionality and submitting Issues,</li>
@@ -66,24 +66,24 @@ Currently, you can contribute to this repository in one of the following ways:
 <p><b>To give you a perspective of the scope of the project there was an <u>excruciating &#x7E;140,000 lines of assembly instructions</u>. I have single handendly rewritten &#x7E;100,000 lines, and only &#x7E;40,000, or less, remain (that is about 82%/28% ratio).</b></p>
 
 ***
-<p><b>Q:</b> Why does the OpenCiv1 differs, in some aspects, from the Original game?</p>
+<p><b>Q:</b> Why does the OpenCivOne differs, in some aspects, from the Original game?</p>
 <b>A:</b> There are numerous reasons:
 <ul>
 <li>Simply replicating all of the functionality to skip the DOSBox emulation to be able to run the game is not a good enough reason (for me) to start a project of this magnitude.</li>
 <li>Copying the game Code, Functionality, Graphics and Audio would be considered a Copyright violation and that is prohibited by current Copyright laws.</li>
-<li>To make the OpenCiv1 available to anyone who wishes to play the game, and that means Copyright free Code, Graphics and Audio.</li>
+<li>To make the OpenCivOne available to anyone who wishes to play the game, and that means Copyright free Code, Graphics and Audio.</li>
 <li>To add additional functionalities (features) to the game (like online gaming, scalable HQ Graphics, HQ Audio, plugins, etc.).</li>
-<li>To make OpenCiv1 platform independent, popular, appealing and easy to play, to the older, as well as to the younger public, as was Original game popular back in the day.</li>
+<li>To make OpenCivOne platform independent, popular, appealing and easy to play, to the older, as well as to the younger public, as was Original game popular back in the day.</li>
 </ul>
 
 ***
-<p><b>Q:</b> Will OpenCiv1 source code be identical to the Original game source code?</p>
-<p><b>A:</b> No. The OpenCiv1 source code does not contain any of the original source code.
+<p><b>Q:</b> Will OpenCivOne source code be identical to the Original game source code?</p>
+<p><b>A:</b> No. The OpenCivOne source code does not contain any of the original source code.
 The rewritten code performs the same function (as the original code does), but the code is completely different and under MIT license.
 MicroProse and its successors never released the original source code which remains protected under copyright laws to this day.</p>
 
 ***
-<p><b>Q:</b> Does that mean that the OpenCiv1 will be completely different from Original game, like, for example FreeCiv?</p>
+<p><b>Q:</b> Does that mean that the OpenCivOne will be completely different from Original game, like, for example FreeCiv?</p>
 <b>A:</b> Absolutely not, the goal is to keep all of the original rules and functionalities, as well as much as possible of the original Visual and Audio appearance.
 
 ***
@@ -108,9 +108,9 @@ MicroProse and its successors never released the original source code which rema
 <li>.NET Core 8</li>
 </ul>
 
-## How to run the release version of OpenCiv1
+## How to run the release version of OpenCivOne
 
-<p>The files from the Release should be copied directly into installed and working Original game directory. The game can be run by running the OpenCiv1 executable.</p>
+<p>The files from the Release should be copied directly into installed and working Original game directory. The game can be run by running the OpenCivOne executable.</p>
 
 ## How to compile the code (.NET Core 8 SDK required)
 
@@ -121,15 +121,15 @@ It is where its home directory resides (Images, palettes, text and save games ar
 </ul>
 You can also compile with CLI method:
 <ul>
-<li>git clone https://codeberg.org/rhorvat/OpenCiv1 (To clone a specific branch use: git clone -b [branch] https://codeberg.org/rhorvat/OpenCiv1)</li>
-<li>cd OpenCiv1</li>
+<li>git clone https://codeberg.org/rhorvat/OpenCivOne (To clone a specific branch use: git clone -b [branch] https://codeberg.org/rhorvat/OpenCivOne)</li>
+<li>cd OpenCivOne</li>
 <li>dotnet build -c Debug</li>
 </ul>
 
 ## Project milestones
 
 <p>The goal is to completely rewrite the code and fix the bugs (first stage), and port the code to a modern platform (second stage).</p>
-<p>The more detailed current project <a href="https://codeberg.org/rhorvat/OpenCiv1/src/branch/master/CONTRIBUTING/roadmap.md">roadmap is here</a>.</p>
+<p>The more detailed current project <a href="https://codeberg.org/rhorvat/OpenCivOne/src/branch/master/CONTRIBUTING/roadmap.md">roadmap is here</a>.</p>
 
 ### Milestones for a first stage
 
@@ -160,7 +160,7 @@ You can also compile with CLI method:
 <li>Overall look and feel of the game.</li>
 </ul>
 
-## Current screenshots of the OpenCiv1 game
+## Current screenshots of the OpenCivOne game
 
 <p align="center">
 <img src="src/Resources/Screenshots/Screenshot1.png" alt="Screenshot 1" width="400" />

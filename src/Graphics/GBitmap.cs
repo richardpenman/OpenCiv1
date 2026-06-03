@@ -2,9 +2,9 @@
 using System.Runtime.CompilerServices;
 using Avalonia.Media;
 using IRB.Collections.Generic;
-using OpenCiv1.Compression;
+using OpenCivOne.Compression;
 
-namespace OpenCiv1.Graphics
+namespace OpenCivOne.Graphics
 {
 	public class GBitmap
 	{

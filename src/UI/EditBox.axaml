@@ -4,7 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="90"
 		Width="350" Height="90" SizeToContent="Width"
-        x:Class="OpenCiv1.EditBox"
+        x:Class="OpenCivOne.EditBox"
 		ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
 		CanResize="False" CanMaximize="False" CanMinimize="False" Title="">
 	<Grid Margin="10" VerticalAlignment="Center" ColumnSpacing="10" MaxWidth="350" RowSpacing="10" ColumnDefinitions="auto,*" RowDefinitions="auto,auto">

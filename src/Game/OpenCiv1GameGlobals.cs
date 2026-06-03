@@ -1,9 +1,9 @@
-﻿using OpenCiv1.Graphics;
+﻿using OpenCivOne.Graphics;
 using System;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
-	partial class OpenCiv1Game
+	partial class OpenCivOneGame
 	{
 		#region Global variables
 		public GSize ScreenSize = new GSize(320, 200);

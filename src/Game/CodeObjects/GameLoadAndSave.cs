@@ -1,19 +1,19 @@
 using IRB.VirtualCPU;
-using OpenCiv1.Graphics;
-using OpenCiv1.UI;
+using OpenCivOne.Graphics;
+using OpenCivOne.UI;
 using System.Text;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class GameLoadAndSave
 	{
-		private OpenCiv1Game parent;
+		private OpenCivOneGame parent;
 		private VCPU CPU;
 
 		private bool loadingGame = false;
 		private int gameIndex = 0;
 
-		public GameLoadAndSave(OpenCiv1Game parent)
+		public GameLoadAndSave(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 			this.CPU = parent.CPU;

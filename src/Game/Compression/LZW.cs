@@ -1,7 +1,7 @@
 ﻿using System;
 using IRB.Collections.Generic;
 
-namespace OpenCiv1.Compression
+namespace OpenCivOne.Compression
 {
 	/// <summary>
 	/// Lempel–Ziv–Welch compression algorithm as implemented in original Civilization game

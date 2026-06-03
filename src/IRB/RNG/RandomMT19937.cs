@@ -1,4 +1,4 @@
-using OpenCiv1.API;
+using OpenCivOne.API;
 using System;
 
 /// <summary>
@@ -9,7 +9,7 @@ using System;
 /// 
 /// Authors:
 ///		Takuji Nishimura and Makoto Matsumoto, Copyright(C) 1997 - 2002, All rights reserved.
-/// 	Rajko Horvat (https://github.com/rajko-horvat), C# version, 2023
+/// 	Rajko Horvat (https://codeberg.com/rhorvat), C# version, 2023
 /// 
 /// Redistribution and use in source and binary forms, with or without
 /// modification, are permitted provided that the following conditions

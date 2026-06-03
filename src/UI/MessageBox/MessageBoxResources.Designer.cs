@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace OpenCiv1.UI {
+namespace OpenCivOne.UI {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace OpenCiv1.UI {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("OpenCiv1.UI.MessageBox.MessageBoxResources", typeof(MessageBoxResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("OpenCivOne.UI.MessageBox.MessageBoxResources", typeof(MessageBoxResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

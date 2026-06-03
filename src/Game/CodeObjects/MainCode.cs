@@ -1,17 +1,17 @@
 using Avalonia.Media;
 using IRB.VirtualCPU;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class MainCode
 	{
-		private OpenCiv1Game parent;
+		private OpenCivOneGame parent;
 		private VCPU CPU;
 
 		private int Var_652e_MouseHideCountTemp = 0;
 		private int Var_deea_MouseHideCount = 0;
 
-		public MainCode(OpenCiv1Game parent)
+		public MainCode(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 			this.CPU = parent.CPU;

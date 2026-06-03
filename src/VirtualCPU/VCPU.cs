@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using System.Text;
-using OpenCiv1;
+using OpenCivOne;
 using IRB.Collections.Generic;
-using OpenCiv1.Graphics;
+using OpenCivOne.Graphics;
 using Disassembler.Formats.MZ;
 
 namespace IRB.VirtualCPU
@@ -64,7 +64,7 @@ namespace IRB.VirtualCPU
 		private short sFileHandleCount = 0x20;
 		private BDictionary<short, FileStreamItem> aOpenFiles = new BDictionary<short, FileStreamItem>();
 
-		private OpenCiv1Game oParent;
+		private OpenCivOneGame oParent;
 		private LogWrapper oLog;
 
 		public static string AssemblyPath;
@@ -93,7 +93,7 @@ namespace IRB.VirtualCPU
 #endif
 		}
 
-		public VCPU(OpenCiv1.OpenCiv1Game parent, LogWrapper log)
+		public VCPU(OpenCivOne.OpenCivOneGame parent, LogWrapper log)
 		{
 			this.oParent = parent;
 			this.oLog = log;
@@ -106,7 +106,7 @@ namespace IRB.VirtualCPU
 			}
 		}
 
-		public OpenCiv1.OpenCiv1Game Parent
+		public OpenCivOne.OpenCivOneGame Parent
 		{
 			get { return this.oParent; }
 		}

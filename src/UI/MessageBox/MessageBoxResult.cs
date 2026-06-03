@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenCiv1.UI
+namespace OpenCivOne.UI
 {
 	/// <summary>Possible return values from the Message Box.</summary>
 	public enum MessageBoxResult

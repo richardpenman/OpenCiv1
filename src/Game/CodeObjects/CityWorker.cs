@@ -1,11 +1,11 @@
 using IRB.VirtualCPU;
-using OpenCiv1.Graphics;
+using OpenCivOne.Graphics;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class CityWorker
 	{
-		private OpenCiv1Game parent;
+		private OpenCivOneGame parent;
 		private VCPU CPU;
 
 		// Local variables used exclusively inside this section
@@ -24,7 +24,7 @@ namespace OpenCiv1
 		private int Var_70e8 = 0;
 		//private ushort Var_deb6 = 0;
 
-		public CityWorker(OpenCiv1Game parent)
+		public CityWorker(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 			this.CPU = parent.CPU;

@@ -5,12 +5,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Title>OpenCiv1 project - Free and Open Source (FOSS) preservation effort and rewrite of the iconic Civilization Game designed by Sid Meier and Bruce Shelley in year 1991</Title>
+    <Title>OpenCivOne project - Free and Open Source (FOSS) preservation effort and rewrite of the iconic Civilization Game designed by Sid Meier and Bruce Shelley in year 1991</Title>
     <Version>1.475.6.7</Version>
     <Copyright>Copyright (c) 2023-2026 by Rajko Horvat</Copyright>
-    <PackageProjectUrl>https://codeberg.org/rhorvat/OpenCiv1</PackageProjectUrl>
+    <PackageProjectUrl>https://codeberg.org/rhorvat/OpenCivOne</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://codeberg.org/rhorvat/OpenCiv1</RepositoryUrl>
+    <RepositoryUrl>https://codeberg.org/rhorvat/OpenCivOne</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>4x;4x-strategy-game;civilization;civilization-games;game;remake;remake-game;remake-games;retro;retro-game;retro-games;retrogaming</PackageTags>
     <NeutralLanguage>en</NeutralLanguage>
@@ -106,11 +106,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EditorConfigFiles Remove="Z:\Civilization\OpenCiv1\src\.editorconfig" />
+    <EditorConfigFiles Remove=".editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Z:\Civilization\OpenCiv1\src\.editorconfig" />
+    <None Include=".editorconfig" />
   </ItemGroup>
 	
 </Project>

@@ -2,13 +2,13 @@ using System;
 using Avalonia.Media;
 using IRB.Collections.Generic;
 using IRB.VirtualCPU;
-using OpenCiv1.Graphics;
+using OpenCivOne.Graphics;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class CommonTools
 	{
-		private OpenCiv1Game parent;
+		private OpenCivOneGame parent;
 		private VCPU CPU;
 		private GDriver graphics;
 
@@ -22,7 +22,7 @@ namespace OpenCiv1
 		private int transformCount = 0;
 		private TransformColor[] transformColors = new TransformColor[0];
 
-		public CommonTools(OpenCiv1Game parent)
+		public CommonTools(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 			this.CPU = parent.CPU;

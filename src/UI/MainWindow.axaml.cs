@@ -7,17 +7,17 @@ using Avalonia.Platform;
 using Avalonia.Threading;
 using IRB.Collections.Generic;
 using IRB.VirtualCPU;
-using OpenCiv1.Graphics;
+using OpenCivOne.Graphics;
 using System.Runtime.InteropServices;
 using ThreadState = System.Threading.ThreadState;
 
-namespace OpenCiv1.UI
+namespace OpenCivOne.UI
 {
 	public partial class MainWindow : Window
 	{
 		private bool bClosing = false;
 
-		private OpenCiv1Game oGame;
+		private OpenCivOneGame oGame;
 		private DispatcherTimer oTimer;
 		private Thread oGameThread;
 		private Exception? oGameException = null;
@@ -55,10 +55,10 @@ namespace OpenCiv1.UI
 				"Warning", MessageBoxIcon.Warning, MessageBoxButtons.OK);
 #endif
 
-			Thread.CurrentThread.Name = "OpenCiv1 main thread";
+			Thread.CurrentThread.Name = "OpenCivOne main thread";
 
 			// Initialize game state
-			this.oGame = new OpenCiv1Game(this);
+			this.oGame = new OpenCivOneGame(this);
 
 			// Main Windows events
 			this.Closing += this.MainWindow_Closing;
@@ -75,7 +75,7 @@ namespace OpenCiv1.UI
 
 			// Initialize game thread where we have all the fun ;)
 			this.oGameThread = new Thread(new ThreadStart(GameThread));
-			this.oGameThread.Name = "OpenCiv1 game thread";
+			this.oGameThread.Name = "OpenCivOne game thread";
 			this.oGameThread.Start();
 		}
 

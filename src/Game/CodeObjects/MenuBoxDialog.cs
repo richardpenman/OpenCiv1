@@ -1,17 +1,17 @@
 using IRB.VirtualCPU;
-using OpenCiv1.Graphics;
+using OpenCivOne.Graphics;
 using System.Diagnostics;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class MenuBoxDialog
 	{
-		private OpenCiv1Game parent;
+		private OpenCivOneGame parent;
 		private VCPU CPU;
 
 		private string[] Array_2fa6 = { "Spies report:", "Diplomats report:", "Travelers report:", "Defense Minister reports:", "Domestic Advisor reports:", "Foreign Minister reports:", "Science Advisor reports:" };
 
-		public MenuBoxDialog(OpenCiv1Game parent)
+		public MenuBoxDialog(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 			this.CPU = parent.CPU;

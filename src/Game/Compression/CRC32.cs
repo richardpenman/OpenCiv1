@@ -1,7 +1,7 @@
 ﻿using Avalonia.Controls.Shapes;
 using System;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public static class CRC32
 	{

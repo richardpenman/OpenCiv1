@@ -1,12 +1,12 @@
 using Avalonia.Media;
 using IRB.VirtualCPU;
-using OpenCiv1.Graphics;
+using OpenCivOne.Graphics;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class MapInitAndIntro
 	{
-		private OpenCiv1Game parent;
+		private OpenCivOneGame parent;
 		private VCPU CPU;
 		private MapManagement map;
 
@@ -43,7 +43,7 @@ namespace OpenCiv1
 			new(0, 2, 8), new(0, 2, 11), new(0, 2, 14), new(0, 2, 17), new(0, 2, 20), new(0, 2, 23), new(0, 2, 26), new(0, 2, 29), new(0, 2, 32), new(0, 2, 35),
 			new(0, 2, 42), new(0, 2, 45)];
 
-		public MapInitAndIntro(OpenCiv1Game parent)
+		public MapInitAndIntro(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 			this.CPU = parent.CPU;

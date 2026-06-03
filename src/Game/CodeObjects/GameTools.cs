@@ -1,16 +1,16 @@
 using IRB.VirtualCPU;
-using OpenCiv1.Graphics;
-using OpenCiv1.UI;
+using OpenCivOne.Graphics;
+using OpenCivOne.UI;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class GameTools
 	{
-		private OpenCiv1Game parent;
+		private OpenCivOneGame parent;
 
 		private bool Var_2fec_PaletteCycleEnabled = false;
 
-		public GameTools(OpenCiv1Game parent)
+		public GameTools(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 		}

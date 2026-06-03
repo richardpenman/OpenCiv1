@@ -1,13 +1,13 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Media;
 using IRB.VirtualCPU;
-using OpenCiv1.Graphics;
-using OpenCiv1.Resources;
+using OpenCivOne.Graphics;
+using OpenCivOne.Resources;
 using SkiaSharp;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
-	public partial class OpenCiv1Game
+	public partial class OpenCivOneGame
 	{
 		public static readonly GPoint InvalidPosition = new GPoint(-1);
 
@@ -74,7 +74,7 @@ namespace OpenCiv1
 		private string gameMainPath = "";
 		private string gameSavePath = "";
 
-		public OpenCiv1Game(Window mainWindow)
+		public OpenCivOneGame(Window mainWindow)
 		{
 			this.mainWindow = mainWindow;
 			this.oLog = new LogWrapper($"{VCPU.AssemblyPath}Log.txt", enableLog);
@@ -107,7 +107,7 @@ namespace OpenCiv1
 				this.gameResourcePath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}{separator}";
 #endif
 
-				this.gameMainPath = $"{userProfilePath}{separator}Games{separator}OpenCiv1";
+				this.gameMainPath = $"{userProfilePath}{separator}Games{separator}OpenCivOne";
 
 				if (!Path.Exists(gameMainPath))
 				{
@@ -383,7 +383,7 @@ namespace OpenCiv1
 			this.CAPI.exit(0);
 		}
 
-		public static void LogUnit(OpenCiv1Game game, LogWrapper log, int playerID, int unitID, int humanPlayerID)
+		public static void LogUnit(OpenCivOneGame game, LogWrapper log, int playerID, int unitID, int humanPlayerID)
 		{
 			if (playerID >= game.GameData.Players.Length || unitID >= game.GameData.Players[playerID].Units.Length)
 			{

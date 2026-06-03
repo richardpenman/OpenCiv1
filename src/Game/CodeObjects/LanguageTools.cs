@@ -1,21 +1,21 @@
 using IRB.Collections.Generic;
 using IRB.VirtualCPU;
-using OpenCiv1.Graphics;
-using OpenCiv1.UI;
+using OpenCivOne.Graphics;
+using OpenCivOne.UI;
 using System.Text;
 using System.Text.RegularExpressions;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class LanguageTools
 	{
-		private OpenCiv1Game oParent;
+		private OpenCivOneGame oParent;
 		private VCPU oCPU;
 
 		private BDictionary<string, List<string>> languagePackItems = new();
 
-		public LanguageTools(OpenCiv1Game parent)
+		public LanguageTools(OpenCivOneGame parent)
 		{
 			this.oParent = parent;
 			this.oCPU = parent.CPU;

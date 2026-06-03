@@ -5,7 +5,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using SkiaSharp;
 
-namespace OpenCiv1;
+namespace OpenCivOne;
 
 public partial class EditBox : Window
 {

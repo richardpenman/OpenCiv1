@@ -4,7 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		Width="600" Height="400"
         mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
-        x:Class="OpenCiv1.LoadGameDialog"
+        x:Class="OpenCivOne.LoadGameDialog"
         Title="Load game">
 	<Grid Margin="20" RowSpacing="10" ColumnSpacing="10" ColumnDefinitions="*,*" RowDefinitions="auto,*,auto">
 		<TextBlock Name="txtGameNameListStatus" IsTabStop="False" Grid.Row="0" Grid.Column="0">The game list is empty</TextBlock>

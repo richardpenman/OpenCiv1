@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenCiv1.Compression
+namespace OpenCivOne.Compression
 {
 	/// <summary>
 	/// Run-length compression algorithm as implemented in original Civilization game

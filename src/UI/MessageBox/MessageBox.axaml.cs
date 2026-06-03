@@ -4,7 +4,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 
-namespace OpenCiv1.UI
+namespace OpenCivOne.UI
 {
 	public partial class MessageBox : Window
 	{

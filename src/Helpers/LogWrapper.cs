@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using IRB.VirtualCPU;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class LogWrapper
 	{

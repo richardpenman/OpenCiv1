@@ -1,9 +1,9 @@
 ﻿using IRB.Collections.Generic;
-using OpenCiv1.Graphics;
+using OpenCivOne.Graphics;
 using System.IO.Compression;
 using System.Xml.Serialization;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	[Serializable]
 	public class TerrainMap
@@ -28,7 +28,7 @@ namespace OpenCiv1
 			new GPoint(3, 3), new GPoint(3, -3), new GPoint(-3, 3),
 			new GPoint(-3, -3)};
 
-		private OpenCiv1Game? oParent = null;
+		private OpenCivOneGame? oParent = null;
 		private GameData? oGameData = null;
 
 		private int iSeed;
@@ -54,16 +54,16 @@ namespace OpenCiv1
 			this.mapCells = new TerrainMapCellCollection(this);
 		}
 
-		public TerrainMap(OpenCiv1Game parent, int width, int height) : this(parent, new GSize(width, height))
+		public TerrainMap(OpenCivOneGame parent, int width, int height) : this(parent, new GSize(width, height))
 		{ }
 
-		public TerrainMap(OpenCiv1Game parent, int width, int height, int seed) : this(parent, new GSize(width, height), seed)
+		public TerrainMap(OpenCivOneGame parent, int width, int height, int seed) : this(parent, new GSize(width, height), seed)
 		{ }
 
-		public TerrainMap(OpenCiv1Game parent, GSize size) : this(parent, size, Environment.TickCount)
+		public TerrainMap(OpenCivOneGame parent, GSize size) : this(parent, size, Environment.TickCount)
 		{ }
 
-		public TerrainMap(OpenCiv1Game parent, GSize size, int seed)
+		public TerrainMap(OpenCivOneGame parent, GSize size, int seed)
 		{
 			// sanity check
 			if (size.Width < 0 || size.Width < MinimumMapSize.Width)
@@ -183,7 +183,7 @@ namespace OpenCiv1
 			writer.Close();//*/
 		}
 
-		public TerrainMap(OpenCiv1Game parent, GBitmap bitmap) : this(parent, bitmap, 0)
+		public TerrainMap(OpenCivOneGame parent, GBitmap bitmap) : this(parent, bitmap, 0)
 		{ }
 
 		/// <summary>
@@ -195,7 +195,7 @@ namespace OpenCiv1
 		/// </summary>
 		/// <param name="bitmap"></param>
 		/// <param name="seed"></param>
-		public TerrainMap(OpenCiv1Game parent, GBitmap bitmap, int seed)
+		public TerrainMap(OpenCivOneGame parent, GBitmap bitmap, int seed)
 		{
 			// sanity check
 			if (bitmap.Size.Width < 0 || bitmap.Size.Width < MinimumMapSize.Width)
@@ -1269,7 +1269,7 @@ namespace OpenCiv1
 
 		public GPoint GetMoveOffset(int offsetIndex)
 		{
-			GPoint offset = OpenCiv1Game.InvalidPosition;
+			GPoint offset = OpenCivOneGame.InvalidPosition;
 
 			if (this.oGameData != null)
 			{
@@ -1317,7 +1317,7 @@ namespace OpenCiv1
 
 			FindUnitPath(unit, false);
 
-			return unit.GoToDestination != OpenCiv1Game.InvalidPosition && unit.GoToPath.Count > 0 && unit.GoToPath.Count < maxMoves;
+			return unit.GoToDestination != OpenCivOneGame.InvalidPosition && unit.GoToPath.Count > 0 && unit.GoToPath.Count < maxMoves;
 		}
 
 		#region AStar (A*) Path finding algorithm
@@ -1330,7 +1330,7 @@ namespace OpenCiv1
 		/// <param name="unitType">ID of the unit</param>
 		public void FindUnitPath(Unit unit, bool testVisibility)
 		{
-			if (this.oGameData != null && unit.GoToDestination != OpenCiv1Game.InvalidPosition)
+			if (this.oGameData != null && unit.GoToDestination != OpenCivOneGame.InvalidPosition)
 			{
 				bool destinationReached = false; // remains false if we can't find a path to a destination
 				TerrainMapGroupTypeEnum group1; // The unit can move on this terrain type
@@ -1510,7 +1510,7 @@ namespace OpenCiv1
 				// This may happen when there is no way to destination cell
 				if (!destinationReached)
 				{
-					unit.GoToDestination = OpenCiv1Game.InvalidPosition;
+					unit.GoToDestination = OpenCivOneGame.InvalidPosition;
 				}
 				else
 				{
@@ -1529,7 +1529,7 @@ namespace OpenCiv1
 		#endregion
 
 		[XmlIgnore]
-		public OpenCiv1Game? Parent
+		public OpenCivOneGame? Parent
 		{
 			get => this.oParent;
 			set

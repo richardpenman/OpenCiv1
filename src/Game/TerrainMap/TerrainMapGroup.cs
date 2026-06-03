@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class TerrainMapGroup
 	{

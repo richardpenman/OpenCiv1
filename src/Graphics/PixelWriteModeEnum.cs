@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OpenCiv1.Graphics
+namespace OpenCivOne.Graphics
 {
 	public enum PixelWriteModeEnum
 	{

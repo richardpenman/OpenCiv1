@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace OpenCiv1.API
+namespace OpenCivOne.API
 {
 	[Serializable]
 	public class RandomMT19937State

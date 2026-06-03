@@ -1,10 +1,10 @@
 using System.Text;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class GameMenus
 	{
-		private OpenCiv1Game parent;
+		private OpenCivOneGame parent;
 
 		// Local variables used exclusively inside this section
 		private short Var_654a = 0;
@@ -12,7 +12,7 @@ namespace OpenCiv1
 		// public variables
 		public int Var_d4ca_MenuShortcutKey = 0;
 
-		public GameMenus(OpenCiv1Game parent)
+		public GameMenus(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 		}

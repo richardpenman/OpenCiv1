@@ -1,7 +1,7 @@
 ﻿using System;
-using OpenCiv1.Graphics;
+using OpenCivOne.Graphics;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class StrategicLocation
 	{

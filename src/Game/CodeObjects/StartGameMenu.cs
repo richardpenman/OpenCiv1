@@ -1,15 +1,15 @@
 using IRB.VirtualCPU;
-using OpenCiv1.Graphics;
+using OpenCivOne.Graphics;
 using System.Text;
 
-namespace OpenCiv1
+namespace OpenCivOne
 {
 	public class StartGameMenu
 	{
-		private OpenCiv1Game parent;
+		private OpenCivOneGame parent;
 		private VCPU CPU;
 
-		public StartGameMenu(OpenCiv1Game parent)
+		public StartGameMenu(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 			this.CPU = parent.CPU;

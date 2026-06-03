@@ -3,8 +3,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" MinWidth="322" MinHeight="202" d:DesignWidth="644" d:DesignHeight="404"
-        x:Class="OpenCiv1.UI.MainWindow"
-        Title="OpenCiv1"
+        x:Class="OpenCivOne.UI.MainWindow"
+        Title="OpenCivOne"
 		Background="Black" Width="644" Height="404">
 		<Grid>
 			<Viewbox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Uniform" StretchDirection="Both">

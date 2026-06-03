@@ -3,10 +3,11 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using IRB.Collections.Generic;
-using OpenCiv1.UI;
+using OpenCivOne;
+using OpenCivOne.UI;
 using System.Text.Json;
 
-namespace OpenCiv1;
+namespace OpenCivOne;
 
 /// <summary>
 /// A dialog box that manages game names and game saves.
@@ -15,7 +16,7 @@ namespace OpenCiv1;
 public partial class LoadGameDialog : Window
 {
 	private bool windowClosed = false;
-	private OpenCiv1Game? parent = null;
+	private OpenCivOneGame? parent = null;
 	private string gameListPath = "";
 	private BDictionary<string, string> gameList = new();
 	private BDictionary<string, GameData?> saveGameList = new();
@@ -25,7 +26,7 @@ public partial class LoadGameDialog : Window
         InitializeComponent();
 	}
 
-	public LoadGameDialog(OpenCiv1Game game)
+	public LoadGameDialog(OpenCivOneGame game)
 	{
 		InitializeComponent();
 
