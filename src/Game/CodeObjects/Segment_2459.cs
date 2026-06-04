@@ -329,10 +329,9 @@ namespace OpenCivOne
 			goto L03c2;
 
 		L03b7:
-			this.oCPU.WriteString(VCPU.ToLinearAddress(this.oCPU.DS.UInt16, 0xba06),
+			this.oParent.News.F21_0000_0000_ShowNews(cityID,
 				$"{this.oParent.GameData.Players[playerID].Nation} capture\n{F0_2459_08c6_GetCityName(cityID)}." +
 				$"{this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))} gold\npieces plundered.\n");
-			this.oParent.Overlay_21.F21_0000_0000(cityID);
 
 		L03c2:
 			// Instruction address 0x2459:0x03c6, size: 5

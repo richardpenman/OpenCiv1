@@ -912,7 +912,7 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.E) goto L08fb;
 
 			// Instruction address 0x0000:0x08f3, size: 5
-			this.oParent.CommonTools.F0_1000_0a32_PlayTune(0x21, 0);
+			this.oParent.CommonTools.F0_1000_0a32_PlayTune(33, 0);
 
 		L08fb:
 			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
@@ -984,7 +984,7 @@ namespace OpenCivOne
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
 
 			// Instruction address 0x0000:0x09e8, size: 5
-			this.oParent.CommonTools.F0_1000_0a32_PlayTune(0x21, 0);
+			this.oParent.CommonTools.F0_1000_0a32_PlayTune(33, 0);
 
 			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
@@ -1030,7 +1030,7 @@ namespace OpenCivOne
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
 
 			// Instruction address 0x0000:0x0a94, size: 5
-			this.oParent.CommonTools.F0_1000_0a32_PlayTune(0x21, 0);
+			this.oParent.CommonTools.F0_1000_0a32_PlayTune(33, 0);
 
 			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
@@ -1071,7 +1071,7 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.E) goto L0b54;
 
 			// Instruction address 0x0000:0x0b0a, size: 5
-			this.oParent.CommonTools.F0_1000_0a32_PlayTune(0x21, 0);
+			this.oParent.CommonTools.F0_1000_0a32_PlayTune(33, 0);
 			
 			// Instruction address 0x0000:0x0b27, size: 5
 			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*PROVOKE", 40));
@@ -1105,7 +1105,7 @@ namespace OpenCivOne
 
 		L0b82:
 			// Instruction address 0x0000:0x0b86, size: 5
-			this.oParent.CommonTools.F0_1000_0a32_PlayTune(0x21, 0);
+			this.oParent.CommonTools.F0_1000_0a32_PlayTune(33, 0);
 
 			// Instruction address 0x0000:0x0b1b, size: 5
 			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*REJECT", 40));
@@ -1138,7 +1138,7 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.E) goto L0be5;
 
 			// Instruction address 0x0000:0x0bd2, size: 5
-			this.oParent.CommonTools.F0_1000_0a32_PlayTune(0x21, 0);
+			this.oParent.CommonTools.F0_1000_0a32_PlayTune(33, 0);
 
 			// Instruction address 0x0000:0x0b1b, size: 5
 			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*RID", 40));
@@ -1479,7 +1479,7 @@ namespace OpenCivOne
 				goto L1097;
 
 			// Instruction address 0x0000:0x1059, size: 5
-			this.oParent.CommonTools.F0_1000_0a32_PlayTune(0x21, 0);
+			this.oParent.CommonTools.F0_1000_0a32_PlayTune(33, 0);
 
 			// Instruction address 0x0000:0x106a, size: 5
 			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*MOBILIZE"));
@@ -1661,7 +1661,7 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.E) goto L1376;
 
 			// Instruction address 0x0000:0x133c, size: 5
-			this.oParent.CommonTools.F0_1000_0a32_PlayTune(0x21, 0);
+			this.oParent.CommonTools.F0_1000_0a32_PlayTune(33, 0);
 
 			// Instruction address 0x0000:0x134d, size: 5
 			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*PROVOKE"));

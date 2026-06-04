@@ -353,27 +353,11 @@ namespace OpenCivOne
 
 						if (this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID)
 						{
-							// Instruction address 0x1d12:0x07a6, size: 5
-							this.parent.CAPI.strcpy(0xba06, "Food storage exhausted\nin ");
-
-							// Instruction address 0x1d12:0x07b1, size: 5
-							this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID));
-
-							if (local_e8 != -1)
-							{
-								// Instruction address 0x1d12:0x07d1, size: 5
-								this.parent.CAPI.strcat(0xba06, "!\nSettlers lost.\n");
-							}
-							else
-							{
-								// Instruction address 0x1d12:0x07d1, size: 5
-								this.parent.CAPI.strcat(0xba06, "!\nFamine feared.\n");
-							}
-
 							// Instruction address 0x1d12:0x07dd, size: 5
-							this.parent.CommonTools.F0_1000_0a32_PlayTune(0x24, 0);
+							this.parent.CommonTools.F0_1000_0a32_PlayTune(36, 0);
 
-							this.parent.Overlay_21.F21_0000_0000(cityID);
+							this.parent.News.F21_0000_0000_ShowNews(cityID,
+								$"Food storage exhausted\nin {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}!\n{((local_e8 != -1) ? "Settlers lost." : "Famine feared.")}\n");
 
 							// Instruction address 0x1d12:0x07f4, size: 5
 							this.parent.CommonTools.F0_1000_0a32_PlayTune(1, 0);
@@ -1049,21 +1033,11 @@ namespace OpenCivOne
 							{
 								if (local_e8 == 41)
 								{
-									// Instruction address 0x1d12:0x1c39, size: 5
-									this.parent.CAPI.strcpy(0xba06, "Sensors report a\nNUCLEAR WEAPONS test\nnear ");
+									this.parent.CommonTools.F0_1000_0a32_PlayTune(36, 0);
 
-									// Instruction address 0x1d12:0x1c44, size: 5
-									this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID));
+									this.parent.News.F21_0000_0000_ShowNews(-1,
+										$"Sensors report a\nNUCLEAR WEAPONS test\nnear {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}!\n");
 
-									// Instruction address 0x1d12:0x1c54, size: 5
-									this.parent.CAPI.strcat(0xba06, "!\n");
-
-									// Instruction address 0x1d12:0x1c60, size: 5
-									this.parent.CommonTools.F0_1000_0a32_PlayTune(0x24, 0);
-
-									this.parent.Overlay_21.F21_0000_0000(-1);
-
-									// Instruction address 0x1d12:0x1c78, size: 5
 									this.parent.CommonTools.F0_1000_0a32_PlayTune(1, 0);
 								}
 
@@ -1097,9 +1071,8 @@ namespace OpenCivOne
 									}
 									else
 									{
-										this.CPU.WriteString(VCPU.ToLinearAddress(this.CPU.DS.UInt16, 0xba06), 
+										this.parent.News.F21_0000_0000_ShowNews(cityID,
 											$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} builds\n{this.parent.GameData.GetImprovementType(local_e8).Name}.\n");
-										this.parent.Overlay_21.F21_0000_0000(cityID);
 									}
 
 									city.ShieldsCount = 0;
@@ -3550,7 +3523,7 @@ namespace OpenCivOne
 					goto L5df3;
 
 				// Instruction address 0x1d12:0x5d3b, size: 5
-				this.parent.CommonTools.F0_1000_0a32_PlayTune(0x24, 0);
+				this.parent.CommonTools.F0_1000_0a32_PlayTune(36, 0);
 
 				if (this.parent.GameData.GameSettingFlags.Animations) goto L5d4d;
 				goto L5d9f;
@@ -3631,35 +3604,22 @@ namespace OpenCivOne
 				goto L606c;
 
 			L5eb4:
-				if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType != 5)
-					goto L606c;
+				if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == 5)
+				{
+					if (this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID)
+					{
+						this.parent.CommonTools.F0_1000_0a32_PlayTune(36, 0);
 
-				// Instruction address 0x1d12:0x5ec8, size: 5
-				this.parent.CommonTools.F0_1000_0a32_PlayTune(0x24, 0);
+						this.parent.News.F21_0000_0000_ShowNews(cityID,
+							$"Discontented citizens of\n{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} revolt:\nGovernment Collapses!\n");
 
-				// Instruction address 0x1d12:0x5ed8, size: 5
-				this.parent.CAPI.strcpy(0xba06, "Discontented citizens of\n");
+						this.parent.GameData.Players[this.Var_6548_PlayerID].Diplomacy[0] |= 4;
 
-				// Instruction address 0x1d12:0x5ee3, size: 5
-				this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID));
+						this.parent.CommonTools.F0_1000_0a32_PlayTune(1, 0);
+					}
 
-				// Instruction address 0x1d12:0x5ef3, size: 5
-				this.parent.CAPI.strcat(0xba06, " revolt:\nGovernment Collapses!\n");
-
-				if (this.Var_6548_PlayerID != this.parent.GameData.HumanPlayerID)
-					goto L5f20;
-
-				this.parent.Overlay_21.F21_0000_0000(cityID);
-
-				this.parent.GameData.Players[this.Var_6548_PlayerID].Diplomacy[0] |= 4;
-
-			L5f20:
-				// Instruction address 0x1d12:0x5f28, size: 5
-				this.parent.Segment_2517.F0_2517_04a1(this.Var_6548_PlayerID, 0);
-
-				// Instruction address 0x1d12:0x5f34, size: 5
-				this.parent.CommonTools.F0_1000_0a32_PlayTune(1, 0);
-
+					this.parent.Segment_2517.F0_2517_04a1(this.Var_6548_PlayerID, 0);
+				}
 				goto L606c;
 
 			L5f3f:
@@ -3748,7 +3708,7 @@ namespace OpenCivOne
 
 			L60e8:
 				// Instruction address 0x1d12:0x6143, size: 5
-				this.parent.CommonTools.F0_1000_0a32_PlayTune(0x22, 0);
+				this.parent.CommonTools.F0_1000_0a32_PlayTune(34, 0);
 
 				if (this.parent.GameData.GameSettingFlags.Animations)
 				{
@@ -3763,10 +3723,9 @@ namespace OpenCivOne
 				}
 				else
 				{
-					this.CPU.WriteString(VCPU.ToLinearAddress(this.CPU.DS.UInt16, 0xba06),
+					this.parent.News.F21_0000_0000_ShowNews(cityID,
 						$"'We love the {this.parent.Array_19b2_GovernmentTypeNames[this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType]}'\n" +
 						$"day celebrated in\n{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}!\n");
-					this.parent.Overlay_21.F21_0000_0000(cityID);
 				}
 
 				// Instruction address 0x1d12:0x6194, size: 5
@@ -3814,27 +3773,12 @@ namespace OpenCivOne
 				goto L62cb;
 
 			L6251:
-				// Instruction address 0x1d12:0x6255, size: 5
-				this.parent.CommonTools.F0_1000_0a32_PlayTune(0x23, 0);
+				this.parent.CommonTools.F0_1000_0a32_PlayTune(35, 0);
 
-				// Instruction address 0x1d12:0x6265, size: 5
-				this.parent.CAPI.strcpy(0xba06, "'We love the ");
+				this.parent.News.F21_0000_0000_ShowNews(cityID,
+					$"'We love the {this.parent.Array_19b2_GovernmentTypeNames[this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType]}'\n" +
+					$"celebration canceled\nin {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n");
 
-				// Instruction address 0x1d12:0x6281, size: 5
-				this.parent.CAPI.strcat(0xba06, this.parent.Array_19b2_GovernmentTypeNames[this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType]);
-
-				// Instruction address 0x1d12:0x6291, size: 5
-				this.parent.CAPI.strcat(0xba06, "'\ncelebration canceled\nin ");
-
-				// Instruction address 0x1d12:0x629c, size: 5
-				this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID));
-
-				// Instruction address 0x1d12:0x62ac, size: 5
-				this.parent.CAPI.strcat(0xba06, ".\n");
-
-				this.parent.Overlay_21.F21_0000_0000(cityID);
-
-				// Instruction address 0x1d12:0x62c3, size: 5
 				this.parent.CommonTools.F0_1000_0a32_PlayTune(1, 0);
 
 			L62cb:
@@ -4046,21 +3990,11 @@ namespace OpenCivOne
 
 				city.RemoveImprovement(ImprovementEnum.NuclearPlant);
 
-				// Instruction address 0x1d12:0x66e3, size: 5
-				this.parent.CommonTools.F0_1000_0a32_PlayTune(0x24, 0);
+				this.parent.CommonTools.F0_1000_0a32_PlayTune(36, 0);
 
-				// Instruction address 0x1d12:0x66f3, size: 5
-				this.parent.CAPI.strcpy(0xba06, "Nuclear Catastrophe\nin ");
+				this.parent.News.F21_0000_0000_ShowNews(cityID,
+					$"Nuclear Catastrophe\nin {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}!\nContamination feared!\n");
 
-				// Instruction address 0x1d12:0x66fe, size: 5
-				this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID));
-
-				// Instruction address 0x1d12:0x670e, size: 5
-				this.parent.CAPI.strcat(0xba06, "!\nContamination feared!\n");
-
-				this.parent.Overlay_21.F21_0000_0000(cityID);
-
-				// Instruction address 0x1d12:0x6725, size: 5
 				this.parent.CommonTools.F0_1000_0a32_PlayTune(1, 0);
 
 			L672d:

@@ -25,7 +25,6 @@ namespace OpenCivOne
 
 		private OpenCivOneGame parent;
 		private GameData gameData;
-		private VCPU CPU;
 
 		// Local variables used exclusively inside this section
 		public static GSize Size = new GSize(80, 50);
@@ -38,7 +37,6 @@ namespace OpenCivOne
 		{
 			this.parent = parent;
 			this.gameData = parent.GameData;
-			this.CPU = parent.CPU;
 			this.gameData.Map.Visible = false;
 		}
 
@@ -170,16 +168,9 @@ namespace OpenCivOne
 					continue;
 				}
 
-				this.CPU.WriteUInt8(this.CPU.DS.UInt16, 0xba06, 0x0);
-
-				// Instruction address 0x2aea:0x0148, size: 5
-				this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityInfo.CityID));
-
-				// Instruction address 0x2aea:0x015c, size: 5
-				this.parent.CAPI.strcpy(0xba06, this.parent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.CPU.ReadString(this.CPU.DS.UInt16, 0xba06), 327 - cityInfo.ScreenPos.X));
-
 				// Instruction address 0x2aea:0x018d, size: 5
-				this.parent.DrawTools.F0_1182_0086_DrawStringWithShadow(0xba06,
+				this.parent.DrawTools.F0_1182_0086_DrawStringWithShadow(
+					this.parent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityInfo.CityID), 327 - cityInfo.ScreenPos.X),
 					this.parent.GameTools.F0_2dc4_007c_CheckValueRange(cityInfo.ScreenPos.X - 8, 80, 999), cityInfo.ScreenPos.Y + 16, 11);
 			}
 
@@ -624,11 +615,6 @@ namespace OpenCivOne
 							int citySize = (city.PlayerID == this.parent.GameData.HumanPlayerID || this.parent.Var_d806_DebugFlag) ?
 									city.ActualSize : city.VisibleSize;
 
-							this.CPU.WriteUInt8(this.CPU.DS.UInt16, 0xba06, 0x0);
-
-							// Instruction address 0x2aea:0x0d42, size: 5
-							this.parent.CAPI.strcat(0xba06, this.parent.CAPI.itoa(citySize, 10));
-
 							if ((city.StatusFlag & 0x1) != 0)
 							{
 								// Draw city disorder
@@ -641,7 +627,7 @@ namespace OpenCivOne
 								// Draw city size
 
 								// Instruction address 0x2aea:0x0d8d, size: 5
-								this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, ((citySize < 10) ? 6 : 3) + scrX, scrY + 5, 0);
+								this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{citySize}", ((citySize < 10) ? 6 : 3) + scrX, scrY + 5, 0);
 							}
 
 							// Instruction address 0x2aea:0x0d9c, size: 3
@@ -1034,7 +1020,7 @@ namespace OpenCivOne
 		/// <param name="unitID"></param>
 		public void F0_2aea_1412_SetCellActivePlayerID(int x, int y, int playerID, int unitID)
 		{
-			this.CPU.Log.EnterBlock($"F0_2aea_1412({playerID}, {unitID}, {x}, {y})");
+			//this.CPU.Log.EnterBlock($"F0_2aea_1412({playerID}, {unitID}, {x}, {y})");
 
 			// function body			
 			if (this.parent.GameData.Players[playerID].Units[unitID].NextUnitID != -1)
@@ -1047,9 +1033,6 @@ namespace OpenCivOne
 				// Instruction address 0x2aea:0x144f, size: 3
 				this.gameData.Map.SetPixel(x + 160, y, (byte)playerID);
 			}
-
-			// Far return
-			this.CPU.Log.ExitBlock("F0_2aea_1412");
 		}
 
 		/// <summary>

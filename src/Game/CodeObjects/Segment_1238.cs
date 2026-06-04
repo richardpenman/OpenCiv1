@@ -26,31 +26,42 @@ namespace OpenCivOne
 		/// <param name="stringPtr">Address of a message string</param>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
-		/// <returns>Index of selected option in AX register or 0xffff if no options provided</returns>
+		/// <returns>Index of selected option or -1 if no options provided</returns>
 		public int F0_1238_001e_ShowDialog(ushort stringPtr, int x, int y)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1238_001e_ShowDialog(0x{stringPtr:x4}, {x}, {y})");
 
+			return F0_1238_001e_ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, stringPtr), x, y);
+		}
+
+		/// <summary>
+		/// Shows message box. Size of message box is determined by its text contents.
+		/// Text can be formatted to show a list of options for the player to choose from.
+		/// Each option should take a single line and start with one or multiple spaces.
+		/// Option lines shouldn't be mixed with non-option lines in order for selection to render properly.
+		/// Value at address 0xb276 (ushort) can be used as a bitmask indicating disabled options.
+		/// </summary>
+		/// <param name="stringPtr">Address of a message string</param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns>Index of selected option or -1 if no options provided</returns>
+		public int F0_1238_001e_ShowDialog(string text, int x, int y)
+		{
+			//this.oCPU.Log.EnterBlock($"F0_1238_001e_ShowDialog(0x{stringPtr:x4}, {x}, {y})");
+
 			// function body
-			// Instruction address 0x1238:0x0024, size: 5
 			this.oParent.MainCode.F0_11a8_0268_HideMouse();
 
-			// Instruction address 0x1238:0x0041, size: 5
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
 
-			// Instruction address 0x1238:0x0049, size: 5
 			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
 
-			// Instruction address 0x1238:0x0058, size: 3
-			int dialogResult = this.oParent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(stringPtr, x, y, true, false, true);
+			int dialogResult = this.oParent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(text, x, y, true, false, true);
 
-			// Instruction address 0x1238:0x0061, size: 5
 			this.oParent.MainCode.F0_11a8_0268_HideMouse();
 
-			// Instruction address 0x1238:0x007e, size: 5
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
 
-			// Instruction address 0x1238:0x0086, size: 5
 			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
 
 			return dialogResult;
@@ -431,19 +442,8 @@ namespace OpenCivOne
 
 			if (this.oParent.GameData.Year >= 2080 - (20 * this.oParent.GameData.DifficultyLevel))
 			{
-				// Instruction address 0x1238:0x06ce, size: 5
-				this.oParent.CAPI.strcpy(0xba06, this.oParent.Array_19b2_GovernmentTypeNames[humanPlayer.GovernmentType]);
-
-				// Instruction address 0x1238:0x06de, size: 5
-				this.oParent.CAPI.strcat(0xba06, " ");
-
-				// Instruction address 0x1238:0x06f4, size: 5
-				this.oParent.CAPI.strcat(0xba06, humanPlayer.Name);
-
-				// Instruction address 0x1238:0x0704, size: 5
-				this.oParent.CAPI.strcat(0xba06, "\nplans retirement\nin 20 years.\n");
-
-				this.oParent.Overlay_21.F21_0000_0000(-1);
+				this.oParent.News.F21_0000_0000_ShowNews(-1,
+					$"{this.oParent.Array_19b2_GovernmentTypeNames[humanPlayer.GovernmentType]} {humanPlayer.Name}\nplans retirement\nin 20 years.\n");
 			}
 
 			if (playerIDSpaceVictory != -1 || this.oParent.Var_b884 != 0 ||
@@ -452,18 +452,12 @@ namespace OpenCivOne
 				// Instruction address 0x1238:0x073b, size: 5
 				this.oParent.MainCode.F0_11a8_0268_HideMouse();
 
-				// Instruction address 0x1238:0x0748, size: 5
-				this.oParent.CAPI.strcpy(0xba06, "*** GAME OVER ***\n");
-
 				if (this.oParent.Var_b884 != 0)
 				{
-					// Instruction address 0x1238:0x075f, size: 5
-					this.oParent.CAPI.strcpy(0xba06, "Your civilization\nhas conquered\nthe entire planet!\n");
-
 					// Conquest victory, don't care about space race
 					playerIDSpaceVictory = -1;
 
-					this.oParent.Overlay_21.F21_0000_0000(-1);
+					this.oParent.News.F21_0000_0000_ShowNews(-1, "*** GAME OVER ***\nYour civilization\nhas conquered\nthe entire planet!\n");
 
 					this.oParent.GameReplay.F9_0000_0dde();
 				}
@@ -475,28 +469,16 @@ namespace OpenCivOne
 					// Instruction address 0x1238:0x0792, size: 3
 					F0_1238_1b44();
 
-					// Instruction address 0x1238:0x07a3, size: 5
-					this.oParent.CAPI.strcpy(0xba06, this.oParent.GameData.Players[playerIDSpaceVictory].Nationality);
-
-					// Instruction address 0x1238:0x07b3, size: 5
-					this.oParent.CAPI.strcat(0xba06, " spaceship\narrives at Alpha Centauri.\n");
-
-					this.oParent.Overlay_21.F21_0000_0000(-1);
+					this.oParent.News.F21_0000_0000_ShowNews(-1,
+						$"*** GAME OVER ***\n{this.oParent.GameData.Players[playerIDSpaceVictory].Nationality} spaceship\narrives at Alpha Centauri.\n");
 				}
 
 				if (this.oParent.GameData.Year >= 2100 - (20 * this.oParent.GameData.DifficultyLevel))
 				{
-					// Instruction address 0x1238:0x07e7, size: 5
-					this.oParent.CAPI.strcpy(0xba06, humanPlayer.Name);
-
-					// Instruction address 0x1238:0x07f7, size: 5
-					this.oParent.CAPI.strcat(0xba06, " dynasty\nends after glorious\n6000 year reign!\n");
-
 					// Instruction address 0x1238:0x0816, size: 5
-					this.oParent.CommonTools.F0_1000_0a32_PlayTune(
-						this.oParent.GameData.Nations[humanPlayer.NationalityID].LongTune, 3);
+					this.oParent.CommonTools.F0_1000_0a32_PlayTune(this.oParent.GameData.Nations[humanPlayer.NationalityID].LongTune, 3);
 
-					this.oParent.Overlay_21.F21_0000_0000(-1);
+					this.oParent.News.F21_0000_0000_ShowNews(-1, $"*** GAME OVER ***\n{humanPlayer.Name} dynasty\nends after glorious\n6000 year reign!\n");
 
 					// Instruction address 0x1238:0x082e, size: 5
 					this.oParent.CommonTools.F0_1000_0a32_PlayTune(1, 0);
@@ -516,23 +498,12 @@ namespace OpenCivOne
 
 				if (this.oParent.Var_b884 == 0)
 				{
-					// Your final score has entered the Hall of Fame.
 					// Do you want to keep playing ?
-					// Instruction address 0x1238:0x0867, size: 5
-					this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*FAME"));
-
-					// Instruction address 0x1238:0x0879, size: 3
-					this.oParent.Var_dc48_GameEndType = 1 - F0_1238_001e_ShowDialog(0xba06, 80, 80);
+					this.oParent.Var_dc48_GameEndType = 1 - F0_1238_001e_ShowDialog(this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*FAME"), 80, 80);
 				}
 				else
 				{
 					this.oParent.Var_dc48_GameEndType = 1;
-				}
-
-				if (this.oParent.Var_dc48_GameEndType != 0)
-				{
-					// Instruction address 0x1238:0x0897, size: 3
-					//F0_1238_090a_ShowAdvertisementsPopup();
 				}
 			}
 		}
@@ -1808,12 +1779,10 @@ namespace OpenCivOne
 			oParent.GameData.PollutionEffectLevel = (short)this.oCPU.AX.UInt16;
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0xc);
 			if (this.oCPU.Flags.NE) goto L17ca;
+
 			if (this.oParent.GameData.PollutedSquareCount <= 6) goto L17ca;
 
-			// Instruction address 0x1238:0x17b6, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Scientists alarmed by\nrising temperatures.\nGlobal Warming feared!\n");
-
-			this.oParent.Overlay_21.F21_0000_0000(-1);
+			this.oParent.News.F21_0000_0000_ShowNews(-1, "Scientists alarmed by\nrising temperatures.\nGlobal Warming feared!\n");
 
 		L17ca:
 			if (this.oParent.GameData.PollutionEffectLevel <= 16) goto L17e7;
@@ -2260,10 +2229,7 @@ namespace OpenCivOne
 			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0xe);
 			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
 
-			// Instruction address 0x0000:0x1bf2, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Global temperature\nrises! Icecaps melt.\nSevere Drought.\n");
-
-			this.oParent.Overlay_21.F21_0000_0000(-1);
+			this.oParent.News.F21_0000_0000_ShowNews(-1, "Global temperature\nrises! Icecaps melt.\nSevere Drought.\n");
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x0);
 			goto L1d45;

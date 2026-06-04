@@ -860,7 +860,7 @@ namespace OpenCivOne
 			yPos = this.oCPU.AX.Int16;
 
 			// Instruction address 0x0000:0x0a41, size: 5
-			this.oParent.CommonTools.F0_1000_0a32_PlayTune(0x2a, 0);
+			this.oParent.CommonTools.F0_1000_0a32_PlayTune(42, 0);
 
 			// Instruction address 0x0000:0x0a62, size: 5
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, xPos, yPos, 44, 44, this.oParent.Var_19d4_Screen1_Rectangle, xPos, yPos);

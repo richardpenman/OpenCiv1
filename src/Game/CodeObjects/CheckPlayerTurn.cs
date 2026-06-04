@@ -1980,14 +1980,10 @@ namespace OpenCivOne
 					{
 						this.parent.GameData.Players[playerID].GovernmentType = 0;
 
-						// Instruction address 0x1403:0x3585, size: 5
-						this.parent.CAPI.strcpy(0xba06, "The ");
-						// Instruction address 0x1403:0x3595, size: 5
-						this.parent.CAPI.strcat(0xba06, this.parent.GameData.Players[playerID].Nation);
-						// Instruction address 0x1403:0x35a5, size: 5
-						this.parent.CAPI.strcat(0xba06, " are\nrevolting! Citizens\ndemand new govt.\n");
-						this.parent.Overlay_21.F21_0000_0000(-1);
+						this.parent.News.F21_0000_0000_ShowNews(-1, $"The {this.parent.GameData.Players[playerID].Nation} are\nrevolting! Citizens\ndemand new government.\n");
+
 						this.parent.StartGameMenu.F5_0000_1af6_LoadGovernmentImage();
+
 						// Instruction address 0x1403:0x35be, size: 5
 						this.parent.Segment_1238.F0_1238_1b44();
 					}

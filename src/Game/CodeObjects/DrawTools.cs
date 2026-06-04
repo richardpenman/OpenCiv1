@@ -23,9 +23,7 @@ namespace OpenCivOne
 		/// <param name="frontColor"></param>
 		public void F0_1182_002a_DrawString(ushort stringPtr, int x, int y, byte frontColor)
 		{
-			string text = this.CPU.ReadString(VCPU.ToLinearAddress(this.CPU.DS.UInt16, stringPtr));
-
-			F0_1182_002a_DrawString(text, x, y, frontColor);
+			F0_1182_002a_DrawString(this.CPU.ReadString(VCPU.ToLinearAddress(this.CPU.DS.UInt16, stringPtr)), x, y, frontColor);
 		}
 
 		/// <summary>
@@ -87,8 +85,20 @@ namespace OpenCivOne
 		/// <param name="frontColor"></param>
 		public void F0_1182_0086_DrawStringWithShadow(ushort stringPtr, int x, int y, byte frontColor)
 		{
-			F0_1182_005c_DrawStringToScreen0(stringPtr, x, y + 1, 0);
-			F0_1182_005c_DrawStringToScreen0(stringPtr, x, y, frontColor);
+			this.F0_1182_0086_DrawStringWithShadow(this.CPU.ReadString(VCPU.ToLinearAddress(this.CPU.DS.UInt16, stringPtr)), x, y, frontColor);
+		}
+
+		/// <summary>
+		/// Draws a text with shadow at specified coordinates on screen 0
+		/// </summary>
+		/// <param name="text"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="frontColor"></param>
+		public void F0_1182_0086_DrawStringWithShadow(string text, int x, int y, byte frontColor)
+		{
+			F0_1182_005c_DrawStringToScreen0(text, x, y + 1, 0);
+			F0_1182_005c_DrawStringToScreen0(text, x, y, frontColor);
 		}
 
 		/// <summary>
@@ -134,20 +144,6 @@ namespace OpenCivOne
 			F0_1182_002a_DrawString(text, x, y, frontColor);
 
 			this.parent.Var_aa_Screen0_Rectangle.Flags = 1;
-		}
-
-		/// <summary>
-		/// Draws a centered string with shadow by rectangle defined at 0xaa on screen 0
-		/// </summary>
-		/// <param name="stringPtr"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="frontColor"></param>
-		public void F0_1182_00b3_DrawCenteredStringWithShadowToScreen0(ushort stringPtr, int x, int y, byte frontColor)
-		{
-			string text = this.CPU.ReadString(VCPU.ToLinearAddress(this.CPU.DS.UInt16, stringPtr));
-
-			F0_1182_00b3_DrawCenteredStringWithShadowToScreen0(text, x, y, frontColor);
 		}
 
 		/// <summary>

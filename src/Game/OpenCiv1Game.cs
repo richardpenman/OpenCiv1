@@ -46,7 +46,7 @@ namespace OpenCivOne
 		private TextBoxDialogs textBoxDialogs;
 		private Overlay_14 oOverlay_14;
 		private Encyclopedia encyclopedia;
-		private Overlay_21 oOverlay_21;
+		private News news;
 		private CityView cityView;
 		private Overlay_18 oOverlay_18;
 		private Overlay_22 oOverlay_22;
@@ -160,7 +160,7 @@ namespace OpenCivOne
 			this.textBoxDialogs = new TextBoxDialogs(this);
 			this.oOverlay_14 = new Overlay_14(this);
 			this.encyclopedia = new Encyclopedia(this);
-			this.oOverlay_21 = new Overlay_21(this);
+			this.news = new News(this);
 			this.cityView = new CityView(this);
 			this.oOverlay_18 = new Overlay_18(this);
 			this.oOverlay_22 = new Overlay_22(this);
@@ -372,29 +372,12 @@ namespace OpenCivOne
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x5920, 0);
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x591e, 0);
 
-			// Get special devices information
-			// Defaults are OK, no need to modify bytes at 0x590a - 0x590e
-
 			this.oCPU.BP.UInt16 = 0x0;
 
 			// Call our Main function
 			this.MainCode.F0_11a8_0008_Main();
 
 			this.CAPI.exit(0);
-		}
-
-		public static void LogUnit(OpenCivOneGame game, LogWrapper log, int playerID, int unitID, int humanPlayerID)
-		{
-			if (playerID >= game.GameData.Players.Length || unitID >= game.GameData.Players[playerID].Units.Length)
-			{
-				log.WriteLine($"// Illegal indexes, PlayerID: {playerID}{((playerID == humanPlayerID) ? " (Human player)" : "")}, UnitID: {unitID}");
-			}
-			else
-			{
-				Unit unit = game.GameData.Players[playerID].Units[unitID];
-
-				log.WriteLine($"// Player[{playerID}{((playerID == humanPlayerID) ? " (Human player)" : "")}].Unit[{unitID}] = {{TypeID: {unit.TypeID}, Status: {unit.Status}, Position: {unit.Position}, GoTo: {unit.GoToDestination}}}");
-			}
 		}
 
 		public Window MainWindow { get => this.mainWindow; }
@@ -423,6 +406,20 @@ namespace OpenCivOne
 		public LogWrapper GoToLog
 		{
 			get { return this.oGoToLog; }
+		}
+
+		public static void LogUnit(OpenCivOneGame game, LogWrapper log, int playerID, int unitID, int humanPlayerID)
+		{
+			if (playerID >= game.GameData.Players.Length || unitID >= game.GameData.Players[playerID].Units.Length)
+			{
+				log.WriteLine($"// Illegal indexes, PlayerID: {playerID}{((playerID == humanPlayerID) ? " (Human player)" : "")}, UnitID: {unitID}");
+			}
+			else
+			{
+				Unit unit = game.GameData.Players[playerID].Units[unitID];
+
+				log.WriteLine($"// Player[{playerID}{((playerID == humanPlayerID) ? " (Human player)" : "")}].Unit[{unitID}] = {{TypeID: {unit.TypeID}, Status: {unit.Status}, Position: {unit.Position}, GoTo: {unit.GoToDestination}}}");
+			}
 		}
 		#endregion
 
@@ -572,9 +569,9 @@ namespace OpenCivOne
 			get { return this.encyclopedia; }
 		}
 
-		public Overlay_21 Overlay_21
+		public News News
 		{
-			get { return this.oOverlay_21; }
+			get { return this.news; }
 		}
 
 		public CityView CityView

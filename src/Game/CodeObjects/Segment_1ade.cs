@@ -2416,114 +2416,76 @@ namespace OpenCivOne
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
 
 		L178c:
-			// Instruction address 0x1ade:0x1799, size: 5
-			this.oParent.CAPI.strcpy(0xba06, this.oParent.GameData.Players[playerID].Nationality);
+			this.oParent.CommonTools.F0_1000_0a32_PlayTune(this.oParent.GameData.Nations[this.oParent.GameData.Players[playerID].NationalityID].ShortTune, 0);
 
-			// Instruction address 0x1ade:0x17aa, size: 3
-			this.oCPU.AX.UInt16 = (ushort)(F0_1ade_22b5_PlayerHasTechnology(this.oParent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Invention) ? 1 : 0);
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.NE)
+			string discoveryText = $"{this.oParent.GameData.Players[playerID].Nationality} " +
+				$"{(F0_1ade_22b5_PlayerHasTechnology(this.oParent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Invention) ? "scientists" : "wise men")}" +
+				$"\ndiscover the secret\nof " +
+				$"{this.oParent.GameData.TechnologyAdvances[this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].ResearchTechnologyID].Name}" +
+				$"{((this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].ResearchTechnologyID == 71) ?
+					$" {++this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].FutureTechnologyCount}" : "")}!\n";
+
+			if (this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x42)) == 0)
 			{
-				// Instruction address 0x1ade:0x17c1, size: 5
-				this.oParent.CAPI.strcat(0xba06, " scientists");
+				this.oParent.News.F21_0000_0000_ShowNews(-1, discoveryText);
 			}
 			else
 			{
-				// Instruction address 0x1ade:0x17c1, size: 5
-				this.oParent.CAPI.strcat(0xba06, " wise men");
+				if (this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)) == 0)
+				{
+					this.oParent.Var_aa_Screen0_Rectangle.FontID = 6;
+				}
+			
+				this.oParent.Var_db38 = 1;
+
+				// Instruction address 0x1ade:0x188b, size: 5
+				this.oParent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(discoveryText, 96, (this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)) != 0) ? 25 : 1,
+					false, false, true);
+
+				this.oParent.Var_aa_Screen0_Rectangle.FontID = 1;
+
+				// Instruction address 0x1ade:0x18a4, size: 5
+				this.oParent.CAPI.strcpy(0xba06, "ICONPG1.PIC");
+
+				this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x44));
+				this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
+				this.oCPU.CX.UInt16 = 0x9;
+				this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
+				this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba0c, this.oCPU.ADD_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, 0xba0c), this.oCPU.AX.LowUInt8));
+
+				// Instruction address 0x1ade:0x18d3, size: 5
+				this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, 0xba06, 0);
+
+				this.oParent.Encyclopedia.F8_0000_16f7_DrawEncyclopediaImage(
+					((this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x44)) % 3) * 111) + 1,
+					(((this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x44)) % 9) / 3) * 69) + 1,
+					110, 68, 174, (this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)) != 0 ? 87 : 96));
+
+				// Instruction address 0x1ade:0x1948, size: 5
+				this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x8), ".PAL");
+
+				// Instruction address 0x1ade:0x1958, size: 5
+				this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, (ushort)(this.oCPU.BP.UInt16 - 0x10), 0xc1d6);
+
+				// Instruction address 0x1ade:0x1968, size: 5
+				this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, 0x2311, 0xc5be);
+
+				// Instruction address 0x1ade:0x197c, size: 5
+				this.oParent.CAPI.memcpy(0xc5c4, 0xc1dc, 0xff);
+
+				// Instruction address 0x1ade:0x198c, size: 5
+				this.oParent.CommonTools.F0_1000_04aa_TransformPalette(30, 0xc5be);
+
+				// Instruction address 0x1ade:0x1994, size: 5
+				this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+
+				// Instruction address 0x1ade:0x1999, size: 5
+				this.oParent.MainCode.F0_11a8_0250_ShowMouse();
+
+				// Instruction address 0x1ade:0x199e, size: 5
+				this.oParent.GameTools.F0_2dc4_0626_StartPaletteCycleSlots();
 			}
 
-			// Instruction address 0x1ade:0x17d1, size: 5
-			this.oParent.CAPI.strcat(0xba06, "\ndiscover the secret\nof ");
-
-			// Instruction address 0x1ade:0x17e8, size: 5
-			this.oParent.CAPI.strcat(0xba06, 
-				this.oParent.GameData.TechnologyAdvances[this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].ResearchTechnologyID].Name);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].ResearchTechnologyID != 71) goto L182c;
-
-			// Instruction address 0x1ade:0x17ff, size: 5
-			this.oParent.CAPI.strcat(0xba06, " ");
-
-			this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].FutureTechnologyCount++;
-
-			// Instruction address 0x1ade:0x1824, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].FutureTechnologyCount, 10));
-
-		L182c:
-			// Instruction address 0x1ade:0x1834, size: 5
-			this.oParent.CAPI.strcat(0xba06, "!\n");
-			
-			// Instruction address 0x1ade:0x184e, size: 5
-			this.oParent.CommonTools.F0_1000_0a32_PlayTune(this.oParent.GameData.Nations[this.oParent.GameData.Players[playerID].NationalityID].ShortTune, 0);
-
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x42)), 0x0);
-			if (this.oCPU.Flags.NE) goto L185f;
-			goto L19a5;
-
-		L185f:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)), 0x0);
-			if (this.oCPU.Flags.NE) goto L186e;
-
-			this.oParent.Var_aa_Screen0_Rectangle.FontID = 6;
-
-		L186e:
-			this.oParent.Var_db38 = 1;
-
-			// Instruction address 0x1ade:0x188b, size: 5
-			this.oParent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(0xba06, 96, (this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)) != 0) ? 25 : 1, 
-				false, false, true);
-
-			this.oParent.Var_aa_Screen0_Rectangle.FontID = 1;
-
-			// Instruction address 0x1ade:0x18a4, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "ICONPG1.PIC");
-
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x44));
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.CX.UInt16 = 0x9;
-			this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba0c, this.oCPU.ADD_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, 0xba0c), this.oCPU.AX.LowUInt8));
-
-			// Instruction address 0x1ade:0x18d3, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, 0xba06, 0);
-
-			this.oParent.Encyclopedia.F8_0000_16f7_DrawEncyclopediaImage(
-				(ushort)(((this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x44)) % 3) * 111) + 1),
-				(ushort)((((this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x44)) % 9) / 3) * 69) + 1),
-				110, 68, 174, (this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)) != 0 ? 87 : 96));
-
-			// Instruction address 0x1ade:0x1948, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x8), ".PAL");
-
-			// Instruction address 0x1ade:0x1958, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, (ushort)(this.oCPU.BP.UInt16 - 0x10), 0xc1d6);
-
-			// Instruction address 0x1ade:0x1968, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, 0x2311, 0xc5be);
-
-			// Instruction address 0x1ade:0x197c, size: 5
-			this.oParent.CAPI.memcpy(0xc5c4, 0xc1dc, 0xff);
-
-			// Instruction address 0x1ade:0x198c, size: 5
-			this.oParent.CommonTools.F0_1000_04aa_TransformPalette(30, 0xc5be);
-
-			// Instruction address 0x1ade:0x1994, size: 5
-			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
-
-			// Instruction address 0x1ade:0x1999, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
-
-			// Instruction address 0x1ade:0x199e, size: 5
-			this.oParent.GameTools.F0_2dc4_0626_StartPaletteCycleSlots();
-
-			goto L19b1;
-
-		L19a5:
-			this.oParent.Overlay_21.F21_0000_0000(-1);
-
-		L19b1:
 			// Instruction address 0x1ade:0x19bc, size: 3
 			F0_1ade_1d2e(playerID, (TechnologyAdvanceEnum)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].ResearchTechnologyID, playerID1);
 			
@@ -3171,20 +3133,9 @@ namespace OpenCivOne
 				{
 					if (this.oParent.GameData.Cities[this.oParent.GameData.WonderCityID[i]].PlayerID == this.oParent.GameData.HumanPlayerID)
 					{
-						// Instruction address 0x1ade:0x21de, size: 5
-						this.oParent.CAPI.strcpy(0xba06, this.oParent.GameData.TechnologyAdvances[(int)technology].Name);
-
-						// Instruction address 0x1ade:0x21ee, size: 5
-						this.oParent.CAPI.strcat(0xba06, " cancels\nthe effect of\n");
-
-						// Instruction address 0x1ade:0x2204, size: 5
-						this.oParent.CAPI.strcat(0xba06,
-							this.oParent.GameData.Wonders[i].Name);
-
-						// Instruction address 0x1ade:0x2214, size: 5
-						this.oParent.CAPI.strcat(0xba06, ".\n");
-
-						this.oParent.Overlay_21.F21_0000_0000(-1);
+						this.oParent.News.F21_0000_0000_ShowNews(-1,
+							$"{this.oParent.GameData.TechnologyAdvances[(int)technology].Name} cancels\n" +
+							$"the effect of\n{this.oParent.GameData.Wonders[i].Name}.\n");
 					}
 				}
 			}

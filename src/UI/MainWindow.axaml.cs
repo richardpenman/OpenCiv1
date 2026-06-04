@@ -43,7 +43,7 @@ namespace OpenCivOne.UI
 			InitializeComponent();
 
 #if !DEBUG
-			MessageBox.Show("This Alpha Release of OpenCiv1 project " +
+			MessageBox.Show("This Alpha Release of OpenCivOne project " +
 				"most certainly has bugs, but most functions should work normally, and has no sound at this point. " +
 				"It is compatible with old civ.exe and can save/load original game files.\n\n\n" +
 				"Technicalities:\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR " +
@@ -92,7 +92,7 @@ namespace OpenCivOne.UI
 					}
 					else
 					{
-						MessageBox.Show(this, "There was an error in the OpenCiv1 game engine, " +
+						MessageBox.Show(this, "There was an error in the OpenCivOne game engine, " +
 							"the details about the error will be in the Exception.log file.", "Game engine error", MessageBoxIcon.Error, MessageBoxButtons.OK);
 
 						try
@@ -431,7 +431,7 @@ namespace OpenCivOne.UI
 		{
 			if (!this.bClosing)
 			{
-				if (MessageBox.Show(this, "Are you sure you want to exit OpenCiv1?\nCurrent game, if any, will not be automatically saved!", "Exit application",
+				if (MessageBox.Show(this, "Are you sure you want to exit OpenCivOne?\nCurrent game, if any, will not be automatically saved!", "Exit application",
 					MessageBoxIcon.Question, MessageBoxButtons.OKCancel, MessageBoxDefaultButton.Button2) == MessageBoxResult.OK)
 				{
 					this.bClosing = true;

@@ -1230,19 +1230,9 @@ namespace OpenCivOne
 				// Instruction address 0x0000:0x1bb9, size: 5
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
 
-				// Instruction address 0x0000:0x1bcc, size: 5
-				this.parent.CAPI.strcpy(0xba06, this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Nationality);
-
-				// Instruction address 0x0000:0x1bdc, size: 5
-				this.parent.CAPI.strcat(0xba06, " government\nchanged to ");
-
-				// Instruction address 0x0000:0x1bf8, size: 5
-				this.parent.CAPI.strcat(0xba06, this.parent.Array_1966[this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].GovernmentType]);
-
-				// Instruction address 0x0000:0x1c08, size: 5
-				this.parent.CAPI.strcat(0xba06, "!\n");
-
-				this.parent.Overlay_21.F21_0000_0000(-2);
+				this.parent.News.F21_0000_0000_ShowNews(-2,
+					$"{this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Nationality} government\nchanged to " +
+					$"{this.parent.Array_1966[this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].GovernmentType]}!\n");
 
 				// Instruction address 0x0000:0x1c38, size: 5
 				this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 100, 320, 100, 15);

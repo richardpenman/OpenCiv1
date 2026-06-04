@@ -642,7 +642,7 @@ namespace OpenCivOne
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
 
 			// Instruction address 0x0000:0x06c8, size: 5
-			this.oParent.CommonTools.F0_1000_0a32_PlayTune(0x22, 0);
+			this.oParent.CommonTools.F0_1000_0a32_PlayTune(34, 0);
 
 			// Instruction address 0x0000:0x06e4, size: 5
 			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 15);
