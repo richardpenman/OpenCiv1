@@ -51,7 +51,7 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.NE) goto L0085;
 
 			// Instruction address 0x0000:0x004a, size: 5
-			this.oParent.CAPI.open("replay.txt", 0x8301, 0x80);
+			this.oParent.CAPI.open("REPLAY.TXT", 0x8301, 0x80);
 
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x680c, this.oCPU.AX.UInt16);
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0xffff);

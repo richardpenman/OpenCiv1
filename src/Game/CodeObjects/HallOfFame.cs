@@ -60,7 +60,7 @@ namespace OpenCivOne
 			F3_0000_0000();
 
 			// Instruction address 0x0000:0x0041, size: 5
-			this.oParent.CAPI.open("fame.dta", 0x8102, 0x80);
+			this.oParent.CAPI.open("FAME.DTA", 0x8102, 0x80);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.AX.UInt16);
 

@@ -1,9 +1,6 @@
-using Avalonia.Controls;
-using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using IRB.VirtualCPU;
 using OpenCivOne.Graphics;
-using System;
 
 namespace OpenCivOne
 {
@@ -70,11 +67,11 @@ namespace OpenCivOne
 			this.parent.CommonTools.F0_1000_0382_AddPaletteCycleSlot(1, 14, 146, 152);
 
 			this.parent.CommonTools.F0_1000_03fa_StartPaletteCycleSlot(1);
-			
+
 			this.parent.GameData.GameSettingFlags.Sound = true;
 
 			// Instruction address 0x0000:0x0329, size: 5
-			using (StreamReader reader = new(this.parent.ResourcePath+ "credits.txt"))
+			using (StreamReader reader = new($"{this.parent.ResourcePath}CREDITS.TXT"))
 			{
 				// Instruction address 0x0000:0x0334, size: 5
 				this.parent.CommonTools.F0_1000_033e_ResetWaitTimer();
@@ -337,14 +334,14 @@ namespace OpenCivOne
 			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 12, 320, 176, 236);
 
 			// Load spaceship text narrative
-			this.parent.Array_30b8[0] = $"{this.parent.Array_19b2_GovernmentTypeNames[this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].GovernmentType]} "+
+			this.parent.Array_30b8[0] = $"{this.parent.Array_19b2_GovernmentTypeNames[this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].GovernmentType]} " +
 				$"{this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Name}";
 			this.parent.Array_30b8[1] = this.parent.GameData.Players[playerID].Nationality;
 			this.parent.Array_30b8[2] = $"{this.parent.GameData.Players[playerID].SpaceshipPopulation}";
 			this.parent.Array_30b8[3] = $"{this.parent.GameData.Players[playerID].SpaceshipLaunchYear}";
 			this.parent.Array_30b8[4] = $"{this.parent.GameData.Year}";
 
-			string textContent = this.parent.LanguageTools.F0_2f4d_0471_ReplaceKeywords(this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey("KING", 
+			string textContent = this.parent.LanguageTools.F0_2f4d_0471_ReplaceKeywords(this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey("KING",
 				((playerID == this.parent.GameData.HumanPlayerID) ? "*SPACE" : "*SPACE2")));
 
 			string[] content = textContent.Replace("\n", "").Split('^');
@@ -512,11 +509,11 @@ namespace OpenCivOne
 					this.parent.CommonTools.F0_1000_042b_StopPaletteCycleSlot(i);
 				}
 			}
-		
+
 			this.parent.Var_aa_Screen0_Rectangle.ScreenID = 0;
 
 			this.parent.CommonTools.F0_1000_0a32_PlayTune(1, 0);
-			
+
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
 			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
@@ -562,7 +559,7 @@ namespace OpenCivOne
 					// Instruction address 0x0000:0x1617, size: 5
 					this.parent.Array_30b8[3] = this.parent.GameData.TechnologyAdvances[i].Name;
 				}
-			}		
+			}
 
 			// Instruction address 0x0000:0x1645, size: 5
 			string gameEndText = this.parent.LanguageTools.F0_2f4d_0471_ReplaceKeywords(this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey("KING", "*ARCH")).Replace("\n", "");
