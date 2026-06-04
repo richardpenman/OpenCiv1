@@ -300,7 +300,7 @@ namespace OpenCivOne
 
 							if (this.parent.Var_7ef6_PlanetLandMass != -1 && this.parent.Var_2f9c_MenuBoxHelpRequested)
 							{
-								this.parent.Help.F4_0000_0000("Land");
+								this.parent.Help.F4_0000_0000_DisplayHelpContent("Land");
 
 								this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = this.parent.Var_7ef6_PlanetLandMass;
 								this.parent.Var_7ef6_PlanetLandMass = -1;
@@ -320,7 +320,7 @@ namespace OpenCivOne
 
 							if (this.parent.Var_7ef8_PlanetTemperature != -1 && this.parent.Var_2f9c_MenuBoxHelpRequested)
 							{
-								this.parent.Help.F4_0000_0000("Temperature");
+								this.parent.Help.F4_0000_0000_DisplayHelpContent("Temperature");
 
 								this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = this.parent.Var_7ef8_PlanetTemperature;
 								this.parent.Var_7ef8_PlanetTemperature = -1;
@@ -340,7 +340,7 @@ namespace OpenCivOne
 
 							if (this.parent.Var_7efa_PlanetClimate != -1 && this.parent.Var_2f9c_MenuBoxHelpRequested)
 							{
-								this.parent.Help.F4_0000_0000("Climate");
+								this.parent.Help.F4_0000_0000_DisplayHelpContent("Climate");
 
 								this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = this.parent.Var_7efa_PlanetClimate;
 								this.parent.Var_7efa_PlanetClimate = -1;
@@ -360,7 +360,7 @@ namespace OpenCivOne
 
 							if (this.parent.Var_7efc_PlanetAge != -1 && this.parent.Var_2f9c_MenuBoxHelpRequested)
 							{
-								this.parent.Help.F4_0000_0000("Age");
+								this.parent.Help.F4_0000_0000_DisplayHelpContent("Age");
 
 								this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = this.parent.Var_7efc_PlanetAge;
 								this.parent.Var_7efc_PlanetAge = -1;

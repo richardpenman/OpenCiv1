@@ -1121,6 +1121,41 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
+		/// Checks whether map cell can be irrigated
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
+		public bool CanIrrigateCell(int x, int y)
+		{
+			// function body
+			if (this.parent.MapManagement.GetTerrainType(x, y) != TerrainTypeEnum.River)
+			{
+				for (int Local_8 = 1; Local_8 < 9; Local_8 += 2)
+				{
+					GPoint direction = this.parent.MoveDirections[Local_8];
+					int newX = x + direction.X;
+					int newY = y + direction.Y;
+
+					TerrainTypeEnum terrainType = this.parent.MapManagement.GetTerrainType(newX, newY);
+					TerrainImprovementFlagsEnum terrainImprovements = this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY);
+
+					if (((int)terrainImprovements & 0x1) == 0)
+					{
+						if (terrainType == TerrainTypeEnum.Water || terrainType == TerrainTypeEnum.River || ((int)terrainImprovements & 0x2) != 0)
+						{
+							return true;
+						}
+					}
+				}
+
+				return false;
+			}
+
+			return true;
+		}
+
+		/// <summary>
 		/// Returns terrain improvements at specified map coordinates.
 		/// </summary>
 		/// <param name="x"></param>

@@ -312,7 +312,7 @@ namespace OpenCivOne
 			{
 				if (!flag6)
 				{
-					this.parent.Help.F4_0000_00af(playerID, unitID);
+					this.parent.Help.F4_0000_00af_ShowInstantAdvicePopup(playerID, unitID);
 
 					flag6 = true;
 				}
@@ -901,7 +901,7 @@ namespace OpenCivOne
 						}
 						else
 						{
-							if (local_3a != -2 || F0_1403_3fd0_CanIrrigateCell(local_2c, local_30))
+							if (local_3a != -2 || this.parent.MapManagement.CanIrrigateCell(local_2c, local_30))
 							{
 								this.parent.GameData.Players[playerID].Units[unitID].Status |= 0x40;
 
@@ -2637,7 +2637,7 @@ namespace OpenCivOne
 
 				if (this.parent.GameData.TerrainModifications[(int)terrainType].MiningEffect > -3)
 				{
-					if (this.parent.GameData.TerrainModifications[(int)terrainType].IrrigationEffect == -2 && F0_1403_3fd0_CanIrrigateCell(x, y))
+					if (this.parent.GameData.TerrainModifications[(int)terrainType].IrrigationEffect == -2 && this.parent.MapManagement.CanIrrigateCell(x, y))
 					{
 						return 1;
 					}
@@ -2649,44 +2649,6 @@ namespace OpenCivOne
 			}
 
 			return 0;
-		}
-
-		/// <summary>
-		/// Checks whether map cell can be irrigated
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <returns></returns>
-		public bool F0_1403_3fd0_CanIrrigateCell(int x, int y)
-		{
-			// This function is referenced 4 time(s)
-			// Standard C frame
-			//this.oCPU.Log.EnterBlock("'Fn5'(Cdecl, Far, Return) at 0x3fd0");
-			// function body
-			if (this.parent.MapManagement.GetTerrainType(x, y) != TerrainTypeEnum.River)
-			{
-				for (int Local_8 = 1; Local_8 < 9; Local_8 += 2)
-				{
-					GPoint direction = this.parent.MoveDirections[Local_8];
-					int newX = x + direction.X;
-					int newY = y + direction.Y;
-
-					TerrainTypeEnum terrainType = this.parent.MapManagement.GetTerrainType(newX, newY);
-					TerrainImprovementFlagsEnum terrainImprovements = this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY);
-
-					if (((int)terrainImprovements & 0x1) == 0)
-					{
-						if (terrainType == TerrainTypeEnum.Water || terrainType == TerrainTypeEnum.River || ((int)terrainImprovements & 0x2) != 0)
-						{
-							return true;
-						}
-					}
-				}
-
-				return false;
-			}
-
-			return true;
 		}
 
 		/// <summary>

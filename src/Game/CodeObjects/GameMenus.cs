@@ -265,7 +265,7 @@ namespace OpenCivOne
 							menuText.Append(" Build Irrigation");
 
 							// Instruction address 0x2c84:0x030f, size: 5
-							if (!this.parent.CheckPlayerTurn.F0_1403_3fd0_CanIrrigateCell(unit.Position.X, unit.Position.Y))
+							if (!this.parent.MapManagement.CanIrrigateCell(unit.Position.X, unit.Position.Y))
 							{
 								// Disable 'Build Irrigation' option
 								this.parent.Var_b276_MenuBoxDisabledOptions |= 0x1 << orderCount;
