@@ -18,8 +18,8 @@
 			<TextBlock Name="messageText" TextWrapping="Wrap" VerticalAlignment="Center" xml:space="preserve" FontSize="12" >Some text</TextBlock>
 		</ScrollViewer>
 		
-		<Button Name="messageButton1" Grid.Row="1" Grid.Column="2" Content="Button 1" Margin="10,10,10,15" />
+		<Button Name="messageButton3" Grid.Row="1" Grid.Column="2" Content="Button 3" Margin="10,10,15,15" />
 		<Button Name="messageButton2" Grid.Row="1" Grid.Column="3" Content="Button 2" Margin="10,10,10,15" />
-		<Button Name="messageButton3" Grid.Row="1" Grid.Column="4" Content="Button 3" Margin="10,10,15,15" />
+		<Button Name="messageButton1" Grid.Row="1" Grid.Column="4" Content="Button 1" Margin="10,10,10,15" />
 	</Grid>
 </Window>

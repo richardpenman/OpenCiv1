@@ -287,26 +287,26 @@ namespace OpenCivOne.UI
 				switch (buttons)
 				{
 					case MessageBoxButtons.OK:
-						messageBox.messageButton1.IsVisible = false;
+						messageBox.messageButton1.Content = "OK";
 						messageBox.messageButton2.IsVisible = false;
-						messageBox.messageButton3.Content = "OK";
+						messageBox.messageButton3.IsVisible = false;
 
-						messageBox.messageButton3.IsDefault = true;
+						messageBox.messageButton1.IsDefault = true;
 						break;
 
 					case MessageBoxButtons.OKCancel:
-						messageBox.messageButton1.IsVisible = false;
-						messageBox.messageButton2.Content = "OK";
-						messageBox.messageButton3.Content = "Cancel";
+						messageBox.messageButton1.Content = "OK";
+						messageBox.messageButton2.Content = "Cancel";
+						messageBox.messageButton3.IsVisible = false;
 
 						switch (defaultButton)
 						{
 							case MessageBoxDefaultButton.Button1:
-								messageBox.messageButton2.IsDefault = true;
+								messageBox.messageButton1.IsDefault = true;
 								break;
 
 							case MessageBoxDefaultButton.Button2:
-								messageBox.messageButton3.IsDefault = true;
+								messageBox.messageButton2.IsDefault = true;
 								break;
 						}
 						break;
@@ -354,35 +354,35 @@ namespace OpenCivOne.UI
 						break;
 
 					case MessageBoxButtons.YesNo:
-						messageBox.messageButton1.IsVisible = false;
-						messageBox.messageButton2.Content = "Yes";
-						messageBox.messageButton3.Content = "No";
+						messageBox.messageButton1.Content = "Yes";
+						messageBox.messageButton2.Content = "No";
+						messageBox.messageButton3.IsVisible = false;
 
 						switch (defaultButton)
 						{
 							case MessageBoxDefaultButton.Button1:
-								messageBox.messageButton2.IsDefault = true;
+								messageBox.messageButton1.IsDefault = true;
 								break;
 
 							case MessageBoxDefaultButton.Button2:
-								messageBox.messageButton3.IsDefault = true;
+								messageBox.messageButton2.IsDefault = true;
 								break;
 						}
 						break;
 
 					case MessageBoxButtons.RetryCancel:
-						messageBox.messageButton1.IsVisible = false;
-						messageBox.messageButton2.Content = "Retry";
-						messageBox.messageButton3.Content = "Cancel";
+						messageBox.messageButton1.Content = "Retry";
+						messageBox.messageButton2.Content = "Cancel";
+						messageBox.messageButton3.IsVisible = false;
 
 						switch (defaultButton)
 						{
 							case MessageBoxDefaultButton.Button1:
-								messageBox.messageButton2.IsDefault = true;
+								messageBox.messageButton1.IsDefault = true;
 								break;
 
 							case MessageBoxDefaultButton.Button2:
-								messageBox.messageButton3.IsDefault = true;
+								messageBox.messageButton2.IsDefault = true;
 								break;
 						}
 						break;
@@ -391,7 +391,7 @@ namespace OpenCivOne.UI
 						messageBox.messageButton1.Content = "Cancel";
 						messageBox.messageButton2.Content = "Try Again";
 						messageBox.messageButton3.Content = "Continue";
-
+						
 						switch (defaultButton)
 						{
 							case MessageBoxDefaultButton.Button1:
@@ -456,7 +456,7 @@ namespace OpenCivOne.UI
 					case MessageBoxButtons.OK:
 						switch (result)
 						{
-							case MessageBoxDefaultButton.Button3:
+							case MessageBoxDefaultButton.Button1:
 								return MessageBoxResult.OK;
 						}
 						return MessageBoxResult.None;
@@ -464,10 +464,10 @@ namespace OpenCivOne.UI
 					case MessageBoxButtons.OKCancel:
 						switch (result)
 						{
-							case MessageBoxDefaultButton.Button2:
+							case MessageBoxDefaultButton.Button1:
 								return MessageBoxResult.OK;
 
-							case MessageBoxDefaultButton.Button3:
+							case MessageBoxDefaultButton.Button2:
 								return MessageBoxResult.Cancel;
 						}
 						return MessageBoxResult.None;
@@ -503,10 +503,10 @@ namespace OpenCivOne.UI
 					case MessageBoxButtons.YesNo:
 						switch (result)
 						{
-							case MessageBoxDefaultButton.Button2:
+							case MessageBoxDefaultButton.Button1:
 								return MessageBoxResult.Yes;
 
-							case MessageBoxDefaultButton.Button3:
+							case MessageBoxDefaultButton.Button2:
 								return MessageBoxResult.No;
 						}
 						return MessageBoxResult.None;
@@ -514,10 +514,10 @@ namespace OpenCivOne.UI
 					case MessageBoxButtons.RetryCancel:
 						switch (result)
 						{
-							case MessageBoxDefaultButton.Button2:
+							case MessageBoxDefaultButton.Button1:
 								return MessageBoxResult.Retry;
 
-							case MessageBoxDefaultButton.Button3:
+							case MessageBoxDefaultButton.Button2:
 								return MessageBoxResult.Cancel;
 						}
 						return MessageBoxResult.None;
