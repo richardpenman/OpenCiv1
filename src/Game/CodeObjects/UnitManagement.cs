@@ -151,9 +151,7 @@ namespace OpenCivOne
 					if (!this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(newX, newY))
 						continue;
 
-					if(i < 9 || (this.parent.GameData.Units[this.parent.GameData.Players[playerID].Units[unitID].TypeID].SightRange & 0x2) != 0 ||
-						(this.parent.MapManagement.GetTerrainType(x, y) != TerrainTypeEnum.Water &&
-						this.parent.MapManagement.GetTerrainType(newX, newY) != TerrainTypeEnum.Water))
+					if(i < 9 || (this.parent.GameData.Units[this.parent.GameData.Players[playerID].Units[unitID].TypeID].SightRange & 0x2) != 0)
 					{
 						// Instruction address 0x1866:0x026c, size: 5
 						this.parent.GameData.MapVisibility[newX, newY] |= (ushort)(1 << playerID);
