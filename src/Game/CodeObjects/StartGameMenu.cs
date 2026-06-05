@@ -458,7 +458,6 @@ namespace OpenCivOne
 					this.parent.GameData.Players[playerID].Units[i].Status = 0;
 				}
 
-				//this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, (ushort)(0xd20c + (playerID * 2)), 0);
 				this.parent.GameData.Players[playerID].Score = 0;
 
 				if (playerID == this.parent.GameData.HumanPlayerID)
@@ -537,10 +536,14 @@ namespace OpenCivOne
 					int landOwnership;
 					int tryCount = 0;
 
+					// pick up a suitable starting position for a first unit
 				L0a5e:
 					// Instruction address 0x0000:0x0a62, size: 5
 					xStart = this.parent.CAPI.RNG.Next(64) + 8;
 					yStart = this.parent.CAPI.RNG.Next(34) + 8;
+
+					if (this.parent.MapManagement.GetTerrainType(xStart, yStart) == TerrainTypeEnum.Water ||
+						this.parent.MapManagement.F0_2aea_1894_CellHasMinorTribeHut(xStart, yStart, this.parent.MapManagement.GetTerrainType(xStart, yStart))) goto L0a5e;
 
 					int distance;
 					int cityID = this.parent.GameTools.F0_2dc4_0102_FindNearestCity(xStart, yStart);
@@ -556,7 +559,7 @@ namespace OpenCivOne
 							this.parent.GameData.Cities[cityID].Position.X, this.parent.GameData.Cities[cityID].Position.Y);
 					}
 
-					if (parent.GameData.TurnCount == 0)
+					if (this.parent.GameData.TurnCount == 0)
 					{
 						for (int j = 1; j < playerID; j++)
 						{
@@ -576,15 +579,12 @@ namespace OpenCivOne
 
 					tryCount++;
 
-					if (tryCount <= 2000 || playerID == this.parent.GameData.HumanPlayerID && parent.GameData.TurnCount == 0)
+					if (tryCount <= 2000 || (playerID == this.parent.GameData.HumanPlayerID && parent.GameData.TurnCount == 0))
 					{
 						// Instruction address 0x0000:0x0b54, size: 5
-						if (this.parent.MapManagement.GetTerrainType(xStart, yStart) == TerrainTypeEnum.Water ||
-							-((tryCount / 32) - 12) > landOwnership || distance < 10 - (tryCount / 64) || 
-							this.parent.GameData.Continents[this.parent.MapManagement.F0_2aea_1942_GetGroupID(xStart, yStart)].BuildSiteCount < -((this.parent.GameData.TurnCount / 32) + (tryCount / 64) - 32) ||
-							(this.parent.GameData.Year > 0 && cityCount[this.parent.MapManagement.F0_2aea_1942_GetGroupID(xStart, yStart)] != 0) ||
-							this.parent.MapManagement.F0_2aea_1894_CellHasMinorTribeHut(
-								xStart, yStart, this.parent.MapManagement.GetTerrainType(xStart, yStart))) goto L0a5e;
+						if ((12 - (tryCount / 32)) > landOwnership || distance < (10 - (tryCount / 64)) || 
+							this.parent.GameData.Continents[this.parent.MapManagement.F0_2aea_1942_GetGroupID(xStart, yStart)].BuildSiteCount < (32 - (this.parent.GameData.TurnCount / 32) + (tryCount / 64)) ||
+							(this.parent.GameData.Year > 0 && cityCount[this.parent.MapManagement.F0_2aea_1942_GetGroupID(xStart, yStart)] != 0)) goto L0a5e;
 					}
 
 					if (this.parent.GameData.TurnCount == 0 && this.parent.Var_d76a_EarthMap)

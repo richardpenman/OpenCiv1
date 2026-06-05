@@ -34,6 +34,7 @@ namespace OpenCivOne
 			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
 
 			// Instruction address 0x0000:0x0017, size: 5
+			
 			this.oParent.Segment_25fb.F0_25fb_3401(playerID, 0, x, y, 4);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8), 0x0);
@@ -119,24 +120,13 @@ namespace OpenCivOne
 			goto L053b;
 
 		L00fe:
-			byte ubCityNameID = this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8))].NameID;
-			char[] acCityName = this.oParent.GameData.CityNames[ubCityNameID].ToCharArray();
-			acCityName[12] = '\0';
-			this.oParent.GameData.CityNames[ubCityNameID] = new string(acCityName);
+			byte cityNameID = this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8))].NameID;
+			string cityName = this.oParent.GameData.CityNames[cityNameID];
+			this.oParent.GameData.CityNames[cityNameID] = (cityName.Length > 12) ? cityName.Substring(0, 12) : cityName;
 
 		L0118:
-			ubCityNameID = this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8))].NameID;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 0xb);
-
-			while (this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)) > 0 &&
-				this.oParent.GameData.CityNames[ubCityNameID][this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc))] == ' ')
-			{
-				acCityName = this.oParent.GameData.CityNames[ubCityNameID].ToCharArray();
-				acCityName[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc))] = '\0';
-				this.oParent.GameData.CityNames[ubCityNameID] = new string(acCityName);
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc),
-					this.oCPU.DEC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc))));
-			}
+			cityNameID = this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8))].NameID;
+			this.oParent.GameData.CityNames[cityNameID] = this.oParent.GameData.CityNames[cityNameID].TrimEnd(' ', '\x0');
 
 			// Instruction address 0x0000:0x016f, size: 5
 			this.oParent.UnitManagement.F0_1866_250e_AddReplayData(1, (byte)((sbyte)playerID),

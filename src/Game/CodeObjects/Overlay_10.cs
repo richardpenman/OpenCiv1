@@ -18,13 +18,9 @@ namespace OpenCivOne
 		/// </summary>
 		public void F10_0000_0000()
 		{
-			this.oCPU.Log.EnterBlock("F10_0000_0000()");
+			//this.oCPU.Log.EnterBlock("F10_0000_0000()");
 
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x4);
-
 			// Instruction address 0x0000:0x000e, size: 5
 			this.oParent.CAPI.strcpy(0xba06, "Which army?\n ");
 
@@ -52,18 +48,13 @@ namespace OpenCivOne
 			F10_0000_0079((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
 
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
-
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F10_0000_0000");
 		}
 
 		/// <summary>
 		/// ?
 		/// </summary>
 		/// <param name="playerID"></param>
-		public void F10_0000_0079(short playerID)
+		public void F10_0000_0079(int playerID)
 		{
 			this.oCPU.Log.EnterBlock($"F10_0000_0079({playerID})");
 

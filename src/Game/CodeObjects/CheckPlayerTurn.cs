@@ -720,7 +720,7 @@ namespace OpenCivOne
 						{
 							this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves = 0;
 
-							local_3a = this.parent.Overlay_20.F20_0000_0000(playerID, local_2c, local_30, 1);
+							local_3a = (short)this.parent.Overlay_20.F20_0000_0000(playerID, local_2c, local_30, 1);
 
 							if (local_3a != -1)
 							{

@@ -27,14 +27,15 @@ namespace OpenCivOne
 			// function body
 			if (cityID >= 0 && cityID < 128)
 			{
-				string oldName = this.parent.GameData.CityNames[this.parent.GameData.Cities[cityID].NameID];
-				string? cityName = EditBox.ShowEditBoxDialog(this.parent.MainWindow, "City name", "The name of your city",
-					this.parent.GameData.CityNames[this.parent.GameData.Cities[cityID].NameID], 12, false);
+				string oldName = this.parent.GameData.CityNames[this.parent.GameData.Cities[cityID].NameID].TrimEnd(' ', '\x0');
+				string? newName = EditBox.ShowEditBoxDialog(this.parent.MainWindow, "City name", "The name of your city", oldName, 12, false);
 
-				this.parent.GameData.CityNames[this.parent.GameData.Cities[cityID].NameID] =
-					(string.IsNullOrEmpty(cityName) ? this.parent.GameData.CityNames[this.parent.GameData.Cities[cityID].NameID] : cityName);
+				if (!string.IsNullOrEmpty(newName))
+				{
+					this.parent.GameData.CityNames[this.parent.GameData.Cities[cityID].NameID] = newName;
+				}
 
-				return (oldName.Equals(this.parent.GameData.CityNames[this.parent.GameData.Cities[cityID].NameID]) ? 0 : 1);
+				return string.IsNullOrEmpty(newName) ? 0 : 1;
 			}
 
 			return 0;

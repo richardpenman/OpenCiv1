@@ -55,6 +55,40 @@ Currently, you can contribute to this repository in one of the following ways:
 <li>By designing parts of a 'Custom' Visual and Audio theme(s) (SVG and MIDI/SoundFonts would be the best).</li>
 </ul>
 
+## Project milestones
+
+<p>The goal is to completely rewrite the code and fix the bugs (first stage), and port the code to a modern platform (second stage).</p>
+<p>The more detailed current project <a href="https://codeberg.org/rhorvat/OpenCivOne/src/branch/master/CONTRIBUTING/roadmap.md">roadmap is here</a>.</p>
+
+### Milestones for a first stage
+
+<ul>
+<li>Reaching the initial playability of the game (passed),</li>
+<li>Rewrite of the game code, functionalities and features (in progress... only 26.3% of the code left to rewrite),</li>
+<li>Test game functionalities for game fidelity and bugs,</li>
+<li>Archive the game code.</li>
+</ul>
+
+### Planned milestones for a second stage
+
+<b>What will change in the new version:</b>
+<ul>
+<li>Porting to JS (or equivalent) + CSS + HTML web application which works online as well as offline (Online gaming, Multiplayer, etc.),</li>
+<li>HQ Graphics (the new graphics will be as close as possible to the spirit of the original version),</li>
+<li>HQ Audio (the new Audio will be as close as possible to the spirit of the original version),</li>
+<li>Some text where appropriate,</li>
+<li>Design (Map zoom functionality, some small updates, also some dialogues will be slightly different),</li>
+<li>Multilanguage capability,</li>
+<li>Multiplayer capability,</li>
+<li>Cheat capability,</li>
+<li>Plugin capability (can override rules, graphics and music/sounds).</li>
+</ul>
+<b>What will stay the same:</b>
+<ul>
+<li>Game rules and logic (except for established bugs),</li>
+<li>Overall look and feel of the game.</li>
+</ul>
+
 ## Frequently asked questions
 
 <p><b>Q:</b> Why did you use C#, instead of C and x86 assembly in which the Original game is written?</p>
@@ -63,7 +97,7 @@ Currently, you can contribute to this repository in one of the following ways:
 ***
 <p><b>Q:</b> Why this rewrite takes so long?</p>
 <p><b>A:</b> This rewrite takes so long because the code is not simply copied (like when, for example, decompiled) which produces derivative work. <b>The code is completely rewritten using creative process which of course takes time to complete and which (when completed) does not produce a derivative work.</b></p>
-<p><b>To give you a perspective of the scope of the project there was an <u>excruciating &#x7E;140,000 lines of assembly instructions</u>. I have single handendly rewritten &#x7E;100,000 lines, and only &#x7E;40,000, or less, remain (that is about 82%/28% ratio).</b></p>
+<p><b>To give you a perspective of the scope of the project there is an <u>excruciating &#x7E;140,000 lines of assembly instructions</u>.</b></p>
 
 ***
 <p><b>Q:</b> Why does the OpenCivOne differs, in some aspects, from the Original game?</p>
@@ -88,7 +122,7 @@ MicroProse and its successors never released the original source code which rema
 
 ***
 <p><b>Q:</b> You know that Civilization 7 will be published soon, doesn't that make First Civilization game in the series completely obsolete?</p>
-<b>A:</b> Based on some stats, many people think that the first Civilization offers as much fun as the other sequels do.
+<b>A:</b> Based on some stats, many people think that the first Civilization game offers as much fun as the other sequels do.
 
 ***
 <p><b>Q:</b> Are there any additional or different keyboard shortcuts (apart from the default ones)?</p>
@@ -124,40 +158,6 @@ You can also compile with CLI method:
 <li>git clone https://codeberg.org/rhorvat/OpenCivOne (To clone a specific branch use: git clone -b [branch] https://codeberg.org/rhorvat/OpenCivOne)</li>
 <li>cd OpenCivOne</li>
 <li>dotnet build -c Debug</li>
-</ul>
-
-## Project milestones
-
-<p>The goal is to completely rewrite the code and fix the bugs (first stage), and port the code to a modern platform (second stage).</p>
-<p>The more detailed current project <a href="https://codeberg.org/rhorvat/OpenCivOne/src/branch/master/CONTRIBUTING/roadmap.md">roadmap is here</a>.</p>
-
-### Milestones for a first stage
-
-<ul>
-<li>Reaching the initial playability of the game (passed),</li>
-<li>Rewrite of the game code, functionalities and features (in progress... only 26.3% of the code left to rewrite),</li>
-<li>Test game functionalities for game fidelity and bugs,</li>
-<li>Archive the game code.</li>
-</ul>
-
-### Planned milestones for a second stage
-
-<b>What will change in the new version:</b>
-<ul>
-<li>Porting to JS (or equivalent) + CSS + HTML web application which works online as well as offline (Online gaming, Multiplayer, etc.),</li>
-<li>HQ Graphics (the new graphics will be as close as possible to the spirit of the original version),</li>
-<li>HQ Audio (the new Audio will be as close as possible to the spirit of the original version),</li>
-<li>Some text where appropriate,</li>
-<li>Design (Map zoom functionality, some small updates, also some dialogues will be slightly different),</li>
-<li>Multilanguage capability,</li>
-<li>Multiplayer capability,</li>
-<li>Cheat capability,</li>
-<li>Plugin capability (can override rules, graphics and music/sounds).</li>
-</ul>
-<b>What will stay the same:</b>
-<ul>
-<li>Game rules and logic (except for established bugs),</li>
-<li>Overall look and feel of the game.</li>
 </ul>
 
 ## Current screenshots of the OpenCivOne game

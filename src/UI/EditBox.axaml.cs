@@ -60,12 +60,23 @@ public partial class EditBox : Window
 			switch (e.Key)
 			{
 				case Avalonia.Input.Key.Escape:
-					this.textValue = this.defaultText;
+					this.textValue = null;
 					this.Close();
+					e.Handled = true;
 					break;
 
 				case Avalonia.Input.Key.Enter:
-					this.Close();
+					if (allowEmptyText || !string.IsNullOrEmpty(this.textValue))
+					{
+						this.Close();
+					}
+					else
+					{
+						this.txtInput.IsEnabled = false;
+						this.txtInput.Text = this.textValue;
+						this.txtInput.IsEnabled = true;
+					}
+					e.Handled = true;
 					break;
 			}
 		}
@@ -73,10 +84,30 @@ public partial class EditBox : Window
 
 	private void EditBox_KeyDown(object? sender, Avalonia.Input.KeyEventArgs e)
 	{
-		if (e.KeyModifiers == Avalonia.Input.KeyModifiers.None && e.Key == Avalonia.Input.Key.Escape)
+		if (e.KeyModifiers == Avalonia.Input.KeyModifiers.None)
 		{
-			this.textValue = this.defaultText;
-			this.Close();
+			switch (e.Key)
+			{
+				case Avalonia.Input.Key.Escape:
+					this.textValue = null;
+					this.Close();
+					e.Handled = true;
+					break;
+
+				case Avalonia.Input.Key.Enter:
+					if (allowEmptyText || !string.IsNullOrEmpty(this.textValue))
+					{
+						this.Close();
+					}
+					else
+					{
+						this.txtInput.IsEnabled = false;
+						this.txtInput.Text = this.textValue;
+						this.txtInput.IsEnabled = true;
+					}
+					e.Handled = true;
+					break;
+			}
 		}
 	}
 
@@ -87,7 +118,7 @@ public partial class EditBox : Window
 
 	private void BtnCancel_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
 	{
-		this.textValue = this.defaultText;
+		this.textValue = null;
 		this.Close();
 	}
 

@@ -7,6 +7,9 @@ assignees: ''
 
 ---
 
+**Version check**
+Did you compare this bug against original version, if yes, was it a 475.05, if not specify version.
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
