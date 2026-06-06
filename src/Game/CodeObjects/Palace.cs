@@ -63,7 +63,7 @@ namespace OpenCivOne
 			this.oParent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox((ushort)(this.oCPU.BP.UInt16 - 0x100), 20, 16, true, false, true);
 
 			// Instruction address 0x0000:0x00fa, size: 5
-			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 20, 16, 280, 44, this.oParent.Var_aa_Screen0_Rectangle, 20, 16);
+			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
 
 			// Instruction address 0x0000:0x011a, size: 5
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);

@@ -137,8 +137,12 @@ namespace OpenCivOne
 					}
 					else if (newText.Count > 0 && currentTextLength > 0)
 					{
-						newText.Add(' ');
-						currentTextLength++;
+						if (newText[newText.Count - 1] != ' ')
+						{
+							newText.Add(' ');
+							currentTextLength++;
+						}
+
 						previousDelimiter = newText.Count - 1;
 					}
 					else
@@ -154,8 +158,8 @@ namespace OpenCivOne
 					if (currentTextLength > maxLength && previousDelimiter > 0)
 					{
 						newText[previousDelimiter] = '\n';
-						previousDelimiter = 0;
 						currentTextLength = i - previousDelimiter;
+						previousDelimiter = 0;
 					}
 				}
 			}
