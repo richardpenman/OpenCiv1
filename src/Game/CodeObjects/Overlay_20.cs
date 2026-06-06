@@ -1253,7 +1253,7 @@ namespace OpenCivOne
 
 		L0e00:
 			// Instruction address 0x0000:0x0e03, size: 5
-			this.oParent.CityWorker.F0_1d12_6da1_GetSpecialWorkerFlags(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14)));
+			this.oCPU.AX.Int16 = (short)this.oParent.CityWorker.F0_1d12_6da1_GetSpecialWorkerFlags(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14)));
 
 			F20_0000_13f8((ushort)(this.oCPU.AX.UInt16 + 5));
 			

@@ -1485,7 +1485,7 @@ namespace OpenCivOne
 				}
 
 				// Instruction address 0x1d12:0x2ad3, size: 5
-				if ((short)F0_1d12_6cf3_GetWonderCityID((int)WonderEnum.CopernicusObservatory) == cityID)
+				if (F0_1d12_6cf3_GetWonderCityID((int)WonderEnum.CopernicusObservatory) == cityID)
 				{
 					local_e8 += local_e8;
 				}
@@ -1759,7 +1759,7 @@ namespace OpenCivOne
 				}
 			
 				// Instruction address 0x1d12:0x31d2, size: 5
-				if ((short)F0_1d12_6cf3_GetWonderCityID((int)WonderEnum.ShakespearesTheatre) == cityID)
+				if (F0_1d12_6cf3_GetWonderCityID((int)WonderEnum.ShakespearesTheatre) == cityID)
 				{
 					this.parent.Var_70e4 = 0;
 				}
@@ -2979,7 +2979,7 @@ namespace OpenCivOne
 
 					L536b:
 						// Instruction address 0x1d12:0x536f, size: 5
-						local_e8 = (short)F0_1d12_6da1_GetSpecialWorkerFlags(local_ea);
+						local_e8 = F0_1d12_6da1_GetSpecialWorkerFlags(local_ea);
 
 						if (local_e8 >= 3)
 							goto L539a;
@@ -3346,7 +3346,7 @@ namespace OpenCivOne
 							goto L045f;
 
 						// Instruction address 0x1d12:0x5915, size: 5
-						local_e8 = (short)F0_1d12_6da1_GetSpecialWorkerFlags(local_ea);
+						local_e8 = F0_1d12_6da1_GetSpecialWorkerFlags(local_ea);
 
 						if (local_e8 >= 3)
 							goto L5940;
@@ -4417,7 +4417,7 @@ namespace OpenCivOne
 		/// </summary>
 		/// <param name="wonderID"></param>
 		/// <returns></returns>
-		private int F0_1d12_6cf3_GetWonderCityID(short wonderID)
+		private int F0_1d12_6cf3_GetWonderCityID(int wonderID)
 		{
 			//this.CPU.Log.EnterBlock($"F0_1d12_6cf3_GetWonderCityID({wonderID})");
 
@@ -4428,7 +4428,7 @@ namespace OpenCivOne
 			{
 				// Instruction address 0x1d12:0x6d15, size: 5
 				if (this.parent.GameData.Wonders[wonderID].ObsoletesAfterTechnology != TechnologyAdvanceEnum.None &&
-					this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology((short)i, this.parent.GameData.Wonders[wonderID].ObsoletesAfterTechnology))
+					this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(i, this.parent.GameData.Wonders[wonderID].ObsoletesAfterTechnology))
 				{
 					break;
 				}
@@ -4510,7 +4510,7 @@ namespace OpenCivOne
 		/// </summary>
 		/// <param name="workerType"></param>
 		/// <returns></returns>
-		private int F0_1d12_6dcc_GetWorkerCountByType(ushort workerType)
+		private int F0_1d12_6dcc_GetWorkerCountByType(int workerType)
 		{
 			//this.CPU.Log.EnterBlock($"F0_1d12_6dcc_GetWorkerCountByType({workerType})");
 
@@ -4638,12 +4638,9 @@ namespace OpenCivOne
 
 			for (i = 0; i < param4; i++)
 			{
-				// Instruction address 0x1d12:0x700d, size: 3
-				F0_1d12_6da1_GetSpecialWorkerFlags(i);
-
 				// Instruction address 0x1d12:0x7025, size: 5
 				this.parent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
-					xPos, yPos, this.parent.Array_6e96[5 + this.CPU.AX.Int16]);
+					xPos, yPos, this.parent.Array_6e96[5 + F0_1d12_6da1_GetSpecialWorkerFlags(i)]);
 
 				xPos += xSpacing;
 			}

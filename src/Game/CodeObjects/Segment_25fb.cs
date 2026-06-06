@@ -3501,8 +3501,8 @@ namespace OpenCivOne
 
 			// Instruction address 0x25fb:0x211c, size: 5
 			// !!! this call was using uninitialized playerID and cityID from CityWorker class, it now makes sense to use referenced player and unit ID
-			this.oCPU.AX.UInt16 = (ushort)((short)this.oParent.CityWorker.F0_1d12_6abc_GetCityResourceCount(playerID, this.oParent.GameData.Players[playerID].Units[unitID].HomeCityID,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x30)), this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)), CityResourceTypeEnum.Production));
+			this.oCPU.AX.Int16 = (short)this.oParent.CityWorker.F0_1d12_6abc_GetCityResourceCount(playerID, this.oParent.GameData.Players[playerID].Units[unitID].HomeCityID,
+				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x30)), this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)), CityResourceTypeEnum.Production);
 
 			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
 			this.oCPU.TEST_UInt8(this.oCPU.ReadUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3a)), 0x8);
