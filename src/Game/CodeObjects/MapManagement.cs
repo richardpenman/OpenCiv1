@@ -1405,7 +1405,7 @@ namespace OpenCivOne
 
 		public void SetBuildLocationScore(int x, int y, int score)
 		{
-			this.gameData.Map.SetPixel(x + 80, y + 50, (byte)score);
+			this.gameData.Map.SetPixel(80 + this.AdjustXPosition(x), y + 50, (byte)score);
 		}
 
 		public TerrainMapGroupTypeEnum GetGroupType(int x, int y)

@@ -53,6 +53,10 @@ namespace OpenCivOne
 					this.parent.Help.F4_0000_02d3_ShowInstantAdvicePopup("*HELP2");
 				}
 			}
+			else
+			{
+				this.parent.Var_6b90 = playerID;
+			}
 
 			for (int i = 0; i < 128; i++)
 			{

@@ -533,7 +533,7 @@ namespace OpenCivOne
 
 					int xStart;
 					int yStart;
-					int landOwnership;
+					int buildScore;
 					int tryCount = 0;
 
 					// pick up a suitable starting position for a first unit
@@ -575,14 +575,14 @@ namespace OpenCivOne
 					}
 
 					// Instruction address 0x0000:0x0b24, size: 5
-					landOwnership = this.parent.MapManagement.GetPlayerLandOwnership(xStart, yStart);
+					buildScore = this.parent.MapManagement.GetBuildLocationScore(xStart, yStart);
 
 					tryCount++;
 
-					if (tryCount <= 2000 || (playerID == this.parent.GameData.HumanPlayerID && parent.GameData.TurnCount == 0))
+					if (tryCount <= 2000 || (playerID == this.parent.GameData.HumanPlayerID && this.parent.GameData.TurnCount == 0))
 					{
 						// Instruction address 0x0000:0x0b54, size: 5
-						if ((12 - (tryCount / 32)) > landOwnership || distance < (10 - (tryCount / 64)) || 
+						if ((12 - (tryCount / 32)) > buildScore || distance < (10 - (tryCount / 64)) || 
 							this.parent.GameData.Continents[this.parent.MapManagement.F0_2aea_1942_GetGroupID(xStart, yStart)].BuildSiteCount < (32 - (this.parent.GameData.TurnCount / 32) + (tryCount / 64)) ||
 							(this.parent.GameData.Year > 0 && cityCount[this.parent.MapManagement.F0_2aea_1942_GetGroupID(xStart, yStart)] != 0)) goto L0a5e;
 					}

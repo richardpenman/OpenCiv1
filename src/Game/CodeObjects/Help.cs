@@ -63,10 +63,10 @@ namespace OpenCivOne
 				bool showInstantAdvice = (this.parent.GameData.Terrains[(int)terrainType].Food + this.parent.GameData.Terrains[(int)terrainType].Production > 3) ? true : false;
 
 				// Instruction address 0x0000:0x0120, size: 5
-				int ownerPlayerID = this.parent.MapManagement.GetPlayerLandOwnership(this.parent.GameData.Players[playerID].Units[unitID].Position.X,
+				int buildScore = this.parent.MapManagement.GetBuildLocationScore(this.parent.GameData.Players[playerID].Units[unitID].Position.X,
 					this.parent.GameData.Players[playerID].Units[unitID].Position.Y);
 
-				if (ownerPlayerID < 10)
+				if (buildScore < 10)
 				{
 					showInstantAdvice = false;
 				}
@@ -75,8 +75,8 @@ namespace OpenCivOne
 				{
 					GPoint direction = this.parent.MoveDirections[i];
 
-					if (this.parent.MapManagement.GetPlayerLandOwnership(this.parent.GameData.Players[playerID].Units[unitID].Position.X + direction.X,
-						this.parent.GameData.Players[playerID].Units[unitID].Position.Y + direction.Y) > ownerPlayerID)
+					if (this.parent.MapManagement.GetBuildLocationScore(this.parent.GameData.Players[playerID].Units[unitID].Position.X + direction.X,
+						this.parent.GameData.Players[playerID].Units[unitID].Position.Y + direction.Y) > buildScore)
 					{
 						showInstantAdvice = false;
 					}

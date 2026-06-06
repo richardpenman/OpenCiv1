@@ -976,8 +976,9 @@ namespace OpenCivOne
 						// Instruction address 0x0000:0x1111, size: 5
 						totalLocationScore = this.parent.GameTools.F0_2dc4_007c_CheckValueRange((totalLocationScore - 120) / 8, 1, 15) / 2 + 8;
 
-						// !!! Sets build score to both 80,0 & 80,50
+						// !!! Sets build score to Land ownership field also, why this needs reworking!
 						this.map.SetBuildLocationScore(i, j, totalLocationScore);
+						this.map.SetPlayerLandOwnership(i, j, totalLocationScore);
 
 						this.parent.GameData.Continents[this.map.F0_2aea_1942_GetGroupID(i, j)].BuildSiteCount++;
 					}
