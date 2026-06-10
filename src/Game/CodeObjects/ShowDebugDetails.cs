@@ -2,11 +2,11 @@ using System.Text;
 
 namespace OpenCivOne
 {
-	public class DebugShowDetails
+	public class ShowDebugDetails
 	{
 		private OpenCivOneGame oParent;
 
-		public DebugShowDetails(OpenCivOneGame parent)
+		public ShowDebugDetails(OpenCivOneGame parent)
 		{
 			this.oParent = parent;
 		}
@@ -14,7 +14,7 @@ namespace OpenCivOne
 		/// <summary>
 		/// Shows a dialog to select the player
 		/// </summary>
-		public void F10_0000_0000_DebugShowMapWithStrategy()
+		public void ShowMapWithStrategy()
 		{
 			//this.oCPU.Log.EnterBlock("F10_0000_0000()");
 
@@ -258,7 +258,7 @@ namespace OpenCivOne
 		/// </summary>
 		/// <param name="playerID"></param>
 		/// <param name="unitID"></param>
-		public void F10_0000_0477_DebugShowUnitStatus(int playerID, int unitID)
+		public void ShowUnitStatus(int playerID, int unitID)
 		{
 			//this.oCPU.Log.EnterBlock($"F10_0000_0477({playerID}, {unitID})");
 
@@ -288,6 +288,276 @@ namespace OpenCivOne
 
 			// Instruction address 0x0000:0x0699, size: 5
 			this.oParent.Segment_1238.F0_1238_001e_ShowDialog(unitStatus.ToString(), 10, 10);
+		}
+
+		/// <summary>
+		/// Prints debug details for all players
+		/// </summary>
+		/// <param name="playerID"></param>
+		public void ShowPlayerDetails(int playerID)
+		{
+			//this.oCPU.Log.EnterBlock($"F13_0000_0000({playerID})");
+
+			// function body
+			// Instruction address 0x0000:0x0007, size: 5
+			this.oParent.MainCode.F0_11a8_0268_HideMouse();
+
+			// Instruction address 0x0000:0x0024, size: 5
+			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
+
+			// Instruction address 0x0000:0x0040, size: 5
+			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 1);
+
+			// Instruction address 0x0000:0x005d, size: 5
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(this.oParent.GameData.Players[playerID].Nationality, 128, 4, 15);
+
+			// Instruction address 0x0000:0x0078, size: 5
+			this.oParent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle, 16, 4, this.oParent.Array_d4ce[64 + (playerID * 32)]);
+
+			// Instruction address 0x0000:0x00b6, size: 5
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Government: {this.oParent.Array_1966[this.oParent.GameData.Players[playerID].GovernmentType]}", 16, 24, 15);
+
+			// Instruction address 0x0000:0x00e9, size: 5
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+				$"Population: {this.oParent.GameTools.F0_2dc4_0337_PopulationValueToString(this.oParent.GameTools.F0_2dc4_02cd_GetPlayerTotalPopulationCount(playerID))}", 16, 32, 15);
+
+			// Instruction address 0x0000:0x0194, size: 5
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Treasury: {this.oParent.GameData.Players[playerID].Coins} coins, " +
+				$"Taxes/Science: {this.oParent.GameData.Players[playerID].TaxRate}/{this.oParent.GameData.Players[playerID].ScienceTaxRate}", 16, 40, 15);
+
+			// Instruction address 0x0000:0x01ac, size: 5
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+				$"{this.oParent.GameData.Players[playerID].UnitCount} units / " +
+				$"{this.oParent.GameData.Players[playerID].CityCount} cities / " +
+				$"{this.oParent.GameData.Players[playerID].SettlerCount} settlers / " +
+				$"{this.oParent.GameData.Players[playerID].LandCount} land", 16, 48, 15);
+
+			int yOffset = 4;
+
+			for (int i = 1; i < 15; i++)
+			{
+				if (this.oParent.GameData.Players[playerID].Continents[i].Attack != 0)
+				{
+					switch (this.oParent.GameData.Players[playerID].Continents[i].Strategy)
+					{
+						case 1:
+							this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Attack/{i}", 256, yOffset, 7);
+							yOffset += 8;
+							break;
+
+						case 2:
+							this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Defend/{i}", 256, yOffset, 7);
+							yOffset += 8;
+							break;
+
+						case 5:
+							this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Transport/{i}", 256, yOffset, 7);
+							yOffset += 8;
+							break;
+
+						default:
+							this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Settle/{i}", 256, yOffset, 7);
+							yOffset += 8;
+							break;
+					}
+				}
+			}
+
+			yOffset = 24;
+
+			for (int i = 1; i < 8; i++)
+			{
+				if (i != playerID && (this.oParent.GameData.Players[playerID].Diplomacy[i] & 0xb) != 0)
+				{
+					StringBuilder diplomacyText = new();
+
+					diplomacyText.Append(this.oParent.GameData.Players[i].Nationality);
+
+					if ((this.oParent.GameData.Players[playerID].Diplomacy[i] & 0xb) == 0x1)
+					{
+						diplomacyText.Append(": Contact");
+					}
+
+					if ((this.oParent.GameData.Players[playerID].Diplomacy[i] & 2) != 0)
+					{
+						if ((this.oParent.GameData.Players[playerID].Diplomacy[i] & 4) == 0)
+						{
+							diplomacyText.Append(": Peace");
+						}
+						else
+						{
+							diplomacyText.Append(": Allied");
+						}
+					}
+
+					if ((this.oParent.GameData.Players[playerID].Diplomacy[i] & 8) != 0)
+					{
+						diplomacyText.Append(": Vendetta");
+					}
+
+					this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(diplomacyText.ToString(), 192, yOffset, 7);
+					yOffset += 8;
+				}
+			}
+
+			yOffset = 60;
+			int column = 0;
+
+			// Instruction address 0x0000:0x047e, size: 5
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0("Technologies:", 16, yOffset, 15);
+			yOffset += 8;
+
+			for (int i = 0; i < 72 && yOffset < 193; i++)
+			{
+				// Instruction address 0x0000:0x04e2, size: 5
+				if (this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, (TechnologyAdvanceEnum)i))
+				{
+					if ((this.oParent.GameData.TechnologyFirstDiscoveredBy[i] & 0x7) != playerID)
+					{
+						this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(this.oParent.GameData.TechnologyAdvances[i].Name, 8 + ((column % 3) * 100), yOffset, 7);
+					}
+					else
+					{
+						this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(this.oParent.GameData.TechnologyAdvances[i].Name, 8 + ((column % 3) * 100), yOffset, 15);
+					}
+
+					column++;
+
+					if ((column % 3) == 0)
+					{
+						yOffset += 8;
+					}
+				}
+			}
+
+			// Instruction address 0x0000:0x0525, size: 5
+			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+
+			// Instruction address 0x0000:0x0542, size: 5
+			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
+
+			// Instruction address 0x0000:0x054a, size: 5
+			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
+		}
+
+		/// <summary>
+		/// Print unit statistics for all players
+		/// </summary>
+		public void ShowUnitStatistics()
+		{
+			//this.oCPU.Log.EnterBlock("F13_0000_0554()");
+
+			// function body
+			this.oParent.MainCode.F0_11a8_0268_HideMouse();
+
+			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
+
+			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 1);
+
+			int xOffset = 0;
+			int yOffset = 18;
+
+			for (int i = 0; i < 28; i++)
+			{
+				bool playerHasUnits = false;
+
+				for (int j = 1; j < 8; j++)
+				{
+					if (this.oParent.GameData.Players[j].ActiveUnits[i] != 0 || this.oParent.GameData.Players[j].UnitsInProduction[i] != 0)
+					{
+						playerHasUnits = true;
+					}
+				}
+
+				if (playerHasUnits)
+				{
+					this.oParent.Graphics.F0_VGA_0599_DrawLine(this.oParent.Var_aa_Screen0_Rectangle, 36, yOffset - 1, 319, yOffset - 1, 9);
+
+					this.oParent.CommonTools.F0_1000_084d_DrawBitmapToScreen(
+						this.oParent.Var_aa_Screen0_Rectangle, ((xOffset & 1) * 16) + 2, yOffset - 4, this.oParent.Array_d4ce[96 + i]);
+
+					xOffset++;
+
+					this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(this.oParent.GameData.Units[i].Name, 36, yOffset, 15);
+
+					yOffset += 8;
+				}
+			}
+
+			for (int i = 0; i < 8; i++)
+			{
+				this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{this.oParent.GameData.Players[i].Ranking}", (i * 30) + 84, 1, 15);
+
+				this.oParent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
+					(30 * i) + 90, 2, this.oParent.Array_d4ce[64 + (i * 32)]);
+
+				yOffset = 18;
+
+				for (int j = 0; j < 28; j++)
+				{
+					bool anyPlayerHasUnits = false;
+
+					for (int k = 1; k < 8; k++)
+					{
+						if (this.oParent.GameData.Players[k].ActiveUnits[j] != 0 || this.oParent.GameData.Players[k].UnitsInProduction[j] != 0)
+						{
+							anyPlayerHasUnits = true;
+						}
+					}
+
+					if (anyPlayerHasUnits)
+					{
+						if (this.oParent.GameData.Players[i].ActiveUnits[j] != 0 || this.oParent.GameData.Players[i].UnitsInProduction[j] != 0)
+						{
+							// Instruction address 0x0000:0x074c, size: 5
+							this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+								$"{this.oParent.GameData.Players[i].ActiveUnits[j]}/{this.oParent.GameData.Players[i].UnitsInProduction[j]}",
+								(i * 30) + 88, yOffset, 15);
+						}
+
+						yOffset += 8;
+					}
+				}
+			}
+
+			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+
+			// Show destroyed unit statistics
+			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 4);
+
+			for (int i = 1; i < 8; i++)
+			{
+				this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0(
+					this.oParent.GameData.Players[i].Nationality, i * 40, 8, this.oParent.Array_1946_PlayerColours[i]);
+
+				this.oParent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle, i * 40, 16, this.oParent.Array_d4ce[64 + (i * 32)]);
+
+				this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0(
+					this.oParent.GameData.Players[i].Nationality, 4, i * 12 + 32, this.oParent.Array_1946_PlayerColours[i]);
+			}
+
+			for (int i = 1; i < 8; i++)
+			{
+				for (int j = 1; j < 8; j++)
+				{
+					if (i != j)
+					{
+						if (this.oParent.Var_d806_DebugFlag || i == this.oParent.GameData.HumanPlayerID || j == this.oParent.GameData.HumanPlayerID)
+						{
+							// Instruction address 0x0000:0x0976, size: 5
+							this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+								$"{this.oParent.GameData.Players[i].UnitsDestroyed[j]}/{this.oParent.GameData.Players[j].UnitsDestroyed[i]}",
+								i * 40, (j * 12) + 32, this.oParent.Array_1946_PlayerColours[i]);
+						}
+					}
+				}
+			}
+
+			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+
+			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
+
+			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
 		}
 	}
 }

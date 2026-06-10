@@ -425,14 +425,7 @@ namespace OpenCivOne
 					break;
 
 				case 1: // Military Advisor
-					if (!this.parent.Var_d806_DebugFlag)
-					{
-						this.parent.Overlay_14.F14_0000_03ad_MilitaryStatus(this.parent.GameData.HumanPlayerID);
-					}
-					else
-					{
-						this.parent.Overlay_13.F13_0000_0554();
-					}
+					this.parent.Overlay_14.F14_0000_03ad_MilitaryReport(this.parent.GameData.HumanPlayerID);
 					break;
 
 				case 2: // Intelligence Advisor
@@ -440,7 +433,7 @@ namespace OpenCivOne
 					break;
 
 				case 3: // Attitude Advisor
-					this.parent.Overlay_14.F14_0000_15f4_AttitudeSurvey(this.parent.GameData.HumanPlayerID);
+					this.parent.Overlay_14.F14_0000_15f4_AttitudeReport(this.parent.GameData.HumanPlayerID);
 					break;
 
 				case 4: // Trade Advisor

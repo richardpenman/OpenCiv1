@@ -554,7 +554,7 @@ namespace OpenCivOne
 
 						if (this.parent.Var_d806_DebugFlag && activeUnitID != -1)
 						{
-							this.parent.DebugShowDetails.F10_0000_0477_DebugShowUnitStatus(this.parent.Var_d7f0, activeUnitID);
+							this.parent.ShowDebugDetails.ShowUnitStatus(this.parent.Var_d7f0, activeUnitID);
 						}
 
 						if (activeUnitID != -1 && playerID == this.parent.Var_d7f0)
@@ -2246,11 +2246,11 @@ namespace OpenCivOne
 					this.parent.CommonTools.F0_1000_163e_InitMouse();
 					break;
 
-				// F1
+				// F1 - City status
 				case 0x3b00:
 					if (this.parent.Var_d806_DebugFlag)
 					{
-						this.parent.DebugShowDetails.F10_0000_0000_DebugShowMapWithStrategy();
+						this.parent.ShowDebugDetails.ShowMapWithStrategy();
 					}
 					else
 					{
@@ -2258,12 +2258,19 @@ namespace OpenCivOne
 					}
 					break;
 
-				// F2
+				// F2 - Military Advisor
 				case 0x3c00:
-					this.parent.Overlay_14.F14_0000_03ad_MilitaryStatus(this.parent.GameData.HumanPlayerID);
+					if (this.parent.Var_d806_DebugFlag)
+					{
+						this.parent.ShowDebugDetails.ShowUnitStatistics();
+					}
+					else
+					{
+						this.parent.Overlay_14.F14_0000_03ad_MilitaryReport(this.parent.GameData.HumanPlayerID);
+					}
 					break;
 
-				// F3
+				// F3 - Intelligence Advisor
 				case 0x3d00:
 					if (this.parent.Var_d806_DebugFlag)
 					{
@@ -2288,28 +2295,28 @@ namespace OpenCivOne
 					}
 					break;
 
-				// F4
+				// F4 - Attitude Advisor
 				case 0x3e00:
-					this.parent.Overlay_14.F14_0000_15f4_AttitudeSurvey(this.parent.GameData.HumanPlayerID);
+					this.parent.Overlay_14.F14_0000_15f4_AttitudeReport(this.parent.GameData.HumanPlayerID);
 					break;
 
-				// F5
+				// F5 - Trade Advisor
 				case 0x3f00:
 					this.parent.Overlay_14.F14_0000_07f1_TradeReport(this.parent.GameData.HumanPlayerID);
 					break;
 
-				// F6
+				// F6 - Science Advisor
 				case 0x4000:
 					this.parent.Overlay_14.F14_0000_014b_ScienceReport(this.parent.GameData.HumanPlayerID);
 					break;
 
-				// F7
+				// F7 - Wonders of the World
 				case 0x4100:
 					if (this.parent.Var_d806_DebugFlag)
 					{
 						for (int i = 1; i < 8; i++)
 						{
-							this.parent.Overlay_13.F13_0000_0000(i);
+							this.parent.ShowDebugDetails.ShowPlayerDetails(i);
 						}
 					}
 					else
@@ -2318,7 +2325,7 @@ namespace OpenCivOne
 					}
 					break;
 
-				// F8
+				// F8 - Top 5 Cities
 				case 0x4200:
 					if (this.parent.Var_d806_DebugFlag)
 					{
@@ -2331,7 +2338,7 @@ namespace OpenCivOne
 					}
 					break;
 
-				// F9
+				// F9 - Civilization Score
 				case 0x4300:
 					if (this.parent.Var_d806_DebugFlag)
 					{
@@ -2343,7 +2350,7 @@ namespace OpenCivOne
 					}
 					break;
 
-				// F10
+				// F10 - World Map
 				case 0x4400:
 					this.parent.WorldMap.F12_0000_0000_ShowWorldMapPopup(1);
 					break;

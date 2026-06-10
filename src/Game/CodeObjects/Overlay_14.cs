@@ -212,10 +212,10 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Shows Military Status window.
+		/// Shows Military Report window.
 		/// </summary>
 		/// <param name="playerID"></param>
-		public void F14_0000_03ad_MilitaryStatus(short playerID)
+		public void F14_0000_03ad_MilitaryReport(short playerID)
 		{
 			this.oCPU.Log.EnterBlock($"F14_0000_03ad_MilitaryStatus({playerID})");
 
@@ -1544,12 +1544,12 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Shows Attitude Survey window.
+		/// Shows Attitude Report window.
 		/// </summary>
 		/// <param name="playerID"></param>
-		public void F14_0000_15f4_AttitudeSurvey(short playerID)
+		public void F14_0000_15f4_AttitudeReport(short playerID)
 		{
-			this.oCPU.Log.EnterBlock($"F14_0000_15f4_AttitudeSurvey({playerID})");
+			this.oCPU.Log.EnterBlock($"F14_0000_15f4_AttitudeReport({playerID})");
 
 			// function body
 			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
@@ -1715,7 +1715,7 @@ namespace OpenCivOne
 			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
 			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
 			// Far return
-			this.oCPU.Log.ExitBlock("F14_0000_15f4_AttitudeSurvey");
+			this.oCPU.Log.ExitBlock("F14_0000_15f4_AttitudeReport");
 		}
 
 		/// <summary>
