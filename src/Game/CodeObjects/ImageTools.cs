@@ -19,11 +19,11 @@ namespace OpenCivOne
 		}
 
 		#region New Image loading functions
-		public void F0_2fa1_01a2_LoadBitmapOrPalette(short screenID, ushort xPos, ushort yPos, ushort filenamePtr, ushort palettePtr)
+		public void F0_2fa1_01a2_LoadBitmapOrPalette(int screenID, int x, int y, ushort filenamePtr, ushort palettePtr)
 		{
 			byte[] palette;
 
-			F0_2fa1_01a2_LoadBitmapOrPalette(screenID, xPos, yPos, this.CPU.ReadString(this.CPU.DS.UInt16, filenamePtr), out palette);
+			F0_2fa1_01a2_LoadBitmapOrPalette(screenID, x, y, this.CPU.ReadString(this.CPU.DS.UInt16, filenamePtr), out palette);
 
 			if (palette != null)
 			{
@@ -60,11 +60,11 @@ namespace OpenCivOne
 			}
 		}
 
-		public void F0_2fa1_01a2_LoadBitmapOrPalette(short screenID, ushort xPos, ushort yPos, string filename, ushort palettePtr)
+		public void F0_2fa1_01a2_LoadBitmapOrPalette(int screenID, int x, int y, string filename, ushort palettePtr)
 		{
 			byte[] palette;
 
-			F0_2fa1_01a2_LoadBitmapOrPalette(screenID, xPos, yPos, filename, out palette);
+			F0_2fa1_01a2_LoadBitmapOrPalette(screenID, x, y, filename, out palette);
 
 			if (palette != null)
 			{
@@ -105,12 +105,12 @@ namespace OpenCivOne
 		/// Loads and .pic or .map Image from given filename with optional palette data
 		/// </summary>
 		/// <param name="screenID"></param>
-		/// <param name="xPos"></param>
-		/// <param name="yPos"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
 		/// <param name="filenamePtr"></param>
 		/// <param name="palettePtr"></param>
 		/// <exception cref="Exception"></exception>
-		public void F0_2fa1_01a2_LoadBitmapOrPalette(short screenID, ushort xPos, ushort yPos, string filename, out byte[] palette)
+		public void F0_2fa1_01a2_LoadBitmapOrPalette(int screenID, int x, int y, string filename, out byte[] palette)
 		{
 			string filename1 = this.parent.ResourcePath + CAPI.GetDOSFileName(filename);
 
@@ -121,7 +121,7 @@ namespace OpenCivOne
 			{
 				if (this.parent.Graphics.Screens.ContainsKey(screenID))
 				{
-					this.parent.Graphics.Screens.GetValueByKey(screenID).LoadPIC(filename1, xPos, yPos, out palette);
+					this.parent.Graphics.Screens.GetValueByKey(screenID).LoadPIC(filename1, x, y, out palette);
 				}
 				else
 				{

@@ -55,7 +55,7 @@ namespace OpenCivOne
 		private WorldMap worldMap;
 		private Overlay_20 oOverlay_20;
 		private Palace palace;
-		private Overlay_10 oOverlay_10;
+		private DebugShowDetails debugShowDetails;
 		private Schizm schizm;
 		private CAPI CApi;
 		private GDriver graphics;
@@ -169,7 +169,7 @@ namespace OpenCivOne
 			this.worldMap = new WorldMap(this);
 			this.oOverlay_20 = new Overlay_20(this);
 			this.palace = new Palace(this);
-			this.oOverlay_10 = new Overlay_10(this);
+			this.debugShowDetails = new DebugShowDetails(this);
 			this.schizm = new Schizm(this);
 			#endregion
 
@@ -614,9 +614,9 @@ namespace OpenCivOne
 			get { return this.palace; }
 		}
 
-		public Overlay_10 Overlay_10
+		public DebugShowDetails DebugShowDetails
 		{
-			get { return this.oOverlay_10; }
+			get { return this.debugShowDetails; }
 		}
 
 		public Schizm Schizm

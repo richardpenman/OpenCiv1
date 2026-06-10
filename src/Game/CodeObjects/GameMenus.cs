@@ -368,7 +368,7 @@ namespace OpenCivOne
 				}
 
 				// Instruction address 0x2c84:0x05a4, size: 5
-				if ((this.parent.GameData.Units[unit.TypeID].AIRole == UnitAIRoleEnum.SeaTransport || unit.TypeID == (short)UnitTypeEnum.Carrier) && unit.NextUnitID != -1)
+				if ((this.parent.GameData.Units[unit.TypeID].UnitRoleType == UnitRoleTypeEnum.SeaTransport || unit.TypeID == (short)UnitTypeEnum.Carrier) && unit.NextUnitID != -1)
 				{
 					// Instruction address 0x2c84:0x05a4, size: 5
 					menuText.Append(" Unload \x008fu\n");

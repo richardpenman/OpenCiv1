@@ -1,5 +1,5 @@
-using IRB.VirtualCPU;
 using OpenCivOne.Graphics;
+using System.Text;
 
 namespace OpenCivOne
 {
@@ -393,7 +393,7 @@ namespace OpenCivOne
 					this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
 					// Instruction address 0x1403:0x07d8, size: 5
-					this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, 0x1e79, 1);
+					this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "CBACK.PIC", 1);
 
 					// Instruction address 0x1403:0x0800, size: 5
 					this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
@@ -550,16 +550,16 @@ namespace OpenCivOne
 					}
 					else
 					{
-						command = this.parent.MapManagement.F0_2aea_1458_GetCellActiveUnitID(local_1c, local_26);
+						int activeUnitID = this.parent.MapManagement.F0_2aea_1458_GetCellActiveUnitID(local_1c, local_26);
 
-						if (this.parent.Var_d806_DebugFlag && command != -1)
+						if (this.parent.Var_d806_DebugFlag && activeUnitID != -1)
 						{
-							this.parent.Overlay_10.F10_0000_0477(this.parent.Var_d7f0, command);
+							this.parent.DebugShowDetails.F10_0000_0477_DebugShowUnitStatus(this.parent.Var_d7f0, activeUnitID);
 						}
 
-						if (command != -1 && playerID == this.parent.Var_d7f0)
+						if (activeUnitID != -1 && playerID == this.parent.Var_d7f0)
 						{
-							local_3a = this.parent.UnitManagement.F0_1866_1f69(this.parent.Var_d7f0, command);
+							local_3a = this.parent.UnitManagement.F0_1866_1f69(this.parent.Var_d7f0, activeUnitID);
 
 							if ((this.parent.GameData.Players[playerID].Units[local_3a].Status & 0x9) == 0)
 							{
@@ -677,7 +677,7 @@ namespace OpenCivOne
 
 								if (playerID != local_54)
 								{
-									this.parent.Segment_25fb.F0_25fb_304d(local_54, local_2c, local_30, 1, 4);
+									this.parent.Segment_25fb.F0_25fb_304d_AddUnitPolicy(local_54, local_2c, local_30, UnitRoleTypeEnum.LandAttack, 4);
 								}
 
 								this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves = 0;
@@ -1372,30 +1372,27 @@ namespace OpenCivOne
 									this.parent.GameData.Cities[this.parent.GameData.Players[playerID].Units[unitID].HomeCityID].Position.X,
 									this.parent.GameData.Cities[this.parent.GameData.Players[playerID].Units[unitID].HomeCityID].Position.Y))
 							{
-								// Instruction address 0x1403:0x206e, size: 5
-								this.parent.CAPI.strcpy(0xba06, "Will you?\n Keep moving\n Establish trade route\n");
-
-								if (this.parent.GameData.Cities[cityID].PlayerID == playerID)
-								{
-									if (this.parent.GameData.Cities[cityID].CurrentProductionID < -24)
-									{
-										// Instruction address 0x1403:0x209d, size: 5
-										this.parent.CAPI.strcat(0xba06, " Help build WONDER.\n");
-
-										if (local_3a < 10)
-										{
-											this.parent.Var_b276_MenuBoxDisabledOptions = 2;
-										}
-									}
-								}
-
 								if (this.parent.GameData.Cities[cityID].PlayerID != playerID)
 								{
 									local_3a = 1;
 								}
 								else
 								{
-									local_3a = this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+									StringBuilder caravanOptions = new();
+									caravanOptions.Append("Will you?\n Keep moving\n Establish trade route\n");
+
+									if (this.parent.GameData.Cities[cityID].PlayerID == playerID && this.parent.GameData.Cities[cityID].CurrentProductionID < -24)
+									{
+										// Instruction address 0x1403:0x209d, size: 5
+										caravanOptions.Append(" Help build WONDER.\n");
+
+										if (local_3a < 10)
+										{
+											this.parent.Var_b276_MenuBoxDisabledOptions = 2;
+										}
+									}
+
+									local_3a = this.parent.Segment_1238.F0_1238_001e_ShowDialog(caravanOptions.ToString(), 100, 80);
 								}
 
 								if (local_3a == 1)
@@ -1478,14 +1475,8 @@ namespace OpenCivOne
 				{
 					if (playerID == this.parent.GameData.HumanPlayerID)
 					{
-						// Instruction address 0x1403:0x2356, size: 5
-						this.parent.CAPI.strcpy(0xba06, "Attack at\n");
-						// Instruction address 0x1403:0x2379, size: 5
-						this.parent.CAPI.strcat(0xba06, this.parent.CAPI.itoa(this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves, 10));
-						// Instruction address 0x1403:0x2389, size: 5
-						this.parent.CAPI.strcat(0xba06, "/3 strength?\n Cancel\n Attack\n");
-
-						if (this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 16) != 1)
+						if (this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+							$"Attack at\n{this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves}/3 strength?\n Cancel\n Attack\n", 100, 16) != 1)
 						{
 							this.parent.GameData.Players[playerID].Units[unitID].GoToDestination.X = -1;
 
@@ -1688,9 +1679,8 @@ namespace OpenCivOne
 					(this.parent.GameData.Units[this.parent.GameData.Players[playerID].Units[unitID].TypeID].MovementType == UnitMovementTypeEnum.Water &&
 						this.parent.GameData.Players[playerID].Units[unitID].SpecialMoves != 0))
 				{
-					local_3a = this.parent.UnitManagement.F0_1866_1251(playerID, local_18, 2);
-
-					if (((this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves != 0) ? 4 : 2) <= local_3a) goto Label674;
+					if (((this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves != 0) ? 4 : 2) <= this.parent.UnitManagement.F0_1866_1251(playerID, local_18, 2))
+						goto Label674;
 				}
 			}
 
@@ -1977,10 +1967,7 @@ namespace OpenCivOne
 			switch (command)
 			{
 				case -2:
-					// Instruction address 0x1403:0x354b, size: 5
-					this.parent.CAPI.strcpy(0xba06, this.parent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*REV"));
-
-					if (this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 64, 80) == 1)
+					if (this.parent.Segment_1238.F0_1238_001e_ShowDialog(this.parent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*REV"), 64, 80) == 1)
 					{
 						this.parent.GameData.Players[playerID].GovernmentType = 0;
 
@@ -2060,25 +2047,21 @@ namespace OpenCivOne
 
 				case '+':
 				case '=':
-					// Instruction address 0x1403:0x35d6, size: 5
-					this.parent.CAPI.strcpy(0xba06, "Select new Tax rate:\n ");
+					StringBuilder taxOptions = new();
+					
+					taxOptions.Append("Select new Tax rate:\n ");
 
-					for (local_3a = 0; this.parent.GameData.Players[playerID].TaxRate + this.parent.GameData.Players[playerID].ScienceTaxRate >= local_3a; local_3a++)
+					for (int i = 0; this.parent.GameData.Players[playerID].TaxRate + this.parent.GameData.Players[playerID].ScienceTaxRate >= i; i++)
 					{
-						// Instruction address 0x1403:0x361a, size: 5
-						this.parent.CAPI.strcat(0xba06, this.parent.CAPI.itoa(local_3a * 10, 0xd80a, 10));
 						// Instruction address 0x1403:0x362a, size: 5
-						this.parent.CAPI.strcat(0xba06, "% Tax, (");
-						this.parent.CAPI.strcat(0xba06,
-							this.parent.CAPI.itoa((this.parent.GameData.Players[playerID].TaxRate + this.parent.GameData.Players[playerID].ScienceTaxRate - local_3a) * 10, 0xd80a, 10));
-						// Instruction address 0x1403:0x3668, size: 5
-						this.parent.CAPI.strcat(0xba06, "% Science)\n ");
+						taxOptions.Append($"{i * 10}% Tax, " +
+							$"({(this.parent.GameData.Players[playerID].TaxRate + this.parent.GameData.Players[playerID].ScienceTaxRate - i) * 10}% Science)\n ");
 					}
 
 					this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = this.parent.GameData.Players[playerID].TaxRate;
 
 					// Instruction address 0x1403:0x368b, size: 5
-					local_3a = this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+					local_3a = this.parent.Segment_1238.F0_1238_001e_ShowDialog(taxOptions.ToString(), 100, 80);
 
 					if (local_3a != -1)
 					{
@@ -2092,27 +2075,23 @@ namespace OpenCivOne
 
 				case '-':
 				case '_':
-					// Instruction address 0x1403:0x36c1, size: 5
-					this.parent.CAPI.strcpy(0xba06, "Select new Luxuries rate:\n ");
+					StringBuilder luxuryOptions = new();
 
-					for (local_3a = 0; 10 - this.parent.GameData.Players[playerID].TaxRate >= local_3a; local_3a++)
+					// Instruction address 0x1403:0x36c1, size: 5
+					luxuryOptions.Append("Select new Luxuries rate:\n ");
+
+					for (int i = 0; 10 - this.parent.GameData.Players[playerID].TaxRate >= i; i++)
 					{
-						this.parent.CAPI.strcat(0xba06, this.parent.CAPI.itoa(local_3a * 10, 0xd80a, 10));
-						// Instruction address 0x1403:0x3716, size: 5
-						this.parent.CAPI.strcat(0xba06, "% Luxuries, (");
-						this.parent.CAPI.strcat(0xba06,
-							this.parent.CAPI.itoa((local_3a + this.parent.GameData.Players[playerID].TaxRate - 10) * -10, 0xd80a, 10));
-						// Instruction address 0x1403:0x3753, size: 5
-						this.parent.CAPI.strcat(0xba06, "% Science)\n ");
+						luxuryOptions.Append($"{i * 10}% Luxuries, ({(10 - i + this.parent.GameData.Players[playerID].TaxRate) * 10}% Science)\n ");
 					}
 
-					this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = -((this.parent.GameData.Players[playerID].TaxRate + this.parent.GameData.Players[playerID].ScienceTaxRate) - 10);
+					this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = (10 - this.parent.GameData.Players[playerID].TaxRate + this.parent.GameData.Players[playerID].ScienceTaxRate);
 
-					local_3a = this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+					local_3a = this.parent.Segment_1238.F0_1238_001e_ShowDialog(luxuryOptions.ToString(), 100, 80);
 
 					if (local_3a != -1)
 					{
-						this.parent.GameData.Players[playerID].ScienceTaxRate = (short)(-(this.parent.GameData.Players[playerID].TaxRate + local_3a - 10));
+						this.parent.GameData.Players[playerID].ScienceTaxRate = (short)(10 - this.parent.GameData.Players[playerID].TaxRate + local_3a);
 						// Instruction address 0x1403:0x37a3, size: 5
 						this.parent.Segment_1238.F0_1238_107e();
 					}
@@ -2147,10 +2126,7 @@ namespace OpenCivOne
 
 				// Alt + Q
 				case 0x1000:
-					// Instruction address 0x1403:0x38be, size: 5
-					this.parent.CAPI.strcpy(0xba06, "Are you sure you\nwant to Quit?\n Keep Playing\n Yes, Quit\n");
-
-					if (this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80) != 1)
+					if (this.parent.Segment_1238.F0_1238_001e_ShowDialog("Are you sure you\nwant to Quit?\n Keep Playing\n Yes, Quit\n", 100, 80) != 1)
 					{
 						this.parent.Var_dc48_GameEndType = 0;
 					}
@@ -2178,16 +2154,16 @@ namespace OpenCivOne
 
 				// Alt + R
 				case 0x1300:
-					for (local_3a = 0; local_3a < 16; local_3a++)
+					for (int i = 0; i < 16; i++)
 					{
 						// Instruction address 0x1403:0x3805, size: 5
-						this.parent.GameData.Nations[local_3a].Mood = (short)(this.parent.CAPI.RNG.Next(3) - 1); // -1 = Friendly, 0 = Neutral, 1 = Aggressive
+						this.parent.GameData.Nations[i].Mood = (short)(this.parent.CAPI.RNG.Next(3) - 1); // -1 = Friendly, 0 = Neutral, 1 = Aggressive
 
 						// Instruction address 0x1403:0x3816, size: 5
-						this.parent.GameData.Nations[local_3a].Policy = (short)(this.parent.CAPI.RNG.Next(3) - 1); // -1 = Perfectionist, 0 = Neutral, 1 = Expansionistic
+						this.parent.GameData.Nations[i].Policy = (short)(this.parent.CAPI.RNG.Next(3) - 1); // -1 = Perfectionist, 0 = Neutral, 1 = Expansionistic
 
 						// Instruction address 0x1403:0x3827, size: 5
-						this.parent.GameData.Nations[local_3a].Ideology = (short)(this.parent.CAPI.RNG.Next(3) - 1); // -1 = Militaristic, 0 = Neutral, 1 = Civilized
+						this.parent.GameData.Nations[i].Ideology = (short)(this.parent.CAPI.RNG.Next(3) - 1); // -1 = Militaristic, 0 = Neutral, 1 = Civilized
 					}
 
 					// Instruction address 0x1403:0x3843, size: 5
@@ -2260,22 +2236,8 @@ namespace OpenCivOne
 				case 0x2f00:
 					this.parent.GameData.GameSettingFlags.Sound ^= true;
 
-					// Instruction address 0x1403:0x385c, size: 5
-					this.parent.CAPI.strcpy(0xba06, "Sounds ");
-
-					if (this.parent.GameData.GameSettingFlags.Sound)
-					{
-						// Instruction address 0x1403:0x387c, size: 5
-						this.parent.CAPI.strcat(0xba06, "ON\n");
-					}
-					else
-					{
-						// Instruction address 0x1403:0x387c, size: 5
-						this.parent.CAPI.strcat(0xba06, "OFF\n");
-					}
-
 					// Instruction address 0x1403:0x3890, size: 5
-					this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+					this.parent.Segment_1238.F0_1238_001e_ShowDialog($"Sounds {((this.parent.GameData.GameSettingFlags.Sound) ? "ON\n" : "OFF\n")}", 100, 80);
 					break;
 
 				// Alt + M
@@ -2288,7 +2250,7 @@ namespace OpenCivOne
 				case 0x3b00:
 					if (this.parent.Var_d806_DebugFlag)
 					{
-						this.parent.Overlay_10.F10_0000_0000();
+						this.parent.DebugShowDetails.F10_0000_0000_DebugShowMapWithStrategy();
 					}
 					else
 					{
@@ -2672,8 +2634,6 @@ namespace OpenCivOne
 			int Local_6;
 			int Local_8;
 			int Local_a;
-			int Local_c;
-			int Local_e;
 			int Local_10;
 			int Local_12;
 
@@ -2698,17 +2658,13 @@ namespace OpenCivOne
 				{
 					Local_a = 99;
 
-					// Instruction address 0x1403:0x40dc, size: 5
-					this.parent.CAPI.strcpy(0xba06, this.parent.GameData.Players[playerID].Nationality);
 					// Instruction address 0x1403:0x40f3, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 4, 99, 0);
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(this.parent.GameData.Players[playerID].Nationality, 4, 99, 0);
 
 					Local_a += 8;
 
-					// Instruction address 0x1403:0x411d, size: 5
-					this.parent.CAPI.strcpy(0xba06, this.parent.GameData.Units[this.parent.GameData.Players[playerID].Units[unitID].TypeID].Name);
 					// Instruction address 0x1403:0x4133, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 4, Local_a, 0);
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(this.parent.GameData.Units[this.parent.GameData.Players[playerID].Units[unitID].TypeID].Name, 4, Local_a, 0);
 
 					Local_a += 8;
 
@@ -2720,39 +2676,15 @@ namespace OpenCivOne
 						Local_a += 8;
 					}
 
-					Local_e = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves / 3, 0, 99);
-
-					// Instruction address 0x1403:0x4197, size: 5
-					this.parent.CAPI.strcpy(0xba06, "Moves: ");
-					// Instruction address 0x1403:0x41b7, size: 5
-					this.parent.CAPI.strcat(0xba06, this.parent.CAPI.itoa(Local_e, 0xd80a, 10));
-
-					Local_c = this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves % 3;
-
-					if (Local_c != 0)
-					{
-						// Instruction address 0x1403:0x41d8, size: 5
-						this.parent.CAPI.strcat(0xba06, ".");
-						// Instruction address 0x1403:0x41f8, size: 5
-						this.parent.CAPI.strcat(0xba06, this.parent.CAPI.itoa(Local_c, 0xd80a, 10));
-					}
-
-					if (this.parent.GameData.Units[this.parent.GameData.Players[playerID].Units[unitID].TypeID].TurnsOutside != 0)
-					{
-						// Instruction address 0x1403:0x4227, size: 5
-						this.parent.CAPI.strcat(0xba06, "(");
-
-						Local_e += (this.parent.GameData.Units[this.parent.GameData.Players[playerID].Units[unitID].TypeID].MoveCount *
-							this.parent.GameData.Players[playerID].Units[unitID].SpecialMoves);
-
-						// Instruction address 0x1403:0x425f, size: 5
-						this.parent.CAPI.strcat(0xba06, this.parent.CAPI.itoa(Local_e, 10));
-						// Instruction address 0x1403:0x426f, size: 5
-						this.parent.CAPI.strcat(0xba06, ")");
-					}
+					int Local_e = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves / 3, 0, 99);
+					int Local_e1 = Local_e + ((this.parent.GameData.Units[this.parent.GameData.Players[playerID].Units[unitID].TypeID].TurnsOutside != 0) ?
+					(this.parent.GameData.Units[this.parent.GameData.Players[playerID].Units[unitID].TypeID].MoveCount *
+							this.parent.GameData.Players[playerID].Units[unitID].SpecialMoves) : 0);
+					int Local_c = this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves % 3;
 
 					// Instruction address 0x1403:0x4285, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 4, Local_a, 0);
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Moves: {Local_e}{((Local_c != 0) ? $".{Local_c}" : "")}" +
+						$"{((Local_e != Local_e1) ? $"({Local_e1})" : "")}", 4, Local_a, 0);
 
 					Local_a += 8;
 
@@ -2761,16 +2693,10 @@ namespace OpenCivOne
 
 					Local_a += 8;
 
-					// Instruction address 0x1403:0x42d6, size: 5
-					this.parent.CAPI.strcpy(0xba06, "(");
-					// Instruction address 0x1403:0x42ff, size: 5
-					this.parent.CAPI.strcat(0xba06, this.parent.GameData.Terrains[(int)this.parent.MapManagement.GetTerrainType(
-						this.parent.GameData.Players[playerID].Units[unitID].Position.X,
-						this.parent.GameData.Players[playerID].Units[unitID].Position.Y)].Name);
-					// Instruction address 0x1403:0x430f, size: 5
-					this.parent.CAPI.strcat(0xba06, ")");
 					// Instruction address 0x1403:0x4325, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 4, Local_a, 0);
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"({this.parent.GameData.Terrains[(int)this.parent.MapManagement.GetTerrainType(
+						this.parent.GameData.Players[playerID].Units[unitID].Position.X,
+						this.parent.GameData.Players[playerID].Units[unitID].Position.Y)].Name})", 4, Local_a, 0);
 
 					Local_a += 8;
 

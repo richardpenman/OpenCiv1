@@ -1,4 +1,3 @@
-using IRB.VirtualCPU;
 using OpenCivOne.Graphics;
 using OpenCivOne.UI;
 

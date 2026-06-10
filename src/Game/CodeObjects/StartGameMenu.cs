@@ -1,5 +1,3 @@
-using IRB.VirtualCPU;
-using OpenCivOne.Graphics;
 using System.Text;
 
 namespace OpenCivOne
@@ -7,12 +5,10 @@ namespace OpenCivOne
 	public class StartGameMenu
 	{
 		private OpenCivOneGame parent;
-		private VCPU CPU;
 
 		public StartGameMenu(OpenCivOneGame parent)
 		{
 			this.parent = parent;
-			this.CPU = parent.CPU;
 		}
 
 		/// <summary>
@@ -341,10 +337,9 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x0684, size: 5
 			this.parent.Array_30b8[0] = this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Nation;
 
-			// Instruction address 0x0000:0x0695, size: 5
-			this.parent.CAPI.strcpy(0xba06, this.parent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*INIT"));
-
-			int local_2 = 0;
+			StringBuilder startText = new();
+			
+			startText.Append(this.parent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*INIT"));
 
 			for (int i = 0; i < 72; i++)
 			{
@@ -352,23 +347,12 @@ namespace OpenCivOne
 				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, (TechnologyAdvanceEnum)i))
 				{
 					// Instruction address 0x0000:0x06d7, size: 5
-					this.parent.CAPI.strcat(0xba06, this.parent.GameData.TechnologyAdvances[i].Name);
-
-					// Instruction address 0x0000:0x06e7, size: 5
-					this.parent.CAPI.strcat(0xba06, ", ");
-
-					local_2++;
-
-					if (local_2 == 2)
-					{
-						// Instruction address 0x0000:0x0700, size: 5
-						this.parent.CAPI.strcat(0xba06, "\n");
-					}
+					startText.Append($"{this.parent.GameData.TechnologyAdvances[i].Name}, ");
 				}
 			}
 
 			// Instruction address 0x0000:0x0719, size: 5
-			this.parent.CAPI.strcat(0xba06, "and Roads.\n");
+			startText.Append("and Roads.\n");
 
 			// Instruction address 0x0000:0x0738, size: 5
 			this.parent.CommonTools.F0_1000_0a32_PlayTune(
@@ -398,7 +382,7 @@ namespace OpenCivOne
 
 			// Init text fix, we don't want to cut lines here
 			// Instruction address 0x0000:0x07b0, size: 5
-			this.parent.DrawTools.DrawTextBlock(88, 81, this.CPU.ReadString(this.CPU.DS.UInt16, 0xba06).Replace('^', '\n'), 150, 0);
+			this.parent.DrawTools.DrawTextBlock(88, 81, startText.ToString().Replace('^', '\n'), 150, 0);
 
 			// Instruction address 0x0000:0x07b8, size: 5
 			this.parent.MainCode.F0_11a8_0250_ShowMouse();
@@ -467,7 +451,7 @@ namespace OpenCivOne
 				}
 
 				// Instruction address 0x0000:0x08ff, size: 5
-				this.parent.Segment_25fb.F0_25fb_3223_ClearStrategicLocations(playerID);
+				this.parent.Segment_25fb.F0_25fb_3223_ClearContinentPolicies(playerID);
 
 				for (int i = 0; i < 8; i++)
 				{
@@ -627,23 +611,8 @@ namespace OpenCivOne
 
 					if (playerID != this.parent.GameData.HumanPlayerID || string.IsNullOrEmpty(this.parent.GameData.Players[playerID].Nationality))
 					{
-						// Instruction address 0x0000:0x0d53, size: 5
 						this.parent.GameData.Players[playerID].Nationality = this.parent.GameData.Nations[this.parent.GameData.Players[playerID].NationalityID].Nationality;
-
-						// Instruction address 0x0000:0x0d6a, size: 5
-						this.parent.CAPI.strcpy(0xba06, this.parent.GameData.Nations[this.parent.GameData.Players[playerID].NationalityID].Nation);
-
-						if (this.CPU.ReadUInt8(this.CPU.DS.UInt16, 0xba06) == 0)
-						{
-							// Instruction address 0x0000:0x0d81, size: 5
-							this.parent.CAPI.strcpy(0xba06, this.parent.GameData.Players[playerID].Nationality);
-
-							// Instruction address 0x0000:0x0d91, size: 5
-							this.parent.CAPI.strcat(0xba06, "s");
-						}
-
-						// Instruction address 0x0000:0x0da6, size: 5
-						this.parent.GameData.Players[playerID].Nation = this.CPU.ReadString(this.CPU.DS.UInt16, 0xba06);
+						this.parent.GameData.Players[playerID].Nation = this.parent.GameData.Nations[this.parent.GameData.Players[playerID].NationalityID].Nation;
 					}
 
 					// Instruction address 0x0000:0x0db7, size: 5
@@ -683,7 +652,7 @@ namespace OpenCivOne
 		/// <summary>
 		/// This function tests if a AI player has no more cities. 
 		/// If the city count is zero the player is marked as destroyed and all units that belong to the AI player are deleted.
-		/// The function doesn't take into account settlers which could respawn new cities.
+		/// The function doesn't take into account settlers which could create new cities.
 		/// </summary>
 		/// <param name="playerID">AI player to test</param>
 		/// <param name="playerID1">The player that destroyed the last city</param>
@@ -706,18 +675,6 @@ namespace OpenCivOne
 
 				if (cityCount == 0)
 				{
-					// Instruction address 0x0000:0x0ec1, size: 5
-					this.parent.CAPI.strcpy(0xba06, this.parent.GameData.Players[playerID].Nationality);
-
-					// Instruction address 0x0000:0x0ed1, size: 5
-					this.parent.CAPI.strcat(0xba06, "\ncivilization\ndestroyed\nby ");
-
-					// Instruction address 0x0000:0x0ee6, size: 5
-					this.parent.CAPI.strcat(0xba06, this.parent.GameData.Players[playerID1].Nation);
-
-					// Instruction address 0x0000:0x0ef6, size: 5
-					this.parent.CAPI.strcat(0xba06, "!\n");
-
 					if ((this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Diplomacy[playerID] & 0x40) != 0)
 					{
 						this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.ForeignMinisterReport;
@@ -734,7 +691,8 @@ namespace OpenCivOne
 					}
 
 					// Instruction address 0x0000:0x0f32, size: 5
-					this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+					this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+						 $"{this.parent.GameData.Players[playerID].Nationality}\ncivilization\ndestroyed\nby {this.parent.GameData.Players[playerID1].Nation}!\n", 100, 80);
 
 					// Instruction address 0x0000:0x0f3d, size: 5
 					this.parent.Segment_2459.F0_2459_05ee(playerID);
@@ -765,239 +723,6 @@ namespace OpenCivOne
 				}
 			}
 		}
-
-		/// <summary>
-		/// ?
-		/// </summary>
-		/// <returns></returns>
-		/*private int F5_0000_0fe6()
-		{
-			//this.oCPU.Log.EnterBlock("F5_0000_0fe6()");
-
-			// function body
-			int[] local_1c = new int[8];
-			int nearestPlayers = 0;
-			int local_24 = 0;
-
-			for (int i = 1; i < 8; i++)
-			{
-				if (this.oParent.GameData.Players[i].Units[0].TypeID == -1)
-					break;
-
-				int local_6 = 0;
-				int shortestDistance = 999;
-
-				for (int j = 1; j < 8; j++)
-				{
-					if (j != i && this.oParent.GameData.Players[j].Units[0].TypeID != -1 &&
-						this.oParent.MapManagement.F0_2aea_1942_GetGroupID(this.oParent.GameData.Players[i].Units[0].Position.X,
-						this.oParent.GameData.Players[i].Units[0].Position.Y) == this.oParent.MapManagement.F0_2aea_1942_GetGroupID(
-						this.oParent.GameData.Players[j].Units[0].Position.X,
-						this.oParent.GameData.Players[j].Units[0].Position.Y))
-					{
-						// Instruction address 0x0000:0x12ae, size: 5
-						int distance = this.oParent.Segment_2dc4.F0_2dc4_0289_GetShortestDistance(
-							this.oParent.GameData.Players[i].Units[0].Position.X, this.oParent.GameData.Players[i].Units[0].Position.Y,
-							this.oParent.GameData.Players[j].Units[0].Position.X, this.oParent.GameData.Players[j].Units[0].Position.Y);
-
-						if (distance < shortestDistance)
-						{
-							shortestDistance = distance;
-						}
-					}
-				}
-
-				if (shortestDistance >= 10 && shortestDistance != 999)
-				{
-					nearestPlayers |= (0x1 << i);
-				}
-
-				// Instruction address 0x0000:0x12f3, size: 5
-				this.oParent.CAPI.strcpy(0xba06, "Nearest civilization: ");
-
-				if (shortestDistance < 10)
-				{
-					// Instruction address 0x0000:0x130c, size: 5
-					this.oParent.CAPI.strcat(0xba06, "close");
-				}
-				else if (shortestDistance < 20)
-				{
-					// Instruction address 0x0000:0x1077, size: 5
-					this.oParent.CAPI.strcat(0xba06, "moderate");
-
-					local_6++;
-				}
-				else if (shortestDistance != 999)
-				{
-					// Instruction address 0x0000:0x1093, size: 5
-					this.oParent.CAPI.strcat(0xba06, "far away");
-
-					local_6 += 2;
-				}
-				else
-				{
-					// Instruction address 0x0000:0x10a9, size: 5
-					this.oParent.CAPI.strcat(0xba06, "isolated");
-
-					local_6 += 4;
-				}
-				int waterCellCount = 0;
-				int grasslandCellCount = 0;
-				int riverCellCount = 0;
-
-				for (int k = 0; k < 9; k++)
-				{
-					GPoint direction = this.oParent.MoveDirections[k];
-
-					int newX = this.oParent.MapManagement.AdjustXPosition(this.oParent.GameData.Players[i].Units[0].Position.X + direction.X);
-					int newY = this.oParent.GameData.Players[i].Units[0].Position.Y + direction.Y;
-
-					if (this.oParent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(newX, newY))
-					{
-						// Instruction address 0x0000:0x10ee, size: 5
-						switch (this.oParent.MapManagement.GetTerrainType(newX, newY))
-						{
-							case TerrainTypeEnum.Water:
-								waterCellCount++;
-								break;
-
-							case TerrainTypeEnum.Grassland:
-								grasslandCellCount++;
-								break;
-
-							case TerrainTypeEnum.River:
-								riverCellCount++;
-								break;
-						}
-					}
-				}
-
-				if (waterCellCount != 0)
-				{
-					// Instruction address 0x0000:0x112f, size: 5
-					this.oParent.CAPI.strcpy(0xba06, "Coastal ");
-				}
-				else
-				{
-					// Instruction address 0x0000:0x112f, size: 5
-					this.oParent.CAPI.strcpy(0xba06, "Inland ");
-				}
-
-				if (riverCellCount > 1)
-				{
-					// Instruction address 0x0000:0x1145, size: 5
-					this.oParent.CAPI.strcat(0xba06, "river valley on a ");
-
-					local_6 += 2;
-				}
-				else if (grasslandCellCount >= 3)
-				{
-					// Instruction address 0x0000:0x1161, size: 5
-					this.oParent.CAPI.strcat(0xba06, "grasslands on a ");
-
-					local_6++;
-				}
-				else
-				{
-					// Instruction address 0x0000:0x1176, size: 5
-					this.oParent.CAPI.strcat(0xba06, "plains on a ");
-				}
-
-				// Instruction address 0x0000:0x119a, size: 5
-				switch (this.oParent.MapManagement.F0_2aea_195d_GetMapGroupSize(
-					this.oParent.GameData.Players[i].Units[0].Position.X,
-					this.oParent.GameData.Players[i].Units[0].Position.Y) / 50)
-				{
-					case 0:
-						// Instruction address 0x0000:0x11e2, size: 5
-						this.oParent.CAPI.strcat(0xba06, "small island.");
-						break;
-
-					case 1:
-						// Instruction address 0x0000:0x11e2, size: 5
-						this.oParent.CAPI.strcat(0xba06, "large island.");
-						break;
-
-					case 2:
-						// Instruction address 0x0000:0x1325, size: 5
-						this.oParent.CAPI.strcat(0xba06, "small continent.");
-						local_6++;
-						break;
-
-					case 3:
-						// Instruction address 0x0000:0x1325, size: 5
-						this.oParent.CAPI.strcat(0xba06, "medium continent.");
-						local_6++;
-						break;
-
-					default:
-						// Instruction address 0x0000:0x11cc, size: 5
-						this.oParent.CAPI.strcat(0xba06, "large continent.");
-						local_6 += 2;
-						break;
-				}
-
-				if (local_6 > local_24)
-				{
-					local_24 = local_6;
-				}
-
-				local_1c[i] = local_6;
-			}
-
-			int local_5c = -1;
-
-			for (int i = 1; i < 8; i++)
-			{
-				if (this.oParent.GameData.Players[i].Units[0].TypeID != -1)
-				{
-					// Instruction address 0x0000:0x13fb, size: 5
-					this.oParent.CAPI.strcpy(0xba06, "Skills: ");
-
-					if (local_24 - local_1c[i] > 3)
-					{
-						local_1c[i] += 3;
-
-						// Instruction address 0x0000:0x142c, size: 5
-						this.oParent.UnitManagement.F0_1866_0cf5_CreateUnit(i, 0,
-							this.oParent.GameData.Players[i].Units[0].Position.X, this.oParent.GameData.Players[i].Units[0].Position.Y);
-
-						// Instruction address 0x0000:0x143c, size: 5
-						this.oParent.CAPI.strcat(0xba06, "Settlers+");
-					}
-
-					int local_48 = 0;
-
-					while (local_24 - local_1c[i] > local_48)
-					{
-						if (local_48 != 0)
-						{
-							// Instruction address 0x0000:0x1353, size: 5
-							this.oParent.CAPI.strcat(0xba06, "+");
-						}
-
-						// Instruction address 0x0000:0x1361, size: 5
-						// Instruction address 0x0000:0x1376, size: 5
-						this.oParent.CAPI.strcat(0xba06, this.oParent.GameData.Technologies[(short)this.oParent.Segment_1ade.F0_1ade_1584(i, 0)].Name);
-
-						local_48++;
-					}
-
-					if (local_1c[i] == local_24)
-					{
-						// Instruction address 0x0000:0x13a6, size: 5
-						this.oParent.CAPI.strcat(0xba06, "NONE");
-
-						if (local_5c == -1 || (nearestPlayers & (0x1 << i)) != 0)
-						{
-							local_5c = i;
-						}
-					}
-				}
-			}
-
-			return local_5c;
-		}*/
 
 		/// <summary>
 		/// This function loads all game bitmaps
@@ -1159,20 +884,20 @@ namespace OpenCivOne
 				// Instruction address 0x0000:0x1a32, size: 5
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 160, 320, 32, this.parent.Var_19d4_Screen1_Rectangle, 0, 128);
 
-				if (this.parent.Array_1946[i] == 15)
+				if (this.parent.Array_1946_PlayerColours[i] == 15)
 				{
 					// Instruction address 0x0000:0x1a61, size: 5
 					this.parent.Graphics.F0_VGA_009a_ReplaceColor(this.parent.Var_19d4_Screen1_Rectangle, 0, 128, 320, 32, 15, 11);
 				}
 
-				if (this.parent.Array_1946[i] == 7)
+				if (this.parent.Array_1946_PlayerColours[i] == 7)
 				{
 					// Instruction address 0x0000:0x1a90, size: 5
 					this.parent.Graphics.F0_VGA_009a_ReplaceColor(this.parent.Var_19d4_Screen1_Rectangle, 0, 128, 320, 32, 7, 3);
 				}
 
 				// Instruction address 0x0000:0x1ab8, size: 5
-				this.parent.Graphics.F0_VGA_009a_ReplaceColor(this.parent.Var_19d4_Screen1_Rectangle, 0, 128, 320, 32, 10, this.parent.Array_1946[i]);
+				this.parent.Graphics.F0_VGA_009a_ReplaceColor(this.parent.Var_19d4_Screen1_Rectangle, 0, 128, 320, 32, 10, this.parent.Array_1946_PlayerColours[i]);
 
 				// Instruction address 0x0000:0x1adb, size: 5
 				this.parent.Graphics.F0_VGA_009a_ReplaceColor(this.parent.Var_19d4_Screen1_Rectangle, 0, 128, 320, 32, 2, this.parent.Array_1956[i]);
@@ -1250,14 +975,9 @@ namespace OpenCivOne
 					this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19e8_Screen2_Rectangle, (40 * i) + 160, 140, 40, 60,
 						this.parent.Var_aa_Screen0_Rectangle, (80 * i) + 20, 118);
 
-					// Instruction address 0x0000:0x1cd0, size: 5
-					this.parent.CAPI.strcpy(0xba06, this.parent.Array_2fac[i]);
-
-					// Instruction address 0x0000:0x1cdc, size: 5
-					this.CPU.WriteUInt8(this.CPU.DS.UInt16, (ushort)(0xba06 + this.parent.CAPI.strlen(0xba06) - 1), 0x0);
-
 					// Instruction address 0x0000:0x1c7c, size: 5
-					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, (80 * i) + 40, ((i & 1) != 0) ? 186 : 180, 0);
+					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(this.parent.Array_2fac[i].Substring(0, this.parent.Array_2fac[i].Length - 1), 
+						(80 * i) + 40, ((i & 1) != 0) ? 186 : 180, 0);
 				}
 
 				this.parent.Var_aa_Screen0_Rectangle.FontID = 1;

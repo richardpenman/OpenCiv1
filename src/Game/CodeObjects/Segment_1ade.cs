@@ -59,7 +59,7 @@ namespace OpenCivOne
 
 		L004a:
 			// Instruction address 0x1ade:0x0051, size: 5
-			this.oParent.CityWorker.F0_1d12_0045_ProcessCityState(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 0);
+			this.oCPU.AX.Int16 = (short)this.oParent.CityWorker.F0_1d12_0045_ProcessCityState(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 0);
 
 			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.NE) goto L0070;
@@ -1124,7 +1124,7 @@ namespace OpenCivOne
 
 		L0b7b:
 			// Instruction address 0x1ade:0x0b86, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.UnitManagement.F0_1866_1380(playerID, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xe0)), UnitAIRoleEnum.Defense);
+			this.oCPU.AX.Int16 = (short)this.oParent.UnitManagement.F0_1866_1380(playerID, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xe0)), UnitRoleTypeEnum.Defense);
 
 			this.oCPU.CX.UInt16 = this.oCPU.AX.UInt16;
 			this.oCPU.AX.UInt16 = 0x1c;
@@ -1792,7 +1792,7 @@ namespace OpenCivOne
 			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46)));
 			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
 
-			if (this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46))].AIRole != UnitAIRoleEnum.Defense)
+			if (this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46))].UnitRoleType != UnitRoleTypeEnum.Defense)
 				goto L0f53;
 
 			this.oCPU.AX.UInt16 = 0x2;
@@ -1806,16 +1806,16 @@ namespace OpenCivOne
 			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46)));
 			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
 
-			this.oCPU.SI.UInt16 = (ushort)((short)this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46))].AIRole);
+			this.oCPU.SI.UInt16 = (ushort)((short)this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46))].UnitRoleType);
 
-			if (this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46))].AIRole != UnitAIRoleEnum.Defense &&
-				this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46))].AIRole != UnitAIRoleEnum.Settler)
+			if (this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46))].UnitRoleType != UnitRoleTypeEnum.Defense &&
+				this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46))].UnitRoleType != UnitRoleTypeEnum.Settler)
 			{
 				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x134),
 					this.oCPU.SHL_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x134)), 0x1));
 
 				if (this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x142)) !=
-					(short)this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46))].AIRole)
+					(short)this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46))].UnitRoleType)
 				{
 					this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x134),
 						this.oCPU.SHL_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x134)), 0x1));
@@ -1826,7 +1826,7 @@ namespace OpenCivOne
 			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46)));
 			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
 
-			if (this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46))].AIRole != UnitAIRoleEnum.SeaTransport)
+			if (this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46))].UnitRoleType != UnitRoleTypeEnum.SeaTransport)
 				goto L113c;
 
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x142)), 0x5);
@@ -1887,7 +1887,7 @@ namespace OpenCivOne
 			this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.BX.UInt16);
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x134), this.oCPU.AX.UInt16);
 
-			if (this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46))].AIRole == UnitAIRoleEnum.SeaAttack)
+			if (this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46))].UnitRoleType == UnitRoleTypeEnum.SeaAttack)
 			{
 				if (this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x13c)) != 0)
 				{
@@ -2444,17 +2444,9 @@ namespace OpenCivOne
 
 				this.oParent.Var_aa_Screen0_Rectangle.FontID = 1;
 
-				// Instruction address 0x1ade:0x18a4, size: 5
-				this.oParent.CAPI.strcpy(0xba06, "ICONPG1.PIC");
-
-				this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x44));
-				this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-				this.oCPU.CX.UInt16 = 0x9;
-				this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-				this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba0c, this.oCPU.ADD_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, 0xba0c), this.oCPU.AX.LowUInt8));
-
 				// Instruction address 0x1ade:0x18d3, size: 5
-				this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, 0xba06, 0);
+				this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, 
+					$"ICONPG{(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x44)) / 9 + 1)}.PIC", 0);
 
 				this.oParent.Encyclopedia.F8_0000_16f7_DrawEncyclopediaImage(
 					((this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x44)) % 3) * 111) + 1,
@@ -2468,7 +2460,7 @@ namespace OpenCivOne
 				this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, (ushort)(this.oCPU.BP.UInt16 - 0x10), 0xc1d6);
 
 				// Instruction address 0x1ade:0x1968, size: 5
-				this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, 0x2311, 0xc5be);
+				this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "ICONPG1.PAL", 0xc5be);
 
 				// Instruction address 0x1ade:0x197c, size: 5
 				this.oParent.CAPI.memcpy(0xc5c4, 0xc1dc, 0xff);

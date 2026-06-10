@@ -1,4 +1,3 @@
-using IRB.VirtualCPU;
 using OpenCivOne.Graphics;
 using OpenCivOne.UI;
 using System.Text;
@@ -8,7 +7,6 @@ namespace OpenCivOne
 	public class GameLoadAndSave
 	{
 		private OpenCivOneGame parent;
-		private VCPU CPU;
 
 		private bool loadingGame = false;
 		private int gameIndex = 0;
@@ -16,7 +14,6 @@ namespace OpenCivOne
 		public GameLoadAndSave(OpenCivOneGame parent)
 		{
 			this.parent = parent;
-			this.CPU = parent.CPU;
 		}
 
 		/// <summary>
@@ -479,7 +476,7 @@ namespace OpenCivOne
 				{
 					for (int j = 0; j < 16; j++)
 					{
-						this.parent.GameData.Players[i].StrategicLocations[j].Active = (sbyte)ReadUInt8(reader);
+						this.parent.GameData.Players[i].ContinentPolicies[j].UnitRoleType = (UnitRoleTypeEnum)((sbyte)ReadUInt8(reader));
 					}
 				}
 
@@ -487,7 +484,7 @@ namespace OpenCivOne
 				{
 					for (int j = 0; j < 16; j++)
 					{
-						this.parent.GameData.Players[i].StrategicLocations[j].Policy = ReadUInt8(reader);
+						this.parent.GameData.Players[i].ContinentPolicies[j].Policy = (sbyte)ReadUInt8(reader);
 					}
 				}
 
@@ -495,7 +492,7 @@ namespace OpenCivOne
 				{
 					for (int j = 0; j < 16; j++)
 					{
-						this.parent.GameData.Players[i].StrategicLocations[j].Position.X = (sbyte)ReadUInt8(reader);
+						this.parent.GameData.Players[i].ContinentPolicies[j].Position.X = (sbyte)ReadUInt8(reader);
 					}
 				}
 
@@ -503,7 +500,7 @@ namespace OpenCivOne
 				{
 					for (int j = 0; j < 16; j++)
 					{
-						this.parent.GameData.Players[i].StrategicLocations[j].Position.Y = (sbyte)ReadUInt8(reader);
+						this.parent.GameData.Players[i].ContinentPolicies[j].Position.Y = (sbyte)ReadUInt8(reader);
 					}
 				}
 
@@ -648,10 +645,8 @@ namespace OpenCivOne
 			}
 			catch (Exception ex)
 			{
-				this.parent.CAPI.strcpy(0xba06, ex.Message);
-
 				// Instruction address 0x0000:0x08a3, size: 5
-				this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+				this.parent.Segment_1238.F0_1238_001e_ShowDialog(ex.Message, 100, 80);
 
 				bSuccess = false;
 			}
@@ -1022,7 +1017,7 @@ namespace OpenCivOne
 				{
 					for (int j = 0; j < 16; j++)
 					{
-						writer.WriteByte((byte)this.parent.GameData.Players[i].StrategicLocations[j].Active);
+						writer.WriteByte((byte)((sbyte)this.parent.GameData.Players[i].ContinentPolicies[j].UnitRoleType));
 					}
 				}
 
@@ -1030,7 +1025,7 @@ namespace OpenCivOne
 				{
 					for (int j = 0; j < 16; j++)
 					{
-						writer.WriteByte(this.parent.GameData.Players[i].StrategicLocations[j].Policy);
+						writer.WriteByte((byte)((sbyte)this.parent.GameData.Players[i].ContinentPolicies[j].Policy));
 					}
 				}
 
@@ -1038,7 +1033,7 @@ namespace OpenCivOne
 				{
 					for (int j = 0; j < 16; j++)
 					{
-						writer.WriteByte((byte)this.parent.GameData.Players[i].StrategicLocations[j].Position.X);
+						writer.WriteByte((byte)this.parent.GameData.Players[i].ContinentPolicies[j].Position.X);
 					}
 				}
 
@@ -1046,7 +1041,7 @@ namespace OpenCivOne
 				{
 					for (int j = 0; j < 16; j++)
 					{
-						writer.WriteByte((byte)this.parent.GameData.Players[i].StrategicLocations[j].Position.Y);
+						writer.WriteByte((byte)this.parent.GameData.Players[i].ContinentPolicies[j].Position.Y);
 					}
 				}
 
@@ -1188,8 +1183,7 @@ namespace OpenCivOne
 			}
 			catch (Exception ex)
 			{
-				this.parent.CAPI.strcpy(0xba06, ex.Message);
-				this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(0xba06, 4, 64, true, false, true);
+				this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(ex.Message, 4, 64, true, false, true);
 
 				bSuccess = false;
 			}

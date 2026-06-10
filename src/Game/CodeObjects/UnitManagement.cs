@@ -208,10 +208,10 @@ namespace OpenCivOne
 							if ((this.parent.GameData.Players[playerID].Diplomacy[cityOwnerPlayerID] & 2) == 0)
 							{
 								// Instruction address 0x1866:0x049f, size: 5
-								this.parent.Segment_25fb.F0_25fb_304d(cityOwnerPlayerID, newX, newY, 1, 4);
+								this.parent.Segment_25fb.F0_25fb_304d_AddUnitPolicy(cityOwnerPlayerID, newX, newY, UnitRoleTypeEnum.LandAttack, 4);
 
 								// Instruction address 0x1866:0x04b5, size: 5
-								this.parent.Segment_25fb.F0_25fb_304d(cityOwnerPlayerID, newX, newY, 2, 2);
+								this.parent.Segment_25fb.F0_25fb_304d_AddUnitPolicy(cityOwnerPlayerID, newX, newY, UnitRoleTypeEnum.Defense, 2);
 							}
 						}
 					}
@@ -265,13 +265,13 @@ namespace OpenCivOne
 							if (this.parent.Var_d7f0 != 0 &&
 								this.parent.GameData.Players[this.parent.Var_d7f0].Units[activeUnitID].TypeID != 26 &&
 								((this.parent.GameData.Players[this.parent.Var_d7f0].Units[activeUnitID].Status & 0x8) == 0 ||
-									this.parent.GameData.Units[this.parent.GameData.Players[this.parent.Var_d7f0].Units[activeUnitID].TypeID].AIRole != UnitAIRoleEnum.Defense))
+									this.parent.GameData.Units[this.parent.GameData.Players[this.parent.Var_d7f0].Units[activeUnitID].TypeID].UnitRoleType != UnitRoleTypeEnum.Defense))
 							{
 								local_6 = 3;
 							}
 
 							// Instruction address 0x1866:0x069b, size: 5
-							this.parent.Segment_25fb.F0_25fb_304d(playerID, newX, newY, 1, (short)local_6);
+							this.parent.Segment_25fb.F0_25fb_304d_AddUnitPolicy(playerID, newX, newY, UnitRoleTypeEnum.LandAttack, (short)local_6);
 						}
 
 						if (this.parent.GameData.Players[playerID].Units[unitID].TypeID != 26)
@@ -279,12 +279,12 @@ namespace OpenCivOne
 							if (playerID == 0)
 							{
 								// Instruction address 0x1866:0x02da, size: 5
-								this.parent.Segment_25fb.F0_25fb_304d(this.parent.Var_d7f0, x, y, 2, 1);
+								this.parent.Segment_25fb.F0_25fb_304d_AddUnitPolicy(this.parent.Var_d7f0, x, y, UnitRoleTypeEnum.Defense, 1);
 							}
 							else
 							{
 								// Instruction address 0x1866:0x02da, size: 5
-								this.parent.Segment_25fb.F0_25fb_304d(this.parent.Var_d7f0, x, y, 2, 2);
+								this.parent.Segment_25fb.F0_25fb_304d_AddUnitPolicy(this.parent.Var_d7f0, x, y, UnitRoleTypeEnum.Defense, 2);
 							}
 						}
 					}
@@ -295,7 +295,7 @@ namespace OpenCivOne
 						(this.parent.GameData.Players[playerID].Diplomacy[this.parent.Var_d7f0] & 0x2) == 0)
 					{
 						// Instruction address 0x1866:0x0321, size: 5
-						this.parent.Segment_25fb.F0_25fb_304d(playerID, newX, newY, 3, 2);
+						this.parent.Segment_25fb.F0_25fb_304d_AddUnitPolicy(playerID, newX, newY, UnitRoleTypeEnum.SeaAttack, 2);
 					}
 				}
 
@@ -358,7 +358,7 @@ namespace OpenCivOne
 								(this.parent.GameData.Players[playerID].Diplomacy[this.parent.Var_d7f0] & 2) == 0)
 							{
 								// Instruction address 0x1866:0x09f1, size: 5
-								this.parent.Segment_25fb.F0_25fb_304d(playerID, newX, newY, 3, 2);
+								this.parent.Segment_25fb.F0_25fb_304d_AddUnitPolicy(playerID, newX, newY, UnitRoleTypeEnum.SeaAttack, 2);
 							}
 						}
 
@@ -404,7 +404,7 @@ namespace OpenCivOne
 									(this.parent.GameData.Players[playerID].Diplomacy[this.parent.Var_d7f0] & 0x2) == 0)
 								{
 									// Instruction address 0x1866:0x07e6, size: 5
-									this.parent.Segment_25fb.F0_25fb_304d(this.parent.Var_d7f0, x, y, 3, 2);
+									this.parent.Segment_25fb.F0_25fb_304d_AddUnitPolicy(this.parent.Var_d7f0, x, y, UnitRoleTypeEnum.SeaAttack, 2);
 								}
 							}
 							else if (this.parent.Var_d7f0 == this.parent.GameData.HumanPlayerID &&
@@ -616,11 +616,8 @@ namespace OpenCivOne
 				{
 					this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DefenseMinisterReport;
 
-					// Instruction address 0x1866:0x0ee6, size: 5
-					this.parent.CAPI.strcpy(0xba06, this.parent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*UMAX"));
-
 					// Instruction address 0x1866:0x0efa, size: 5
-					this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 80, 64);
+					this.parent.Segment_1238.F0_1238_001e_ShowDialog(this.parent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*UMAX"), 80, 64);
 
 					// Show message to the human player only once per turn
 					this.parent.Var_d760_HumanPlayerMessageFlag = true;
@@ -985,7 +982,7 @@ namespace OpenCivOne
 
 				case 4:
 					if (unitID < mainUnitID && 
-						this.parent.GameData.Units[this.parent.GameData.Players[playerID].Units[unitID].TypeID].AIRole == UnitAIRoleEnum.Defense)
+						this.parent.GameData.Units[this.parent.GameData.Players[playerID].Units[unitID].TypeID].UnitRoleType == UnitRoleTypeEnum.Defense)
 					{
 						value++;
 					}
@@ -1046,7 +1043,7 @@ namespace OpenCivOne
 		/// <param name="unitID"></param>
 		/// <param name="aiRole"></param>
 		/// <returns></returns>
-		public int F0_1866_1380(int playerID, int unitID, UnitAIRoleEnum aiRole)
+		public int F0_1866_1380(int playerID, int unitID, UnitRoleTypeEnum aiRole)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1866_1380({playerID}, {unitID}, {aiRole})");
 
@@ -1060,7 +1057,7 @@ namespace OpenCivOne
 		/// </summary>
 		/// <param name="playerID"></param>
 		/// <param name="unitID"></param>
-		private int F0_1866_13a9_UnitStack(int playerID, int unitID, UnitAIRoleEnum aiRole)
+		private int F0_1866_13a9_UnitStack(int playerID, int unitID, UnitRoleTypeEnum aiRole)
 		{
 			int oldUnitID = unitID;
 			int count = 0;
@@ -1069,7 +1066,7 @@ namespace OpenCivOne
 			{
 				int newUnitID = this.parent.GameData.Players[playerID].Units[oldUnitID].NextUnitID;
 
-				if (this.parent.GameData.Units[this.parent.GameData.Players[playerID].Units[oldUnitID].TypeID].AIRole == aiRole)
+				if (this.parent.GameData.Units[this.parent.GameData.Players[playerID].Units[oldUnitID].TypeID].UnitRoleType == aiRole)
 				{
 					count++;
 				}
@@ -1117,7 +1114,7 @@ namespace OpenCivOne
 					count--;
 				}
 
-				if (this.parent.GameData.Units[this.parent.GameData.Players[playerID].Units[oldUnitID].TypeID].AIRole == UnitAIRoleEnum.SeaTransport)
+				if (this.parent.GameData.Units[this.parent.GameData.Players[playerID].Units[oldUnitID].TypeID].UnitRoleType == UnitRoleTypeEnum.SeaTransport)
 				{
 					count += this.parent.GameData.Units[this.parent.GameData.Players[playerID].Units[oldUnitID].TypeID].TransportCapacity;
 				}
@@ -1751,11 +1748,8 @@ namespace OpenCivOne
 		{
 			if (playerID == this.parent.GameData.HumanPlayerID)
 			{
-				// Instruction address 0x1866:0x1a96, size: 5
-				this.parent.CAPI.strcpy(0xba06, "You have discovered\nvaluable metal deposits\nworth 50$\n");
-
 				// Instruction address 0x1866:0x1ab2, size: 5
-				this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+				this.parent.Segment_1238.F0_1238_001e_ShowDialog("You have discovered\nvaluable metal deposits\nworth 50 coins\n", 100, 80);
 			}
 
 			this.parent.GameData.Players[playerID].Coins += 50;
@@ -1765,11 +1759,8 @@ namespace OpenCivOne
 		{
 			if (playerID == this.parent.GameData.HumanPlayerID)
 			{
-				// Instruction address 0x1866:0x1a2d, size: 5
-				this.parent.CAPI.strcpy(0xba06, "You have discovered\nan advanced tribe.\n");
-
 				// Instruction address 0x1866:0x1a49, size: 5
-				this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+				this.parent.Segment_1238.F0_1238_001e_ShowDialog("You have discovered\nan advanced tribe.\n", 100, 80);
 			}
 
 			this.parent.Overlay_20.F20_0000_0000(playerID,
@@ -1787,11 +1778,8 @@ namespace OpenCivOne
 		{
 			if (playerID == this.parent.GameData.HumanPlayerID)
 			{
-				// Instruction address 0x1866:0x1ba2, size: 5
-				this.parent.CAPI.strcpy(0xba06, "You have discovered\na friendly tribe of\nskilled mercenaries.\n");
-
 				// Instruction address 0x1866:0x1bbe, size: 5
-				this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+				this.parent.Segment_1238.F0_1238_001e_ShowDialog("You have discovered\na friendly tribe of\nskilled mercenaries.\n", 100, 80);
 			}
 
 			// Instruction address 0x1866:0x1d2d, size: 3
@@ -1811,11 +1799,8 @@ namespace OpenCivOne
 		{
 			if (playerID == this.parent.GameData.HumanPlayerID)
 			{
-				// Instruction address 0x1866:0x1acf, size: 5
-				this.parent.CAPI.strcpy(0xba06, "You have discovered\nscrolls of ancient wisdom.\n");
-
 				// Instruction address 0x1866:0x1aeb, size: 5
-				this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+				this.parent.Segment_1238.F0_1238_001e_ShowDialog("You have discovered\nscrolls of ancient wisdom.\n", 100, 80);
 			}
 
 			// Compile a list of yet undiscovered technologies that have all of the prerequisites
@@ -1848,11 +1833,8 @@ namespace OpenCivOne
 		{
 			if (playerID == this.parent.GameData.HumanPlayerID)
 			{
-				// Instruction address 0x1866:0x1c07, size: 5
-				this.parent.CAPI.strcpy(0xba06, "You have unleashed\na horde of barbarians!\n");
-
 				// Instruction address 0x1866:0x1c23, size: 5
-				this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+				this.parent.Segment_1238.F0_1238_001e_ShowDialog("You have unleashed\na horde of barbarians!\n", 100, 80);
 			}
 
 			for (int i = 1; i < 9;)
@@ -2001,23 +1983,13 @@ namespace OpenCivOne
 				// Instruction address 0x1866:0x2025, size: 5
 				this.parent.MapManagement.F0_2aea_0fb3_DrawUnitWithStatus(playerID, nextUnitID, 106, unitYPos);
 
-				// Instruction address 0x1866:0x204b, size: 5
-				this.parent.CAPI.strcpy(0xba06, this.parent.GameData.Units[this.parent.GameData.Players[playerID].Units[nextUnitID].TypeID].Name);
-
-				if ((this.parent.GameData.Players[playerID].Units[nextUnitID].Status & 0x20) != 0)
-				{
-					// Instruction address 0x1866:0x2062, size: 5
-					this.parent.CAPI.strcat(0xba06, " (V)");
-				}
-
 				// Instruction address 0x1866:0x2079, size: 5
-				this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 128, unitYPos, 15);
-
-				// Instruction address 0x1866:0x209c, size: 5
-				this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName(this.parent.GameData.Players[playerID].Units[nextUnitID].HomeCityID));
+				this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{this.parent.GameData.Units[this.parent.GameData.Players[playerID].Units[nextUnitID].TypeID].Name}" +
+					$"{(((this.parent.GameData.Players[playerID].Units[nextUnitID].Status & 0x20) != 0) ? " (V)" : "")}", 128, unitYPos, 15);
 
 				// Instruction address 0x1866:0x20b7, size: 5
-				this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 128, unitYPos + 8, 14);
+				this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(this.parent.Segment_2459.F0_2459_08c6_GetCityName(this.parent.GameData.Players[playerID].Units[nextUnitID].HomeCityID), 
+					128, unitYPos + 8, 14);
 
 				nextUnitID = this.parent.GameData.Players[playerID].Units[nextUnitID].NextUnitID;
 

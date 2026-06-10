@@ -16,7 +16,7 @@ namespace OpenCivOne
 		public short Cost = 0;
 		public short SightRange = 0;
 		public short TransportCapacity = 0;
-		public UnitAIRoleEnum AIRole = UnitAIRoleEnum.Settler;
+		public UnitRoleTypeEnum UnitRoleType = UnitRoleTypeEnum.Settler;
 		public TechnologyAdvanceEnum RequiredTechnology = TechnologyAdvanceEnum.None;
 
 		public UnitDefinition()
@@ -24,7 +24,7 @@ namespace OpenCivOne
 
 		public UnitDefinition(UnitTypeEnum unitType, string name, TechnologyAdvanceEnum cancelTechnology, UnitMovementTypeEnum movementType,
 			short moveCount, short turnsOutside, short attackStrength, short defenseStrength,
-			short cost, short sightRange, short transportCapacity, UnitAIRoleEnum aiRole,
+			short cost, short sightRange, short transportCapacity, UnitRoleTypeEnum aiRole,
 			TechnologyAdvanceEnum requiredTechnology)
 		{
 			this.UnitType= unitType;
@@ -38,7 +38,7 @@ namespace OpenCivOne
 			this.Cost = cost;
 			this.SightRange = sightRange;
 			this.TransportCapacity = transportCapacity;
-			this.AIRole = aiRole;
+			this.UnitRoleType = aiRole;
 			this.RequiredTechnology = requiredTechnology;
 		}
 
@@ -56,7 +56,7 @@ namespace OpenCivOne
 			ud.Cost = GameLoadAndSave.ReadInt16(stream);
 			ud.SightRange = GameLoadAndSave.ReadInt16(stream);
 			ud.TransportCapacity = GameLoadAndSave.ReadInt16(stream);
-			ud.AIRole = (UnitAIRoleEnum)GameLoadAndSave.ReadInt16(stream);
+			ud.UnitRoleType = (UnitRoleTypeEnum)GameLoadAndSave.ReadInt16(stream);
 			ud.RequiredTechnology = (TechnologyAdvanceEnum)GameLoadAndSave.ReadInt16(stream);
 
 			return ud;
@@ -74,7 +74,7 @@ namespace OpenCivOne
 			GameLoadAndSave.WriteInt16(stream, this.Cost);
 			GameLoadAndSave.WriteInt16(stream, this.SightRange);
 			GameLoadAndSave.WriteInt16(stream, this.TransportCapacity);
-			GameLoadAndSave.WriteInt16(stream, (short)this.AIRole);
+			GameLoadAndSave.WriteInt16(stream, (short)this.UnitRoleType);
 			GameLoadAndSave.WriteInt16(stream, (short)this.RequiredTechnology);
 		}
 	}

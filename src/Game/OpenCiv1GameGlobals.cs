@@ -63,7 +63,7 @@ namespace OpenCivOne
 		public CRectangle Var_19d4_Screen1_Rectangle = new CRectangle(1, 0, 0, 319, 199, 0x0, 15, 0, 4, 0, 0);
 		public CRectangle Var_19e8_Screen2_Rectangle = new CRectangle(2, 0, 0, 319, 199, 0x0, 15, 0, 4, 0, 0);
 
-		public byte[] Array_1946 = { 12, 15, 10, 9, 14, 11, 13, 7 };
+		public byte[] Array_1946_PlayerColours = { 12, 15, 10, 9, 14, 11, 13, 7 };
 		public byte[] Array_1956 = { 4, 7, 2, 1, 10, 3, 4, 8 };
 		public string[] Array_1966 = { "Anarchy", "Despotism", "Monarchy", "Communist", "Republic", "Democratic" };
 

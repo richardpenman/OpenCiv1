@@ -1,5 +1,4 @@
 using IRB.Collections.Generic;
-using IRB.VirtualCPU;
 using OpenCivOne.UI;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -233,7 +232,7 @@ namespace OpenCivOne
 
 			int lineCount = 0;
 
-			using (FileStream inputStream = FileReader.GetFileStream($"{this.parent.ResourcePath}{section.ToUpper()}.TXT", FileMode.Open))
+			using (FileStream inputStream = new FileStream($"{this.parent.ResourcePath}{section.ToUpper()}.TXT", FileMode.Open))
 			{
 				inputStream.Seek(0x212, SeekOrigin.Begin);
 

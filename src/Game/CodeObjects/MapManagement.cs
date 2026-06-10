@@ -1,7 +1,4 @@
-using IRB.VirtualCPU;
 using OpenCivOne.Graphics;
-using System;
-using System.Numerics;
 
 namespace OpenCivOne
 {
@@ -258,7 +255,7 @@ namespace OpenCivOne
 					{
 						// Instruction address 0x2aea:0x0355, size: 3
 						this.parent.Graphics.F0_VGA_0550_SetPixel(this.parent.Var_aa_Screen0_Rectangle.ScreenID, cellXPos, cellYPos + 8,
-							this.parent.Array_1946[city.PlayerID]);
+							this.parent.Array_1946_PlayerColours[city.PlayerID]);
 					}
 				}
 			}
@@ -599,7 +596,7 @@ namespace OpenCivOne
 
 							// Instruction address 0x2aea:0x0cac, size: 5
 							this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, scrX + 2, scrY + 2, 12, 12,
-								this.parent.Array_1946[city.PlayerID]);
+								this.parent.Array_1946_PlayerColours[city.PlayerID]);
 
 							// Draw city 'streets'
 

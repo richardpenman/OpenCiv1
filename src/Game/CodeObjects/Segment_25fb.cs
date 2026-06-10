@@ -180,7 +180,7 @@ namespace OpenCivOne
 			this.oCPU.AX.UInt16 = (ushort)((short)(0x22 * this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54))].TypeID));
 			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
 
-			this.oCPU.CX.LowUInt8 = (byte)(2 << (int)this.oParent.GameData.Units[this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54))].TypeID].AIRole);
+			this.oCPU.CX.LowUInt8 = (byte)(2 << (int)this.oParent.GameData.Units[this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54))].TypeID].UnitRoleType);
 
 			this.oCPU.AX.UInt16 = (ushort)((short)this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54))].Position.X);
 			this.oCPU.AX.UInt16 = this.oCPU.SHR_UInt16(this.oCPU.AX.UInt16, 0x2);
@@ -255,10 +255,10 @@ namespace OpenCivOne
 
 		L024f:
 			// Instruction address 0x25fb:0x0264, size: 3
-			F0_25fb_304d(playerID,
+			F0_25fb_304d_AddUnitPolicy(playerID,
 				this.oParent.GameData.Cities[this.oCPU.SI.UInt16 / 28].Position.X,
 				this.oParent.GameData.Cities[this.oCPU.SI.UInt16 / 28].Position.Y,
-				1, this.oCPU.AX.Int16);
+				UnitRoleTypeEnum.LandAttack, this.oCPU.AX.Int16);
 
 			goto L0397;
 
@@ -395,10 +395,10 @@ namespace OpenCivOne
 
 		L03cf:
 			// Instruction address 0x25fb:0x03e4, size: 3
-			F0_25fb_304d(playerID,
+			F0_25fb_304d_AddUnitPolicy(playerID,
 				this.oParent.GameData.Cities[this.oCPU.SI.UInt16 / 28].Position.X,
 				this.oParent.GameData.Cities[this.oCPU.SI.UInt16 / 28].Position.Y,
-				2, this.oCPU.AX.Int16);
+				UnitRoleTypeEnum.Defense, this.oCPU.AX.Int16);
 
 		L03ea:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54))));
@@ -1064,7 +1064,7 @@ namespace OpenCivOne
 			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46)));
 			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
 			this.oCPU.CX.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.DI.UInt16 + 0xb2be));
+			this.oCPU.AX.LowInt8 = (sbyte)this.oParent.GameData.Players[playerID].UnitPolicies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58))].Policy;
 			goto L0a7a;
 
 		L0a43:
@@ -1077,8 +1077,8 @@ namespace OpenCivOne
 			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_0289_GetShortestDistance(
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52)),
-				this.oCPU.ReadInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xe598)),
-				this.oCPU.ReadInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xe798)));
+				this.oParent.GameData.Players[playerID].UnitPolicies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58))].Position.X,
+				this.oParent.GameData.Players[playerID].UnitPolicies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58))].Position.Y);
 
 			this.oCPU.CX.UInt16 = this.oCPU.AX.UInt16;
 			this.oCPU.DI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58));
@@ -1087,7 +1087,7 @@ namespace OpenCivOne
 			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
 			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
 			this.oCPU.CX.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xb2be));
+			this.oCPU.AX.LowInt8 = (sbyte)this.oParent.GameData.Players[playerID].UnitPolicies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58))].Policy;
 
 		L0a7a:
 			this.oCPU.CBW(this.oCPU.AX);
@@ -1112,7 +1112,8 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x5;
 			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, this.oCPU.CX.LowUInt8);
 			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58));
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + this.oCPU.SI.UInt16 + 0xb2be));
+
+			this.oCPU.AX.LowInt8 = (sbyte)this.oParent.GameData.Players[playerID].UnitPolicies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58))].Policy;
 			this.oCPU.WriteUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x68), this.oCPU.AX.LowUInt8);
 			this.oCPU.CMP_UInt8(this.oCPU.AX.LowUInt8, 0x2);
 			if (this.oCPU.Flags.L) goto L0acf;
@@ -1143,8 +1144,8 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x5;
 			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, this.oCPU.CX.LowUInt8);
 			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58)));
-			this.oCPU.CMP_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xe2c2)), 0xff);
-			if (this.oCPU.Flags.E) goto L0acf;
+
+			if (this.oParent.GameData.Players[playerID].UnitPolicies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58))].UnitRoleType == UnitRoleTypeEnum.None) goto L0acf;
 			
 			this.oCPU.AX.UInt16 = 0xc;
 			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54)));
@@ -1157,17 +1158,14 @@ namespace OpenCivOne
 			this.oCPU.AX.UInt16 = (ushort)((short)(0x22 * this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54))].TypeID));
 			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
 
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xe2c2));
-			this.oCPU.CBW(this.oCPU.AX);
-
-			if ((short)this.oParent.GameData.Units[this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54))].TypeID].AIRole != 
-				(short)this.oCPU.AX.UInt16)
+			if (this.oParent.GameData.Units[this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54))].TypeID].UnitRoleType !=
+				this.oParent.GameData.Players[playerID].UnitPolicies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58))].UnitRoleType)
 				goto L0b28;
 
 			// Instruction address 0x25fb:0x0b1b, size: 5
 			this.oCPU.AX.Int16 = (short)this.oParent.MapManagement.F0_2aea_1942_GetGroupID(
-				this.oCPU.ReadInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xe598)),
-				this.oCPU.ReadInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xe798)));
+				this.oParent.GameData.Players[playerID].UnitPolicies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58))].Position.X,
+				this.oParent.GameData.Players[playerID].UnitPolicies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58))].Position.Y);
 
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x5a)));
 			if (this.oCPU.Flags.E) goto L0b6c;
@@ -1191,8 +1189,9 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x5;
 			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, this.oCPU.CX.LowUInt8);
 			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58));
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + this.oCPU.SI.UInt16 + 0xe2c2));
-			this.oCPU.WriteUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x66), this.oCPU.AX.LowUInt8);
+
+			this.oCPU.WriteInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x66),
+				(sbyte)this.oParent.GameData.Players[playerID].UnitPolicies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58))].UnitRoleType);
 
 			this.oCPU.AX.LowUInt8 = 0x22;
 			this.oCPU.IMUL_UInt8(this.oCPU.AX, this.oCPU.ReadUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x68)));
@@ -1201,7 +1200,7 @@ namespace OpenCivOne
 			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x66));
 			this.oCPU.CBW(this.oCPU.AX);
 
-			if ((short)this.oParent.GameData.Units[this.oCPU.ReadInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x68))].AIRole == (short)this.oCPU.AX.UInt16)
+			if ((short)this.oParent.GameData.Units[this.oCPU.ReadInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x68))].UnitRoleType == (short)this.oCPU.AX.UInt16)
 				goto L0b6c;
 
 			this.oCPU.CMP_UInt8(this.oCPU.AX.LowUInt8, 0x3);
@@ -1223,8 +1222,8 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x5;
 			this.oCPU.DI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.DI.UInt16, this.oCPU.CX.LowUInt8);
 			this.oCPU.DI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.DI.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58)));
-			this.oCPU.TEST_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.DI.UInt16 + 0xb2be)), 0x1);
-			if (this.oCPU.Flags.E)
+
+			if ((this.oParent.GameData.Players[playerID].UnitPolicies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58))].Policy & 0x1) == 0)
 				goto L0acf;
 
 			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58));
@@ -1239,8 +1238,8 @@ namespace OpenCivOne
 			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_0289_GetShortestDistance(
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x50)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x52)),
-				this.oCPU.ReadInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.DI.UInt16 + 0xe598)),
-				this.oCPU.ReadInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.DI.UInt16 + 0xe798)));
+				this.oParent.GameData.Players[playerID].UnitPolicies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58))].Position.X,
+				this.oParent.GameData.Players[playerID].UnitPolicies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58))].Position.Y);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46), this.oCPU.AX.UInt16);
 
@@ -1285,7 +1284,8 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x5;
 			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, this.oCPU.CX.LowUInt8);
 			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58));
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + this.oCPU.SI.UInt16 + 0xb2be));
+
+			this.oCPU.AX.LowInt8 = (sbyte)this.oParent.GameData.Players[playerID].UnitPolicies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x58))].Policy;
 			this.oCPU.CBW(this.oCPU.AX);
 			this.oCPU.AX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.AX.UInt16, 0x1);
 			this.oCPU.AX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.AX.UInt16, 0x1);
@@ -1324,10 +1324,10 @@ namespace OpenCivOne
 			this.oCPU.DI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.DI.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x62)));
 			
 			this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54))].GoToDestination.X =
-				this.oCPU.ReadInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.DI.UInt16 + 0xe598));
+				this.oParent.GameData.Players[playerID].UnitPolicies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x62))].Position.X;
 
 			this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54))].GoToDestination.Y =
-				this.oCPU.ReadInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.DI.UInt16 + 0xe798));
+				this.oParent.GameData.Players[playerID].UnitPolicies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x62))].Position.Y;
 
 			this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54))].Status |= 0x10;
 			this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x54))].Status &= 0xf0;
@@ -1660,7 +1660,7 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
 
 			this.oCPU.WriteInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x56),
-				(short)this.oParent.GameData.Units[this.oParent.GameData.Players[playerID].Units[unitID].TypeID].AIRole);
+				(short)this.oParent.GameData.Units[this.oParent.GameData.Players[playerID].Units[unitID].TypeID].UnitRoleType);
 
 			// Instruction address 0x25fb:0x0fc0, size: 5
 			this.oCPU.AX.Int16 = (short)this.oParent.MapManagement.F0_2aea_1942_GetGroupID(
@@ -2133,10 +2133,10 @@ namespace OpenCivOne
 
 		L141d:
 			// Instruction address 0x25fb:0x142e, size: 3
-			F0_25fb_3251_AddStrategicLocation(playerID, 
+			F0_25fb_3251_AddContinentPolicy(playerID, 
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x30)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)),
-				0, 2);
+				UnitRoleTypeEnum.Settler, 2);
 
 		L1434:
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x56)), 0x0);
@@ -2271,7 +2271,7 @@ namespace OpenCivOne
 
 		L1582:
 			// Instruction address 0x25fb:0x158c, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.UnitManagement.F0_1866_1380(playerID, unitID, UnitAIRoleEnum.Defense);
+			this.oCPU.AX.Int16 = (short)this.oParent.UnitManagement.F0_1866_1380(playerID, unitID, UnitRoleTypeEnum.Defense);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3a), this.oCPU.AX.UInt16);
 			this.oCPU.AX.UInt16 = 0x1c;
@@ -2287,10 +2287,10 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.LE) goto L15c5;
 
 			// Instruction address 0x25fb:0x15bf, size: 3
-			F0_25fb_304d(playerID,
+			F0_25fb_304d_AddUnitPolicy(playerID,
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x30)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)),
-				2, 2);
+				UnitRoleTypeEnum.Defense, 2);
 
 		L15c5:
 			this.oCPU.AX.UInt16 = 0x1c;
@@ -2385,10 +2385,10 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.E) goto L166c;
 
 			// Instruction address 0x25fb:0x16ad, size: 3
-			F0_25fb_304d(playerID,
+			F0_25fb_304d_AddUnitPolicy(playerID,
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x30)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)),
-				2, 4);
+				UnitRoleTypeEnum.Defense, 4);
 
 		L16b3:
 			this.oCPU.AX.UInt16 = 0x20;
@@ -2415,7 +2415,7 @@ namespace OpenCivOne
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1e), 
 				this.oCPU.OR_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1e)),
-					(ushort)(1 << (int)this.oParent.GameData.Units[this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20))].TypeID].AIRole)));
+					(ushort)(1 << (int)this.oParent.GameData.Units[this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20))].TypeID].UnitRoleType)));
 
 			if (this.oParent.GameData.Units[this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20))].TypeID].MovementType != UnitMovementTypeEnum.Land)
 				goto L1732;
@@ -2564,7 +2564,7 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.E) goto L1846;
 
 			// Instruction address 0x25fb:0x182e, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.UnitManagement.F0_1866_1380(playerID, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x24)), UnitAIRoleEnum.SeaTransport);
+			this.oCPU.AX.Int16 = (short)this.oParent.UnitManagement.F0_1866_1380(playerID, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x24)), UnitRoleTypeEnum.SeaTransport);
 
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)), 0x1);
 			this.oCPU.CX.UInt16 = this.oCPU.SBB_UInt16(this.oCPU.CX.UInt16, this.oCPU.CX.UInt16);
@@ -2658,10 +2658,10 @@ namespace OpenCivOne
 			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.AX.UInt16);
 
 			// Instruction address 0x25fb:0x191c, size: 3
-			F0_25fb_304d(playerID,
+			F0_25fb_304d_AddUnitPolicy(playerID,
 				this.oParent.GameData.Players[playerID].Units[unitID].GoToDestination.X,
 				this.oParent.GameData.Players[playerID].Units[unitID].GoToDestination.Y,
-				0, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)));
+				UnitRoleTypeEnum.Settler, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)));
 
 		L1922:
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3a)), 0x2);
@@ -2675,10 +2675,10 @@ namespace OpenCivOne
 			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.AX.UInt16);
 
 			// Instruction address 0x25fb:0x194f, size: 3
-			F0_25fb_304d(playerID,
+			F0_25fb_304d_AddUnitPolicy(playerID,
 				this.oParent.GameData.Players[playerID].Units[unitID].GoToDestination.X,
 				this.oParent.GameData.Players[playerID].Units[unitID].GoToDestination.Y,
-				2, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)));
+				UnitRoleTypeEnum.Defense, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)));
 
 		L1955:
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3a)), 0x1);
@@ -2694,10 +2694,10 @@ namespace OpenCivOne
 			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.AX.UInt16);
 
 			// Instruction address 0x25fb:0x1985, size: 3
-			F0_25fb_304d(playerID,
+			F0_25fb_304d_AddUnitPolicy(playerID,
 				this.oParent.GameData.Players[playerID].Units[unitID].GoToDestination.X,
 				this.oParent.GameData.Players[playerID].Units[unitID].GoToDestination.Y,
-				1, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)));
+				UnitRoleTypeEnum.LandAttack, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)));
 
 			goto L1f44;
 
@@ -2715,10 +2715,10 @@ namespace OpenCivOne
 				goto L19ca;
 
 			// Instruction address 0x25fb:0x19c4, size: 3
-			F0_25fb_304d(playerID,
+			F0_25fb_304d_AddUnitPolicy(playerID,
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x30)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)),
-				3, 5);
+				UnitRoleTypeEnum.SeaAttack, 5);
 
 		L19ca:
 			this.oCPU.AX.UInt16 = 0x600;
@@ -2981,10 +2981,10 @@ namespace OpenCivOne
 
 		L1c22:
 			// Instruction address 0x25fb:0x1c31, size: 3
-			F0_25fb_304d(playerID,
+			F0_25fb_304d_AddUnitPolicy(playerID,
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x26)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)),
-				3, 3);
+				UnitRoleTypeEnum.SeaAttack, 3);
 
 		L1c37:
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4c)), 0x0);
@@ -3355,10 +3355,9 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.L) goto L1fdf;
 
 			// Instruction address 0x25fb:0x1fd9, size: 3
-			F0_25fb_304d(playerID,
+			F0_25fb_304d_AddUnitPolicy(playerID,
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x30)),
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)),
-				2, 2);
+				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)), UnitRoleTypeEnum.Defense, 2);
 
 		L1fdf:
 			// Instruction address 0x25fb:0x1fe6, size: 5
@@ -5126,11 +5125,14 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x5;
 			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, this.oCPU.CX.LowUInt8);
 			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xe2c2), 0xff);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xb2be), 0x0);
+
+			this.oParent.GameData.Players[playerID].UnitPolicies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].UnitRoleType = UnitRoleTypeEnum.None;
+			this.oParent.GameData.Players[playerID].UnitPolicies[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Policy = 0;
+
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))));
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 0x20);
 			if (this.oCPU.Flags.L) goto L2fe3;
+
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x0);
 
 		L3005:
@@ -5139,16 +5141,16 @@ namespace OpenCivOne
 			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, this.oCPU.CX.LowUInt8);
 			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
 
-			if (this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Active == -1 ||
-				this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Active > 2)
+			if (this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].UnitRoleType == UnitRoleTypeEnum.None ||
+				(int)this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].UnitRoleType > (int)UnitRoleTypeEnum.Defense)
 				goto L303f;
 
 			// Instruction address 0x25fb:0x3039, size: 3
-			F0_25fb_304d(playerID,
-				this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Position.X,
-				this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Position.Y,
-				this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Active,
-				this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Policy);
+			F0_25fb_304d_AddUnitPolicy(playerID,
+				this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Position.X,
+				this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Position.Y,
+				this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].UnitRoleType,
+				(short)this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Policy);
 
 		L303f:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))));
@@ -5165,236 +5167,92 @@ namespace OpenCivOne
 		/// ?
 		/// </summary>
 		/// <param name="playerID"></param>
-		/// <param name="xPos"></param>
-		/// <param name="yPos"></param>
-		/// <param name="active"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="unitRoleType"></param>
 		/// <param name="policy"></param>
-		public void F0_25fb_304d(int playerID, int xPos, int yPos, short active, short policy)
+		public void F0_25fb_304d_AddUnitPolicy(int playerID, int x, int y, UnitRoleTypeEnum unitRoleType, short policy)
 		{
-			this.oCPU.Log.EnterBlock($"F0_25fb_304d({playerID}, {xPos}, {yPos}, {active}, {policy})");
-			
+			//this.oCPU.Log.EnterBlock($"F0_25fb_304d({playerID}, {x}, {y}, {active}, {policy})");
+
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x4);
-			this.oCPU.PUSH_UInt16(this.oCPU.DI.UInt16);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 0x0);
-			goto L305f;
+			for (int i = 0; i < 32; i++)
+			{
+				if (this.oParent.GameData.Players[playerID].UnitPolicies[i].Position.X == x &&
+					this.oParent.GameData.Players[playerID].UnitPolicies[i].Position.Y == y &&
+					this.oParent.GameData.Players[playerID].UnitPolicies[i].UnitRoleType == unitRoleType &&
+					this.oParent.GameData.Players[playerID].UnitPolicies[i].Policy <= policy)
+				{
+					return;
+				}
+			}
 
-		L305c:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))));
+			if (playerID == this.oParent.Var_6b90 && playerID != this.oParent.GameData.HumanPlayerID && 
+				(unitRoleType == UnitRoleTypeEnum.SeaAttack || unitRoleType == UnitRoleTypeEnum.AirAttack))
+			{
+				for (int i = 0; i < 128; i++)
+				{
+					if (this.oParent.GameData.Players[playerID].Units[i].TypeID != -1 && this.oParent.GameData.Players[playerID].Units[i].RemainingMoves != 0 &&
+						this.oParent.GameData.Units[this.oParent.GameData.Players[playerID].Units[i].TypeID].UnitRoleType == unitRoleType &&
+						this.oParent.MapManagement.F0_2aea_1942_GetGroupID(this.oParent.GameData.Players[playerID].Units[i].Position.X,
+							this.oParent.GameData.Players[playerID].Units[i].Position.Y) == this.oParent.MapManagement.F0_2aea_1942_GetGroupID(x, y))
+					{
+						// Instruction address 0x25fb:0x313c, size: 5
+						int distance = this.oParent.GameTools.F0_2dc4_0289_GetShortestDistance(this.oParent.GameData.Players[playerID].Units[i].Position.X,
+							this.oParent.GameData.Players[playerID].Units[i].Position.Y, x, y);
 
-		L305f:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x20);
-			if (this.oCPU.Flags.GE) goto L309a;
-			this.oCPU.SI.UInt16 = (ushort)playerID;
-			this.oCPU.CX.LowUInt8 = 0x5;
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, this.oCPU.CX.LowUInt8);
-			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
+						if (this.oParent.GameData.Players[playerID].Units[i].RemainingMoves >= distance * 2)
+						{
+							this.oParent.GameData.Players[playerID].Units[i].GoToDestination.X = x;
+							this.oParent.GameData.Players[playerID].Units[i].GoToDestination.Y = y;
+							this.oParent.GameData.Players[playerID].Units[i].Status |= 0x10;
+							this.oParent.GameData.Players[playerID].Units[i].Status &= 0xf0;
+							break;
+						}
+					}
+				}
+			}
 
-			if (this.oCPU.ReadInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xe598)) != xPos)
-				goto L305c;
+			for (int i = 0; i < 32; i++)
+			{
+				if (this.oParent.GameData.Players[playerID].UnitPolicies[i].UnitRoleType == UnitRoleTypeEnum.None ||
+					this.oParent.GameData.Players[playerID].UnitPolicies[i].Policy < policy)
+				{
+					for (int j = 30; j >= i; j--)
+					{
+						if (this.oParent.GameData.Players[playerID].UnitPolicies[j].Policy != 0)
+						{
+							this.oParent.GameData.Players[playerID].UnitPolicies[j + 1].Position =
+								this.oParent.GameData.Players[playerID].UnitPolicies[j].Position;
 
-			if (this.oCPU.ReadInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xe798)) != yPos)
-				goto L305c;
+							this.oParent.GameData.Players[playerID].UnitPolicies[j + 1].UnitRoleType =
+								this.oParent.GameData.Players[playerID].UnitPolicies[j].UnitRoleType;
 
-			if (this.oCPU.ReadInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xe2c2)) != active)
-				goto L305c;
+							this.oParent.GameData.Players[playerID].UnitPolicies[j + 1].Policy =
+								this.oParent.GameData.Players[playerID].UnitPolicies[j].Policy;
+						}
+					}
 
-			if (this.oCPU.ReadInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xb2be)) > policy)
-				goto L305c;
+					this.oParent.GameData.Players[playerID].UnitPolicies[i].Position.X = x;
+					this.oParent.GameData.Players[playerID].UnitPolicies[i].Position.Y = y;
+					this.oParent.GameData.Players[playerID].UnitPolicies[i].UnitRoleType = unitRoleType;
+					this.oParent.GameData.Players[playerID].UnitPolicies[i].Policy = policy;
 
-			goto L31ce;
-
-		L309a:
-			if (playerID == this.oParent.Var_6b90)
-				goto L30a5;
-
-			goto L3170;
-
-		L30a5:
-			if (playerID != this.oParent.GameData.HumanPlayerID)
-				goto L30b0;
-
-			goto L3170;
-
-		L30b0:
-			if (active == 3 || active == 4)
-				goto L30bf;
-
-			goto L3170;
-
-		L30bf:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 0x0);
-			goto L30c9;
-
-		L30c6:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))));
-
-		L30c9:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x80);
-			if (this.oCPU.Flags.L) goto L30d3;
-			goto L3170;
-
-		L30d3:
-			this.oCPU.AX.UInt16 = 0x600;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, (ushort)playerID);
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.AX.UInt16 = 0xc;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.AX.UInt16);
-
-			if (this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].TypeID == -1 ||
-				this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].RemainingMoves == 0)
-				goto L30c6;
-
-			this.oCPU.AX.UInt16 = (ushort)((short)(0x22 * this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].TypeID));
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-
-			if ((short)this.oParent.GameData.Units[this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].TypeID].AIRole != active)
-				goto L30c6;
-
-			// Instruction address 0x25fb:0x3108, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.MapManagement.F0_2aea_1942_GetGroupID(xPos, yPos);
-
-			this.oCPU.DI.UInt16 = this.oCPU.AX.UInt16;
-
-			// Instruction address 0x25fb:0x311e, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.MapManagement.F0_2aea_1942_GetGroupID(
-				this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Position.X,
-				this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Position.Y);
-
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, this.oCPU.DI.UInt16);
-			if (this.oCPU.Flags.NE) goto L30c6;
-
-			// Instruction address 0x25fb:0x313c, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_0289_GetShortestDistance(
-				this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Position.X,
-				this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Position.Y,
-				xPos,
-				yPos);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.AX.UInt16);
-
-			this.oCPU.CX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
-			this.oCPU.CX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.CX.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].RemainingMoves < (short)this.oCPU.CX.UInt16)
-				goto L30c6;
-
-			this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].GoToDestination.X = xPos;
-			this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].GoToDestination.Y = yPos;
-			this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Status |= 0x10;
-			this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Status &= 0xf0;
-
-		L3170:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 0x0);
-			goto L317a;
-
-		L3177:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))));
-
-		L317a:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x20);
-			if (this.oCPU.Flags.GE)
-				goto L31ce;
-
-			this.oCPU.SI.UInt16 = (ushort)playerID;
-			this.oCPU.CX.LowUInt8 = 0x5;
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, this.oCPU.CX.LowUInt8);
-			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-
-			this.oCPU.CMP_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xe2c2)), 0xff);
-			if (this.oCPU.Flags.E)
-				goto L319b;
-
-			if (this.oCPU.ReadInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xb2be)) >= policy)
-				goto L3177;
-
-		L319b:
-			// Instruction address 0x25fb:0x31a2, size: 3
-			F0_25fb_31d4(playerID, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-
-			this.oCPU.SI.UInt16 = (ushort)playerID;
-			this.oCPU.CX.LowUInt8 = 0x5;
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, this.oCPU.CX.LowUInt8);
-			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xe598), (byte)((sbyte)xPos));
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xe798), (byte)((sbyte)yPos));
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xe2c2), (byte)((sbyte)active));
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xb2be), (byte)((sbyte)policy));
-
-		L31ce:
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.DI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F0_25fb_304d");
+					break;
+				}
+			}
 		}
 
 		/// <summary>
 		/// ?
 		/// </summary>
 		/// <param name="playerID"></param>
-		/// <param name="param2"></param>
-		public void F0_25fb_31d4(int playerID, ushort param2)
-		{
-			this.oCPU.Log.EnterBlock($"F0_25fb_31d4({playerID}, {param2})");
-
-			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x2);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x1e);
-			goto L3216;
-
-		L31e2:
-			this.oCPU.SI.Int16 = (short)playerID;
-			this.oCPU.CX.LowUInt8 = 0x5;
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, this.oCPU.CX.LowUInt8);
-			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
-			this.oCPU.CMP_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xb2be)), 0x0);
-			if (this.oCPU.Flags.E) goto L3213;
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xe598));
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xe599), this.oCPU.AX.LowUInt8);
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xe798));
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xe799), this.oCPU.AX.LowUInt8);
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xe2c2));
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xe2c3), this.oCPU.AX.LowUInt8);
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xb2be));
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xb2bf), this.oCPU.AX.LowUInt8);
-
-		L3213:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.DEC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))));
-
-		L3216:
-			this.oCPU.AX.UInt16 = param2;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.GE) goto L31e2;
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F0_25fb_31d4");
-		}
-
-		/// <summary>
-		/// ?
-		/// </summary>
-		/// <param name="playerID"></param>
-		public void F0_25fb_3223_ClearStrategicLocations(int playerID)
+		public void F0_25fb_3223_ClearContinentPolicies(int playerID)
 		{
 			for (int i = 0; i < 16; i++)
 			{
-				this.oParent.GameData.Players[playerID].StrategicLocations[i].Active = -1;
-				this.oParent.GameData.Players[playerID].StrategicLocations[i].Policy = 0;
+				this.oParent.GameData.Players[playerID].ContinentPolicies[i].UnitRoleType = UnitRoleTypeEnum.None;
+				this.oParent.GameData.Players[playerID].ContinentPolicies[i].Policy = 0;
 			}
 		}
 
@@ -5404,11 +5262,11 @@ namespace OpenCivOne
 		/// <param name="playerID"></param>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
-		/// <param name="active"></param>
+		/// <param name="unitRoleType"></param>
 		/// <param name="policy"></param>
-		public void F0_25fb_3251_AddStrategicLocation(int playerID, int x, int y, sbyte active, byte policy)
+		public void F0_25fb_3251_AddContinentPolicy(int playerID, int x, int y, UnitRoleTypeEnum unitRoleType, sbyte policy)
 		{
-			this.oCPU.Log.EnterBlock($"F0_25fb_3251_AddStrategicLocation({playerID}, {x}, {y}, {active}, {policy})");
+			this.oCPU.Log.EnterBlock($"F0_25fb_3251_AddStrategicLocation({playerID}, {x}, {y}, {unitRoleType}, {policy})");
 
 			// function body
 			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
@@ -5427,10 +5285,10 @@ namespace OpenCivOne
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 0x10);
 			if (this.oCPU.Flags.GE) goto L329c;
 			
-			if (this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Position.X != x ||
-				this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Position.Y != y ||
-				this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Active != active ||
-				this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Policy > policy) goto L325f;
+			if (this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Position.X != x ||
+				this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Position.Y != y ||
+				this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].UnitRoleType != unitRoleType ||
+				this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Policy > policy) goto L325f;
 
 			goto L32fa;
 
@@ -5446,21 +5304,18 @@ namespace OpenCivOne
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 0x10);
 			if (this.oCPU.Flags.GE) goto L32fa;
 
-			if (this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Active == -1)
+			if (this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].UnitRoleType == UnitRoleTypeEnum.None)
 				goto L32c7;
 
-			this.oCPU.AX.LowUInt8 = this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Policy;
-			this.oCPU.CBW(this.oCPU.AX);
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, policy);
-			if (this.oCPU.Flags.GE) goto L32a3;
+			if (this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Policy >= policy) goto L32a3;
 
-			L32c7:
+		L32c7:
 			// Instruction address 0x25fb:0x32ce, size: 3
-			F0_25fb_32ff_AppendStrategicLocation(playerID, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
+			F0_25fb_32ff_AppendContinentPolicy(playerID, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
 
-			this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Position = new GPoint(x, y);
-			this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Active = (sbyte)active;
-			this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Policy = (byte)policy;
+			this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Position = new GPoint(x, y);
+			this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].UnitRoleType = unitRoleType;
+			this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Policy = policy;
 
 		L32fa:
 			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
@@ -5475,7 +5330,7 @@ namespace OpenCivOne
 		/// </summary>
 		/// <param name="playerID"></param>
 		/// <param name="position"></param>
-		public void F0_25fb_32ff_AppendStrategicLocation(int playerID, ushort position)
+		public void F0_25fb_32ff_AppendContinentPolicy(int playerID, ushort position)
 		{
 			this.oCPU.Log.EnterBlock($"F0_25fb_32ff_AppendStrategicLocation({playerID}, {position})");
 
@@ -5489,20 +5344,20 @@ namespace OpenCivOne
 			goto L3341;
 
 		L330d:
-			if (this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Policy == 0)
+			if (this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Policy == 0)
 					goto L333e;
 
-			this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)) + 1].Position.X =
-				this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Position.X;
+			this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)) + 1].Position.X =
+				this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Position.X;
 
-			this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)) + 1].Position.Y =
-				this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Position.Y;
+			this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)) + 1].Position.Y =
+				this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Position.Y;
 
-			this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)) + 1].Active =
-				this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Active;
+			this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)) + 1].UnitRoleType =
+				this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].UnitRoleType;
 
-			this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)) + 1].Policy =
-				this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Policy;
+			this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)) + 1].Policy =
+				this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Policy;
 
 		L333e:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 
@@ -5544,7 +5399,7 @@ namespace OpenCivOne
 			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, this.oCPU.CX.LowUInt8);
 			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
 
-			this.oCPU.AX.LowUInt8 = (byte)this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Active;
+			this.oCPU.AX.LowInt8 = (sbyte)this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].UnitRoleType;
 			this.oCPU.CBW(this.oCPU.AX);
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, param2);
 			if (this.oCPU.Flags.NE) goto L344b;
@@ -5553,15 +5408,15 @@ namespace OpenCivOne
 			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_0289_GetShortestDistance(
 				x,
 				y,
-				this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Position.X,
-				this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Position.Y);
+				this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Position.X,
+				this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Position.Y);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.AX.UInt16);
 			this.oCPU.AX.UInt16 = param5;
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.G) goto L344b;
 
-			this.oParent.GameData.Players[playerID].StrategicLocations[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Active = -1;
+			this.oParent.GameData.Players[playerID].ContinentPolicies[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].UnitRoleType = UnitRoleTypeEnum.None;
 
 		L344b:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))));
@@ -5894,7 +5749,7 @@ namespace OpenCivOne
 			this.oCPU.WriteInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8),
 				(short)this.oParent.GameData.Players[playerID].Units[unitID].TypeID);
 
-			if (this.oParent.GameData.Units[this.oParent.GameData.Players[playerID].Units[unitID].TypeID].AIRole != UnitAIRoleEnum.SeaTransport)
+			if (this.oParent.GameData.Units[this.oParent.GameData.Players[playerID].Units[unitID].TypeID].UnitRoleType != UnitRoleTypeEnum.SeaTransport)
 				goto L395c;
 
 			if (this.oParent.GameData.Players[playerID].Units[unitID].NextUnitID != -1)
@@ -6183,7 +6038,7 @@ namespace OpenCivOne
 			this.oCPU.AX.UInt16 = (ushort)((short)(0x22 * this.oParent.GameData.Players[playerID].Units[unitID].TypeID));
 			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
 
-			if (this.oParent.GameData.Units[this.oParent.GameData.Players[playerID].Units[unitID].TypeID].AIRole != UnitAIRoleEnum.Defense)
+			if (this.oParent.GameData.Units[this.oParent.GameData.Players[playerID].Units[unitID].TypeID].UnitRoleType != UnitRoleTypeEnum.Defense)
 				goto L39a0;
 
 		L399a:

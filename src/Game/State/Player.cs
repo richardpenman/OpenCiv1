@@ -42,9 +42,10 @@ namespace OpenCivOne
 		public Unit[] Units = new Unit[129];
 		public short[] UnitsInProduction = new short[(int)UnitTypeEnum.Max];
 		public short[] LostUnits = new short[(int)UnitTypeEnum.Max];
+		public UnitPolicy[] UnitPolicies = new UnitPolicy[32];
 
 		// Strategic locations
-		public StrategicLocation[] StrategicLocations = new StrategicLocation[16];
+		public ContinentPolicy[] ContinentPolicies = new ContinentPolicy[16];
 
 		// Spaceship
 		public sbyte[] SpaceshipData = new sbyte[180];
@@ -105,9 +106,14 @@ namespace OpenCivOne
 				this.LostUnits[i] = 0;
 			}
 
-			for (int i = 0; i < this.StrategicLocations.Length; i++)
+			for (int i = 0; i < this.UnitPolicies.Length; i++)
 			{
-				this.StrategicLocations[i] = new StrategicLocation();
+				this.UnitPolicies[i] = new UnitPolicy();
+			}
+
+			for (int i = 0; i < this.ContinentPolicies.Length; i++)
+			{
+				this.ContinentPolicies[i] = new ContinentPolicy();
 			}
 
 			for (int i = 0; i < this.SpaceshipData.Length; i++)

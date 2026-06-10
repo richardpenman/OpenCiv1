@@ -216,7 +216,7 @@ namespace OpenCivOne
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)));
 
-			this.oCPU.AX.UInt16 = this.oParent.Array_1946[cityPlayerID];
+			this.oCPU.AX.UInt16 = this.oParent.Array_1946_PlayerColours[cityPlayerID];
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22), this.oCPU.AX.UInt16);
 			
 			// Instruction address 0x0000:0x02a2, size: 5
@@ -224,7 +224,7 @@ namespace OpenCivOne
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16)),
 				4, 4,
-				this.oParent.Array_1946[cityPlayerID]);
+				this.oParent.Array_1946_PlayerColours[cityPlayerID]);
 
 			goto L02aa;
 
@@ -268,7 +268,7 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.E) goto L02aa;
 
 		L0266:
-			this.oCPU.AX.UInt16 = this.oParent.Array_1946[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22))];
+			this.oCPU.AX.UInt16 = this.oParent.Array_1946_PlayerColours[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22))];
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22), this.oCPU.AX.UInt16);
 
 			// Instruction address 0x0000:0x0288, size: 5
@@ -408,7 +408,7 @@ namespace OpenCivOne
 				this.oParent.GameData.Players[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Nationality,
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)) * 40,
 				8,
-				this.oParent.Array_1946[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))]);
+				this.oParent.Array_1946_PlayerColours[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))]);
 
 			// Instruction address 0x0000:0x0411, size: 5
 			this.oParent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
@@ -473,7 +473,7 @@ namespace OpenCivOne
 			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06,
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)) * 40,
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)),
-				this.oParent.Array_1946[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))]);
+				this.oParent.Array_1946_PlayerColours[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))]);
 
 			goto L042a;
 
@@ -661,7 +661,7 @@ namespace OpenCivOne
 			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(
 				this.oParent.GameData.Players[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Nationality,
 				8, (this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)) << 3) + 4,
-				this.oParent.Array_1946[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))]);
+				this.oParent.Array_1946_PlayerColours[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))]);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xe), 0x0);
 			goto L0698;
@@ -694,7 +694,7 @@ namespace OpenCivOne
 				192 - this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)) + 4,
 				192 - this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)),
-				this.oParent.Array_1946[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))]);
+				this.oParent.Array_1946_PlayerColours[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))]);
 
 			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa), this.oCPU.AX.UInt16);
@@ -807,7 +807,7 @@ namespace OpenCivOne
 
 			// Instruction address 0x0000:0x08a9, size: 5
 			this.oParent.MenuBoxDialog.F0_2d05_0a05_DrawRectangle(8, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)),
-				303, 15, this.oParent.Array_1946[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc))]);
+				303, 15, this.oParent.Array_1946_PlayerColours[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc))]);
 
 			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8));
 			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, 0x18);
@@ -1175,7 +1175,7 @@ namespace OpenCivOne
 
 			// Instruction address 0x0000:0x0ce8, size: 5
 			this.oParent.MenuBoxDialog.F0_2d05_0a05_DrawRectangle(8, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa)),
-				303, 15, this.oParent.Array_1946[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1e))]);
+				303, 15, this.oParent.Array_1946_PlayerColours[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1e))]);
 
 			// Instruction address 0x0000:0x0d03, size: 5
 			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 40, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa)) + 5, 15);
@@ -2240,7 +2240,7 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x1b4a, size: 5
 			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06,
 				-(this.oParent.DrawTools.F0_1182_00ef_GetStringWidth(0xba06) - 318), Math.Abs(yPos),
-				this.oParent.Array_1946[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8))]);
+				this.oParent.Array_1946_PlayerColours[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8))]);
 
 		L1b52:
 			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();

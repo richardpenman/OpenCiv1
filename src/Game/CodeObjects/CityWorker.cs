@@ -1,4 +1,3 @@
-using IRB.VirtualCPU;
 using OpenCivOne.Graphics;
 
 namespace OpenCivOne
@@ -6,7 +5,6 @@ namespace OpenCivOne
 	public class CityWorker
 	{
 		private OpenCivOneGame parent;
-		private VCPU CPU;
 
 		// Local variables used exclusively inside this section
 
@@ -23,11 +21,11 @@ namespace OpenCivOne
 		private int Var_6b30 = 0;
 		private int Var_70e8 = 0;
 		//private ushort Var_deb6 = 0;
+		private GPoint[] cityMapOffsets = [new(0, -1), new(2, 0), new(0, 1), new(1, 2)];
 
 		public CityWorker(OpenCivOneGame parent)
 		{
 			this.parent = parent;
-			this.CPU = parent.CPU;
 		}
 
 		/// <summary>
@@ -104,7 +102,6 @@ namespace OpenCivOne
 			int local_108 = 0;
 			int local_10a = 0;
 
-			this.CPU.AX.UInt16 = 0;
 			City city = this.parent.GameData.Cities[cityID];
 
 			if (city.StatusFlag != 0xff)
@@ -272,25 +269,9 @@ namespace OpenCivOne
 
 					this.parent.Var_aa_Screen0_Rectangle.FontID = 2;
 
-					this.CPU.WriteUInt8(this.CPU.DS.UInt16, 0xba06, 0x0);
-
-					// Instruction address 0x1d12:0x051f, size: 5
-					this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID));
-
-					// Instruction address 0x1d12:0x052b, size: 5
-					this.parent.CAPI.strupr(0xba06);
-
-					// Instruction address 0x1d12:0x053b, size: 5
-					this.parent.CAPI.strcat(0xba06, " (Pop:");
-
-					// Instruction address 0x1d12:0x0547, size: 5
-					this.parent.CAPI.strcat(0xba06, this.parent.GameTools.F0_2dc4_0337_PopulationValueToString(local_e8));
-
-					// Instruction address 0x1d12:0x0557, size: 5
-					this.parent.CAPI.strcat(0xba06, ")");
-
 					// Instruction address 0x1d12:0x056f, size: 5
-					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 104, 2, 15);
+					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0($"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} " +
+						$"(Pop:{this.parent.GameTools.F0_2dc4_0337_PopulationValueToString(local_e8)})", 104, 2, 15);
 
 					// Instruction address 0x1d12:0x0587, size: 5
 					F0_1d12_70cb_FillRectangleWithPattern(127, 23, 208, 104);
@@ -413,16 +394,9 @@ namespace OpenCivOne
 							{
 								this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 
-								this.CPU.WriteUInt8(this.CPU.DS.UInt16, 0xba06, 0x0);
-
-								// Instruction address 0x1d12:0x0929, size: 5
-								this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID));
-
-								// Instruction address 0x1d12:0x0939, size: 5
-								this.parent.CAPI.strcat(0xba06, " requires an AQUEDUCT\nfor further growth.\n");
-
 								// Instruction address 0x1d12:0x094d, size: 5
-								this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+								this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+									$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} requires an AQUEDUCT\nfor further growth.\n", 100, 80);
 							}
 						}
 
@@ -577,19 +551,10 @@ namespace OpenCivOne
 					{
 						if (flag == 0 && this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID)
 						{
-							// Instruction address 0x1d12:0x0e26, size: 5
-							this.parent.CAPI.strcpy(0xba06, "Population decrease\nin ");
-
-							// Instruction address 0x1d12:0x0e31, size: 5
-							this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID));
-
-							// Instruction address 0x1d12:0x0e41, size: 5
-							this.parent.CAPI.strcat(0xba06, ".\n");
-
 							this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 
 							// Instruction address 0x1d12:0x0e5b, size: 5
-							this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+							this.parent.Segment_1238.F0_1238_001e_ShowDialog($"Population decrease\nin {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 100, 80);
 
 							this.parent.Var_b1e8 = 1;
 						}
@@ -980,25 +945,11 @@ namespace OpenCivOne
 									if (local_ba != -1 && (city.CurrentProductionID == 0 || city.CurrentProductionID >= 26))
 									{
 										this.parent.Var_b1e8 = 1;
-										this.CPU.WriteUInt8(this.CPU.DS.UInt16, 0xba06, 0x0);
-
-										// Instruction address 0x1d12:0x1b00, size: 5
-										this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID));
-
-										// Instruction address 0x1d12:0x1b10, size: 5
-										this.parent.CAPI.strcat(0xba06, " builds ");
-
-										// Instruction address 0x1d12:0x1b2e, size: 5
-										this.parent.CAPI.strcat(0xba06,
-											this.parent.GameData.Units[city.CurrentProductionID].Name);
-
-										// Instruction address 0x1d12:0x1b3e, size: 5
-										this.parent.CAPI.strcat(0xba06, ".\n");
-
 										this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DefenseMinisterReport;
 
 										// Instruction address 0x1d12:0x1b58, size: 5
-										this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 80, 80);
+										this.parent.Segment_1238.F0_1238_001e_ShowDialog($"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} builds " +
+											$"{this.parent.GameData.Units[city.CurrentProductionID].Name}.\n", 80, 80);
 									}
 								}
 							}
@@ -1058,8 +1009,6 @@ namespace OpenCivOne
 									{
 										this.parent.Var_b1e8 = 1;
 									}
-
-									this.CPU.WriteUInt8(this.CPU.DS.UInt16, 0xba06, 0x0);
 
 									// Instruction address 0x1d12:0x1dbe, size: 5
 									if (this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID && 
@@ -1170,32 +1119,23 @@ namespace OpenCivOne
 									if (this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID ||
 										(this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Diplomacy[this.Var_6548_PlayerID] & 0x40) != 0)
 									{
-										this.CPU.WriteUInt8(this.CPU.DS.UInt16, 0xba06, 0x0);
-
 										if (this.Var_6548_PlayerID != this.parent.GameData.HumanPlayerID)
 										{
-											// Instruction address 0x1d12:0x2097, size: 5
-											this.parent.CAPI.strcpy(0xba06, "Diplomats report:\n");
-
 											this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DiplomatsReport;
+
+											// Instruction address 0x1d12:0x20f8, size: 5
+											this.parent.Segment_1238.F0_1238_001e_ShowDialog($"Diplomats report:\n" +
+												$"{this.parent.GameData.Players[this.Var_6548_PlayerID].Nationality} capital\nmoved to " +
+												$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 80, 80);
 										}
+										else
+										{
+											this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.ForeignMinisterReport;
 
-										// Instruction address 0x1d12:0x20b3, size: 5
-										this.parent.CAPI.strcat(0xba06, this.parent.GameData.Players[this.Var_6548_PlayerID].Nationality);
-
-										// Instruction address 0x1d12:0x20c3, size: 5
-										this.parent.CAPI.strcat(0xba06, " capital\nmoved to ");
-
-										// Instruction address 0x1d12:0x20ce, size: 5
-										this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID));
-
-										// Instruction address 0x1d12:0x20de, size: 5
-										this.parent.CAPI.strcat(0xba06, ".\n");
-
-										this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.ForeignMinisterReport;
-
-										// Instruction address 0x1d12:0x20f8, size: 5
-										this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 80, 80);
+											// Instruction address 0x1d12:0x20f8, size: 5
+											this.parent.Segment_1238.F0_1238_001e_ShowDialog($"{this.parent.GameData.Players[this.Var_6548_PlayerID].Nationality}" +
+												$" capital\nmoved to {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 80, 80);
+										}
 
 										this.parent.GameData.Players[this.Var_6548_PlayerID].XStart = (short)city.Position.X;
 
@@ -1285,7 +1225,7 @@ namespace OpenCivOne
 						local_104 = this.parent.GameData.Players[this.parent.MapManagement.F0_2aea_1942_GetGroupID(local_d8, local_e4) & 0x7].Continents[this.Var_6548_PlayerID].Strategy;
 
 						if ((local_104 == 1 || local_104 == 2 || local_104 == 5) && local_e8 != 0 && city.CurrentProductionID >= 0 &&
-							(int)this.parent.GameData.Units[city.CurrentProductionID].AIRole == local_104)
+							(int)this.parent.GameData.Units[city.CurrentProductionID].UnitRoleType == local_104)
 						{
 							local_cc = this.parent.GameData.Players[this.Var_6548_PlayerID].Coins / 64;
 						}
@@ -1899,25 +1839,12 @@ namespace OpenCivOne
 								{
 									if (this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID)
 									{
-										this.CPU.WriteUInt8(this.CPU.DS.UInt16, 0xba06, 0x0);
-
-										// Instruction address 0x1d12:0x35f5, size: 5
-										this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID));
-
-										// Instruction address 0x1d12:0x3605, size: 5
-										this.parent.CAPI.strcat(0xba06, " can't support\n");
-
-										// Instruction address 0x1d12:0x362d, size: 5
-										this.parent.CAPI.strcat(0xba06,
-											this.parent.GameData.Units[this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_108].TypeID].Name);
-
-										// Instruction address 0x1d12:0x363d, size: 5
-										this.parent.CAPI.strcat(0xba06, ".\n Unit Disbanded.\n");
-
 										this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DefenseMinisterReport;
 
 										// Instruction address 0x1d12:0x3657, size: 5
-										this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+										this.parent.Segment_1238.F0_1238_001e_ShowDialog($"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}" +
+											$" can't support\n{this.parent.GameData.Units[this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_108].TypeID].Name}" +
+											".\n Unit Disbanded.\n", 100, 80);
 									}
 
 									// Instruction address 0x1d12:0x3667, size: 5
@@ -2017,16 +1944,12 @@ namespace OpenCivOne
 						// Instruction address 0x1d12:0x3969, size: 5
 						this.parent.MapManagement.F0_2aea_0fb3_DrawUnitWithStatus(this.Var_6548_PlayerID, (short)i, local_fa, local_100);
 
-						this.CPU.WriteUInt8(this.CPU.DS.UInt16, 0xba06, 0x0);
+						string cityName = this.parent.Segment_2459.F0_2459_08c6_GetCityName(this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].HomeCityID);
 
-						// Instruction address 0x1d12:0x398e, size: 5
-						this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName(this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].HomeCityID));
-
-						this.CPU.WriteUInt8(this.CPU.DS.UInt16, 0xba09, 0x2e);
-						this.CPU.WriteUInt8(this.CPU.DS.UInt16, 0xba0a, 0x0);
+						cityName = (cityName.Length > 3) ? (cityName.Substring(0, 3) + "."): cityName;
 
 						// Instruction address 0x1d12:0x39b4, size: 5
-						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, local_fa, local_100 + 15, 0);
+						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(cityName, local_fa, local_100 + 15, 0);
 
 						Arr_74[local_4e] = i;
 
@@ -2409,45 +2332,30 @@ namespace OpenCivOne
 
 					for (int i = 0; i < 3; i++)
 					{
-						local_4c = city.TradeCityIDs[i];
+						int tradeCityID = city.TradeCityIDs[i];
 
-						if (local_4c != -1)
+						if (tradeCityID != -1)
 						{
-							this.CPU.WriteUInt8(this.CPU.DS.UInt16, 0xba06, 0x0);
-
-							// Instruction address 0x1d12:0x463d, size: 5
-							this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName((short)local_4c));
-
-							// Instruction address 0x1d12:0x464d, size: 5
-							this.parent.CAPI.strcat(0xba06, ":+");
-
-							if (this.parent.GameData.Cities[local_4c].PlayerID != this.Var_6548_PlayerID)
-							{
-								// Instruction address 0x1d12:0x46b0, size: 5
-								this.parent.CAPI.strcat(0xba06,
-									this.parent.CAPI.itoa((city.BaseTrade + this.parent.GameData.Cities[local_4c].BaseTrade + 4) / 8, 10));
-							}
-							else
-							{
-								// Instruction address 0x1d12:0x4700, size: 5
-								this.parent.CAPI.strcat(0xba06,
-									this.parent.CAPI.itoa((city.BaseTrade + this.parent.GameData.Cities[local_4c].BaseTrade + 4) / 16, 10));
-							}
-						
-							// Instruction address 0x1d12:0x4710, size: 5
-							this.parent.CAPI.strcat(0xba06, "} ");
-
-							if (this.Var_2496 == 2)
-							{
-								// Instruction address 0x1d12:0x473c, size: 5
-								F0_1d12_73ea_DrawCityRectangle((ushort)((short)this.parent.GameData.Cities[local_4c].Position.X),
-									(ushort)((short)this.parent.GameData.Cities[local_4c].Position.Y), 10);
-							}
-
 							if (this.Var_2496 == 0)
 							{
-								// Instruction address 0x1d12:0x4765, size: 5
-								this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 98, (i * 6) + 179, 10);
+								if (this.parent.GameData.Cities[tradeCityID].PlayerID != this.Var_6548_PlayerID)
+								{
+									// Instruction address 0x1d12:0x4765, size: 5
+									this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{{{this.parent.Segment_2459.F0_2459_08c6_GetCityName(tradeCityID)}:+" +
+										$"{(city.BaseTrade + this.parent.GameData.Cities[tradeCityID].BaseTrade + 4) / 8}}} ", 98, (i * 6) + 179, 10);
+								}
+								else
+								{
+									// Instruction address 0x1d12:0x4765, size: 5
+									this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{{{this.parent.Segment_2459.F0_2459_08c6_GetCityName(tradeCityID)}:+" +
+										$"{((city.BaseTrade + this.parent.GameData.Cities[tradeCityID].BaseTrade + 4) / 16)}}} ", 98, (i * 6) + 179, 10);
+								}
+							}
+							else if (this.Var_2496 == 2)
+							{
+								// Instruction address 0x1d12:0x473c, size: 5
+								F0_1d12_73ea_DrawCityRectangle(this.parent.GameData.Cities[tradeCityID].Position.X,
+									this.parent.GameData.Cities[tradeCityID].Position.Y, 10);
 							}
 						}
 					}
@@ -2455,8 +2363,8 @@ namespace OpenCivOne
 					if (this.Var_2496 == 2)
 					{
 						// Instruction address 0x1d12:0x4795, size: 5
-						F0_1d12_73ea_DrawCityRectangle((ushort)((short)this.parent.GameData.Cities[this.Var_653e_CityID].Position.X),
-							(ushort)((short)this.parent.GameData.Cities[this.Var_653e_CityID].Position.Y), 15);
+						F0_1d12_73ea_DrawCityRectangle(this.parent.GameData.Cities[this.Var_653e_CityID].Position.X,
+							this.parent.GameData.Cities[this.Var_653e_CityID].Position.Y, 15);
 					}
 
 					if (this.Var_2496 == 0)
@@ -2672,45 +2580,18 @@ namespace OpenCivOne
 							local_e8 += local_e8;
 						}
 
-						// Instruction address 0x1d12:0x4ce7, size: 5
-						this.parent.CAPI.strcpy(0xba06, "Cost to complete\n");
+						string completeProductionText = "Cost to complete\n" +
+								$"{((city.CurrentProductionID >= 0) ? this.parent.GameData.Units[city.CurrentProductionID].Name :
+									this.parent.GameData.GetImprovementType(-city.CurrentProductionID).Name)} is {local_e8} coins" +
+								$"\nOur treasury has {this.parent.GameData.Players[this.Var_6548_PlayerID].Coins} coins.\n";
 
-						if (city.CurrentProductionID >= 0)
+						if ((city.StatusFlag & 0x1) != 0)
 						{
-							// Instruction address 0x1d12:0x4d17, size: 5
-							this.parent.CAPI.strcat(0xba06, this.parent.GameData.Units[city.CurrentProductionID].Name);
-						}
-						else
-						{
-							// Instruction address 0x1d12:0x4d3e, size: 5
-							this.parent.CAPI.strcat(0xba06, this.parent.GameData.GetImprovementType(-city.CurrentProductionID).Name);
-						}
-
-						// Instruction address 0x1d12:0x4d4e, size: 5
-						this.parent.CAPI.strcat(0xba06, ": $");
-
-						// Instruction address 0x1d12:0x4d6f, size: 5
-						this.parent.CAPI.strcat(0xba06, this.parent.CAPI.itoa(local_e8, 10));
-
-						// Instruction address 0x1d12:0x4d7f, size: 5
-						this.parent.CAPI.strcat(0xba06, "\nTreasury: $");
-
-						// Instruction address 0x1d12:0x4da6, size: 5
-						this.parent.CAPI.strcat(0xba06,
-							this.parent.CAPI.itoa(this.parent.GameData.Players[this.Var_6548_PlayerID].Coins, 10));
-
-						// Instruction address 0x1d12:0x4db6, size: 5
-						this.parent.CAPI.strcat(0xba06, "\n");
-
-						if (city.CurrentProductionID >= 0 && (city.StatusFlag & 0x1) != 0)
-						{
-							// Instruction address 0x1d12:0x4dea, size: 5
-							this.parent.CAPI.strcat(0xba06, "CIVIL DISORDER\n");
+							completeProductionText += "CIVIL DISORDER\n";
 						}
 						else if (this.parent.GameData.Players[this.Var_6548_PlayerID].Coins >= local_e8)
 						{
-							// Instruction address 0x1d12:0x4e10, size: 5
-							this.parent.CAPI.strcat(0xba06, " Yes\n No\n");
+							completeProductionText += "Do you want to continue?\n Yes\n No\n";
 						}
 
 						// Instruction address 0x1d12:0x4e18, size: 5
@@ -2719,8 +2600,8 @@ namespace OpenCivOne
 						this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
 						// Instruction address 0x1d12:0x4e32, size: 5
-						if (this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(0xba06, 100, 80, true, false, true) == 0 && 
-							this.parent.GameData.Players[this.Var_6548_PlayerID].Coins >= local_e8)
+						if (this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(completeProductionText, 100, 80, true, false, true) == 0 &&
+							(city.StatusFlag & 0x1) != 0 && this.parent.GameData.Players[this.Var_6548_PlayerID].Coins >= local_e8)
 						{
 							city.ShieldsCount = (short)(local_106 * 10);
 
@@ -2997,8 +2878,7 @@ namespace OpenCivOne
 						goto L53b5;
 
 					L53ad:
-						this.parent.CAPI.strcpy(0xba06, "A City must have five\npopulation units to support\ntaxmen or scientists.\n");
-						this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(0xba06, 32, 32, true, false, true);
+						this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox("A City must have five\npopulation units to support\ntaxmen or scientists.\n", 32, 32, true, false, true);
 
 						goto L045f;
 
@@ -3282,28 +3162,15 @@ namespace OpenCivOne
 						goto L574b;
 
 					L57a5:
-						// Instruction address 0x1d12:0x57ad, size: 5
-						this.parent.CAPI.strcpy(0xba06, "Do you want to sell\nyour ");
-
-						// Instruction address 0x1d12:0x57c4, size: 5
-						this.parent.CAPI.strcat(0xba06, this.parent.GameData.GetImprovementType(local_bc + 1).Name);
-
-						// Instruction address 0x1d12:0x57d4, size: 5
-						this.parent.CAPI.strcat(0xba06, " for ");
-
-						// Instruction address 0x1d12:0x5802, size: 5
-						this.parent.CAPI.strcat(0xba06, this.parent.CAPI.itoa(10 * this.parent.GameData.GetImprovementType(local_bc + 1).Cost, 10));
-
-						// Instruction address 0x1d12:0x5812, size: 5
-						this.parent.CAPI.strcat(0xba06, "$?\n No.\n Yes.\n");
-
 						this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
 						// Instruction address 0x1d12:0x5823, size: 5
 						this.parent.MainCode.F0_11a8_0250_ShowMouse();
 
 						// Instruction address 0x1d12:0x5834, size: 5
-						if (this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(0xba06, 128, 80, true, false, true) == 1) goto L5844;
+						if (this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox("Do you want to sell\nyour " +
+							$"{this.parent.GameData.GetImprovementType(local_bc + 1).Name} for " +
+							$"{(10 * this.parent.GameData.GetImprovementType(local_bc + 1).Cost)} coins?\n No.\n Yes.\n", 128, 80, true, false, true) == 1) goto L5844;
 						goto L58a1;
 
 					L5844:
@@ -3364,8 +3231,7 @@ namespace OpenCivOne
 						goto L595b;
 
 					L5953:
-						this.parent.CAPI.strcpy(0xba06, "A City must have five\npopulation units to support\ntaxmen or scientists.\n");
-						this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(0xba06, 32, 32, true, false, true);
+						this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox("A City must have five\npopulation units to support\ntaxmen or scientists.\n", 32, 32, true, false, true);
 
 						goto L045f;
 
@@ -3525,36 +3391,26 @@ namespace OpenCivOne
 				// Instruction address 0x1d12:0x5d3b, size: 5
 				this.parent.CommonTools.F0_1000_0a32_PlayTune(36, 0);
 
-				if (this.parent.GameData.GameSettingFlags.Animations) goto L5d4d;
-				goto L5d9f;
+				if (this.parent.GameData.GameSettingFlags.Animations && (city.StatusFlag & 0x1) == 0 && this.parent.Var_6b92 == 0)
+				{
+					this.parent.CityView.F19_0000_0000_ShowCityLayout(cityID, -2,
+						$"Civil Disorder in\n{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}! Mayor\nflees in panic.\n");
 
-			L5d4d:
-				if ((city.StatusFlag & 0x1) == 0) goto L5d5f;
-				goto L5d9f;
+					this.parent.CityView.F19_0000_18c1_CivilDisorderAnimation();
 
-			L5d5f:
-				if (this.parent.Var_6b92 == 0) goto L5d69;
-				goto L5d9f;
+					// Instruction address 0x1d12:0x5d91, size: 5
+					this.parent.Segment_1238.F0_1238_1b44();
 
-			L5d69:
-				this.parent.CityView.F19_0000_0000_ShowCityLayout(cityID, -2, 
-					$"Civil Disorder in\n{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}! Mayor\nflees in panic.\n");
+					this.parent.Var_6b92 = 1;
+				}
+				else
+				{
+					this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 
-				this.parent.CityView.F19_0000_18c1_CivilDisorderAnimation();
+					// Instruction address 0x1d12:0x5db1, size: 5
+					this.parent.Segment_1238.F0_1238_001e_ShowDialog($"Civil Disorder in\n{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}! Mayor\nflees in panic.\n", 100, 80);
+				}
 
-				// Instruction address 0x1d12:0x5d91, size: 5
-				this.parent.Segment_1238.F0_1238_1b44();
-
-				this.parent.Var_6b92 = 1;
-				goto L5db9;
-
-			L5d9f:
-				this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
-
-				// Instruction address 0x1d12:0x5db1, size: 5
-				this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
-
-			L5db9:
 				// Instruction address 0x1d12:0x5dbd, size: 5
 				this.parent.CommonTools.F0_1000_0a32_PlayTune(1, 0);
 
@@ -3638,17 +3494,8 @@ namespace OpenCivOne
 			L5f7a:
 				this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 
-				// Instruction address 0x1d12:0x5f88, size: 5
-				this.parent.CAPI.strcpy(0xba06, "Order restored\nin ");
-
-				// Instruction address 0x1d12:0x5f93, size: 5
-				this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID));
-
-				// Instruction address 0x1d12:0x5fa3, size: 5
-				this.parent.CAPI.strcat(0xba06, ".\n");
-
 				// Instruction address 0x1d12:0x5fb7, size: 5
-				this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+				this.parent.Segment_1238.F0_1238_001e_ShowDialog($"Order restored\nin {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 100, 80);
 
 				goto L603f;
 
@@ -3937,7 +3784,7 @@ namespace OpenCivOne
 
 			L65bf:
 				// Instruction address 0x1d12:0x65c7, size: 5
-				F0_1d12_6d33(local_c6, local_d2);
+				F0_1d12_6d33_AddPollutionToCell(local_c6, local_d2);
 
 				// Instruction address 0x1d12:0x65e3, size: 5
 				this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, local_c6 - 8, local_d2 - 6);
@@ -3947,17 +3794,8 @@ namespace OpenCivOne
 
 				this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.ScienceAdvisorReport;
 
-				// Instruction address 0x1d12:0x6609, size: 5
-				this.parent.CAPI.strcpy(0xba06, "Pollution near ");
-
-				// Instruction address 0x1d12:0x6614, size: 5
-				this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID));
-
-				// Instruction address 0x1d12:0x6624, size: 5
-				this.parent.CAPI.strcat(0xba06, ".\n");
-
 				// Instruction address 0x1d12:0x6638, size: 5
-				this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 80, 64);
+				this.parent.Segment_1238.F0_1238_001e_ShowDialog($"Pollution near {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 80, 64);
 
 			L6640:
 				if ((city.StatusFlag & 0x1) != 0) goto L6652;
@@ -4061,24 +3899,11 @@ namespace OpenCivOne
 				
 				city.RemoveImprovement(City.BitToImprovementEnum(local_bc));
 				
-				this.CPU.WriteUInt8(this.CPU.DS.UInt16, 0xba06, 0x0);
-
-				// Instruction address 0x1d12:0x6856, size: 5
-				this.parent.CAPI.strcat(0xba06, this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID));
-
-				// Instruction address 0x1d12:0x6866, size: 5
-				this.parent.CAPI.strcat(0xba06, "\ncan't maintain\n");
-
-				// Instruction address 0x1d12:0x687d, size: 5
-				this.parent.CAPI.strcat(0xba06, this.parent.GameData.GetImprovementType(local_bc + 1).Name);
-
-				// Instruction address 0x1d12:0x688d, size: 5
-				this.parent.CAPI.strcat(0xba06, ".\n");
-
 				this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 
 				// Instruction address 0x1d12:0x68a7, size: 5
-				this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+				this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+					$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}\ncan't maintain\n{this.parent.GameData.GetImprovementType(local_bc + 1).Name}.\n", 100, 80);
 
 				this.parent.GameData.Players[this.Var_6548_PlayerID].Coins += (short)(10 * this.parent.GameData.GetImprovementType(local_bc + 1).Cost);
 
@@ -4105,11 +3930,11 @@ namespace OpenCivOne
 				this.parent.MainCode.F0_11a8_0250_ShowMouse();
 
 				// !!! Do we really need to return a value?
-				this.CPU.AX.Int16 = (short)(this.parent.Var_70e2 - this.parent.Var_70e4);
+				return this.parent.Var_70e2 - this.parent.Var_70e4;
 			}
 
 		L6927:
-			return this.CPU.AX.Int16;
+			return 0;
 		}
 
 		/// <summary>
@@ -4449,7 +4274,7 @@ namespace OpenCivOne
 		/// </summary>
 		/// <param name="xPos"></param>
 		/// <param name="yPos"></param>
-		public void F0_1d12_6d33(int xPos, int yPos)
+		public void F0_1d12_6d33_AddPollutionToCell(int xPos, int yPos)
 		{
 			//this.CPU.Log.EnterBlock($"F0_1d12_6d33({xPos}, {yPos})");
 
@@ -4803,10 +4628,10 @@ namespace OpenCivOne
 
 					if ((this.parent.GameData.MapVisibility[mapXPos, mapYPos] & (1 << this.parent.GameData.HumanPlayerID)) != 0)
 					{
-						int local_10 = ((yPos & 1) * 2) + (xPos & 1);
+						int offsetIndex = ((yPos & 1) * 2) + (xPos & 1);
 
-						int rectXPos = ((xPos / 2) * 3) + this.CPU.ReadInt8(this.CPU.DS.UInt16, (ushort)(local_10 + 0x280c)) + 101;
-						int rectYPos = ((yPos / 2) * 3) + this.CPU.ReadInt8(this.CPU.DS.UInt16, (ushort)(local_10 + 0x2810)) + 118;
+						int rectXPos = 101 + ((xPos / 2) * 3) + cityMapOffsets[offsetIndex].X;
+						int rectYPos = 118 + ((yPos / 2) * 3) + cityMapOffsets[offsetIndex].Y;
 
 						// Instruction address 0x1d12:0x73a3, size: 5
 						if (this.parent.MapManagement.GetTerrainType(mapXPos, mapYPos) != TerrainTypeEnum.Water)

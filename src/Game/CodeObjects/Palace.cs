@@ -54,7 +54,7 @@ namespace OpenCivOne
 				this.oParent.GameData.Nations[this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].NationalityID].LongTune, 3);
 
 			// Instruction address 0x0000:0x009d, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, 0x4ae6, 1);
+			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "CBACK.PIC", 1);
 
 			// Instruction address 0x0000:0x00bd, size: 5
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
@@ -703,13 +703,13 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.E) goto L0897;
 			
 			// Instruction address 0x0000:0x089f, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, 0x4b81, 0);
+			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "SAD.PIC", 0);
 
 			goto L089a;
 
 		L0897:
 			// Instruction address 0x0000:0x089f, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, 0x4b89, 0);
+			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "CBACK.PIC", 0);
 
 		L089a:
 			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[12] > 0)
@@ -722,7 +722,7 @@ namespace OpenCivOne
 				this.oCPU.WriteUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa), this.oCPU.AX.LowUInt8);
 
 				// Instruction address 0x0000:0x08d8, size: 5
-				this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0x87, (ushort)(this.oCPU.BP.UInt16 - 0x10), 0);
+				this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 135, (ushort)(this.oCPU.BP.UInt16 - 0x10), 0);
 			}
 		
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c), 0x10);
@@ -1118,7 +1118,7 @@ namespace OpenCivOne
 			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
 			// Instruction address 0x0000:0x0ce0, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, 0x4bb0, 1);
+			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SAD.PIC", 1);
 
 		L0cf9:
 			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();

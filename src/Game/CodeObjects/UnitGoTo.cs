@@ -1,5 +1,3 @@
-using System;
-using IRB.VirtualCPU;
 using OpenCivOne.Graphics;
 
 namespace OpenCivOne

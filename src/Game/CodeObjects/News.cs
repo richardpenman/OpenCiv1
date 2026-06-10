@@ -1,5 +1,3 @@
-using IRB.VirtualCPU;
-
 namespace OpenCivOne
 {
 	public class News

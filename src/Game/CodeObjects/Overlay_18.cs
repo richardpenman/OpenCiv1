@@ -36,7 +36,7 @@ namespace OpenCivOne
 			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
 			// Instruction address 0x0000:0x0048, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, 0x4bc4, 1);
+			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "DOCKER.PIC", 1);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x0);
 
@@ -165,7 +165,7 @@ namespace OpenCivOne
 			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, (ushort)(this.oCPU.BP.UInt16 - 0x10), 0xc1d6);
 
 			// Instruction address 0x0000:0x0208, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, 0x4cea, 0xc5be);
+			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SP256.PAL", 0xc5be);
 
 			// Instruction address 0x0000:0x021c, size: 5
 			this.oParent.CAPI.memcpy(0xc744, 0xc35c, 0x180);
@@ -232,7 +232,7 @@ namespace OpenCivOne
 
 			// Instruction address 0x0000:0x02ba, size: 5
 			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 8,
-				this.oParent.Array_1946[playerID]);
+				this.oParent.Array_1946_PlayerColours[playerID]);
 
 			// Instruction address 0x0000:0x02ca, size: 5
 			this.oParent.CAPI.strcpy(0xba06, this.oParent.GameData.Players[playerID].Nationality);
@@ -454,13 +454,13 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.E) goto L0592;
 
 			// Instruction address 0x0000:0x0559, size: 5
-			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 240, 8, 80, 192, this.oParent.Array_1946[playerID]);
+			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 240, 8, 80, 192, this.oParent.Array_1946_PlayerColours[playerID]);
 
 			// Instruction address 0x0000:0x0571, size: 5
-			this.oParent.Graphics.F0_VGA_0599_DrawLine(this.oParent.Var_aa_Screen0_Rectangle, 0, 8, 0, 199, this.oParent.Array_1946[playerID]);
+			this.oParent.Graphics.F0_VGA_0599_DrawLine(this.oParent.Var_aa_Screen0_Rectangle, 0, 8, 0, 199, this.oParent.Array_1946_PlayerColours[playerID]);
 
 			// Instruction address 0x0000:0x058a, size: 5
-			this.oParent.Graphics.F0_VGA_0599_DrawLine(this.oParent.Var_aa_Screen0_Rectangle, 0, 199, 240, 199, this.oParent.Array_1946[playerID]);
+			this.oParent.Graphics.F0_VGA_0599_DrawLine(this.oParent.Var_aa_Screen0_Rectangle, 0, 199, 240, 199, this.oParent.Array_1946_PlayerColours[playerID]);
 
 		L0592:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 0x64);

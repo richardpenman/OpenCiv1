@@ -1469,7 +1469,7 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.E) goto L0f02;
 
 			// Instruction address 0x29f3:0x0efa, size: 5
-			this.oParent.CityWorker.F0_1d12_6d33(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)),
+			this.oParent.CityWorker.F0_1d12_6d33_AddPollutionToCell(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)));
 
 		L0f02:

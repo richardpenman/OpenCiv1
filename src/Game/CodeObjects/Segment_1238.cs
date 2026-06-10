@@ -2176,7 +2176,7 @@ namespace OpenCivOne
 			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, (ushort)(this.oCPU.BP.UInt16 - 0x10), 0xc1d6);
 
 			// Instruction address 0x1238:0x1c62, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, 0x1e56, 0xc5be);
+			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SP256.PAL", 0xc5be);
 
 			// Instruction address 0x1238:0x1c76, size: 5
 			this.oParent.CAPI.memcpy(0xc744, 0xc35c, 0x180);

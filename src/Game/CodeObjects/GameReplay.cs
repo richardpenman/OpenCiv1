@@ -1100,7 +1100,7 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0x0));
 			// Instruction address 0x0000:0x0b84, size: 5
 			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, xPos * 4, (yPos * 4) + 4, 4, 4,
-				this.oParent.Array_1946[this.oCPU.BX.UInt16]);
+				this.oParent.Array_1946_PlayerColours[this.oCPU.BX.UInt16]);
 			goto L0b8c;
 
 		L0c16:
@@ -1444,7 +1444,7 @@ namespace OpenCivOne
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x30), this.oCPU.AX.UInt16);
 
 			// Instruction address 0x0000:0x1061, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, 0x4112, 0);
+			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "SLAM1.PIC", 0);
 
 			// Instruction address 0x0000:0x1079, size: 5
 			this.oParent.CommonTools.F0_1000_04d4_TransformPaletteToColor(5, Color.FromRgb(0, 0, 0));
@@ -1456,7 +1456,7 @@ namespace OpenCivOne
 			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x24), "SLAM2.PIC");
 
 			// Instruction address 0x0000:0x10ce, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0x85, (ushort)(this.oCPU.BP.UInt16 - 0x24), 0);
+			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 133, (ushort)(this.oCPU.BP.UInt16 - 0x24), 0);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e), 0x0);
 
@@ -1519,13 +1519,13 @@ namespace OpenCivOne
 			this.oParent.CommonTools.F0_1000_0a32_PlayTune(this.oParent.GameData.Nations[this.oParent.GameData.Players[playerID].NationalityID].LongTune, 3);
 
 			// Instruction address 0x0000:0x1200, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x9), "pal");
+			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x9), "PAL");
 
 			// Instruction address 0x0000:0x1210, size: 5
 			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, (ushort)(this.oCPU.BP.UInt16 - 0x10), 0xc1d6);
 
 			// Instruction address 0x0000:0x1220, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, 0x412a, 0xbdee);
+			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SLAM1.PAL", 0xbdee);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e), 0xc0);
 
@@ -1581,10 +1581,10 @@ namespace OpenCivOne
 			this.oParent.CommonTools.F0_1000_033e_ResetWaitTimer();
 
 			// Instruction address 0x0000:0x12ab, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, 0x4134, 0);
+			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "SLAM1.PIC", 0);
 
 			// Instruction address 0x0000:0x12c5, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0x85, (ushort)(this.oCPU.BP.UInt16 - 0x24), 0);
+			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 133, (ushort)(this.oCPU.BP.UInt16 - 0x24), 0);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e), 0x0);
 
