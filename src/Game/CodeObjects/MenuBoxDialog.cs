@@ -134,7 +134,7 @@ namespace OpenCivOne
 					maxLineWidth = itemWidth;
 				}
 
-				// detect options and select checkmarks if necessary
+				// detect options and select check marks if necessary
 				if (menuItem.StartsWith(defaultCheckedChar))
 				{
 					optionIndexes.Add(i);
@@ -142,15 +142,15 @@ namespace OpenCivOne
 					// test if this option is checked
 					if ((this.parent.Var_d7f2_MenuBoxCheckedOptions & (0x1 << optionIndexes.Count - 1)) != 0)
 					{
-						// Current default is to pass space as first character and then ammend it to a checkmark (if selected)
+						// Current default is to pass space as first character and then amend it to a check mark (if selected)
 						menuItems[i] = '^' + menuItem.Substring(1);
 					}
 
 					// These are the shortcut characters which can be selected with the keyboard
-					// !!! To do: What if the shourtcut characters have a duplicate?
+					// !!! To do: What if the shortcut characters have a duplicate?
 					if (menuItem.Length > 1)
 					{
-						optionChars.Add(menuItem[1]);
+						optionChars.Add(char.ToLower(menuItem[1]));
 					}
 				}
 			}
@@ -422,11 +422,15 @@ namespace OpenCivOne
 								break;
 
 							default:
+								char ch = char.ToLower((char)pressedKey);
+
 								for (int i = 0; i < optionChars.Count; i++)
 								{
-									if (optionChars[i] != '\0' && optionChars[i] == pressedKey)
+									int index = (selectedOptionIndex + 1 + i) % optionIndexes.Count;
+
+									if (optionChars[index] != '\0' && optionChars[index] == ch)
 									{
-										selectedOptionIndex = i;
+										selectedOptionIndex = index;
 										break;
 									}
 								}
