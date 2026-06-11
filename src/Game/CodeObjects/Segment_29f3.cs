@@ -572,7 +572,7 @@ namespace OpenCivOne
 
 		L04ad:
 			// Instruction address 0x29f3:0x04ae, size: 5
-			this.oParent.CommonTools.F0_1000_0a32_PlayTune((short)this.oCPU.AX.UInt16, 0);
+			this.oParent.CommonTools.PlayTune((short)this.oCPU.AX.UInt16, 0);
 
 			// Instruction address 0x29f3:0x04bc, size: 5
 			this.oParent.MapManagement.F0_2aea_0e29_DrawUnit(playerID2, unitID2);
@@ -687,12 +687,12 @@ namespace OpenCivOne
 			this.oCPU.DI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.DI.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)));
 
 			// Instruction address 0x29f3:0x061e, size: 5
-			this.oParent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
+			this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
 				(short)this.oCPU.SI.UInt16 + 1, (short)this.oCPU.DI.UInt16 + 1,
 				this.oParent.Array_d4ce[64 + this.oParent.GameData.Players[playerID1].Units[unitID1].TypeID + (playerID1 * 32)]);
 
 			// Instruction address 0x29f3:0x062a, size: 5
-			this.oParent.CommonTools.F0_1182_0134_WaitTimer(2);
+			this.oParent.CommonTools.WaitTimer(2);
 
 			// Instruction address 0x29f3:0x0643, size: 5
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle,
@@ -743,12 +743,12 @@ namespace OpenCivOne
 			this.oCPU.DI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.DI.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)));
 
 			// Instruction address 0x29f3:0x06e6, size: 5
-			this.oParent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
+			this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
 				(short)this.oCPU.SI.UInt16 + 1, (short)this.oCPU.DI.UInt16 + 1,
 				this.oParent.Array_d4ce[32 + this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c))]);
 
 			// Instruction address 0x29f3:0x06f2, size: 5
-			this.oParent.CommonTools.F0_1182_0134_WaitTimer(4);
+			this.oParent.CommonTools.WaitTimer(4);
 
 			// Instruction address 0x29f3:0x070b, size: 5
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle,

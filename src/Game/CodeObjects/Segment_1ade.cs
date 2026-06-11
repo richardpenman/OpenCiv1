@@ -2404,7 +2404,7 @@ namespace OpenCivOne
 			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, (ushort)(this.oCPU.BP.UInt16 - 0x10), 0);
 
 			// Instruction address 0x1ade:0x1753, size: 5
-			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
+			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
 			// Instruction address 0x1ade:0x175b, size: 5
 			this.oParent.GameTools.F0_2dc4_065f_StopPaletteCycleSlots();
@@ -2416,7 +2416,7 @@ namespace OpenCivOne
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
 
 		L178c:
-			this.oParent.CommonTools.F0_1000_0a32_PlayTune(this.oParent.GameData.Nations[this.oParent.GameData.Players[playerID].NationalityID].ShortTune, 0);
+			this.oParent.CommonTools.PlayTune(this.oParent.GameData.Nations[this.oParent.GameData.Players[playerID].NationalityID].ShortTune, 0);
 
 			string discoveryText = $"{this.oParent.GameData.Players[playerID].Nationality} " +
 				$"{(F0_1ade_22b5_PlayerHasTechnology(this.oParent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Invention) ? "scientists" : "wise men")}" +
@@ -2466,7 +2466,7 @@ namespace OpenCivOne
 				this.oParent.CAPI.memcpy(0xc5c4, 0xc1dc, 0xff);
 
 				// Instruction address 0x1ade:0x198c, size: 5
-				this.oParent.CommonTools.F0_1000_04aa_TransformPalette(30, 0xc5be);
+				this.oParent.CommonTools.TransformPalette(30, 0xc5be);
 
 				// Instruction address 0x1ade:0x1994, size: 5
 				this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
@@ -2482,7 +2482,7 @@ namespace OpenCivOne
 			F0_1ade_1d2e(playerID, (TechnologyAdvanceEnum)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].ResearchTechnologyID, playerID1);
 			
 			// Instruction address 0x1ade:0x19c6, size: 5
-			this.oParent.CommonTools.F0_1000_0a32_PlayTune(1, 0);
+			this.oParent.CommonTools.PlayTune(1, 0);
 
 			this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].ResearchTechnologyID = -1;
 

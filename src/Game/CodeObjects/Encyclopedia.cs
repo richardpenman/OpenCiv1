@@ -88,10 +88,10 @@ namespace OpenCivOne
 			int topicCount;
 
 			// Instruction address 0x0000:0x0082, size: 5
-			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 14);
+			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 14);
 
 			// Instruction address 0x0000:0x00b2, size: 5
-			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 60, 2, 200, 9, 15);
+			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 60, 2, 200, 9, 15);
 
 			// Instruction address 0x0000:0x00c9, size: 5
 			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Game Encyclopedia", 161, 4, 0);
@@ -109,7 +109,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x0137, size: 5
-			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 2, 14, 316, 184, 15);
+			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 2, 14, 316, 184, 15);
 
 			BKeyValuePair<EncyclopediaTopicEnum, int>[] displayItems = new BKeyValuePair<EncyclopediaTopicEnum, int>[200];
 			int topicNameMaximumWidth = ((topicType != EncyclopediaTopicEnum.AllTopics && topicType != EncyclopediaTopicEnum.TechnologyAdvance) ? 150 : 100);
@@ -296,7 +296,7 @@ namespace OpenCivOne
 						}
 
 						// Instruction address 0x0000:0x061c, size: 5
-						this.parent.CheckPlayerTurn.F0_1403_4545_EmptyKeyboardAndMouse();
+						this.parent.CommonTools.EmptyKeyboardAndMouse();
 
 						return selectedTopicIndex;
 					}
@@ -340,7 +340,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x06b1, size: 5
-			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, (byte)colour);
+			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, (byte)colour);
 
 			// Instruction address 0x0000:0x06b9, size: 5
 			this.parent.UnitManagement.F0_1866_260e();
@@ -399,7 +399,7 @@ namespace OpenCivOne
 						int bitmapID = this.parent.Graphics.F0_VGA_0b85_ScreenToBitmap(1, (((topicIndex - 2) >> 2) * 50) + 1, (((topicIndex - 2) & 0x3) * 50) + 1, 49, 49);
 
 						// Instruction address 0x0000:0x0992, size: 5
-						this.parent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, 37, 17, bitmapID);
+						this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, 37, 17, bitmapID);
 
 						// Instruction address 0x0000:0x099d, size: 5
 						this.parent.GameTools.F0_2dc4_0523_FreeResource(bitmapID, "Encyclopedia");
@@ -438,7 +438,7 @@ namespace OpenCivOne
 					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Unit Type", xPosition, 36, 7);
 
 					// Instruction address 0x0000:0x0aa4, size: 5
-					this.parent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+					this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
 						216, 48, this.parent.Array_d4ce[96 + topicIndex]);
 
 					topicName = this.parent.GameData.Units[topicIndex].Name;
@@ -508,7 +508,7 @@ namespace OpenCivOne
 					this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 					// Instruction address 0x0000:0x0894, size: 5
-					this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 8, 76, 304, 116, (byte)colour);
+					this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 8, 76, 304, 116, (byte)colour);
 				}
 			}
 
@@ -580,7 +580,7 @@ namespace OpenCivOne
 						if (this.parent.GameData.Units[i].RequiredTechnology == (TechnologyAdvanceEnum)topicIndex)
 						{
 							// Instruction address 0x0000:0x0da3, size: 5
-							this.parent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+							this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
 								40, yPosition - 4, this.parent.Array_d4ce[64 + i + (this.parent.GameData.HumanPlayerID * 32)]);
 
 							// Instruction address 0x0000:0x0ddc, size: 5
@@ -839,7 +839,7 @@ namespace OpenCivOne
 			if (this.parent.Var_3934 == -1)
 			{
 				// Instruction address 0x0000:0x16ac, size: 5
-				this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 8, 8, 304, 184, (byte)colour);
+				this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 8, 8, 304, 184, (byte)colour);
 
 				// Instruction address 0x0000:0x16b4, size: 5
 				this.parent.GameTools.F0_2dc4_0626_StartPaletteCycleSlots();

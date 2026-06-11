@@ -28,7 +28,7 @@ namespace OpenCivOne
 
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
 
-				this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 2);
+				this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 2);
 
 				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(topic, 160, 192, 0);
 
@@ -144,9 +144,9 @@ namespace OpenCivOne
 
 				int windowHeight = this.parent.DrawTools.GetTextBlockHeight(content, 25, 256) + 4;
 
-				this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 56, 16, 208, windowHeight, 2);
+				this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 56, 16, 208, windowHeight, 2);
 
-				this.parent.MenuBoxDialog.F0_2d05_0a05_DrawRectangle(56, 16, 208, windowHeight, 10);
+				this.parent.DrawTools.DrawRectangle(56, 16, 208, windowHeight, 10);
 
 				this.parent.Var_aa_Screen0_Rectangle.FontID = 2;
 
@@ -183,9 +183,9 @@ namespace OpenCivOne
 
 				int windowHeight = this.parent.DrawTools.GetTextBlockHeight(content, 25, 256) + 4;
 
-				this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 56, 16, 208, windowHeight, 4);
+				this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 56, 16, 208, windowHeight, 4);
 
-				this.parent.MenuBoxDialog.F0_2d05_0a05_DrawRectangle(56, 16, 208, windowHeight, 12);
+				this.parent.DrawTools.DrawRectangle(56, 16, 208, windowHeight, 12);
 
 				this.parent.Var_aa_Screen0_Rectangle.FontID = 2;
 

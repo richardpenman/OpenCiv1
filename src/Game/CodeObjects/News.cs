@@ -42,13 +42,13 @@ namespace OpenCivOne
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
 			}
 
-			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 100, 15);
+			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 100, 15);
 
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 4;
 
 			this.parent.Graphics.F0_VGA_0599_DrawLine(this.parent.Var_aa_Screen0_Rectangle, 1, 1, 318, 1, 0);
 
-			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 8, 3, 304, 20, 15);
+			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 8, 3, 304, 20, 15);
 
 			this.parent.Var_aa_Screen0_Rectangle.BackColor = 15;
 
@@ -61,7 +61,7 @@ namespace OpenCivOne
 			{
 				for (int i = 0; i < 16; i++)
 				{
-					this.parent.CommonTools.F0_1000_0797_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+					this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
 						20 * i, 100 - this.parent.CAPI.RNG.Next(2), this.parent.Var_df0c);
 				}
 			}
@@ -71,7 +71,7 @@ namespace OpenCivOne
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 5;
 
 			string newsTitle = "The Daily News";
-			int titleWidth = this.parent.DrawTools.F0_1182_00ef_GetStringWidth(newsTitle);
+			int titleWidth = this.parent.DrawTools.GetStringWidth(newsTitle);
 
 			if (newCityID >= 0)
 			{
@@ -94,13 +94,13 @@ namespace OpenCivOne
 						break;
 				}
 
-				titleWidth = this.parent.DrawTools.F0_1182_00ef_GetStringWidth(newsTitle);
+				titleWidth = this.parent.DrawTools.GetStringWidth(newsTitle);
 
 				if (titleWidth > 300)
 				{
 					newsTitle = $"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(newCityID)} News";
 
-					titleWidth = this.parent.DrawTools.F0_1182_00ef_GetStringWidth(newsTitle);
+					titleWidth = this.parent.DrawTools.GetStringWidth(newsTitle);
 				}
 			}
 

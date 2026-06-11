@@ -34,7 +34,7 @@ namespace OpenCivOne
 
 			this.oParent.MainCode.F0_11a8_0268_HideMouse();
 
-			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
+			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
 			int playerBitMask = 0x1 << selectedPlayerID;
 
@@ -50,12 +50,12 @@ namespace OpenCivOne
 						if (this.oParent.MapManagement.GetTerrainType(j, i) != TerrainTypeEnum.Water)
 						{
 							// Instruction address 0x0000:0x00c6, size: 5
-							this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, x, y, 4, 4, 2);
+							this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, x, y, 4, 4, 2);
 						}
 						else
 						{
 							// Instruction address 0x0000:0x00c6, size: 5
-							this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, x, y, 4, 4, 1);
+							this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, x, y, 4, 4, 1);
 						}
 
 						if (this.oParent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(j, i).HasFlag(TerrainImprovementFlagsEnum.City))
@@ -63,7 +63,7 @@ namespace OpenCivOne
 							int cityPlayerID = this.oParent.MapManagement.F0_2aea_1369_GetCityOwner(j, i);
 
 							// Instruction address 0x0000:0x0159, size: 5
-							this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, x, y, 4, 4, this.oParent.Array_1946_PlayerColours[cityPlayerID]);
+							this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, x, y, 4, 4, this.oParent.Array_1946_PlayerColours[cityPlayerID]);
 						}
 						else
 						{
@@ -72,10 +72,10 @@ namespace OpenCivOne
 							if (unitPlayerID != -1)
 							{
 								// Instruction address 0x0000:0x013f, size: 5
-								this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, x + 1, y + 1, 3, 3, 0);
+								this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, x + 1, y + 1, 3, 3, 0);
 
 								// Instruction address 0x0000:0x0159, size: 5
-								this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, x, y, 3, 3, this.oParent.Array_1946_PlayerColours[unitPlayerID]);
+								this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, x, y, 3, 3, this.oParent.Array_1946_PlayerColours[unitPlayerID]);
 							}
 						}
 					}
@@ -306,13 +306,13 @@ namespace OpenCivOne
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
 
 			// Instruction address 0x0000:0x0040, size: 5
-			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 1);
+			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 1);
 
 			// Instruction address 0x0000:0x005d, size: 5
 			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(this.oParent.GameData.Players[playerID].Nationality, 128, 4, 15);
 
 			// Instruction address 0x0000:0x0078, size: 5
-			this.oParent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle, 16, 4, this.oParent.Array_d4ce[64 + (playerID * 32)]);
+			this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle, 16, 4, this.oParent.Array_d4ce[64 + (playerID * 32)]);
 
 			// Instruction address 0x0000:0x00b6, size: 5
 			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Government: {this.oParent.Array_1966[this.oParent.GameData.Players[playerID].GovernmentType]}", 16, 24, 15);
@@ -452,7 +452,7 @@ namespace OpenCivOne
 
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
 
-			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 1);
+			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 1);
 
 			int xOffset = 0;
 			int yOffset = 18;
@@ -473,7 +473,7 @@ namespace OpenCivOne
 				{
 					this.oParent.Graphics.F0_VGA_0599_DrawLine(this.oParent.Var_aa_Screen0_Rectangle, 36, yOffset - 1, 319, yOffset - 1, 9);
 
-					this.oParent.CommonTools.F0_1000_084d_DrawBitmapToScreen(
+					this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(
 						this.oParent.Var_aa_Screen0_Rectangle, ((xOffset & 1) * 16) + 2, yOffset - 4, this.oParent.Array_d4ce[96 + i]);
 
 					xOffset++;
@@ -488,7 +488,7 @@ namespace OpenCivOne
 			{
 				this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{this.oParent.GameData.Players[i].Ranking}", (i * 30) + 84, 1, 15);
 
-				this.oParent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
+				this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
 					(30 * i) + 90, 2, this.oParent.Array_d4ce[64 + (i * 32)]);
 
 				yOffset = 18;
@@ -523,14 +523,14 @@ namespace OpenCivOne
 			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			// Show destroyed unit statistics
-			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 4);
+			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 4);
 
 			for (int i = 1; i < 8; i++)
 			{
 				this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0(
 					this.oParent.GameData.Players[i].Nationality, i * 40, 8, this.oParent.Array_1946_PlayerColours[i]);
 
-				this.oParent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle, i * 40, 16, this.oParent.Array_d4ce[64 + (i * 32)]);
+				this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle, i * 40, 16, this.oParent.Array_d4ce[64 + (i * 32)]);
 
 				this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0(
 					this.oParent.GameData.Players[i].Nationality, 4, i * 12 + 32, this.oParent.Array_1946_PlayerColours[i]);

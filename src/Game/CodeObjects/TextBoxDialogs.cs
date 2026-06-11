@@ -55,7 +55,7 @@ namespace OpenCivOne
 
 				// Borders
 				// Instruction address 0x0000:0x003e, size: 5
-				this.parent.MenuBoxDialog.F0_2d05_0a05_DrawRectangle(80, 80, 160, 32, 11);
+				this.parent.DrawTools.DrawRectangle(80, 80, 160, 32, 11);
 
 				// Title
 				// Instruction address 0x0000:0x0055, size: 5
@@ -119,7 +119,7 @@ namespace OpenCivOne
 
 			// Borders
 			// Instruction address 0x0000:0x010f, size: 5
-			this.parent.MenuBoxDialog.F0_2d05_0a05_DrawRectangle(158, 88, 160, 32, 11);
+			this.parent.DrawTools.DrawRectangle(158, 88, 160, 32, 11);
 
 			// Title
 			// Instruction address 0x0000:0x0126, size: 5
@@ -163,7 +163,7 @@ namespace OpenCivOne
 			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 158, 88, 160, 32, 15);
 
 			// Instruction address 0x0000:0x01b2, size: 5
-			this.parent.MenuBoxDialog.F0_2d05_0a05_DrawRectangle(158, 88, 160, 32, 11);
+			this.parent.DrawTools.DrawRectangle(158, 88, 160, 32, 11);
 
 			// Instruction address 0x0000:0x01c9, size: 5
 			this.parent.DrawStringTools.F0_1182_005c_DrawStringToScreen0("Name of your Tribe...", 166, 90, 0);
@@ -216,7 +216,7 @@ namespace OpenCivOne
 
 			// Borders
 			// Instruction address 0x0000:0x0353, size: 5
-			this.parent.MenuBoxDialog.F0_2d05_0a05_DrawRectangle(64, 78, 224, 24, 0);
+			this.parent.DrawTools.DrawRectangle(64, 78, 224, 24, 0);
 
 			// Title
 			// Instruction address 0x0000:0x0369, size: 5
@@ -292,7 +292,7 @@ namespace OpenCivOne
 			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, xPos, yPos, (7 * maxTextLength), 11, 15);
 
 			// Instruction address 0x0000:0x0456, size: 5
-			this.parent.MenuBoxDialog.F0_2d05_0a05_DrawRectangle(xPos, yPos - 1, maxTextLength * 8 + 8, 13, 0);
+			this.parent.DrawTools.DrawRectangle(xPos, yPos - 1, maxTextLength * 8 + 8, 13, 0);
 
 			this.parent.Var_aa_Screen0_Rectangle.BackColor = 0xf;
 

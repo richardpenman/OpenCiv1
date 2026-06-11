@@ -257,7 +257,7 @@ namespace IRB.VirtualCPU
 					this.oOldMouseLocation = this.oMouseLocation;
 					this.oOldMouseButtons = this.oMouseButtons;
 
-					this.oParent.CommonTools.F0_1000_17db_MouseEvent();
+					this.oParent.CommonTools.HandleMouseEvent();
 
 					this.POPF_UInt16();
 					this.oES.UInt16 = this.POP_UInt16();

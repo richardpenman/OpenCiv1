@@ -30,9 +30,9 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Initializes and calibrates timer
+		/// Initializes main game timer
 		/// </summary>
-		public void F0_1000_0000_InitializeTimer()
+		public void StartGameMainTimer()
 		{
 			//this.oCPU.Log.EnterBlock("F0_1000_0000_InitializeTimer()");
 
@@ -40,14 +40,14 @@ namespace OpenCivOne
 			if (this.timer == null)
 			{
 				this.CPU.EnableTimer = true;
-				this.timer = new Timer(F0_1000_01a7_Timer, null, 10, 10);
+				this.timer = new Timer(MainGameTimer, null, 10, 10);
 			}
 		}
 
 		/// <summary>
-		/// ?
+		/// Stops main game timer
 		/// </summary>
-		public void F0_1000_0051_StopTimer()
+		public void StopGameMainTimer()
 		{
 			//this.oCPU.Log.EnterBlock("F0_1000_0051_InitTimer()");
 
@@ -62,7 +62,7 @@ namespace OpenCivOne
 		/// <summary>
 		/// Timer function, it should fire approximately every 20 ms
 		/// </summary>
-		private void F0_1000_01a7_Timer(object? state)
+		private void MainGameTimer(object? state)
 		{
 			lock (VCPU.GraphicsLock)
 			{
@@ -71,19 +71,19 @@ namespace OpenCivOne
 				if (this.transformFlag)
 				{
 					// Instruction address 0x1000:0x0349, size: 5
-					F0_1000_0631_TransformPaletteTimer();
+					TransformPaletteTimer();
 				}
 				else
 				{
 					// Instruction address 0x1000:0x034e, size: 5
-					F0_1000_044a_CyclePaletteTimer();
+					CyclePaletteTimer();
 				}
 
 				this.parent.Var_5c_TickCount++;
 
 				// sound driver call
 				// Instruction address 0x1000:0x01e7, size: 5
-				F0_1000_0a40_SoundWorker();
+				SoundWorkerTimer();
 
 				this.inTimer = false;
 			}
@@ -93,7 +93,7 @@ namespace OpenCivOne
 		/// Processes palette cycles and updates current palette
 		/// </summary>
 		/// <exception cref="Exception"></exception>
-		public void F0_1000_044a_CyclePaletteTimer()
+		public void CyclePaletteTimer()
 		{
 			for (int i = 0; i < this.pletteCycleSlots.Count; i++)
 			{
@@ -123,7 +123,7 @@ namespace OpenCivOne
 		/// ?
 		/// </summary>
 		/// <exception cref="Exception"></exception>
-		public void F0_1000_0631_TransformPaletteTimer()
+		public void TransformPaletteTimer()
 		{
 			if (this.transformFlag)
 			{
@@ -150,7 +150,7 @@ namespace OpenCivOne
 		/// Reset timer count
 		/// </summary>
 		/// <returns></returns>
-		public void F0_1000_033e_ResetWaitTimer()
+		public void ResetWaitTimer()
 		{
 			// function body
 			this.parent.Var_5c_TickCount = 0;
@@ -160,11 +160,11 @@ namespace OpenCivOne
 		/// Waits for specified number of main timer ticks
 		/// </summary>
 		/// <param name="waitTime"></param>
-		public void F0_1182_0134_WaitTimer(int waitTime)
+		public void WaitTimer(int waitTime)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1182_0134_WaitTime({waitTime})");
 
-			F0_1000_033e_ResetWaitTimer();
+			ResetWaitTimer();
 
 			int iTime = Math.Max(waitTime * 12, 1);
 
@@ -187,7 +187,7 @@ namespace OpenCivOne
 		/// <param name="fromColorIndex"></param>
 		/// <param name="toColorIndex"></param>
 		/// <exception cref="Exception"></exception>
-		public void F0_1000_0382_AddPaletteCycleSlot(int index, int speed, byte fromColorIndex, byte toColorIndex)
+		public void AddPaletteCycleSlot(int index, int speed, byte fromColorIndex, byte toColorIndex)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1000_0382_AddPaletteCycleSlot({index}, {speed}, {fromColorIndex}, {toColorIndex})");
 
@@ -249,7 +249,7 @@ namespace OpenCivOne
 		/// ?
 		/// </summary>
 		/// <param name="index"></param>
-		public void F0_1000_03fa_StartPaletteCycleSlot(int index)
+		public void StartPaletteCycleSlot(int index)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1000_03fa_StartPaletteCycleSlot({index})");
 
@@ -276,7 +276,7 @@ namespace OpenCivOne
 		/// ?
 		/// </summary>
 		/// <param name="index"></param>
-		public void F0_1000_042b_StopPaletteCycleSlot(int index)
+		public void StopPaletteCycleSlot(int index)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1000_042b_StopPaletteCycleSlot({index})");
 
@@ -310,7 +310,7 @@ namespace OpenCivOne
 		/// </summary>
 		/// <param name="speed"></param>
 		/// <param name="palettePtr"></param>
-		public void F0_1000_04aa_TransformPalette(int speed, ushort palettePtr)
+		public void TransformPalette(int speed, ushort palettePtr)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1000_04aa_TransformPalette({speed}, 0x{palettePtr:x4})");
 
@@ -358,7 +358,7 @@ namespace OpenCivOne
 		/// </summary>
 		/// <param name="speed"></param>
 		/// <param name="palettePtr"></param>
-		public void F0_1000_04aa_TransformPalette(int speed, byte[] palette)
+		public void TransformPalette(int speed, byte[] palette)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1000_04aa_TransformPalette({speed}, 0x{palettePtr:x4})");
 
@@ -406,7 +406,7 @@ namespace OpenCivOne
 		/// </summary>
 		/// <param name="speed"></param>
 		/// <param name="color"></param>
-		public void F0_1000_04d4_TransformPaletteToColor(int speed, Color color)
+		public void TransformPaletteToColor(int speed, Color color)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1000_04d4_TransformPaletteToColor({speed}, {color})");
 
@@ -479,49 +479,9 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// Init sound engine
 		/// </summary>
-		/// <param name="rectPtr"></param>
-		/// <param name="xPos"></param>
-		/// <param name="yPos"></param>
-		/// <param name="bitmapPtr"></param>
-		public void F0_1000_0797_DrawBitmapToScreen(CRectangle rect, int xPos, int yPos, int bitmapPtr)
-		{
-			//this.oCPU.Log.EnterBlock($"F0_1000_0797_DrawBitmapToScreen({rect}, {xPos}, {yPos}, 0x{bitmapPtr:x4})");
-
-			// function body
-			this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(rect, xPos, yPos, bitmapPtr);
-
-			if (this.parent.Var_5403 != 0)
-			{
-				this.parent.Var_5402 = 0;
-			}
-		}
-
-		/// <summary>
-		/// ?
-		/// </summary>
-		/// <param name="rectPtr"></param>
-		/// <param name="xPos"></param>
-		/// <param name="yPos"></param>
-		/// <param name="bitmapPtr"></param>
-		public void F0_1000_084d_DrawBitmapToScreen(CRectangle rect, int xPos, int yPos, int bitmapPtr)
-		{
-			//this.oCPU.Log.EnterBlock($"F0_1000_084d_DrawBitmapToScreen({rect}, {xPos}, {yPos}, 0x{bitmapPtr:x4})");
-
-			// function body
-			this.parent.Graphics.F0_VGA_0d47_DrawBitmapToScreen(rect, xPos, yPos, bitmapPtr);
-
-			if (this.parent.Var_5403 != 0)
-			{
-				this.parent.Var_5402 = 0;
-			}
-		}
-
-		/// <summary>
-		/// Sound function
-		/// </summary>
-		public void F0_1000_0a2b_InitSound()
+		public void InitSoundEngine()
 		{
 			//this.oCPU.Log.EnterBlock("Sound overlay 'F0_1000_0a2b_InitSound'");
 
@@ -531,11 +491,11 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Sound function, possibly: Play Music
+		/// Play the selected music or effect
 		/// </summary>
 		/// <param name="tune"></param>
 		/// <param name="param2"></param>
-		public void F0_1000_0a32_PlayTune(short tune, ushort param2)
+		public void PlayTune(short tune, ushort param2)
 		{
 			if (this.parent.GameData.GameSettingFlags.Sound)
 			{
@@ -545,10 +505,10 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Sound function
+		/// Dispose of sound engine
 		/// </summary>
 		/// <returns></returns>
-		public void F0_1000_0a39_CloseSound()
+		public void CloseSoundEngine()
 		{
 			//this.oCPU.Log.EnterBlock("Sound overlay 'F0_1000_0a39_CloseSound'");
 
@@ -558,10 +518,10 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Sound function
+		/// Refreshes the sound engine status
 		/// </summary>
 		/// <returns></returns>
-		public ushort F0_1000_0a40_SoundWorker()
+		public ushort SoundWorkerTimer()
 		{
 			//this.oCPU.Log.EnterBlock("Sound overlay 'F0_1000_0a40_SoundWorker'");
 
@@ -570,9 +530,9 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Sound function, possibly advance sound buffer
+		/// Refreshes the fast sound engine status
 		/// </summary>
-		public void F0_1000_0a47_FastSoundWorker()
+		public void FastSoundWorkerTimer()
 		{
 			//this.oCPU.Log.EnterBlock("Sound overlay 'F0_1000_0a47_FastSoundWorker'");
 
@@ -583,10 +543,10 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Sound function
+		/// Advances the sound engine timer
 		/// </summary>
 		/// <returns></returns>
-		public ushort F0_1000_0a4e_SoundTimer()
+		public ushort SoundEngineTimer()
 		{
 			//this.oCPU.Log.EnterBlock("Sound overlay 'F0_1000_0a4e_SoundTimer'");
 
@@ -595,31 +555,10 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Fills the rectangle with color
-		/// </summary>
-		/// <param name="rectPtr"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="mode"></param>
-		public void F0_1000_0bfa_FillRectangle(CRectangle rect, int x, int y, int width, int height, ushort mode)
-		{
-			//this.oCPU.Log.EnterBlock($"F0_1000_0bfa_FillRectangle({rect}, {x}, {y}, {width}, {height}, 0x{mode:x4})");
-
-			// function body
-			if (width > 0 && height > 0)
-			{
-				this.parent.Graphics.F0_VGA_040a_FillRectangle(rect.ScreenID, 
-					new GRectangle(rect.Left + x, rect.Top + y, width, height), (byte)(mode & 0xff), (byte)((mode & 0xff00) >> 8));
-			}
-		}
-
-		/// <summary>
 		/// Reset and init the mouse subsystem
 		/// </summary>
 		/// <returns>true if mouse is detected</returns>
-		public void F0_1000_163e_InitMouse()
+		public void InitMouse()
 		{
 			//this.oCPU.Log.EnterBlock("F0_1000_163e_InitMouse()");
 
@@ -631,12 +570,12 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// Sets the mouse position and icon
 		/// </summary>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <param name="bitmapPtr"></param>
-		public void F0_1000_1697(int x, int y, int bitmapPtr)
+		public void SetMousePositionAndIcon(int x, int y, int bitmapPtr)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1000_1697({param1}, {param2}, {bitmapPtr})");
 
@@ -647,11 +586,11 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// Update mouse position
 		/// </summary>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
-		public void F0_1000_16ae(int x, int y)
+		public void UpdateMousePosition(int x, int y)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1000_16ae({param1}, {param2})");
 
@@ -702,7 +641,7 @@ namespace OpenCivOne
 		/// <summary>
 		/// Handles mouse events
 		/// </summary>
-		public void F0_1000_17db_MouseEvent()
+		public void HandleMouseEvent()
 		{
 			//this.oCPU.Log.EnterBlock("F0_1000_17db_MouseEvent()");
 
@@ -724,6 +663,23 @@ namespace OpenCivOne
 					this.parent.Var_5402 = 2;
 				}
 			}
+		}
+
+		/// <summary>
+		/// Empties keyboard buffer and mouse statuses
+		/// </summary>
+		public void EmptyKeyboardAndMouse()
+		{
+			while (this.parent.CAPI.kbhit() != 0)
+			{
+				this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
+			}
+
+			do
+			{
+				this.parent.MainCode.F0_11a8_0223_UpdateMouseState();
+			}
+			while (this.parent.Var_db3a_MouseButton != 0);
 		}
 	}
 }

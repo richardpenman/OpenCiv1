@@ -1624,7 +1624,7 @@ namespace OpenCivOne
 				goto L13f0;
 
 			// Instruction address 0x0000:0x136f, size: 5
-			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 35, 192, 250, 7, 8);
+			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 35, 192, 250, 7, 8);
 
 			if (this.oParent.GameData.Players[0].Score > 0)
 			{
@@ -1632,7 +1632,7 @@ namespace OpenCivOne
 				this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_007c_CheckValueRange(this.oParent.GameData.Players[0].Score / 4, 0, 250);
 
 				// Instruction address 0x0000:0x13b4, size: 5
-				this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 35, 192, (short)this.oCPU.AX.UInt16, 7, 11);
+				this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 35, 192, (short)this.oCPU.AX.UInt16, 7, 11);
 			}
 
 			this.oParent.Var_aa_Screen0_Rectangle.ScreenID = 0;
@@ -1690,7 +1690,7 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.G) goto L1442;
 
 			// Instruction address 0x0000:0x143a, size: 5
-			this.oParent.CommonTools.F0_1000_084d_DrawBitmapToScreen(
+			this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(
 				this.oParent.Var_aa_Screen0_Rectangle,
 				this.oCPU.ReadInt16(this.oCPU.DS.UInt16, 0xb25c),
 				this.oCPU.ReadInt16(this.oCPU.DS.UInt16, 0xb2bc),

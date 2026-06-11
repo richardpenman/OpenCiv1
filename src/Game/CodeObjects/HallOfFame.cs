@@ -138,7 +138,7 @@ namespace OpenCivOne
 			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
 
 			// Instruction address 0x0000:0x00f3, size: 5
-			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 15);
+			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 15);
 
 			// Instruction address 0x0000:0x010a, size: 5
 			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("CIVILIZATION", 160, 16, 0);
@@ -178,7 +178,7 @@ namespace OpenCivOne
 			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0("'C\x0083lear'", 252, 189, 0);
 
 			// Instruction address 0x0000:0x01a5, size: 5
-			this.oParent.MenuBoxDialog.F0_2d05_0a05_DrawRectangle(236, 187, 60, 10, 11);
+			this.oParent.DrawTools.DrawRectangle(236, 187, 60, 10, 11);
 
 		L01ad:
 			// Instruction address 0x0000:0x01ad, size: 5
@@ -291,7 +291,7 @@ namespace OpenCivOne
 
 		L0346:
 			// Instruction address 0x0000:0x0357, size: 5
-			this.oParent.DrawTools.F0_1182_00ef_GetStringWidth(0xba06);
+			this.oParent.DrawTools.GetStringWidth(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06));
 
 			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x140);
@@ -642,10 +642,10 @@ namespace OpenCivOne
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
 
 			// Instruction address 0x0000:0x06c8, size: 5
-			this.oParent.CommonTools.F0_1000_0a32_PlayTune(34, 0);
+			this.oParent.CommonTools.PlayTune(34, 0);
 
 			// Instruction address 0x0000:0x06e4, size: 5
-			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 15);
+			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 15);
 
 			// Instruction address 0x0000:0x06ec, size: 5
 			this.oParent.UnitManagement.F0_1866_260e();
@@ -662,7 +662,7 @@ namespace OpenCivOne
 			this.oParent.DrawTools.FillRectangleWithPattern(80, 4, 160, 27);
 
 			// Instruction address 0x0000:0x0777, size: 5
-			this.oParent.MenuBoxDialog.F0_2d05_0a66_DrawShadowRectangle(80, 4, 159, 26, 11, 8);
+			this.oParent.DrawTools.DrawShadowRectangle(80, 4, 159, 26, 11, 8);
 
 			this.oCPU.CMP_UInt16(param2, 0x0);
 			if (this.oCPU.Flags.E) goto L0788;
@@ -782,7 +782,7 @@ namespace OpenCivOne
 			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			// Instruction address 0x0000:0x098d, size: 5
-			this.oParent.CommonTools.F0_1000_0a32_PlayTune(1, 0);
+			this.oParent.CommonTools.PlayTune(1, 0);
 
 			this.oParent.Var_aa_Screen0_Rectangle.FontID = 1;
 
@@ -910,7 +910,7 @@ namespace OpenCivOne
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
 
 			// Instruction address 0x0000:0x0aac, size: 5
-			this.oParent.CommonTools.F0_1000_0bfa_FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 3);
+			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 3);
 
 			// Instruction address 0x0000:0x0ac4, size: 5
 			this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("The Top Five Cities in the World", 80, 12, 15);
@@ -1005,7 +1005,7 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = (ushort)this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))].PlayerID;
 
 			// Instruction address 0x0000:0x0c4b, size: 5
-			this.oParent.MenuBoxDialog.F0_2d05_0a05_DrawRectangle(8, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)),
+			this.oParent.DrawTools.DrawRectangle(8, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)),
 				303, 25, this.oParent.Array_1946_PlayerColours[this.oCPU.BX.UInt16]);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 

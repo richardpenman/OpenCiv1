@@ -37,10 +37,10 @@ namespace OpenCivOne
 			this.parent.Var_6e92_MouseIconHandle = this.parent.Graphics.LoadIcon("TORCH.PIC");
 
 			// Instruction address 0x11a8:0x0122, size: 5
-			this.parent.CommonTools.F0_1000_163e_InitMouse();
+			this.parent.CommonTools.InitMouse();
 
 			// Instruction address 0x11a8:0x0139, size: 5
-			this.parent.CommonTools.F0_1000_1697(0, 0, this.parent.Var_6e92_MouseIconHandle);
+			this.parent.CommonTools.SetMousePositionAndIcon(0, 0, this.parent.Var_6e92_MouseIconHandle);
 			
 			// Instruction address 0x11a8:0x0142, size: 3
 			F0_11a8_0250_ShowMouse();
@@ -75,13 +75,13 @@ namespace OpenCivOne
 			this.parent.Var_587d = 0;
 		
 			// Instruction address 0x11a8:0x0191, size: 3
-			this.parent.CommonTools.F0_1000_0a32_PlayTune(0, 0);
+			this.parent.CommonTools.PlayTune(0, 0);
 
 			// Instruction address 0x11a8:0x0197, size: 5
-			this.parent.CommonTools.F0_1000_0a39_CloseSound();
+			this.parent.CommonTools.CloseSoundEngine();
 
 			// Instruction address 0x11a8:0x019c, size: 5
-			this.parent.CommonTools.F0_1000_0051_StopTimer();			
+			this.parent.CommonTools.StopGameMainTimer();			
 		}
 
 		/// <summary>
@@ -194,7 +194,7 @@ namespace OpenCivOne
 				do
 				{
 					// Instruction address 0x11a8:0x04c2, size: 5
-					timerValue = this.parent.CommonTools.F0_1000_0a4e_SoundTimer();
+					timerValue = this.parent.CommonTools.SoundEngineTimer();
 
 					if (timerValue <= 5269) break;
 
@@ -204,7 +204,7 @@ namespace OpenCivOne
 				while (timerValue != 0);
 
 				// Instruction address 0x11a8:0x04e1, size: 3
-				this.parent.CommonTools.F0_1000_0a32_PlayTune(1, 0);
+				this.parent.CommonTools.PlayTune(1, 0);
 
 				switch (this.parent.Var_6b32_SelectedGameType)
 				{
@@ -243,7 +243,7 @@ namespace OpenCivOne
 							F0_11a8_0268_HideMouse();
 
 							// Instruction address 0x11a8:0x07e4, size: 5
-							this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 7);
+							this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 7);
 						}
 						break;
 
@@ -273,10 +273,10 @@ namespace OpenCivOne
 						F0_11a8_0268_HideMouse();
 
 						// Instruction address 0x11a8:0x05b6, size: 5
-						this.parent.CommonTools.F0_1000_04d4_TransformPaletteToColor(5, Color.FromRgb(0, 0, 0));
+						this.parent.CommonTools.TransformPaletteToColor(5, Color.FromRgb(0, 0, 0));
 
 						// Instruction address 0x11a8:0x05d1, size: 5
-						this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
+						this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
 						// Instruction address 0x11a8:0x05e1, size: 5
 						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "CUSTOM.PIC", 1);
@@ -293,7 +293,7 @@ namespace OpenCivOne
 						while (this.parent.Var_7ef6_PlanetLandMass == -1)
 						{
 							// Instruction address 0x11a8:0x062b, size: 5
-							this.parent.CommonTools.F0_1000_16ae(210, 11);
+							this.parent.CommonTools.UpdateMousePosition(210, 11);
 
 							// Instruction address 0x11a8:0x064f, size: 5
 							this.parent.Var_7ef6_PlanetLandMass = this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox("LAND MASS:\n Small\n Normal\n Large\n", 200, 1, false, true, true);
@@ -313,7 +313,7 @@ namespace OpenCivOne
 						while (this.parent.Var_7ef8_PlanetTemperature == -1)
 						{
 							// Instruction address 0x11a8:0x0688, size: 5
-							this.parent.CommonTools.F0_1000_16ae(210, 61);
+							this.parent.CommonTools.UpdateMousePosition(210, 61);
 
 							// Instruction address 0x11a8:0x06ac, size: 5
 							this.parent.Var_7ef8_PlanetTemperature = this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox("TEMPERATURE:\n Cool\n Temperate\n Warm\n", 200, 51, false, true, true);
@@ -333,7 +333,7 @@ namespace OpenCivOne
 						while (this.parent.Var_7efa_PlanetClimate == -1)
 						{
 							// Instruction address 0x11a8:0x06e5, size: 5
-							this.parent.CommonTools.F0_1000_16ae(210, 111);
+							this.parent.CommonTools.UpdateMousePosition(210, 111);
 
 							// Instruction address 0x11a8:0x0709, size: 5
 							this.parent.Var_7efa_PlanetClimate = this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox("CLIMATE:\n Arid\n Normal\n Wet\n", 200, 101, false, true, true);
@@ -353,7 +353,7 @@ namespace OpenCivOne
 						while (this.parent.Var_7efc_PlanetAge == -1)
 						{
 							// Instruction address 0x11a8:0x0742, size: 5
-							this.parent.CommonTools.F0_1000_16ae(210, 161);
+							this.parent.CommonTools.UpdateMousePosition(210, 161);
 
 							// Instruction address 0x11a8:0x0766, size: 5
 							this.parent.Var_7efc_PlanetAge = this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox("AGE:\n 3 billion years\n 4 billion years\n 5 billion years\n", 200, 151, false, true, true);
@@ -413,11 +413,11 @@ namespace OpenCivOne
 			if (this.parent.Var_6b32_SelectedGameType == 0 || this.parent.Var_6b32_SelectedGameType == 2 || this.parent.Var_6b32_SelectedGameType == 3)
 			{
 				// Instruction address 0x11a8:0x0840, size: 5
-				this.parent.CommonTools.F0_1000_04d4_TransformPaletteToColor(5, Color.FromRgb(0, 0, 0));
+				this.parent.CommonTools.TransformPaletteToColor(5, Color.FromRgb(0, 0, 0));
 			}
 
 			// Instruction address 0x11a8:0x085b, size: 5
-			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
+			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
 			// Instruction address 0x11a8:0x0867, size: 5
 			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SP257.PIC", 1);
@@ -438,7 +438,7 @@ namespace OpenCivOne
 
 			// function body
 			// Instruction address 0x11a8:0x0891, size: 5
-			this.parent.CommonTools.F0_1000_1697(0, 0, this.parent.Array_d4ce[7]);
+			this.parent.CommonTools.SetMousePositionAndIcon(0, 0, this.parent.Array_d4ce[7]);
 
 			if (this.parent.GameData.TurnCount == 0)
 			{

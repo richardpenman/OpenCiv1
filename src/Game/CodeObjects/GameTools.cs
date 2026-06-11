@@ -290,13 +290,13 @@ namespace OpenCivOne
 
 			// function body
 			// Instruction address 0x2dc4:0x05ed, size: 5
-			this.parent.CommonTools.F0_1000_0382_AddPaletteCycleSlot(1, 15, 96, 103);
+			this.parent.CommonTools.AddPaletteCycleSlot(1, 15, 96, 103);
 
 			// Instruction address 0x2dc4:0x0605, size: 5
-			this.parent.CommonTools.F0_1000_0382_AddPaletteCycleSlot(2, 15, 104, 111);
+			this.parent.CommonTools.AddPaletteCycleSlot(2, 15, 104, 111);
 
 			// Instruction address 0x2dc4:0x061d, size: 5
-			this.parent.CommonTools.F0_1000_0382_AddPaletteCycleSlot(3, 15, 112, 127);
+			this.parent.CommonTools.AddPaletteCycleSlot(3, 15, 112, 127);
 		}
 
 		/// <summary>
@@ -308,13 +308,13 @@ namespace OpenCivOne
 			if (!this.Var_2fec_PaletteCycleEnabled)
 			{
 				// Instruction address 0x2dc4:0x0638, size: 5
-				this.parent.CommonTools.F0_1000_03fa_StartPaletteCycleSlot(1);
+				this.parent.CommonTools.StartPaletteCycleSlot(1);
 
 				// Instruction address 0x2dc4:0x0644, size: 5
-				this.parent.CommonTools.F0_1000_03fa_StartPaletteCycleSlot(2);
+				this.parent.CommonTools.StartPaletteCycleSlot(2);
 
 				// Instruction address 0x2dc4:0x0650, size: 5
-				this.parent.CommonTools.F0_1000_03fa_StartPaletteCycleSlot(3);
+				this.parent.CommonTools.StartPaletteCycleSlot(3);
 			}
 
 			this.Var_2fec_PaletteCycleEnabled = true;
@@ -331,13 +331,13 @@ namespace OpenCivOne
 			if (this.Var_2fec_PaletteCycleEnabled)
 			{
 				// Instruction address 0x2dc4:0x0671, size: 5
-				this.parent.CommonTools.F0_1000_042b_StopPaletteCycleSlot(1);
+				this.parent.CommonTools.StopPaletteCycleSlot(1);
 
 				// Instruction address 0x2dc4:0x067d, size: 5
-				this.parent.CommonTools.F0_1000_042b_StopPaletteCycleSlot(2);
+				this.parent.CommonTools.StopPaletteCycleSlot(2);
 
 				// Instruction address 0x2dc4:0x0689, size: 5
-				this.parent.CommonTools.F0_1000_042b_StopPaletteCycleSlot(3);
+				this.parent.CommonTools.StopPaletteCycleSlot(3);
 			}
 
 			this.Var_2fec_PaletteCycleEnabled = false;

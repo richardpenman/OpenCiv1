@@ -1339,7 +1339,7 @@ namespace OpenCivOne
 						this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(this.storyText, 160, 160, 3);
 
 						// Instruction address 0x0000:0x18eb, size: 5
-						this.parent.CommonTools.F0_1182_0134_WaitTimer(5);
+						this.parent.CommonTools.WaitTimer(5);
 					}
 
 					if (this.storyFile != null)
@@ -1365,13 +1365,13 @@ namespace OpenCivOne
 						}
 
 						// Instruction address 0x0000:0x1956, size: 5
-						this.parent.CommonTools.F0_1182_0134_WaitTimer(10);
+						this.parent.CommonTools.WaitTimer(10);
 
 						// Instruction address 0x0000:0x196b, size: 5
 						this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(this.storyText, 160, 160, 3);
 
 						// Instruction address 0x0000:0x1977, size: 5
-						this.parent.CommonTools.F0_1182_0134_WaitTimer(5);
+						this.parent.CommonTools.WaitTimer(5);
 
 						// Instruction address 0x0000:0x198c, size: 5
 						this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(this.storyText, 160, 160, 11);
@@ -1382,13 +1382,13 @@ namespace OpenCivOne
 							if (this.storyTimeIndex == 0)
 							{
 								// Instruction address 0x0000:0x19b2, size: 5
-								this.parent.CommonTools.F0_1000_033e_ResetWaitTimer();
+								this.parent.CommonTools.ResetWaitTimer();
 
 								// Instruction address 0x0000:0x19bb, size: 5
-								this.parent.CommonTools.F0_1000_0a32_PlayTune(1, 0);
+								this.parent.CommonTools.PlayTune(1, 0);
 
 								// Instruction address 0x0000:0x19c7, size: 5
-								this.parent.CommonTools.F0_1000_0a32_PlayTune(4, 0);
+								this.parent.CommonTools.PlayTune(4, 0);
 							}
 
 							this.storyTimeIndex++;
@@ -1403,7 +1403,7 @@ namespace OpenCivOne
 								for (int i = 1; i <= this.paletteSlotCount; i++)
 								{
 									// Instruction address 0x0000:0x1a06, size: 5
-									this.parent.CommonTools.F0_1000_042b_StopPaletteCycleSlot(i);
+									this.parent.CommonTools.StopPaletteCycleSlot(i);
 								}
 
 								this.paletteSlotCount = 0;
@@ -1412,7 +1412,7 @@ namespace OpenCivOne
 								this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(2, 0, 0, imageFileName, 0);
 
 								// Instruction address 0x0000:0x1a39, size: 5
-								this.parent.CommonTools.F0_1000_04d4_TransformPaletteToColor(8, Color.FromRgb(0, 0, 0));
+								this.parent.CommonTools.TransformPaletteToColor(8, Color.FromRgb(0, 0, 0));
 
 								// Instruction address 0x0000:0x1a59, size: 5
 								this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19e8_Screen2_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
@@ -1425,7 +1425,7 @@ namespace OpenCivOne
 								this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, imageFileName, out palette);
 
 								// Instruction address 0x0000:0x1a93, size: 5
-								this.parent.CommonTools.F0_1000_04aa_TransformPalette(8, palette);
+								this.parent.CommonTools.TransformPalette(8, palette);
 
 								PaletteCycleInfo[] paletteSlots = this.storyImagePaletteCycles[this.buildImageIndex - 1];
 
@@ -1435,13 +1435,13 @@ namespace OpenCivOne
 								{
 									PaletteCycleInfo paletteSlot = paletteSlots[i];
 
-									this.parent.CommonTools.F0_1000_0382_AddPaletteCycleSlot(i + 1, paletteSlot.Speed, (byte)paletteSlot.FromIndex, (byte)paletteSlot.ToIndex);
+									this.parent.CommonTools.AddPaletteCycleSlot(i + 1, paletteSlot.Speed, (byte)paletteSlot.FromIndex, (byte)paletteSlot.ToIndex);
 								}
 
 								for (int i = 1; i <= this.paletteSlotCount; i++)
 								{
 									// Instruction address 0x0000:0x1b16, size: 5
-									this.parent.CommonTools.F0_1000_03fa_StartPaletteCycleSlot(i);
+									this.parent.CommonTools.StartPaletteCycleSlot(i);
 								}
 
 								this.buildImageIndex++;
@@ -1457,7 +1457,7 @@ namespace OpenCivOne
 							if (this.storyFile.EndOfStream)
 							{
 								// Instruction address 0x0000:0x1b74, size: 5
-								this.parent.CommonTools.F0_1182_0134_WaitTimer(180);
+								this.parent.CommonTools.WaitTimer(180);
 							}
 
 							this.storyFile.Close();
@@ -1465,12 +1465,12 @@ namespace OpenCivOne
 						}
 
 						// Instruction address 0x0000:0x1b8c, size: 5
-						this.parent.CommonTools.F0_1000_0a32_PlayTune(1, 0);
+						this.parent.CommonTools.PlayTune(1, 0);
 
 						for (int i = 1; i <= this.paletteSlotCount; i++)
 						{
 							// Instruction address 0x0000:0x1ba5, size: 5
-							this.parent.CommonTools.F0_1000_042b_StopPaletteCycleSlot(i);
+							this.parent.CommonTools.StopPaletteCycleSlot(i);
 						}
 						this.paletteSlotCount = 0;
 

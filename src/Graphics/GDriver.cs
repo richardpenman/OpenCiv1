@@ -403,32 +403,6 @@ namespace OpenCivOne.Graphics
 			}
 		}
 
-		public void F0_VGA_0d47_DrawBitmapToScreen(CRectangle rect, int x, int y, int bitmapPtr)
-		{
-			// function body
-			if (this.aScreens.ContainsKey(rect.ScreenID))
-			{
-				if (this.aBitmaps.ContainsKey(bitmapPtr))
-				{
-					lock (VCPU.GraphicsLock)
-					{
-						GBitmap screen = this.aScreens.GetValueByKey(rect.ScreenID);
-						GBitmap bitmap = this.aBitmaps.GetValueByKey(bitmapPtr);
-
-						screen.DrawBitmap(rect.Left + x, rect.Top + y, bitmap, true);
-					}
-				}
-				else
-				{
-					this.oCPU.Log.WriteLine($"The bitmap 0x{bitmapPtr:x4} is not allocated");
-				}
-			}
-			else
-			{
-				throw new Exception($"The screen {rect.ScreenID} is not allocated");
-			}
-		}
-
 		public void DrawBitmapToScreen(GBitmap bitmap, int xFrom, int yFrom, int width, int height, CRectangle dstRect, int xTo, int yTo)
 		{
 			// function body

@@ -307,7 +307,7 @@ namespace OpenCivOne
 			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
 
 			// Instruction address 0x2459:0x035d, size: 5
-			this.oParent.CommonTools.F0_1000_0a32_PlayTune(this.oParent.GameData.Nations[this.oParent.GameData.Players[playerID].NationalityID].ShortTune, 0);
+			this.oParent.CommonTools.PlayTune(this.oParent.GameData.Nations[this.oParent.GameData.Players[playerID].NationalityID].ShortTune, 0);
 
 			if (!this.oParent.GameData.GameSettingFlags.Animations) goto L03b7;
 
@@ -335,7 +335,7 @@ namespace OpenCivOne
 
 		L03c2:
 			// Instruction address 0x2459:0x03c6, size: 5
-			this.oParent.CommonTools.F0_1000_0a32_PlayTune(1, 0);
+			this.oParent.CommonTools.PlayTune(1, 0);
 
 			this.oCPU.AX.UInt16 = (ushort)this.oParent.GameData.HumanPlayerID;
 			this.oCPU.CMP_UInt16((ushort)playerID, this.oCPU.AX.UInt16);
@@ -841,7 +841,7 @@ namespace OpenCivOne
 
 			// function body
 			// Instruction address 0x2459:0x0918, size: 5
-			this.oParent.CheckPlayerTurn.F0_1403_4545_EmptyKeyboardAndMouse();
+			this.oParent.CommonTools.EmptyKeyboardAndMouse();
 
 		L091d:
 			// Instruction address 0x2459:0x091d, size: 5

@@ -190,7 +190,7 @@ namespace OpenCivOne
 
 			if (windowFrame)
 			{
-				FillRectangleWithDoubleShadow(x, y, windowWidth, windowHeight, 7);
+				this.parent.DrawTools.FillRectangleWithDoubleShadow(x, y, windowWidth, windowHeight, 7);
 
 				if (this.parent.Var_2f9e_MessageBoxStyle != MenuBoxReportTypeEnum.None)
 				{
@@ -208,7 +208,7 @@ namespace OpenCivOne
 					else
 					{
 						// Instruction address 0x2d05:0x06c8, size: 5
-						this.parent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, 
+						this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, 
 							contentLeft - 44, contentTop, this.parent.Array_df62[(int)this.parent.Var_2f9e_MessageBoxStyle]);
 					}
 				}
@@ -286,7 +286,7 @@ namespace OpenCivOne
 			if (emptyKeyboardAndMouse)
 			{
 				// Instruction address 0x2d05:0x003e, size: 5
-				this.parent.CheckPlayerTurn.F0_1403_4545_EmptyKeyboardAndMouse();
+				this.parent.CommonTools.EmptyKeyboardAndMouse();
 			}
 
 			if (this.parent.Var_db38 == 0)
@@ -395,7 +395,7 @@ namespace OpenCivOne
 								if (!this.parent.GameData.GameSettingFlags.Sound)
 								{
 									// Instruction address 0x2d05:0x03ad, size: 5
-									this.parent.CommonTools.F0_1000_0a32_PlayTune(1, 0);
+									this.parent.CommonTools.PlayTune(1, 0);
 								}
 								break;
 
@@ -485,7 +485,7 @@ namespace OpenCivOne
 						if (selectedOptionIndex != -1)
 						{
 							// Instruction address 0x2d05:0x0441, size: 5
-							this.parent.CommonTools.F0_1182_0134_WaitTimer(20);
+							this.parent.CommonTools.WaitTimer(20);
 						}
 						else
 						{
@@ -507,117 +507,6 @@ namespace OpenCivOne
 			this.parent.Var_db38 = 0;
 
 			return -1;
-		}
-
-		/// <summary>
-		/// Fills the rectangle and draws a double shadow around the rectangle
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="mode"></param>
-		public void FillRectangleWithDoubleShadow(int x, int y, int width, int height, ushort mode)
-		{
-			// function body
-			if (mode == 7 && this.parent.Var_2f98_PatternAvailable)
-			{
-				// Instruction address 0x2d05:0x098c, size: 5
-				this.parent.DrawTools.FillRectangleWithPattern(x, y, width, height);
-			}
-			else
-			{
-				// Instruction address 0x2d05:0x09b1, size: 5
-				this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, x, y, width, height, mode);
-			}
-
-			this.parent.Var_aa_Screen0_Rectangle.BackColor = (byte)mode;
-
-			// Instruction address 0x2d05:0x09e1, size: 3
-			F0_2d05_0a66_DrawShadowRectangle(x - 1, y - 1, width + 1, height + 1, 15, 8);
-
-			// Instruction address 0x2d05:0x09fd, size: 3
-			F0_2d05_0a05_DrawRectangle(x - 2, y - 2, width + 3, height + 3, 0);
-		}
-
-		/// <summary>
-		/// Fills the rectangle and draws a double shadow around the rectangle
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="mode"></param>
-		public void F0_2d05_096c_FillRectangleWithDoubleShadow(int x, int y, int width, int height, ushort mode)
-		{
-			// function body
-			if (mode == 7 && this.parent.Var_2f98_PatternAvailable)
-			{
-				// Instruction address 0x2d05:0x098c, size: 5
-				this.parent.DrawTools.FillRectangleWithPattern(x + 1, y + 1, width, height);
-			}
-			else
-			{
-				// Instruction address 0x2d05:0x09b1, size: 5
-				this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, x + 1, y + 1, width, height, mode);
-			}
-		
-			this.parent.Var_aa_Screen0_Rectangle.BackColor = (byte)mode;
-
-			// Instruction address 0x2d05:0x09e1, size: 3
-			F0_2d05_0a66_DrawShadowRectangle(x + 1, y + 1, width, height, 15, 8);
-
-			// Instruction address 0x2d05:0x09fd, size: 3
-			F0_2d05_0a05_DrawRectangle(x, y, width + 2, height + 2, 0);
-		}
-
-		/// <summary>
-		/// Draws a rectangle
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="mode"></param>
-		public void F0_2d05_0a05_DrawRectangle(int x, int y, int width, int height, ushort mode)
-		{
-			// function body
-			// Instruction address 0x2d05:0x0a1d, size: 5
-			this.parent.Graphics.F0_VGA_0599_DrawLine(this.parent.Var_aa_Screen0_Rectangle, x, y, x + width, y, mode);
-
-			// Instruction address 0x2d05:0x0a34, size: 5
-			this.parent.Graphics.F0_VGA_0599_DrawLine(this.parent.Var_aa_Screen0_Rectangle, x, y + height, x + width, y + height, mode);
-
-			// Instruction address 0x2d05:0x0a45, size: 5
-			this.parent.Graphics.F0_VGA_0599_DrawLine(this.parent.Var_aa_Screen0_Rectangle, x + width, y, x + width, y + height, mode);
-
-			// Instruction address 0x2d05:0x0a5a, size: 5
-			this.parent.Graphics.F0_VGA_0599_DrawLine(this.parent.Var_aa_Screen0_Rectangle, x, y, x, y + height, mode);
-		}
-
-		/// <summary>
-		/// Draws a shadow rectangle
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="mode"></param>
-		/// <param name="mode1"></param>
-		public void F0_2d05_0a66_DrawShadowRectangle(int x, int y, int width, int height, ushort mode, ushort mode1)
-		{
-			// function body
-			// Instruction address 0x2d05:0x0a7e, size: 5
-			this.parent.Graphics.F0_VGA_0599_DrawLine(this.parent.Var_aa_Screen0_Rectangle, x, y, x + width, y, mode1);
-
-			// Instruction address 0x2d05:0x0a95, size: 5
-			this.parent.Graphics.F0_VGA_0599_DrawLine(this.parent.Var_aa_Screen0_Rectangle, x, y + height, x + width, y + height, mode);
-
-			// Instruction address 0x2d05:0x0aa6, size: 5
-			this.parent.Graphics.F0_VGA_0599_DrawLine(this.parent.Var_aa_Screen0_Rectangle, x + width, y, x + width, y + height, mode1);
-
-			// Instruction address 0x2d05:0x0abd, size: 5
-			this.parent.Graphics.F0_VGA_0599_DrawLine(this.parent.Var_aa_Screen0_Rectangle, x, y + 1, x, y + height, mode);
 		}
 
 		/// <summary>

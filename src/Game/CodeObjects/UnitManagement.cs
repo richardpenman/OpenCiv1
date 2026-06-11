@@ -515,7 +515,7 @@ namespace OpenCivOne
 				if (xScreen != -1)
 				{
 					// Instruction address 0x1866:0x0bf3, size: 5
-					this.parent.MenuBoxDialog.F0_2d05_0a05_DrawRectangle(xScreen, yScreen, 15, 15, 15);
+					this.parent.DrawTools.DrawRectangle(xScreen, yScreen, 15, 15, 15);
 				}
 
 				// Instruction address 0x1866:0x0bfb, size: 5
@@ -525,12 +525,12 @@ namespace OpenCivOne
 				if (this.parent.CAPI.kbhit() != 0)
 				{
 					// Instruction address 0x1866:0x0c12, size: 5
-					this.parent.CommonTools.F0_1182_0134_WaitTimer(1);
+					this.parent.CommonTools.WaitTimer(1);
 				}
 				else
 				{
 					// Instruction address 0x1866:0x0c12, size: 5
-					this.parent.CommonTools.F0_1182_0134_WaitTimer(10);
+					this.parent.CommonTools.WaitTimer(10);
 				}
 
 				// Instruction address 0x1866:0x0c1a, size: 5
@@ -566,7 +566,7 @@ namespace OpenCivOne
 				if (xScreen != -1)
 				{
 					// Instruction address 0x1866:0x0cb1, size: 5
-					this.parent.MenuBoxDialog.F0_2d05_0a05_DrawRectangle(xScreen, yScreen, 15, 15, 0);
+					this.parent.DrawTools.DrawRectangle(xScreen, yScreen, 15, 15, 0);
 				}
 
 				// Instruction address 0x1866:0x0cb9, size: 5
@@ -576,12 +576,12 @@ namespace OpenCivOne
 				if (this.parent.CAPI.kbhit() != 0)
 				{
 					// Instruction address 0x1866:0x0cd0, size: 5
-					this.parent.CommonTools.F0_1182_0134_WaitTimer(1);
+					this.parent.CommonTools.WaitTimer(1);
 				}
 				else
 				{
 					// Instruction address 0x1866:0x0cd0, size: 5
-					this.parent.CommonTools.F0_1182_0134_WaitTimer(10);
+					this.parent.CommonTools.WaitTimer(10);
 				}
 
 				// Instruction address 0x1866:0x0cd8, size: 5
@@ -1918,12 +1918,12 @@ namespace OpenCivOne
 					direction = this.parent.MoveDirections[moveDirection];
 
 					// Instruction address 0x1866:0x1f0a, size: 5
-					this.parent.CommonTools.F0_1000_084d_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+					this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
 						(direction.X * i) + mapX + 1, (direction.Y * i) + mapY + 1,
 						this.parent.Array_d4ce[64 + this.parent.GameData.Players[playerID].Units[unitID].TypeID + (playerID * 32)]);
 
 					// Instruction address 0x1866:0x1f16, size: 5
-					this.parent.CommonTools.F0_1182_0134_WaitTimer(1);
+					this.parent.CommonTools.WaitTimer(1);
 
 					int newX = direction.X * i + mapX;
 					int newY = direction.Y * i + mapY;
@@ -1972,7 +1972,7 @@ namespace OpenCivOne
 
 		L1fe2:
 			// Instruction address 0x1866:0x1ffc, size: 5
-			this.parent.MenuBoxDialog.F0_2d05_096c_FillRectangleWithDoubleShadow(100, yTop, 120, (unitCount * 16) + 5, 3);
+			this.parent.DrawTools.FillRectangleWithDoubleShadow(100, yTop, 120, (unitCount * 16) + 5, 3);
 
 			unitCount = 0;
 			nextUnitID = unitID;
@@ -2002,7 +2002,7 @@ namespace OpenCivOne
 			this.parent.MainCode.F0_11a8_0250_ShowMouse();
 
 			// Instruction address 0x1866:0x20e9, size: 5
-			this.parent.CheckPlayerTurn.F0_1403_4545_EmptyKeyboardAndMouse();
+			this.parent.CommonTools.EmptyKeyboardAndMouse();
 
 			do
 			{
@@ -2042,7 +2042,7 @@ namespace OpenCivOne
 			this.parent.MainCode.F0_11a8_0250_ShowMouse();
 
 			// Instruction address 0x1866:0x225f, size: 5
-			this.parent.CheckPlayerTurn.F0_1403_4545_EmptyKeyboardAndMouse();
+			this.parent.CommonTools.EmptyKeyboardAndMouse();
 
 			return selectedUnitID;
 		}

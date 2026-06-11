@@ -185,7 +185,7 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock($"F0_2f4d_04f7_TrimStringToWidth(0x{text:x4}, {maxWidth})");
 
 			// function body
-			while (text.Length > 1 && this.parent.DrawTools.F0_1182_00ef_GetStringWidth(text) > maxWidth)
+			while (text.Length > 1 && this.parent.DrawTools.GetStringWidth(text) > maxWidth)
 			{
 				if (text[text.Length - 2] != ' ')
 				{

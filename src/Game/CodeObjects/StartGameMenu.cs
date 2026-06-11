@@ -55,7 +55,7 @@ namespace OpenCivOne
 			this.parent.MainCode.F0_11a8_0268_HideMouse();
 
 			// Instruction address 0x0000:0x00c0, size: 5
-			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 150, 200, 0);
+			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 150, 200, 0);
 
 			if ((this.parent.GameData.DifficultyLevel & 0x1) != 0)
 			{
@@ -322,7 +322,7 @@ namespace OpenCivOne
 			this.parent.MainCode.F0_11a8_0268_HideMouse();
 
 			// Instruction address 0x0000:0x0645, size: 5
-			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 150, 0, 170, 200, 0);
+			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 150, 0, 170, 200, 0);
 
 			this.parent.TextBoxDialogs.F23_0000_00d6_PlayerNameDialog();
 
@@ -355,14 +355,14 @@ namespace OpenCivOne
 			startText.Append("and Roads.\n");
 
 			// Instruction address 0x0000:0x0738, size: 5
-			this.parent.CommonTools.F0_1000_0a32_PlayTune(
+			this.parent.CommonTools.PlayTune(
 				this.parent.GameData.Nations[this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].NationalityID].LongTune, 3);
 
 			// Instruction address 0x0000:0x0740, size: 5
 			this.parent.MainCode.F0_11a8_0268_HideMouse();
 
 			// Instruction address 0x0000:0x0759, size: 5
-			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 15);
+			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 15);
 
 			// Instruction address 0x0000:0x0761, size: 5
 			this.parent.UnitManagement.F0_1866_260e();
@@ -447,7 +447,7 @@ namespace OpenCivOne
 				if (playerID == this.parent.GameData.HumanPlayerID)
 				{
 					// Instruction address 0x0000:0x08f4, size: 5
-					this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_19e8_Screen2_Rectangle, 240, 0, 80, 50, 0);
+					this.parent.DrawTools.FillRectangle(this.parent.Var_19e8_Screen2_Rectangle, 240, 0, 80, 50, 0);
 				}
 
 				// Instruction address 0x0000:0x08ff, size: 5
@@ -960,7 +960,7 @@ namespace OpenCivOne
 					$"{this.parent.Array_1966[this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].GovernmentType]}!\n");
 
 				// Instruction address 0x0000:0x1c38, size: 5
-				this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 100, 320, 100, 15);
+				this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 100, 320, 100, 15);
 
 				this.parent.Var_aa_Screen0_Rectangle.FontID = 6;
 
