@@ -204,11 +204,13 @@ namespace OpenCivOne
 
 			if (F11_0000_08f6_SaveGameData($"CIVIL{this.gameIndex}.SVE"))
 			{
-				MessageBox.Show(this.parent.MainWindow, "The current game has been saved.", "Result", MessageBoxIcon.Information);
+				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Game has been saved.", 125, 132, 0);
+				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Press key to continue.", 125, 142, 0);
+				this.parent.CAPI.getch();
 			}
 			else
-			{
-				MessageBox.Show(this.parent.MainWindow, "The current game was NOT saved.", "Error", MessageBoxIcon.Error);
+            {
+                MessageBox.Show(this.parent.MainWindow, "The current game was NOT saved.", "Error", MessageBoxIcon.Error);
 			}
 
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
