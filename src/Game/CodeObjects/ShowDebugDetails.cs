@@ -205,34 +205,24 @@ namespace OpenCivOne
 
 					switch (this.oParent.GameData.Players[selectedPlayerID].Continents[i].Strategy)
 					{
-						case 0:
-							// Settle ?
+						case PlayerContinentStrategyEnum.Settle:
 							strategyText = "S";
 							break;
 
-						case 1:
-							// Attack ?
+						case PlayerContinentStrategyEnum.Attack:
 							strategyText = "A";
 							break;
 
-						case 2:
-							// Defend ?
+						case PlayerContinentStrategyEnum.Defend:
 							strategyText = "D";
 							break;
 
-						// !!! What about values 3 and 4 ?
-						case 3:
-							strategyText = "V3";
-							break;
-
-						case 4:
-							strategyText = "V4";
-							break;
-
-						case 5:
-							// Trade or Transport ?
+						case PlayerContinentStrategyEnum.Transport:
 							strategyText = "T";
 							break;
+
+						default:
+							throw new Exception($"Invalid Player Continent Strategy: {this.oParent.GameData.Players[selectedPlayerID].Continents[i].Strategy}");
 					}
 
 					// Instruction address 0x0000:0x0447, size: 5
@@ -266,7 +256,7 @@ namespace OpenCivOne
 			StringBuilder unitStatus = new();
 
 			unitStatus.Append($"{this.oParent.GameData.Players[playerID].Nationality}\n({unitID})/" +
-				$"{this.oParent.GameData.Units[this.oParent.GameData.Players[playerID].Units[unitID].TypeID].Name}\n" +
+				$"{this.oParent.GameData.Units[(int)this.oParent.GameData.Players[playerID].Units[unitID].UnitType].Name}\n" +
 				$"{this.oParent.Segment_2459.F0_2459_08c6_GetCityName(this.oParent.GameData.Players[playerID].Units[unitID].HomeCityID)}\n" +
 				$"Loc:{this.oParent.GameData.Players[playerID].Units[unitID].Position.X},{this.oParent.GameData.Players[playerID].Units[unitID].Position.Y}\n");
 
@@ -281,7 +271,7 @@ namespace OpenCivOne
 			while (nextUnitID != -1 && nextUnitID != unitID && unitStatus.Length < 512)
 			{
 				// Instruction address 0x0000:0x066b, size: 5
-				unitStatus.Append($"*{this.oParent.GameData.Units[this.oParent.GameData.Players[playerID].Units[nextUnitID].TypeID].Name}\n");
+				unitStatus.Append($"*{this.oParent.GameData.Units[(int)this.oParent.GameData.Players[playerID].Units[nextUnitID].UnitType].Name}\n");
 
 				nextUnitID = this.oParent.GameData.Players[playerID].Units[nextUnitID].NextUnitID;
 			}
@@ -330,7 +320,7 @@ namespace OpenCivOne
 				$"{this.oParent.GameData.Players[playerID].UnitCount} units / " +
 				$"{this.oParent.GameData.Players[playerID].CityCount} cities / " +
 				$"{this.oParent.GameData.Players[playerID].SettlerCount} settlers / " +
-				$"{this.oParent.GameData.Players[playerID].LandCount} land", 16, 48, 15);
+				$"{this.oParent.GameData.Players[playerID].MapCellCount} land", 16, 48, 15);
 
 			int yOffset = 4;
 
@@ -340,25 +330,28 @@ namespace OpenCivOne
 				{
 					switch (this.oParent.GameData.Players[playerID].Continents[i].Strategy)
 					{
-						case 1:
+						case PlayerContinentStrategyEnum.Settle:
+							this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Settle/{i}", 256, yOffset, 7);
+							yOffset += 8;
+							break;
+
+						case PlayerContinentStrategyEnum.Attack:
 							this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Attack/{i}", 256, yOffset, 7);
 							yOffset += 8;
 							break;
 
-						case 2:
+						case PlayerContinentStrategyEnum.Defend:
 							this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Defend/{i}", 256, yOffset, 7);
 							yOffset += 8;
 							break;
 
-						case 5:
+						case PlayerContinentStrategyEnum.Transport:
 							this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Transport/{i}", 256, yOffset, 7);
 							yOffset += 8;
 							break;
 
 						default:
-							this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Settle/{i}", 256, yOffset, 7);
-							yOffset += 8;
-							break;
+							throw new Exception($"Invalid Player Continent Strategy: {this.oParent.GameData.Players[playerID].Continents[i].Strategy}");
 					}
 				}
 			}
@@ -367,20 +360,20 @@ namespace OpenCivOne
 
 			for (int i = 1; i < 8; i++)
 			{
-				if (i != playerID && (this.oParent.GameData.Players[playerID].Diplomacy[i] & 0xb) != 0)
+				if (i != playerID && (this.oParent.GameData.Players[playerID].Diplomacy[i] & (DiplomacyFlagsEnum.Contact | DiplomacyFlagsEnum.Peace | DiplomacyFlagsEnum.Vendetta)) != DiplomacyFlagsEnum.None)
 				{
 					StringBuilder diplomacyText = new();
 
 					diplomacyText.Append(this.oParent.GameData.Players[i].Nationality);
 
-					if ((this.oParent.GameData.Players[playerID].Diplomacy[i] & 0xb) == 0x1)
+					if ((this.oParent.GameData.Players[playerID].Diplomacy[i] & (DiplomacyFlagsEnum.Contact | DiplomacyFlagsEnum.Peace | DiplomacyFlagsEnum.Vendetta)) == DiplomacyFlagsEnum.Contact)
 					{
 						diplomacyText.Append(": Contact");
 					}
 
-					if ((this.oParent.GameData.Players[playerID].Diplomacy[i] & 2) != 0)
+					if (this.oParent.GameData.Players[playerID].Diplomacy[i].HasFlag(DiplomacyFlagsEnum.Peace))
 					{
-						if ((this.oParent.GameData.Players[playerID].Diplomacy[i] & 4) == 0)
+						if (!this.oParent.GameData.Players[playerID].Diplomacy[i].HasFlag(DiplomacyFlagsEnum.Allied))
 						{
 							diplomacyText.Append(": Peace");
 						}
@@ -390,7 +383,7 @@ namespace OpenCivOne
 						}
 					}
 
-					if ((this.oParent.GameData.Players[playerID].Diplomacy[i] & 8) != 0)
+					if (this.oParent.GameData.Players[playerID].Diplomacy[i].HasFlag(DiplomacyFlagsEnum.Vendetta))
 					{
 						diplomacyText.Append(": Vendetta");
 					}

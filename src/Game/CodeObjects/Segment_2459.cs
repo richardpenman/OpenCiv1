@@ -120,7 +120,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x2459:0x0101, size: 3
-			F0_2459_0687(cityID);
+			this.oCPU.AX.Int16 = (short)F0_2459_0687_GetCityTreasury(cityID);
 
 			// Instruction address 0x2459:0x0108, size: 5
 			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_007c_CheckValueRange(
@@ -145,10 +145,7 @@ namespace OpenCivOne
 			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, (ushort)playerID);
 			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
 
-			this.oCPU.AX.UInt16 = (ushort)((short)(0x22 * this.oParent.GameData.Players[playerID].Units[unitID].TypeID));
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-
-			if (this.oParent.GameData.Units[this.oParent.GameData.Players[playerID].Units[unitID].TypeID].AttackStrength > 2)
+			if (this.oParent.GameData.Units[(int)this.oParent.GameData.Players[playerID].Units[unitID].UnitType].AttackStrength > 2)
 				goto L016c;
 
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x28bc), 0x0);
@@ -239,7 +236,7 @@ namespace OpenCivOne
 				this.oCPU.ReadUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)));
 
 			// Instruction address 0x2459:0x0239, size: 5
-			this.oParent.Segment_25fb.F0_25fb_3401(playerID, 0,
+			this.oParent.AIEngine.F0_25fb_3401_PlayerClearContinentPolicies(playerID, UnitRoleTypeEnum.Settler,
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)),
 				4);
@@ -365,13 +362,13 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = (ushort)playerID;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			if ((this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[playerID] & 0x40) != 0)
+			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[playerID].HasFlag(DiplomacyFlagsEnum.Unknown40))
 				goto L041a;
 
 			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12));
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			if ((this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))] & 0x40) == 0)
+			if (!this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))].HasFlag(DiplomacyFlagsEnum.Unknown40))
 				goto L04bc;
 
 		L041a:
@@ -433,7 +430,7 @@ namespace OpenCivOne
 			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)));
 			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.AX.UInt16);
 
-			if (this.oParent.GameData.Players[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10))].TypeID == -1 ||
+			if (this.oParent.GameData.Players[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10))].UnitType == UnitTypeEnum.None ||
 				this.oParent.GameData.Players[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10))].HomeCityID != cityID)
 				goto L0531;
 			
@@ -599,65 +596,18 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// Calculate distributed treasury for a specific city (city worth)
 		/// </summary>
 		/// <param name="cityID"></param>
 		/// <returns></returns>
-		public ushort F0_2459_0687(int cityID)
+		public int F0_2459_0687_GetCityTreasury(int cityID)
 		{
-			this.oCPU.Log.EnterBlock($"F0_2459_0687({cityID})");
+			//this.oCPU.Log.EnterBlock($"F0_2459_0687({cityID})");
 
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x4);
-			this.oCPU.PUSH_UInt16(this.oCPU.DI.UInt16);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
-			this.oCPU.AX.UInt16 = 0x1c;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, (ushort)((short)cityID));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.AX.UInt16 = (ushort)this.oParent.GameData.Cities[cityID].PlayerID;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.AX.UInt16);
-			this.oCPU.AX.LowUInt8 = (byte)this.oParent.GameData.Cities[cityID].ActualSize;
-			this.oCPU.CBW(this.oCPU.AX);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), this.oCPU.AX.UInt16);
-			this.oCPU.AX.UInt16 = 0x7d00;
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.CX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
-			this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, (ushort)this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Coins);
-			if (this.oCPU.Flags.LE) goto L06ca;
-			this.oCPU.AX.UInt16 = (ushort)this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Coins;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.CX.UInt16 = (ushort)this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].TotalCitySize;
-			this.oCPU.CX.UInt16 = this.oCPU.INC_UInt16(this.oCPU.CX.UInt16);
-			this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			goto L06ec;
+			int playerID = this.oParent.GameData.Cities[cityID].PlayerID;
 
-		L06ca:
-			this.oCPU.AX.UInt16 = 0x1c;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, (ushort)((short)cityID));
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.AX.LowUInt8 = (byte)this.oParent.GameData.Cities[cityID].ActualSize;
-			this.oCPU.CBW(this.oCPU.AX);
-			this.oCPU.CX.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.AX.UInt16 = (ushort)this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Coins;
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.BX.UInt16 = (ushort)this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].TotalCitySize;
-			this.oCPU.BX.UInt16 = this.oCPU.INC_UInt16(this.oCPU.BX.UInt16);
-			this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.BX.UInt16);
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-
-		L06ec:
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.DI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F0_2459_0687");
-
-			return this.oCPU.AX.UInt16;
+			return (this.oParent.GameData.Players[playerID].Coins * this.oParent.GameData.Cities[cityID].ActualSize) / (this.oParent.GameData.Players[playerID].TotalCitySize + 1);
 		}
 
 		/// <summary>
@@ -805,7 +755,7 @@ namespace OpenCivOne
 				(TechnologyAdvanceEnum)this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), playerID2);
 			
 			// Instruction address 0x2459:0x08b9, size: 5
-			this.oParent.Segment_25fb.F0_25fb_3459(playerID1, -1);
+			this.oParent.AIEngine.F0_25fb_3459_PlayerChangeCityProductionForSameContinent(playerID1, -1);
 
 		L08c1:
 			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();

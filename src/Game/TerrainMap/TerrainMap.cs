@@ -1292,21 +1292,21 @@ namespace OpenCivOne
 			{
 				case UnitMovementTypeEnum.Land:
 					unit = new Unit();
-					unit.TypeID = (int)UnitTypeEnum.Militia;
+					unit.UnitType = UnitTypeEnum.Militia;
 					unit.Position = src;
 					unit.GoToDestination = dest;
 					break;
 
 				case UnitMovementTypeEnum.Water:
 					unit = new Unit();
-					unit.TypeID = (int)UnitTypeEnum.Trireme;
+					unit.UnitType = UnitTypeEnum.Trireme;
 					unit.Position = src;
 					unit.GoToDestination = dest;
 					break;
 
 				case UnitMovementTypeEnum.Air:
 					unit = new Unit();
-					unit.TypeID = (int)UnitTypeEnum.Fighter;
+					unit.UnitType = UnitTypeEnum.Fighter;
 					unit.Position = src;
 					unit.GoToDestination = dest;
 					break;
@@ -1335,7 +1335,7 @@ namespace OpenCivOne
 				bool destinationReached = false; // remains false if we can't find a path to a destination
 				TerrainMapGroupTypeEnum group1; // The unit can move on this terrain type
 				TerrainMapGroupTypeEnum group2; // The unit can move on this terrain type
-				UnitMovementTypeEnum movementType = this.oGameData.Units[unit.TypeID].MovementType;
+				UnitMovementTypeEnum movementType = this.oGameData.Units[(int)unit.UnitType].MovementType;
 
 				unit.GoToPath.Clear();
 

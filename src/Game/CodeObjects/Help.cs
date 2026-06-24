@@ -92,8 +92,10 @@ namespace OpenCivOne
 				{
 					int nearestCityID = this.parent.GameTools.F0_2dc4_0102_FindNearestCity(this.parent.GameData.Players[playerID].Units[unitID].Position.X, 
 						this.parent.GameData.Players[playerID].Units[unitID].Position.Y);
+					int nearestCityDistance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(this.parent.GameData.Players[playerID].Units[unitID].Position,
+						this.parent.GameData.Cities[nearestCityID].Position);
 
-					if (nearestCityID != -1 && this.parent.GameData.Cities[nearestCityID].PlayerID == playerID && this.parent.Var_6c9a == 1)
+					if (nearestCityID != -1 && this.parent.GameData.Cities[nearestCityID].PlayerID == playerID && nearestCityDistance == 1)
 					{
 						TerrainImprovementFlagsEnum terrainImprovements = this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(
 							this.parent.GameData.Players[playerID].Units[unitID].Position.X, this.parent.GameData.Players[playerID].Units[unitID].Position.Y);

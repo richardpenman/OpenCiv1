@@ -427,7 +427,7 @@ namespace OpenCivOne
 
 				this.parent.GameData.Players[playerID].CityCount = 0;
 				this.parent.GameData.Players[playerID].UnitCount = 0;
-				this.parent.GameData.Players[playerID].LandCount = 1;
+				this.parent.GameData.Players[playerID].MapCellCount = 1;
 				this.parent.GameData.Players[playerID].SettlerCount = 1;
 				this.parent.GameData.Players[playerID].ContactPlayerCountdown = -1;
 
@@ -438,7 +438,7 @@ namespace OpenCivOne
 
 				for (int i = 0; i < 128; i++)
 				{
-					this.parent.GameData.Players[playerID].Units[i].TypeID = -1;
+					this.parent.GameData.Players[playerID].Units[i].UnitType = UnitTypeEnum.None;
 					this.parent.GameData.Players[playerID].Units[i].Status = 0;
 				}
 
@@ -451,12 +451,12 @@ namespace OpenCivOne
 				}
 
 				// Instruction address 0x0000:0x08ff, size: 5
-				this.parent.Segment_25fb.F0_25fb_3223_ClearContinentPolicies(playerID);
+				this.parent.AIEngine.ClearPlayerContinentPolicies(playerID);
 
 				for (int i = 0; i < 8; i++)
 				{
-					this.parent.GameData.Players[playerID].Diplomacy[i] = 0;
-					this.parent.GameData.Players[i].Diplomacy[playerID] = 0;
+					this.parent.GameData.Players[playerID].Diplomacy[i] = DiplomacyFlagsEnum.None;
+					this.parent.GameData.Players[i].Diplomacy[playerID] = DiplomacyFlagsEnum.None;
 				}
 
 				for (int i = 0; i < 5; i++)
@@ -619,13 +619,13 @@ namespace OpenCivOne
 					this.parent.MapManagement.F0_2aea_138c_SetCityOwner(xStart, yStart, playerID);
 
 					// Instruction address 0x0000:0x0dcb, size: 5
-					this.parent.UnitManagement.F0_1866_0cf5_CreateUnit(playerID, 0, xStart, yStart);
+					this.parent.UnitManagement.F0_1866_0cf5_CreateUnit(playerID, UnitTypeEnum.Settler, xStart, yStart);
 
 					this.parent.GameData.Players[playerID].XStart = (short)xStart;
 
 					for (int i = 0; i < 128; i++)
 					{
-						if (this.parent.GameData.Players[0].Units[i].TypeID != -1 &&
+						if (this.parent.GameData.Players[0].Units[i].UnitType != UnitTypeEnum.None &&
 							this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(xStart, yStart,
 								this.parent.GameData.Players[0].Units[i].Position.X, this.parent.GameData.Players[0].Units[i].Position.Y) < 9)
 						{
@@ -675,7 +675,7 @@ namespace OpenCivOne
 
 				if (cityCount == 0)
 				{
-					if ((this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Diplomacy[playerID] & 0x40) != 0)
+					if (this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Diplomacy[playerID].HasFlag(DiplomacyFlagsEnum.Unknown40))
 					{
 						this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.ForeignMinisterReport;
 					}
@@ -702,7 +702,7 @@ namespace OpenCivOne
 
 					for (int i = 0; i < 128; i++)
 					{
-						if (this.parent.GameData.Players[playerID].Units[i].TypeID != -1)
+						if (this.parent.GameData.Players[playerID].Units[i].UnitType != UnitTypeEnum.None)
 						{
 							// Instruction address 0x0000:0x0f7d, size: 5
 							this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(playerID, i);

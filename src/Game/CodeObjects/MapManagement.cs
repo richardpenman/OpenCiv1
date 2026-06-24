@@ -675,7 +675,7 @@ namespace OpenCivOne
 			if (x >= 80 && x < 320 && y >= 8 && y < 193)
 			{
 				if ((unit.Status & 0x1) == 0 || GetTerrainType(unit.Position.X, unit.Position.Y) != TerrainTypeEnum.Water ||
-					this.parent.GameData.Units[unit.TypeID].MovementType == UnitMovementTypeEnum.Water)
+					this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Water)
 				{
 					// Instruction address 0x2aea:0x0f57, size: 5
 					this.parent.MainCode.F0_11a8_0268_HideMouse();
@@ -685,7 +685,7 @@ namespace OpenCivOne
 						// There are multiple units stacked
 
 						this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, x + 1, y + 1,
-							this.parent.Array_d4ce[64 + (playerID * 32) + unit.TypeID]);
+							this.parent.Array_d4ce[64 + (playerID * 32) + (int)unit.UnitType]);
 					}
 
 					// Instruction address 0x2aea:0x0fa0, size: 3
@@ -717,7 +717,7 @@ namespace OpenCivOne
 
 			// Instruction address 0x2aea:0x0fe2, size: 5
 			this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, x, y,
-				this.parent.Array_d4ce[64 + (playerID * 32) + unit.TypeID]);
+				this.parent.Array_d4ce[64 + (playerID * 32) + (int)unit.UnitType]);
 
 			if ((unit.Status & 0x8) != 0)
 			{
@@ -740,13 +740,13 @@ namespace OpenCivOne
 				this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("G", x + 4, y + 7, (byte)((playerID == 1) ? 9 : 15));
 			}
 
-			if (((UnitStatusEnum)unit.Status & UnitStatusEnum.SettlerBuildMask) != 0 && this.parent.GameData.Units[unit.TypeID].MovementType != UnitMovementTypeEnum.Air)
+			if (((UnitStatusEnum)unit.Status & UnitStatusEnum.SettlerBuildMask) != 0 && this.parent.GameData.Units[(int)unit.UnitType].MovementType != UnitMovementTypeEnum.Air)
 			{
 				string status = "R";
 
 				if ((unit.Status & 0x40) != 0)
 				{
-					status = (unit.TypeID != (int)UnitTypeEnum.Settlers) ? "?" : "I";
+					status = (unit.UnitType != (int)UnitTypeEnum.Settler) ? "?" : "I";
 				}
 
 				if ((unit.Status & 0x80) != 0)
@@ -831,7 +831,7 @@ namespace OpenCivOne
 			Unit unit = this.parent.GameData.Players[playerID].Units[unitID];
 
 			if (unit.NextUnitID != -1 && GetTerrainType(unit.Position.X, unit.Position.Y) == TerrainTypeEnum.Water &&
-				this.parent.GameData.Units[unit.TypeID].MovementType != UnitMovementTypeEnum.Water)
+				this.parent.GameData.Units[(int)unit.UnitType].MovementType != UnitMovementTypeEnum.Water)
 			{
 				int currentUnitID = unitID;
 
@@ -839,7 +839,7 @@ namespace OpenCivOne
 				{
 					currentUnitID = this.parent.GameData.Players[playerID].Units[currentUnitID].NextUnitID;
 
-					if (this.parent.GameData.Units[this.parent.GameData.Players[playerID].Units[currentUnitID].TypeID].MovementType == UnitMovementTypeEnum.Water)
+					if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[currentUnitID].UnitType].MovementType == UnitMovementTypeEnum.Water)
 					{
 						// Instruction address 0x2aea:0x12e2, size: 3
 						F0_2aea_0e29_DrawUnit(playerID, currentUnitID);
@@ -1052,7 +1052,7 @@ namespace OpenCivOne
 				{
 					Unit unit = this.parent.GameData.Players[playerID].Units[i];
 
-					if (unit.TypeID != -1 && unit.Position.X == x && unit.Position.Y == y)
+					if (unit.UnitType != UnitTypeEnum.None && unit.Position.X == x && unit.Position.Y == y)
 					{
 						this.parent.Var_d7f0 = playerID;
 						this.parent.Var_d20a = playerID;

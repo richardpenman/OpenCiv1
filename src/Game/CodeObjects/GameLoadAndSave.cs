@@ -186,7 +186,7 @@ namespace OpenCivOne
 			}
 			else
 			{
-				// autosave function
+				// Auto Save function
 				this.gameIndex = 4 + (((this.parent.GameData.TurnCount / 50) - 1) % 6);
 			}
 
@@ -210,7 +210,9 @@ namespace OpenCivOne
 			}
 			else
             {
-                MessageBox.Show(this.parent.MainWindow, "The current game was NOT saved.", "Error", MessageBoxIcon.Error);
+				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("The current game was NOT saved.", 125, 132, 0);
+				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Press key to continue.", 125, 142, 0);
+				this.parent.CAPI.getch();
 			}
 
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
@@ -325,7 +327,7 @@ namespace OpenCivOne
 				{
 					for (int j = 0; j < this.parent.GameData.Players[i].Continents.Length; j++)
 					{
-						this.parent.GameData.Players[i].Continents[j].Strategy = ReadInt16(reader);
+						this.parent.GameData.Players[i].Continents[j].Strategy = (PlayerContinentStrategyEnum)ReadInt16(reader);
 					}
 				}
 
@@ -333,7 +335,7 @@ namespace OpenCivOne
 				{
 					for (int j = 0; j < 8; j++)
 					{
-						this.parent.GameData.Players[i].Diplomacy[j] = ReadUInt16(reader);
+						this.parent.GameData.Players[i].Diplomacy[j] = (DiplomacyFlagsEnum)ReadUInt16(reader);
 					}
 				}
 
@@ -349,7 +351,7 @@ namespace OpenCivOne
 
 				for (int i = 0; i < this.parent.GameData.Players.Length; i++)
 				{
-					this.parent.GameData.Players[i].LandCount = ReadInt16(reader);
+					this.parent.GameData.Players[i].MapCellCount = ReadInt16(reader);
 				}
 
 				for (int i = 0; i < this.parent.GameData.Players.Length; i++)
@@ -858,7 +860,7 @@ namespace OpenCivOne
 				{
 					for (int j = 0; j < this.parent.GameData.Players[i].Continents.Length; j++)
 					{
-						WriteInt16(writer, this.parent.GameData.Players[i].Continents[j].Strategy);
+						WriteInt16(writer, (short)this.parent.GameData.Players[i].Continents[j].Strategy);
 					}
 				}
 
@@ -866,7 +868,7 @@ namespace OpenCivOne
 				{
 					for (int j = 0; j < 8; j++)
 					{
-						WriteUInt16(writer, this.parent.GameData.Players[i].Diplomacy[j]);
+						WriteUInt16(writer, (ushort)this.parent.GameData.Players[i].Diplomacy[j]);
 					}
 				}
 
@@ -882,7 +884,7 @@ namespace OpenCivOne
 
 				for (int i = 0; i < this.parent.GameData.Players.Length; i++)
 				{
-					WriteInt16(writer, this.parent.GameData.Players[i].LandCount);
+					WriteInt16(writer, this.parent.GameData.Players[i].MapCellCount);
 				}
 
 				for (int i = 0; i < this.parent.GameData.Players.Length; i++)

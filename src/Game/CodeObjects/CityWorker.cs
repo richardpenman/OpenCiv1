@@ -97,7 +97,6 @@ namespace OpenCivOne
 			int local_fe = 0;
 			int local_100;
 			int local_102;
-			int local_104;
 			int local_106;
 			int local_108 = 0;
 			int local_10a = 0;
@@ -324,7 +323,7 @@ namespace OpenCivOne
 
 						for (int i = 0; i < 128; i++)
 						{
-							if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].TypeID == 0 &&
+							if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType == UnitTypeEnum.Settler &&
 								this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].HomeCityID == cityID)
 							{
 								local_e8 = i;
@@ -427,10 +426,11 @@ namespace OpenCivOne
 
 				for (int i = 0; i < 128; i++)
 				{
-					if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].TypeID != -1 &&
+					if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType != UnitTypeEnum.None &&
 						this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].HomeCityID == cityID)
 					{
-						if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].TypeID < 26)
+						if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType != UnitTypeEnum.Diplomat && 
+							this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType != UnitTypeEnum.Caravan)
 						{
 							this.parent.Var_deb8++;
 
@@ -446,9 +446,9 @@ namespace OpenCivOne
 								this.parent.Var_d2f6++;
 							}
 
-							if (this.parent.GameData.Units[this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].TypeID].AttackStrength != 0)
+							if (this.parent.GameData.Units[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType].AttackStrength != 0)
 							{
-								if (this.parent.GameData.Units[this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].TypeID].MovementType == UnitMovementTypeEnum.Air)
+								if (this.parent.GameData.Units[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType].MovementType == UnitMovementTypeEnum.Air)
 								{
 									this.Var_6546++;
 								}
@@ -463,7 +463,7 @@ namespace OpenCivOne
 							}
 						}
 
-						if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].TypeID == 0)
+						if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType == 0)
 						{
 							this.parent.Var_e3c6++;
 						}
@@ -796,10 +796,10 @@ namespace OpenCivOne
 
 								local_ba = -1;
 
-								if (this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID || city.CurrentProductionID != 0x1a)
+								if (this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID || city.CurrentProductionID != (int)UnitTypeEnum.Diplomat)
 								{
 									// Instruction address 0x1d12:0x15fa, size: 5
-									local_ba = this.parent.UnitManagement.F0_1866_0cf5_CreateUnit(this.Var_6548_PlayerID, city.CurrentProductionID, city.Position.X, city.Position.Y);
+									local_ba = this.parent.UnitManagement.F0_1866_0cf5_CreateUnit(this.Var_6548_PlayerID, (UnitTypeEnum)city.CurrentProductionID, city.Position.X, city.Position.Y);
 								}
 
 								if ((this.parent.GameData.TechnologyFirstDiscoveredBy[city.CurrentProductionID] & 0x8) == 0)
@@ -825,7 +825,7 @@ namespace OpenCivOne
 										this.parent.Segment_1ade.F0_1ade_018e(cityID, city.Position.X, city.Position.Y);
 
 										// Instruction address 0x1d12:0x1727, size: 5
-										this.parent.UnitManagement.F0_1866_0cf5_CreateUnit(this.Var_6548_PlayerID, city.CurrentProductionID, city.Position.X, city.Position.Y);
+										this.parent.UnitManagement.F0_1866_0cf5_CreateUnit(this.Var_6548_PlayerID, (UnitTypeEnum)city.CurrentProductionID, city.Position.X, city.Position.Y);
 
 										this.parent.StartGameMenu.F5_0000_0e6c_TestIfAIPlayerDestroyed(this.Var_6548_PlayerID, 0);
 
@@ -872,14 +872,15 @@ namespace OpenCivOne
 													this.parent.GameData.Cities[i].Position.X,
 													this.parent.GameData.Cities[i].Position.Y);
 
-												this.parent.Var_6c9a = Math.Abs(this.parent.Var_6c9a - 3);
+												int unitDistance = Math.Abs(this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(this.parent.GameData.Cities[i].Position, 
+													this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_e8].Position) - 3);
 
 												if ((this.parent.GameData.Cities[i].StatusFlag & 0x20) != 0)
 												{
-													this.parent.Var_6c9a = 3;
+													unitDistance = 3;
 												}
 
-												if (local_c8 > this.parent.Var_6c9a || (local_c8 == this.parent.Var_6c9a && this.parent.CAPI.RNG.Next(++local_106) == 0))
+												if (local_c8 > unitDistance || (local_c8 == unitDistance && this.parent.CAPI.RNG.Next(++local_106) == 0))
 												{
 													// Instruction address 0x1d12:0x191e, size: 5
 													TerrainTypeEnum terrainType = this.parent.MapManagement.GetTerrainType(
@@ -894,9 +895,9 @@ namespace OpenCivOne
 														this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_e8].Position.X,
 														this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_e8].Position.Y))
 													{
-														if (local_c8 != this.parent.Var_6c9a)
+														if (local_c8 != unitDistance)
 														{
-															local_c8 = this.parent.Var_6c9a;
+															local_c8 = unitDistance;
 														}
 														else
 														{
@@ -910,7 +911,7 @@ namespace OpenCivOne
 											}
 										}
 
-										if (local_c8 > 3 || (this.parent.GameData.Players[this.Var_6548_PlayerID].Diplomacy[this.parent.GameData.HumanPlayerID] & 2) != 0)
+										if (local_c8 > 3 || this.parent.GameData.Players[this.Var_6548_PlayerID].Diplomacy[this.parent.GameData.HumanPlayerID].HasFlag(DiplomacyFlagsEnum.Peace))
 										{
 											city.ShieldsCount += (short)(this.parent.GameData.Units[city.CurrentProductionID].Cost * local_4a);
 										}
@@ -918,7 +919,7 @@ namespace OpenCivOne
 										{
 											// Instruction address 0x1d12:0x19f9, size: 5
 											local_ba = this.parent.UnitManagement.F0_1866_0cf5_CreateUnit(
-												this.Var_6548_PlayerID, 26,
+												this.Var_6548_PlayerID, UnitTypeEnum.Diplomat,
 												this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_108].Position.X,
 												this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_108].Position.Y);
 
@@ -936,7 +937,7 @@ namespace OpenCivOne
 									}
 
 									// Instruction address 0x1d12:0x1aab, size: 5
-									this.parent.Segment_25fb.F0_25fb_34b6(cityID);
+									this.parent.AIEngine.F0_25fb_34b6_ChangeCityProduction(cityID);
 								}
 								else
 								{
@@ -1117,7 +1118,7 @@ namespace OpenCivOne
 									}
 
 									if (this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID ||
-										(this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Diplomacy[this.Var_6548_PlayerID] & 0x40) != 0)
+										this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Diplomacy[this.Var_6548_PlayerID].HasFlag(DiplomacyFlagsEnum.Unknown40))
 									{
 										if (this.Var_6548_PlayerID != this.parent.GameData.HumanPlayerID)
 										{
@@ -1215,17 +1216,17 @@ namespace OpenCivOne
 						if ((city.StatusFlag & 0x10) != 0)
 						{
 							// Instruction address 0x1d12:0x232e, size: 5
-							this.parent.Segment_25fb.F0_25fb_34b6(cityID);
+							this.parent.AIEngine.F0_25fb_34b6_ChangeCityProduction(cityID);
 						}
 
 						local_cc = 0;
 
 						// Instruction address 0x1d12:0x2344, size: 5
-						// !!! Added & 0x7 to prevent owerflow, need to investigate why this happens
-						local_104 = this.parent.GameData.Players[this.parent.MapManagement.F0_2aea_1942_GetGroupID(local_d8, local_e4) & 0x7].Continents[this.Var_6548_PlayerID].Strategy;
+						PlayerContinentStrategyEnum local_104 = this.parent.GameData.Players[this.Var_6548_PlayerID].Continents[this.parent.MapManagement.F0_2aea_1942_GetGroupID(local_d8, local_e4)].Strategy;
 
-						if ((local_104 == 1 || local_104 == 2 || local_104 == 5) && local_e8 != 0 && city.CurrentProductionID >= 0 &&
-							(int)this.parent.GameData.Units[city.CurrentProductionID].UnitRoleType == local_104)
+						if ((local_104 == PlayerContinentStrategyEnum.Attack || local_104 == PlayerContinentStrategyEnum.Defend || local_104 == PlayerContinentStrategyEnum.Transport) && 
+							local_e8 != 0 && city.CurrentProductionID >= 0 &&
+							(int)this.parent.GameData.Units[city.CurrentProductionID].UnitRoleType == (int)local_104)
 						{
 							local_cc = this.parent.GameData.Players[this.Var_6548_PlayerID].Coins / 64;
 						}
@@ -1603,7 +1604,7 @@ namespace OpenCivOne
 						if (local_2 >= 32)
 							break;
 
-						if (this.parent.GameData.Units[this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_ba].TypeID].AttackStrength != 0)
+						if (this.parent.GameData.Units[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_ba].UnitType].AttackStrength != 0)
 						{
 							local_e6++;
 
@@ -1612,7 +1613,7 @@ namespace OpenCivOne
 								// Instruction address 0x1d12:0x2fbd, size: 5
 								this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
 									local_6, local_42 - 1,
-									this.parent.Array_d4ce[64 + this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_ba].TypeID + (this.Var_6548_PlayerID * 32)]);
+									this.parent.Array_d4ce[64 + (int)this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_ba].UnitType + (this.Var_6548_PlayerID * 32)]);
 
 								local_6 -= 2;
 							}
@@ -1766,10 +1767,11 @@ namespace OpenCivOne
 
 				for (int i = 0; i < 128; i++)
 				{
-					if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].TypeID != -1 &&
+					if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType != UnitTypeEnum.None &&
 						this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].HomeCityID == cityID)
 					{
-						if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].TypeID < 26)
+						if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType != UnitTypeEnum.Diplomat &&
+							this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType != UnitTypeEnum.Caravan)
 						{
 							this.parent.Var_deb8++;
 
@@ -1798,9 +1800,10 @@ namespace OpenCivOne
 
 								for (int j = 0; j < 128; j++)
 								{
-									if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[j].TypeID != -1 &&
+									if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[j].UnitType != UnitTypeEnum.None &&
 										this.parent.GameData.Players[this.Var_6548_PlayerID].Units[j].HomeCityID == cityID &&
-										this.parent.GameData.Players[this.Var_6548_PlayerID].Units[j].TypeID < 26)
+										(this.parent.GameData.Players[this.Var_6548_PlayerID].Units[j].UnitType != UnitTypeEnum.Diplomat &&
+											this.parent.GameData.Players[this.Var_6548_PlayerID].Units[j].UnitType != UnitTypeEnum.Caravan))
 									{
 										// Instruction address 0x1d12:0x3513, size: 5
 										local_b2 = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(
@@ -1826,8 +1829,8 @@ namespace OpenCivOne
 										this.parent.Var_db42 = -999; // 0xfc19
 									}
 									else if (local_c8 > 0 &&
-										this.parent.GameData.Units[this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_108].TypeID].MovementType == UnitMovementTypeEnum.Land &&
-										this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_108].TypeID != 0)
+										this.parent.GameData.Units[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_108].UnitType].MovementType == UnitMovementTypeEnum.Land &&
+										this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_108].UnitType != 0)
 									{
 										// Instruction address 0x1d12:0x35c9, size: 5
 										this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(this.Var_6548_PlayerID, (short)local_108);
@@ -1843,7 +1846,7 @@ namespace OpenCivOne
 
 										// Instruction address 0x1d12:0x3657, size: 5
 										this.parent.Segment_1238.F0_1238_001e_ShowDialog($"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}" +
-											$" can't support\n{this.parent.GameData.Units[this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_108].TypeID].Name}" +
+											$" can't support\n{this.parent.GameData.Units[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_108].UnitType].Name}" +
 											".\n Unit Disbanded.\n", 100, 80);
 									}
 
@@ -1857,7 +1860,8 @@ namespace OpenCivOne
 
 						if (flag == 1)
 						{
-							if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].TypeID < 26)
+							if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType != UnitTypeEnum.Diplomat &&
+								this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType != UnitTypeEnum.Caravan)
 							{
 								if (this.parent.Var_d2f6 != 0)
 								{
@@ -1865,7 +1869,7 @@ namespace OpenCivOne
 									this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
 										local_f6 + 8, local_fc + 12, this.parent.Array_d4ce[9]);
 								}
-								if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].TypeID == 0)
+								if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType == 0)
 								{
 									// Instruction address 0x1d12:0x36f4, size: 5
 									this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
@@ -1890,9 +1894,9 @@ namespace OpenCivOne
 
 									if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType >= 4)
 									{
-										if (this.parent.GameData.Units[this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].TypeID].AttackStrength != 0 &&
+										if (this.parent.GameData.Units[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType].AttackStrength != 0 &&
 											local_e8 != 0 &&
-											(this.parent.GameData.Units[this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].TypeID].MovementType == UnitMovementTypeEnum.Air ||
+											(this.parent.GameData.Units[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType].MovementType == UnitMovementTypeEnum.Air ||
 												this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].Position.X != city.Position.X ||
 												this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].Position.Y != city.Position.Y))
 										{
@@ -1913,7 +1917,7 @@ namespace OpenCivOne
 
 							// Instruction address 0x1d12:0x3877, size: 5
 							this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, local_f6, local_fc,
-								this.parent.Array_d4ce[64 + this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].TypeID + (this.Var_6548_PlayerID * 32)]);
+								this.parent.Array_d4ce[64 + (int)this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType + (this.Var_6548_PlayerID * 32)]);
 
 							// Instruction address 0x1d12:0x38a3, size: 5
 							F0_1d12_73ea_DrawCityRectangle(
@@ -1937,7 +1941,7 @@ namespace OpenCivOne
 					}
 
 					if (flag == 1 && local_4e < 18 && this.Var_2496 == 0 &&
-						this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].TypeID != -1 &&
+						this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType != UnitTypeEnum.None &&
 						this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].Position.X == local_d8 &&
 						this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].Position.Y == local_e4)
 					{
@@ -2767,7 +2771,7 @@ namespace OpenCivOne
 							if ((this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].Status & 0x9) != 0)
 							{
 								this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].RemainingMoves =
-									(short)(this.parent.GameData.Units[this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].TypeID].MoveCount * 3);
+									(short)(this.parent.GameData.Units[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].UnitType].MoveCount * 3);
 							}
 
 							this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].Status &= 0x30;
@@ -3261,7 +3265,7 @@ namespace OpenCivOne
 							goto L5a18;
 
 						this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].RemainingMoves =
-							(short)(this.parent.GameData.Units[this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].TypeID].MoveCount * 3);
+							(short)(this.parent.GameData.Units[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].UnitType].MoveCount * 3);
 
 					L5a18:
 						this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].Status &= 0x30;
@@ -3467,7 +3471,7 @@ namespace OpenCivOne
 						this.parent.News.F21_0000_0000_ShowNews(cityID,
 							$"Discontented citizens of\n{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} revolt:\nGovernment Collapses!\n");
 
-						this.parent.GameData.Players[this.Var_6548_PlayerID].Diplomacy[0] |= 4;
+						this.parent.GameData.Players[this.Var_6548_PlayerID].Diplomacy[0] |= DiplomacyFlagsEnum.Allied;
 
 						this.parent.CommonTools.PlayTune(1, 0);
 					}
@@ -3914,7 +3918,7 @@ namespace OpenCivOne
 			L68de:
 				// ??? this playerID reference needs to be checked!
 				// Instruction address 0x1d12:0x68f4, size: 5
-				if (!this.parent.UnitManagement.F0_1866_18d0(city.PlayerID, city.Position.X, city.Position.Y)) goto L6904;
+				if (!this.parent.UnitManagement.F0_1866_18d0_IsEnemyUnitNear(city.PlayerID, city.Position.X, city.Position.Y)) goto L6904;
 				goto L690f;
 
 			L6904:

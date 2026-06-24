@@ -84,7 +84,7 @@ namespace OpenCivOne
 			Unit unit;
 
 			if (playerID > 0 && (this.parent.GameData.ActiveCivilizations & (1 << playerID)) != 0 && unitID >= 0 && unitID < 128 &&
-				(unit = this.parent.GameData.Players[playerID].Units[unitID]).TypeID != -1)
+				(unit = this.parent.GameData.Players[playerID].Units[unitID]).UnitType != UnitTypeEnum.None)
 			{
 				unit.PlayerID = (short)playerID;
 
@@ -158,21 +158,21 @@ namespace OpenCivOne
 			{
 				case UnitMovementTypeEnum.Land:
 					unit = new Unit();
-					unit.TypeID = (int)UnitTypeEnum.Militia;
+					unit.UnitType = UnitTypeEnum.Militia;
 					unit.Position = src;
 					unit.GoToDestination = dest;
 					break;
 
 				case UnitMovementTypeEnum.Water:
 					unit = new Unit();
-					unit.TypeID = (int)UnitTypeEnum.Trireme;
+					unit.UnitType = UnitTypeEnum.Trireme;
 					unit.Position = src;
 					unit.GoToDestination = dest;
 					break;
 
 				case UnitMovementTypeEnum.Air:
 					unit = new Unit();
-					unit.TypeID = (int)UnitTypeEnum.Fighter;
+					unit.UnitType = UnitTypeEnum.Fighter;
 					unit.Position = src;
 					unit.GoToDestination = dest;
 					break;
@@ -209,21 +209,21 @@ namespace OpenCivOne
 			{
 				case UnitMovementTypeEnum.Land:
 					unit = new Unit();
-					unit.TypeID = (int)UnitTypeEnum.Militia;
+					unit.UnitType = UnitTypeEnum.Militia;
 					unit.Position = src;
 					unit.GoToDestination = dest;
 					break;
 
 				case UnitMovementTypeEnum.Water:
 					unit = new Unit();
-					unit.TypeID = (int)UnitTypeEnum.Trireme;
+					unit.UnitType = UnitTypeEnum.Trireme;
 					unit.Position = src;
 					unit.GoToDestination = dest;
 					break;
 
 				case UnitMovementTypeEnum.Air:
 					unit = new Unit();
-					unit.TypeID = (int)UnitTypeEnum.Fighter;
+					unit.UnitType = UnitTypeEnum.Fighter;
 					unit.Position = src;
 					unit.GoToDestination = dest;
 					break;
@@ -250,7 +250,7 @@ namespace OpenCivOne
 				bool destinationReached = false; // remains false if we can't find a path to a destination
 				TerrainMapGroupTypeEnum group1; // The unit can move on this terrain type
 				TerrainMapGroupTypeEnum group2; // The unit can move on this terrain type
-				UnitMovementTypeEnum movementType = this.gameData.Units[unit.TypeID].MovementType;
+				UnitMovementTypeEnum movementType = this.gameData.Units[(int)unit.UnitType].MovementType;
 				MapManagement map = this.parent.MapManagement;
 				
 				unit.GoToPath.Clear();
@@ -541,7 +541,7 @@ namespace OpenCivOne
 				// Temporary unit...
 				Unit unit = this.parent.GameData.Players[0].Units[127];
 
-				unit.TypeID = (short)(waterUnit ? UnitTypeEnum.Trireme : UnitTypeEnum.Militia);
+				unit.UnitType = (waterUnit ? UnitTypeEnum.Trireme : UnitTypeEnum.Militia);
 				unit.Position.X = x;
 				unit.Position.Y = y;
 				unit.GoToDestination.X = x1;
@@ -553,7 +553,7 @@ namespace OpenCivOne
 				// Instruction address 0x2e31:0x117c, size: 3
 				result = F0_2e31_0c1d_FindShortestPath(unit, param6);
 
-				unit.TypeID = -1;
+				unit.UnitType = UnitTypeEnum.None;
 				unit.Position.X = -1;
 				unit.Position.Y = -1;
 				unit.GoToDestination.X = -1;
@@ -583,7 +583,7 @@ namespace OpenCivOne
 			Unit unit;
 
 			if (playerID < 0 || playerID > 7 || unitID < 0 || unitID > 127 ||
-				(unit = this.parent.GameData.Players[playerID].Units[unitID]).TypeID == -1 || unit.GoToDestination.X == -1)
+				(unit = this.parent.GameData.Players[playerID].Units[unitID]).UnitType == UnitTypeEnum.None || unit.GoToDestination.X == -1)
 			{
 				return -1;
 			}
@@ -609,7 +609,7 @@ namespace OpenCivOne
 				return -1;
 			}
 
-			if (this.parent.GameData.Units[unit.TypeID].MovementType == UnitMovementTypeEnum.Air)
+			if (this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Air)
 			{
 				this.Var_6590_DestinationX = unit.GoToDestination.X;
 				this.Var_6592_DestinationY = unit.GoToDestination.Y;
@@ -688,9 +688,9 @@ namespace OpenCivOne
 						int cellOwner = this.parent.MapManagement.F0_2aea_14e0_GetCellUnitPlayerID(unitNewX, unitNewY);
 
 						if (((cellOwner == -1 || cellOwner == playerID) &&
-							((((this.parent.GameData.Units[unit.TypeID].MovementType == UnitMovementTypeEnum.Water) ? 1 : 0) == (newTerrainType == TerrainTypeEnum.Water ? 1 : 0) &&
+							((((this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Water) ? 1 : 0) == (newTerrainType == TerrainTypeEnum.Water ? 1 : 0) &&
 								(!unitIsNear || !this.parent.UnitManagement.F0_1866_1725_IsUnitNear(playerID, unitNewX, unitNewY))) ||
-								this.parent.GameData.Units[unit.TypeID].MovementType == UnitMovementTypeEnum.Air)) ||
+								this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Air)) ||
 							(this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(unitNewX, unitNewY).HasFlag(TerrainImprovementFlagsEnum.City) &&
 								this.parent.MapManagement.F0_2aea_1369_GetCityOwner(unitNewX, unitNewY) == playerID))
 						{
@@ -705,7 +705,7 @@ namespace OpenCivOne
 								}
 								else
 								{
-									movementCost = ((this.parent.GameData.Units[unit.TypeID].MoveCount > 1) ? (this.parent.GameData.Terrains[(int)newTerrainType].MovementCost * 3) : 3);
+									movementCost = ((this.parent.GameData.Units[(int)unit.UnitType].MoveCount > 1) ? (this.parent.GameData.Terrains[(int)newTerrainType].MovementCost * 3) : 3);
 								}
 
 								movementCost += (newVector * 4) + absMove.X + absMove.Y;
@@ -770,7 +770,7 @@ namespace OpenCivOne
 			//OpenCivOneGame.LogUnit(this.oParent, this.oParent.GoToLog, playerID, unitID, this.oParent.GameData.HumanPlayerID);
 
 			// function body
-			bool waterUnit = this.parent.GameData.Units[unit.TypeID].MovementType == UnitMovementTypeEnum.Water;
+			bool waterUnit = this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Water;
 			int local_a = 0;
 			int unitX = unit.Position.X;
 			int unitY = unit.Position.Y;
@@ -883,7 +883,7 @@ namespace OpenCivOne
 				int newDirection = -1;
 				int pathFlags;
 
-				if (this.parent.GameData.Units[unit.TypeID].MovementType == UnitMovementTypeEnum.Water)
+				if (this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Water)
 				{
 					pathFlags = this.Arr_7f38_WaterPath[unitX, unitY];
 				}
@@ -1011,7 +1011,7 @@ namespace OpenCivOne
 						(!waterUnit && this.Arr_db44_LandPath[newShortX, newShortY] != 0))
 					{
 						// Instruction address 0x2e31:0x0b43, size: 5
-						int distance = this.parent.GameTools.F0_2dc4_0208_GetShortestDistance(x - (newShortX * 4) - 1, y - (newShortY * 4) - 1);
+						int distance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(x - (newShortX * 4) - 1, y - (newShortY * 4) - 1);
 
 						if (distance < minDistance)
 						{
@@ -1096,7 +1096,7 @@ namespace OpenCivOne
 			//OpenCivOneGame.LogUnit(this.oParent, this.oParent.GoToLog, playerID, unitID, this.oParent.GameData.HumanPlayerID);
 
 			// function body
-			bool waterUnit = this.parent.GameData.Units[unit.TypeID].MovementType == UnitMovementTypeEnum.Water;
+			bool waterUnit = this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Water;
 			int local_20 = this.Var_6590_DestinationX - 8;
 			int local_3a = this.Var_6592_DestinationY - 8;
 			int unitX = unit.Position.X;
@@ -1128,7 +1128,7 @@ namespace OpenCivOne
 
 				this.Arr_b780[this.Var_6590_DestinationX - local_20, this.Var_6592_DestinationY - local_3a] = 1;
 				this.Var_6794 = param3;
-				int oneMove = (this.parent.GameData.Units[unit.TypeID].MoveCount == 1) ? 1 : 0;
+				int oneMove = (this.parent.GameData.Units[(int)unit.UnitType].MoveCount == 1) ? 1 : 0;
 
 				// local_2 will always be 1, so local_4 loop will also end at 1
 				for (int local_4 = 0; local_4 != local_2 && local_4 < 225;)
@@ -1253,7 +1253,7 @@ namespace OpenCivOne
 										if (activeUnitID != -1)
 										{
 											// Instruction address 0x2e31:0x103f, size: 5
-											local_e = (short)this.parent.UnitManagement.F0_1866_1251(unit.PlayerID, activeUnitID, 2) * 4;
+											local_e = (short)this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(unit.PlayerID, activeUnitID, 2) * 4;
 										}
 										else
 										{
@@ -1274,7 +1274,7 @@ namespace OpenCivOne
 										if (activeUnitID != -1)
 										{
 											// Instruction address 0x2e31:0x1099, size: 5
-											local_1a = (short)this.parent.UnitManagement.F0_1866_1251(unit.PlayerID, activeUnitID, 2) * 4;
+											local_1a = (short)this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(unit.PlayerID, activeUnitID, 2) * 4;
 										}
 										else
 										{

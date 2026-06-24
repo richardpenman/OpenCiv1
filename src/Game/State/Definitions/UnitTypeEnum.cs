@@ -9,7 +9,7 @@ namespace OpenCivOne
 	public enum UnitTypeEnum
 	{
 		None = -1,
-		Settlers = 0,
+		Settler = 0,
 		Militia = 1,
 		Phalanx = 2,
 		Legion = 3,

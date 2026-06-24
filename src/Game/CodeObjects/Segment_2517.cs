@@ -40,10 +40,11 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x4;
 			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, this.oCPU.CX.LowUInt8);
 			
-			if ((this.oParent.GameData.Players[playerID].Diplomacy[0] & 4) == 0)
+			if (!this.oParent.GameData.Players[playerID].Diplomacy[0].HasFlag(DiplomacyFlagsEnum.Allied))
 				goto L003c;
 
-			this.oParent.GameData.Players[playerID].Diplomacy[0] &= 0xfffb;
+			this.oParent.GameData.Players[playerID].Diplomacy[0] |= DiplomacyFlagsEnum.Allied;
+			this.oParent.GameData.Players[playerID].Diplomacy[0] ^= DiplomacyFlagsEnum.Allied;
 			goto L0088;
 
 		L003c:
@@ -74,7 +75,8 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x4;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, this.oCPU.CX.LowUInt8);
 
-			this.oParent.GameData.Players[playerID].Diplomacy[0] &= 0xfffb;
+			this.oParent.GameData.Players[playerID].Diplomacy[0] |= DiplomacyFlagsEnum.Allied;
+			this.oParent.GameData.Players[playerID].Diplomacy[0] ^= DiplomacyFlagsEnum.Allied;
 
 		L0088:
 			this.oCPU.AX.UInt16 = (ushort)this.oParent.GameData.HumanPlayerID;
@@ -85,7 +87,7 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x4;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, this.oCPU.CX.LowUInt8);
 
-			if ((this.oParent.GameData.Players[playerID].Diplomacy[0] & 4) == 0)
+			if (!this.oParent.GameData.Players[playerID].Diplomacy[0].HasFlag(DiplomacyFlagsEnum.Allied))
 				goto L00b1;
 
 			// Instruction address 0x2517:0x00ab, size: 3
@@ -102,7 +104,7 @@ namespace OpenCivOne
 			this.oCPU.AX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.AX.UInt16, 0x1);
 			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.AX.UInt16);
 
-			if ((this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] & 0x100) == 0)
+			if (!this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].HasFlag(DiplomacyFlagsEnum.Unknown100))
 				goto L00e9;
 
 			// Instruction address 0x2517:0x00d2, size: 5
@@ -111,8 +113,10 @@ namespace OpenCivOne
 			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.NE) goto L00e9;
 
-			this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] &= 0xfefd;
-			this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] |= 0x200;
+			this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] |= DiplomacyFlagsEnum.Unknown100 | DiplomacyFlagsEnum.Peace;
+			this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] ^= DiplomacyFlagsEnum.Unknown100 | DiplomacyFlagsEnum.Peace;
+
+			this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] |= DiplomacyFlagsEnum.Unknown200;
 			
 		L00e9:
 			this.oCPU.TEST_UInt8((byte)(this.oParent.GameData.TurnCount & 0xff), 0xf);
@@ -127,13 +131,13 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x4;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, this.oCPU.CX.LowUInt8);
 
-			if ((this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] & 0x10) != 0)
+			if (this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].HasFlag(DiplomacyFlagsEnum.Unknown10))
 				goto L01e2;
 
-			if ((this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] & 1) == 0)
+			if (!this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].HasFlag(DiplomacyFlagsEnum.Contact))
 				goto L01c2;
 
-			if ((this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] & 2) != 0)
+			if (this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].HasFlag(DiplomacyFlagsEnum.Peace))
 				goto L01c2;
 
 			this.oCPU.DI.UInt16 = (ushort)this.oParent.GameData.HumanPlayerID;
@@ -143,13 +147,13 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = (ushort)playerID;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			if ((this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[playerID] & 0x40) != 0)
+			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[playerID].HasFlag(DiplomacyFlagsEnum.Unknown40))
 				goto L0141;
 
 			this.oCPU.BX.UInt16 = this.oCPU.SI.UInt16;
 			this.oCPU.BX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.BX.UInt16, this.oCPU.DI.UInt16);
 
-			if ((this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] & 0x40) == 0)
+			if (!this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].HasFlag(DiplomacyFlagsEnum.Unknown40))
 				goto L01c2;
 
 		L0141:
@@ -187,7 +191,8 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] &= 0xfffe;
+			this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] |= DiplomacyFlagsEnum.Contact;
+			this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] ^= DiplomacyFlagsEnum.Contact;
 
 			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
 			this.oCPU.CX.LowUInt8 = 0x4;
@@ -196,7 +201,8 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = (ushort)playerID;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Diplomacy[playerID] &= 0xfffe;
+			this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Diplomacy[playerID] |= DiplomacyFlagsEnum.Contact;
+			this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Diplomacy[playerID] ^= DiplomacyFlagsEnum.Contact;
 
 		L01e2:
 			this.oCPU.SI.UInt16 = (ushort)playerID;
@@ -206,7 +212,8 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] &= 0xffef;
+			this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] |= DiplomacyFlagsEnum.Unknown10;
+			this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] ^= DiplomacyFlagsEnum.Unknown10;
 
 			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
 			this.oCPU.CX.LowUInt8 = 0x4;
@@ -215,7 +222,8 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = (ushort)playerID;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Diplomacy[playerID] &= 0xffef;
+			this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Diplomacy[playerID] |= DiplomacyFlagsEnum.Unknown10;
+			this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Diplomacy[playerID] ^= DiplomacyFlagsEnum.Unknown10;
 
 		L0202:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))));
@@ -266,10 +274,10 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.NE) goto L02c2;
 
 			// Instruction address 0x2517:0x028d, size: 3
-			F0_2517_0a30_SetDiplomacyFlags(playerID, this.oParent.GameData.HumanPlayerID, 2);
+			F0_2517_0a30_SetDiplomacyFlags(playerID, this.oParent.GameData.HumanPlayerID, DiplomacyFlagsEnum.Peace);
 
 			// Instruction address 0x2517:0x029f, size: 3
-			F0_2517_0aa1_ClearDiplomacyFlags(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), this.oParent.GameData.HumanPlayerID, 2);
+			F0_2517_0aa1_ClearDiplomacyFlags(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), this.oParent.GameData.HumanPlayerID, DiplomacyFlagsEnum.Peace);
 
 			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
 			this.oCPU.CX.LowUInt8 = 0x4;
@@ -278,7 +286,7 @@ namespace OpenCivOne
 			this.oCPU.AX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.AX.UInt16, 0x1);
 			this.oCPU.BX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.BX.UInt16, this.oCPU.AX.UInt16);
 
-			this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Diplomacy[this.oParent.GameData.HumanPlayerID] |= 8;
+			this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Diplomacy[this.oParent.GameData.HumanPlayerID] |= DiplomacyFlagsEnum.Vendetta;
 
 			this.oParent.GameData.Players[playerID].ContactPlayerCountdown = 
 				(short)(oParent.GameData.TurnCount + 16);
@@ -294,7 +302,8 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] &= 0xffdf;
+			this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] |= DiplomacyFlagsEnum.Unknown20;
+			this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] ^= DiplomacyFlagsEnum.Unknown20;
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 
 				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))));
@@ -315,20 +324,20 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = this.oCPU.DI.UInt16;
 			this.oCPU.BX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.BX.UInt16, this.oCPU.SI.UInt16);
 
-			if ((this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] & 0x20) == 0)
+			if (!this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].HasFlag(DiplomacyFlagsEnum.Unknown20))
 				goto L02c7;
 
 			this.oCPU.BX.UInt16 = (ushort)this.oParent.GameData.HumanPlayerID;
 			this.oCPU.CX.LowUInt8 = 0x4;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, this.oCPU.CX.LowUInt8);
 
-			if ((this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] & 2) == 0)
+			if (!this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].HasFlag(DiplomacyFlagsEnum.Peace))
 				goto L02c7;
 
 			this.oCPU.BX.UInt16 = (ushort)this.oParent.GameData.HumanPlayerID;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			if ((this.oParent.GameData.Players[playerID].Diplomacy[this.oParent.GameData.HumanPlayerID] & 0x20) != 0)
+			if (this.oParent.GameData.Players[playerID].Diplomacy[this.oParent.GameData.HumanPlayerID].HasFlag(DiplomacyFlagsEnum.Unknown20))
 				goto L02c7;
 
 			this.oCPU.AX.UInt16 = (ushort)this.oParent.GameData.Players[playerID].MilitaryPower;
@@ -380,10 +389,10 @@ namespace OpenCivOne
 			this.oParent.GameData.Players[playerID].Coins += (short)this.oCPU.AX.UInt16;
 
 			// Instruction address 0x2517:0x03fd, size: 3
-			F0_2517_0a30_SetDiplomacyFlags(playerID, this.oParent.GameData.HumanPlayerID, 2);
+			F0_2517_0a30_SetDiplomacyFlags(playerID, this.oParent.GameData.HumanPlayerID, DiplomacyFlagsEnum.Peace);
 
 			// Instruction address 0x2517:0x040f, size: 3
-			F0_2517_0aa1_ClearDiplomacyFlags(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), this.oParent.GameData.HumanPlayerID, 2);
+			F0_2517_0aa1_ClearDiplomacyFlags(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), this.oParent.GameData.HumanPlayerID, DiplomacyFlagsEnum.Peace);
 			
 			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
 			this.oCPU.CX.LowUInt8 = 0x4;
@@ -392,7 +401,7 @@ namespace OpenCivOne
 			this.oCPU.AX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.AX.UInt16, 0x1);
 			this.oCPU.BX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.BX.UInt16, this.oCPU.AX.UInt16);
 
-			this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Diplomacy[this.oParent.GameData.HumanPlayerID] |= 8;
+			this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Diplomacy[this.oParent.GameData.HumanPlayerID] |= DiplomacyFlagsEnum.Vendetta;
 
 		L0428:
 			this.oParent.MeetWithKing.F6_0000_16ac();
@@ -425,7 +434,7 @@ namespace OpenCivOne
 			this.oCPU.AX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.AX.UInt16, 0x1);
 			this.oCPU.BX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.BX.UInt16, this.oCPU.AX.UInt16);
 
-			if ((this.oParent.GameData.Players[playerID].Diplomacy[this.oParent.GameData.HumanPlayerID] & 2) == 0)
+			if (!this.oParent.GameData.Players[playerID].Diplomacy[this.oParent.GameData.HumanPlayerID].HasFlag(DiplomacyFlagsEnum.Peace))
 				goto L0240;
 
 			// Instruction address 0x2517:0x0248, size: 5
@@ -584,7 +593,7 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x4;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, this.oCPU.CX.LowUInt8);
 
-			if ((this.oParent.GameData.Players[playerID].Diplomacy[0] & 4) == 0)
+			if (!this.oParent.GameData.Players[playerID].Diplomacy[0].HasFlag(DiplomacyFlagsEnum.Allied))
 				goto L06d6;
 
 		L0608:
@@ -595,7 +604,7 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x4;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, this.oCPU.CX.LowUInt8);
 
-			if ((this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[playerID] & 0x40) == 0)
+			if (!this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[playerID].HasFlag(DiplomacyFlagsEnum.Unknown40))
 				goto L06d6;
 
 			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
@@ -604,7 +613,7 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x4;
 			this.oCPU.DI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.DI.UInt16, this.oCPU.CX.LowUInt8);
 
-			if ((this.oParent.GameData.Players[playerID].Diplomacy[0] & 4) == 0)
+			if (!this.oParent.GameData.Players[playerID].Diplomacy[0].HasFlag(DiplomacyFlagsEnum.Allied))
 				goto L067c;
 
 			// Instruction address 0x2517:0x063a, size: 5
@@ -619,7 +628,8 @@ namespace OpenCivOne
 			// Instruction address 0x2517:0x066f, size: 5
 			this.oParent.CAPI.strcat(0xba06, "!\n");
 
-			this.oParent.GameData.Players[playerID].Diplomacy[0] &= 0xfffb;
+			this.oParent.GameData.Players[playerID].Diplomacy[0] |= DiplomacyFlagsEnum.Allied;
+			this.oParent.GameData.Players[playerID].Diplomacy[0] ^= DiplomacyFlagsEnum.Allied;
 
 			goto L06bc;
 
@@ -637,7 +647,7 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x4;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, this.oCPU.CX.LowUInt8);
 
-			this.oParent.GameData.Players[playerID].Diplomacy[0] |= 4;
+			this.oParent.GameData.Players[playerID].Diplomacy[0] |= DiplomacyFlagsEnum.Allied;
 
 		L06bc:
 			this.oParent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DiplomatsReport;
@@ -673,7 +683,8 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10));
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10))] &= 0xfff7;
+			this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10))] |= DiplomacyFlagsEnum.Vendetta;
+			this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10))] ^= DiplomacyFlagsEnum.Vendetta;
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10), 
 				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10))));
@@ -729,7 +740,7 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x4;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, this.oCPU.CX.LowUInt8);
 
-			if ((this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] & 1) == 0)
+			if (!this.oParent.GameData.Players[playerID1].Diplomacy[playerID2].HasFlag(DiplomacyFlagsEnum.Contact))
 				goto L0778;
 
 			this.oCPU.AX.UInt16 = (ushort)oParent.GameData.TurnCount;
@@ -752,7 +763,7 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = (ushort)playerID2;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			if ((this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] & 1) == 0)
+			if (!this.oParent.GameData.Players[playerID1].Diplomacy[playerID2].HasFlag(DiplomacyFlagsEnum.Contact))
 				goto L07b9;
 
 			this.oCPU.AX.UInt16 = (ushort)oParent.GameData.TurnCount;
@@ -771,7 +782,7 @@ namespace OpenCivOne
 			this.oCPU.AX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.AX.UInt16, 0x1);
 			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.AX.UInt16);
 			
-			this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] |= 0x11;
+			this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] |= DiplomacyFlagsEnum.Contact | DiplomacyFlagsEnum.Unknown10;
 
 			this.oCPU.DI.UInt16 = (ushort)playerID2;
 			this.oCPU.CX.LowUInt8 = 0x4;
@@ -780,7 +791,7 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = (ushort)playerID1;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] |= 0x11;
+			this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] |= DiplomacyFlagsEnum.Contact | DiplomacyFlagsEnum.Unknown10;
 
 			this.oCPU.AX.UInt16 = (ushort)this.oParent.GameData.HumanPlayerID;
 			this.oCPU.CMP_UInt16((ushort)playerID1, this.oCPU.AX.UInt16);
@@ -799,7 +810,7 @@ namespace OpenCivOne
 			this.oCPU.TEST_UInt8(this.oCPU.AX.LowUInt8, 0x3);
 			if (this.oCPU.Flags.E) goto L0821;
 
-			if ((this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] & 1) != 0)
+			if (this.oParent.GameData.Players[playerID1].Diplomacy[playerID2].HasFlag(DiplomacyFlagsEnum.Contact))
 				goto L0a2a;
 
 		L0821:
@@ -810,7 +821,7 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = (ushort)playerID2;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			if ((this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] & 0x8) != 0)
+			if (this.oParent.GameData.Players[playerID1].Diplomacy[playerID2].HasFlag(DiplomacyFlagsEnum.Vendetta))
 				goto L0a2a;
 
 			this.oCPU.SI.UInt16 = (ushort)playerID2;
@@ -820,7 +831,7 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = (ushort)playerID1;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			if ((this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] & 8) != 0)
+			if (this.oParent.GameData.Players[playerID2].Diplomacy[playerID1].HasFlag(DiplomacyFlagsEnum.Vendetta))
 				goto L0a2a;
 
 			// Instruction address 0x2517:0x0852, size: 3
@@ -866,7 +877,7 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x4;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, this.oCPU.CX.LowUInt8);
 
-			if ((this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] & 2) != 0)
+			if (this.oParent.GameData.Players[playerID1].Diplomacy[playerID2].HasFlag(DiplomacyFlagsEnum.Peace))
 				goto L0a2a;
 
 			this.oCPU.DI.UInt16 = (ushort)this.oParent.GameData.HumanPlayerID;
@@ -876,13 +887,13 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = (ushort)playerID1;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			if ((this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[playerID1] & 0x40) != 0)
+			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[playerID1].HasFlag(DiplomacyFlagsEnum.Unknown40))
 				goto L08f1;
 
 			this.oCPU.BX.UInt16 = this.oCPU.SI.UInt16;
 			this.oCPU.BX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.BX.UInt16, this.oCPU.DI.UInt16);
 
-			if ((this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[playerID2] & 0x40) == 0)
+			if (!this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[playerID2].HasFlag(DiplomacyFlagsEnum.Unknown40))
 				goto L0955;
 
 		L08f1:
@@ -905,7 +916,7 @@ namespace OpenCivOne
 
 		L0955:
 			// Instruction address 0x2517:0x0960, size: 3
-			F0_2517_0a30_SetDiplomacyFlags(playerID1, playerID2, 2);
+			F0_2517_0a30_SetDiplomacyFlags(playerID1, playerID2, DiplomacyFlagsEnum.Peace);
 			
 			goto L0a2a;
 
@@ -917,10 +928,10 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = (ushort)playerID2;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			if ((this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] & 2) != 0)
+			if (this.oParent.GameData.Players[playerID1].Diplomacy[playerID2].HasFlag(DiplomacyFlagsEnum.Peace))
 				goto L0982;
 
-			if ((this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] & 1) != 0)
+			if (this.oParent.GameData.Players[playerID1].Diplomacy[playerID2].HasFlag(DiplomacyFlagsEnum.Contact))
 				goto L0a2a;
 
 		L0982:
@@ -931,13 +942,13 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = (ushort)playerID1;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			if ((this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[playerID1] & 0x40) != 0)
+			if (!this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[playerID1].HasFlag(DiplomacyFlagsEnum.Unknown40))
 				goto L09a2;
 
 			this.oCPU.BX.UInt16 = (ushort)playerID2;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			if ((this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[playerID2] & 0x40) == 0)
+			if (!this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[playerID2].HasFlag(DiplomacyFlagsEnum.Unknown40))
 				goto L0a19;
 
 		L09a2:
@@ -957,7 +968,7 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x4;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, this.oCPU.CX.LowUInt8);
 
-			if ((this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] & 2) != 0)
+			if (this.oParent.GameData.Players[playerID1].Diplomacy[playerID2].HasFlag(DiplomacyFlagsEnum.Peace))
 			{
 				// Instruction address 0x2517:0x09f7, size: 5
 				this.oParent.CAPI.strcat(0xba06, " cancel\npeace treaty.\n");
@@ -975,7 +986,7 @@ namespace OpenCivOne
 
 		L0a19:
 			// Instruction address 0x2517:0x0a24, size: 3
-			F0_2517_0aa1_ClearDiplomacyFlags(playerID1, playerID2, 2);
+			F0_2517_0aa1_ClearDiplomacyFlags(playerID1, playerID2, DiplomacyFlagsEnum.Peace);
 
 		L0a2a:
 			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
@@ -992,13 +1003,13 @@ namespace OpenCivOne
 		/// <param name="playerID1"></param>
 		/// <param name="playerID2"></param>
 		/// <param name="flags"></param>
-		public void F0_2517_0a30_SetDiplomacyFlags(int playerID1, int playerID2, ushort flags)
+		public void F0_2517_0a30_SetDiplomacyFlags(int playerID1, int playerID2, DiplomacyFlagsEnum flags)
 		{
 			this.oCPU.Log.EnterBlock($"F0_2517_0a30_SetDiplomacyFlags({playerID1}, {playerID2}, {flags})");
 
 			// function body
-			if (flags == 2 &&
-				(this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] & flags) == 0)
+			if (flags == DiplomacyFlagsEnum.Peace &&
+				(this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] & flags) == DiplomacyFlagsEnum.None)
 			{
 				// Instruction address 0x2517:0x0a5e, size: 5
 				this.oParent.UnitManagement.F0_1866_250e_AddReplayData(3, (byte)(((ushort)playerID1 << 4) | (ushort)playerID2));
@@ -1007,10 +1018,13 @@ namespace OpenCivOne
 			this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] |= flags;
 			this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] |= flags;
 
-			if (flags == 2)
+			if (flags == DiplomacyFlagsEnum.Peace)
 			{
-				this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] &= 0xffdf;
-				this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] &= 0xffdf;
+				this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] |= DiplomacyFlagsEnum.Peace;
+				this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] ^= DiplomacyFlagsEnum.Peace;
+
+				this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] |= DiplomacyFlagsEnum.Peace;
+				this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] ^= DiplomacyFlagsEnum.Peace;
 			}
 
 			// Far return
@@ -1023,25 +1037,31 @@ namespace OpenCivOne
 		/// <param name="playerID1"></param>
 		/// <param name="playerID2"></param>
 		/// <param name="flags"></param>
-		public void F0_2517_0aa1_ClearDiplomacyFlags(int playerID1, int playerID2, ushort flags)
+		public void F0_2517_0aa1_ClearDiplomacyFlags(int playerID1, int playerID2, DiplomacyFlagsEnum flags)
 		{
 			this.oCPU.Log.EnterBlock($"F0_2517_0aa1_ClearDiplomacyFlags({playerID1}, {playerID2}, {flags})");
 
 			// function body
-			if (flags == 2 &&
-				(this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] & flags) != 0)
+			if (flags == DiplomacyFlagsEnum.Peace &&
+				(this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] & flags) != DiplomacyFlagsEnum.None)
 			{
 				// Instruction address 0x2517:0x0ad2, size: 5
 				this.oParent.UnitManagement.F0_1866_250e_AddReplayData(2, (byte)((short)((playerID1 << 4) | playerID2)));
 			}
-		
-			this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] &= (ushort)(~flags);
-			this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] &= (ushort)(~flags);
 
-			if ((flags & 2) != 0)
+			this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] |= flags;
+			this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] ^= flags;
+
+			this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] |= flags;
+			this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] ^= flags;
+
+			if (flags.HasFlag(DiplomacyFlagsEnum.Peace))
 			{
-				this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] &= 0xfffb;
-				this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] &= 0xfffb;
+				this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] |= DiplomacyFlagsEnum.Allied;
+				this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] ^= DiplomacyFlagsEnum.Allied;
+
+				this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] |= DiplomacyFlagsEnum.Allied;
+				this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] ^= DiplomacyFlagsEnum.Allied;
 			}
 
 			// Far return
@@ -1080,7 +1100,7 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x4;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, this.oCPU.CX.LowUInt8);
 
-			if ((this.oParent.GameData.Players[playerID1].Diplomacy[this.oParent.GameData.HumanPlayerID] & 3) != 1)
+			if ((this.oParent.GameData.Players[playerID1].Diplomacy[this.oParent.GameData.HumanPlayerID] & (DiplomacyFlagsEnum.Contact | DiplomacyFlagsEnum.Peace)) != DiplomacyFlagsEnum.Contact)
 				goto L0b69;
 
 			if (this.oParent.GameData.Players[playerID2].MilitaryPower >=
@@ -1091,7 +1111,7 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x4;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, this.oCPU.CX.LowUInt8);
 
-			if ((this.oParent.GameData.Players[playerID2].Diplomacy[this.oParent.GameData.HumanPlayerID] & 4) != 0)
+			if (this.oParent.GameData.Players[playerID2].Diplomacy[this.oParent.GameData.HumanPlayerID].HasFlag(DiplomacyFlagsEnum.Allied))
 				goto L0b69;
 
 		L0b64:
@@ -1106,7 +1126,7 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x4;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, this.oCPU.CX.LowUInt8);
 
-			if ((this.oParent.GameData.Players[playerID2].Diplomacy[this.oParent.GameData.HumanPlayerID] & 3) != 1)
+			if ((this.oParent.GameData.Players[playerID2].Diplomacy[this.oParent.GameData.HumanPlayerID] & (DiplomacyFlagsEnum.Contact | DiplomacyFlagsEnum.Peace)) != DiplomacyFlagsEnum.Contact)
 				goto L0b9b;
 
 			if (this.oParent.GameData.Players[playerID1].MilitaryPower >=
@@ -1117,7 +1137,7 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x4;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, this.oCPU.CX.LowUInt8);
 
-			if ((this.oParent.GameData.Players[playerID1].Diplomacy[this.oParent.GameData.HumanPlayerID] & 4) == 0)
+			if (!this.oParent.GameData.Players[playerID1].Diplomacy[this.oParent.GameData.HumanPlayerID].HasFlag(DiplomacyFlagsEnum.Allied))
 				goto L0b64;
 
 		L0b9b:
@@ -1149,7 +1169,7 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8));
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			if ((this.oParent.GameData.Players[playerID1].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8))] & 3) == 1)
+			if ((this.oParent.GameData.Players[playerID1].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8))] & (DiplomacyFlagsEnum.Contact | DiplomacyFlagsEnum.Peace)) == DiplomacyFlagsEnum.Contact)
 			{
 				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa),
 					this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa))));
@@ -1168,7 +1188,7 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = (ushort)playerID2;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			if ((this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] & 2) != 0)
+			if (this.oParent.GameData.Players[playerID1].Diplomacy[playerID2].HasFlag(DiplomacyFlagsEnum.Peace))
 			{
 				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa),
 					this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa))));

@@ -47,6 +47,9 @@ The other resources (like graphics, music and text) will also be completely repl
 
 <p>Anyone can contribute to this repository in accordance with these <a href="https://codeberg.org/rhorvat/OpenCivOne/src/branch/master/CONTRIBUTING/CONTRIBUTING.md">Contributing guidelines</a>.</p>
 <p>The more detailed current project <a href="https://codeberg.org/rhorvat/OpenCivOne/src/branch/master/CONTRIBUTING/roadmap.md">roadmap is here</a>.</p>
+<p><b>Important! Before you write any bugfix, patch and submit any Pull Request please first create an Issue. 
+Otherwise, you may be fixing the problem that has already been fixed, 
+or you are fixing the issue with the component that is currently being replaced.</b></p>
 Currently, you can contribute to this repository in one of the following ways:
 <ul>
 <li>By testing the game functionality and submitting Issues,</li>
@@ -64,7 +67,7 @@ Currently, you can contribute to this repository in one of the following ways:
 
 <ul>
 <li>Reaching the initial playability of the game (passed),</li>
-<li>Rewrite of the game code, functionalities and features (in progress... only 26.3% of the code left to rewrite),</li>
+<li>Rewrite of the game code, functionalities and features (in progress... only 20.2% of the code left to rewrite),</li>
 <li>Test game functionalities for game fidelity and bugs,</li>
 <li>Archive the game code.</li>
 </ul>

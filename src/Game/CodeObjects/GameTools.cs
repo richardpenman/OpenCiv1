@@ -73,6 +73,16 @@ namespace OpenCivOne
 		/// <summary>
 		/// Finds a nearest city
 		/// </summary>
+		/// <param name="pt"></param>
+		/// <returns></returns>
+		public int F0_2dc4_0102_FindNearestCity(GPoint pt)
+		{
+			return F0_2dc4_0102_FindNearestCity(pt.X, pt.Y);
+		}
+
+		/// <summary>
+		/// Finds a nearest city
+		/// </summary>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
@@ -86,11 +96,12 @@ namespace OpenCivOne
 
 			for (int i = 0; i < 128; i++)
 			{
-				if (this.parent.GameData.Cities[i].StatusFlag != 0xff)
+				City city = this.parent.GameData.Cities[i];
+
+				if (city.StatusFlag != 0xff)
 				{
 					// Instruction address 0x2dc4:0x0142, size: 3
-					int distance = (short)F0_2dc4_0289_GetShortestDistance(x, y,
-						this.parent.GameData.Cities[i].Position.X, this.parent.GameData.Cities[i].Position.Y);
+					int distance = F0_2dc4_0289_GetShortestDistance(x, y, city.Position);
 
 					if (distance < minDistance)
 					{
@@ -99,8 +110,6 @@ namespace OpenCivOne
 					}
 				}
 			}
-
-			this.parent.Var_6c9a = minDistance;
 
 			return cityID;
 		}
@@ -123,7 +132,7 @@ namespace OpenCivOne
 
 			for (int i = 0; i < 128; i++)
 			{
-				if (this.parent.GameData.Players[playerID].Units[i].TypeID != -1 && i != currentUnitID)
+				if (this.parent.GameData.Players[playerID].Units[i].UnitType != UnitTypeEnum.None && i != currentUnitID)
 				{
 					// Instruction address 0x2dc4:0x01b2, size: 3
 					int distance = F0_2dc4_0289_GetShortestDistance(x, y,
@@ -137,9 +146,45 @@ namespace OpenCivOne
 				}
 			}
 
-			this.parent.Var_6c9a = minDistance;
-
 			return nearestUnitID;
+		}
+
+		/// <summary>
+		/// Calculates a shortest distance between two points
+		/// </summary>
+		/// <param name="pt1"></param>
+		/// <param name="pt2"></param>
+		/// <returns></returns>
+		public int F0_2dc4_0289_GetShortestDistance(GPoint pt1, GPoint pt2)
+		{
+			// function body
+			return F0_2dc4_0289_GetShortestDistance(pt1.X - pt2.X, pt1.Y - pt2.Y);
+		}
+
+		/// <summary>
+		/// Calculates a shortest distance between two points
+		/// </summary>
+		/// <param name="pt1"></param>
+		/// <param name="x1"></param>
+		/// <param name="y1"></param>
+		/// <returns></returns>
+		public int F0_2dc4_0289_GetShortestDistance(GPoint pt1, int x1, int y1)
+		{
+			// function body
+			return F0_2dc4_0289_GetShortestDistance(pt1.X - x1, pt1.Y - y1);
+		}
+
+		/// <summary>
+		/// Calculates a shortest distance between two points
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="pt2"></param>
+		/// <returns></returns>
+		public int F0_2dc4_0289_GetShortestDistance(int x, int y, GPoint pt2)
+		{
+			// function body
+			return F0_2dc4_0289_GetShortestDistance(x - pt2.X, y - pt2.Y);
 		}
 
 		/// <summary>
@@ -153,7 +198,7 @@ namespace OpenCivOne
 		public int F0_2dc4_0289_GetShortestDistance(int x, int y, int x1, int y1)
 		{
 			// function body
-			return F0_2dc4_0208_GetShortestDistance(x - x1, y - y1);
+			return F0_2dc4_0289_GetShortestDistance(x - x1, y - y1);
 		}
 
 		/// <summary>
@@ -162,7 +207,7 @@ namespace OpenCivOne
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <returns></returns>
-		public int F0_2dc4_0208_GetShortestDistance(int width, int height)
+		public int F0_2dc4_0289_GetShortestDistance(int width, int height)
 		{
 			// function body			
 			width = Math.Abs(width);

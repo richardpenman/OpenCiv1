@@ -4,7 +4,7 @@ namespace OpenCivOne
 {
 	public class PlayerContinent
 	{
-		public short Strategy = 0;
+		public PlayerContinentStrategyEnum Strategy = PlayerContinentStrategyEnum.Settle;
 		public short CityCount = 0;
 		public short Attack = 0;
 		public short Defense = 0;

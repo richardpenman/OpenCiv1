@@ -153,7 +153,6 @@ namespace OpenCivOne
 		public int Var_6b90 = 0;
 		public int Var_6b92 = 0;
 		public int Var_6c98 = 0;
-		public int Var_6c9a = 0;
 		public int[] Array_6e00 = new int[32];
 		public int Var_6e92_MouseIconHandle = 0;
 		public int[] Array_6e96 = new int[9];

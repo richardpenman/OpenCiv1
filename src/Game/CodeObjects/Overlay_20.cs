@@ -35,7 +35,7 @@ namespace OpenCivOne
 
 			// Instruction address 0x0000:0x0017, size: 5
 			
-			this.oParent.Segment_25fb.F0_25fb_3401(playerID, 0, x, y, 4);
+			this.oParent.AIEngine.F0_25fb_3401_PlayerClearContinentPolicies(playerID, UnitRoleTypeEnum.Settler, x, y, 4);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8), 0x0);
 			goto L0029;

@@ -30,7 +30,7 @@ namespace OpenCivOne
 		private UnitManagement unitManagement;
 		private UnitGoTo unitGoTo;
 		private Segment_2459 oSegment_2459;
-		private Segment_25fb oSegment_25fb;
+		private AIEngine aiEngine;
 		private Segment_1ade oSegment_1ade;
 		private CityWorker cityWorker;
 		private Segment_29f3 oSegment_29f3;
@@ -143,7 +143,7 @@ namespace OpenCivOne
 			this.unitManagement = new UnitManagement(this);
 			this.unitGoTo = new UnitGoTo(this);
 			this.oSegment_2459 = new Segment_2459(this);
-			this.oSegment_25fb = new Segment_25fb(this);
+			this.aiEngine = new AIEngine(this);
 			this.oSegment_1ade = new Segment_1ade(this);
 			this.cityWorker = new CityWorker(this);
 			this.oSegment_29f3 = new Segment_29f3(this);
@@ -416,7 +416,7 @@ namespace OpenCivOne
 			{
 				Unit unit = game.GameData.Players[playerID].Units[unitID];
 
-				log.WriteLine($"// Player[{playerID}{((playerID == humanPlayerID) ? " (Human player)" : "")}].Unit[{unitID}] = {{TypeID: {unit.TypeID}, Status: {unit.Status}, Position: {unit.Position}, GoTo: {unit.GoToDestination}}}");
+				log.WriteLine($"// Player[{playerID}{((playerID == humanPlayerID) ? " (Human player)" : "")}].Unit[{unitID}] = {{TypeID: {unit.UnitType}, Status: {unit.Status}, Position: {unit.Position}, GoTo: {unit.GoToDestination}}}");
 			}
 		}
 		#endregion
@@ -487,9 +487,9 @@ namespace OpenCivOne
 			get { return this.oSegment_2459; }
 		}
 
-		public Segment_25fb Segment_25fb
+		public AIEngine AIEngine
 		{
-			get { return this.oSegment_25fb; }
+			get { return this.aiEngine; }
 		}
 
 		public Segment_1ade Segment_1ade

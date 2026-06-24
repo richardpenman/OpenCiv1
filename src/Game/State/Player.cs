@@ -15,12 +15,16 @@ namespace OpenCivOne
 		public short MilitaryPower = 0;
 		public short ContactPlayerCountdown = 0;
 		public short XStart = 0;
+
+		// Statistics
 		public short CityCount = 0;
 		public short TotalCitySize = 0;
-		public short LandCount = 0;
+		public short MapCellCount = 0;
 
-		public ushort[] Diplomacy = new ushort[8];
+		// Strategic
+		public DiplomacyFlagsEnum[] Diplomacy = new DiplomacyFlagsEnum[8];
 		public PlayerContinent[] Continents = new PlayerContinent[16];
+		public ContinentPolicy[] ContinentPolicies = new ContinentPolicy[16];
 		public short Ranking = 0;
 		public short CumulativeEpicRanking = 0;
 		public short Score = 0;
@@ -37,15 +41,12 @@ namespace OpenCivOne
 		// Units
 		public short UnitCount = 0;
 		public short SettlerCount = 0;
+		public Unit[] Units = new Unit[129];
+		public UnitPolicy[] UnitPolicies = new UnitPolicy[32];
 		public short[] ActiveUnits = new short[(int)UnitTypeEnum.Max];
 		public short[] UnitsDestroyed = new short[8];
-		public Unit[] Units = new Unit[129];
 		public short[] UnitsInProduction = new short[(int)UnitTypeEnum.Max];
 		public short[] LostUnits = new short[(int)UnitTypeEnum.Max];
-		public UnitPolicy[] UnitPolicies = new UnitPolicy[32];
-
-		// Strategic locations
-		public ContinentPolicy[] ContinentPolicies = new ContinentPolicy[16];
 
 		// Spaceship
 		public sbyte[] SpaceshipData = new sbyte[180];
@@ -63,7 +64,7 @@ namespace OpenCivOne
 		{
 			for (int i = 0; i < this.Diplomacy.Length; i++)
 			{
-				this.Diplomacy[i] = 0;
+				this.Diplomacy[i] = DiplomacyFlagsEnum.None;
 			}
 
 			for (int i = 0; i < this.Continents.Length; i++)

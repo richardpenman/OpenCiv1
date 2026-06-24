@@ -206,7 +206,7 @@ namespace OpenCivOne
 			new GPoint(-2, 1), new GPoint(-2, -1), new GPoint(0, 0) };
 
 		private UnitDefinition[] unitTypes = new UnitDefinition[] {
-			new UnitDefinition(UnitTypeEnum.Settlers, "Settlers", TechnologyAdvanceEnum.NewFutureTechnology, UnitMovementTypeEnum.Land, 1, 0, 0, 1, 4, 0, 0, UnitRoleTypeEnum.Settler, TechnologyAdvanceEnum.None),	// 0
+			new UnitDefinition(UnitTypeEnum.Settler, "Settlers", TechnologyAdvanceEnum.NewFutureTechnology, UnitMovementTypeEnum.Land, 1, 0, 0, 1, 4, 0, 0, UnitRoleTypeEnum.Settler, TechnologyAdvanceEnum.None),	// 0
 			new UnitDefinition(UnitTypeEnum.Militia, "Militia", TechnologyAdvanceEnum.Gunpowder, UnitMovementTypeEnum.Land, 1, 0, 1, 1, 1, 0, 0, UnitRoleTypeEnum.Defense, TechnologyAdvanceEnum.None),	// 1
 			new UnitDefinition(UnitTypeEnum.Phalanx, "Phalanx", TechnologyAdvanceEnum.Gunpowder, UnitMovementTypeEnum.Land, 1, 0, 1, 2, 2, 0, 0, UnitRoleTypeEnum.Defense, TechnologyAdvanceEnum.BronzeWorking),	// 2
 			new UnitDefinition(UnitTypeEnum.Legion, "Legion", TechnologyAdvanceEnum.Conscription, UnitMovementTypeEnum.Land, 1, 0, 3, 1, 2, 0, 0, UnitRoleTypeEnum.LandAttack, TechnologyAdvanceEnum.IronWorking),	// 3
@@ -337,18 +337,18 @@ namespace OpenCivOne
 			new TechnologyAdvanceDefinition(TechnologyAdvanceEnum.FutureTechnology5, "Future Tech.", TechnologyAdvanceEnum.NewFutureTechnology, TechnologyAdvanceEnum.NewFutureTechnology)};
 
 		private TerrainModification[] terrainModifications = new TerrainModification[] {
-			new TerrainModification(TerrainTypeEnum.Desert, -2, 5, -2, 5, 0, 0),
-			new TerrainModification(TerrainTypeEnum.Plains, -2, 5, 2, 15, 1, 1),
-			new TerrainModification(TerrainTypeEnum.Grassland, -2, 5, 2, 10, 0, 1),
-			new TerrainModification(TerrainTypeEnum.Forest, 6, 5, -1, 5, 0, 0),
-			new TerrainModification(TerrainTypeEnum.Hills, -2, 10, -4, 10, 1, 1),
-			new TerrainModification(TerrainTypeEnum.Mountains, -1, 0, -2, 10, 0, 0),
-			new TerrainModification(TerrainTypeEnum.Tundra, -1, 0, -1, 0, 0, 0),
-			new TerrainModification(TerrainTypeEnum.Arctic, -1, 0, -1, 0, 0, 0),
-			new TerrainModification(TerrainTypeEnum.Swamp, 10, 15, 2, 15, 0, 0),
-			new TerrainModification(TerrainTypeEnum.Jungle, 10, 15, 2, 15, 0, 0),
-			new TerrainModification(TerrainTypeEnum.Water, -1, 0, -1, 0, 0, 0),
-			new TerrainModification(TerrainTypeEnum.River, -2, 5, -1, 0, 0, 1)};
+			new TerrainModification(TerrainTypeEnum.Desert, -2, 5, -2, 5, false, false),
+			new TerrainModification(TerrainTypeEnum.Plains, -2, 5, 2, 15, true, true),
+			new TerrainModification(TerrainTypeEnum.Grassland, -2, 5, 2, 10, false, true),
+			new TerrainModification(TerrainTypeEnum.Forest, 6, 5, -1, 5, false, false),
+			new TerrainModification(TerrainTypeEnum.Hills, -2, 10, -4, 10, true, true),
+			new TerrainModification(TerrainTypeEnum.Mountains, -1, 0, -2, 10, false, false),
+			new TerrainModification(TerrainTypeEnum.Tundra, -1, 0, -1, 0, false, false),
+			new TerrainModification(TerrainTypeEnum.Arctic, -1, 0, -1, 0, false, false),
+			new TerrainModification(TerrainTypeEnum.Swamp, 10, 15, 2, 15, false, false),
+			new TerrainModification(TerrainTypeEnum.Jungle, 10, 15, 2, 15, false, false),
+			new TerrainModification(TerrainTypeEnum.Water, -1, 0, -1, 0, false, false),
+			new TerrainModification(TerrainTypeEnum.River, -2, 5, -1, 0, false, true)};
 
 		private TerrainDefinition[] terrainTypes = new TerrainDefinition[]{
 			new TerrainDefinition(TerrainTypeEnum.Desert, "Desert", 1, 2, 0, 1, 0, 1, 14),

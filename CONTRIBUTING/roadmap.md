@@ -12,7 +12,7 @@
 <li>Introduce the thorough save game data check and possibly fix errors when loading from sve/map files,</li>
 <li>Replace static arrays in game state with dynamic and serializable replacements like List, BDictionary, etc. (dependent on completing code rewrite),</li>
 <li>Replace bitwise flags with modern replacements like EnumFlagCollection (dependent on completing code rewrite),</li>
-<li>Introduce new save game format (compressed '.xsve' for example, dependent on all of the above steps),</li>
+<li>Introduce new save game format (compressed '.xsve' or '.jsve' for example, dependent on all of the above steps),</li>
 <li>Add missing values to game saves (like Random Number Generator state, some flags, counters, etc.) (dependent on New save game format),</li>
 <li>Replace game save/load dialogs with grouped game saves by the concrete game (Game Name -> Game Saves),</li>
 <li>Introduce a new game debug option 'Save game each turn' for easy debugging and issue submitting.</li>

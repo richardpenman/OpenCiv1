@@ -34,13 +34,14 @@ namespace OpenCivOne
 		/// <summary>
 		/// Whether AI can irrigate or mine this terrain type under Despotism/Anarchy.
 		/// </summary>
-		public short AICanImproveBeforeMonarchy;
+		public bool AICanImproveBeforeMonarchy;
 		/// <summary>
 		/// Whether AI can irrigate or mine this terrain type under Monarchy or above.
 		/// </summary>
-		public short AICanImproveAfterMonarchy;
+		public bool AICanImproveAfterMonarchy;
 
-		public TerrainModification(TerrainTypeEnum terrainType, short irrigationEffect, short irrigationCost, short miningEffect, short miningCost, short aiCanImproveBeforeMonarchy, short aiCanImproveAfterMonarchy)
+		public TerrainModification(TerrainTypeEnum terrainType, short irrigationEffect, short irrigationCost, short miningEffect, short miningCost, 
+			bool aiCanImproveBeforeMonarchy, bool aiCanImproveAfterMonarchy)
 		{
 			this.TerrainType = terrainType;
 			this.IrrigationEffect = irrigationEffect;

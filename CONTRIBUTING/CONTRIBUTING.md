@@ -11,6 +11,10 @@ Anyone can contribute to this repository in accordance with these rules:
 <li>The 'Default' Visual and Audio theme must preserve the 'Original Game appearance and feel' as much as possible (There can be additional custom Visual and Audio themes).</li>
 </ul>
 
+<b>Important! Before you write any bugfix, patch and submit any Pull Request please first create an Issue. 
+Otherwise, you may be fixing the problem that has already been fixed, 
+or you are fixing the issue with the component that is currently being replaced.</b>
+
 Currently, you can contribute to this repository in one of the following ways:
 <ul>
 <li>By testing the game functionality and submitting Issues,</li>
