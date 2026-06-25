@@ -2454,6 +2454,11 @@ namespace OpenCivOne
 							// Instruction address 0x1d12:0x4a61, size: 5
 							local_f0 = this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
 
+							// The CityWorker is not processing key presses from mouse events
+							// We don't want to mix mouse location code when pressing a key
+							// Ensure that mouse event doesn't interfere
+							mouseEvent = new MouseEvent(new GPoint(0, 0), MouseButtonsEnum.None);
+
 							//this.parent.Var_db3e_MouseYPos = 0;
 							//this.parent.Var_db3c_MouseXPos = 0;
 						}
@@ -2580,7 +2585,7 @@ namespace OpenCivOne
 						goto L045f;
 
 					L4e80:
-						if (((mouseEvent.Position.X >= 230 && mouseEvent.Position.X < 270) || local_f0 == 'c') && local_f0 != 0x1b)
+						if (local_f0 != 0x1b && local_f0 != 0xd && ((mouseEvent.Position.X >= 230 && mouseEvent.Position.X < 270) || local_f0 == 'c'))
 						{
 							city.StatusFlag &= 0xef;
 
@@ -2632,7 +2637,7 @@ namespace OpenCivOne
 						goto L4faf;
 
 					L4f83:
-						if (local_f0 != 0x1b && mouseEvent.Position.X >= 96 && mouseEvent.Position.X < 224) goto L4f98;
+						if (local_f0 != 0x1b && local_f0 != 0xd && mouseEvent.Position.X >= 96 && mouseEvent.Position.X < 224) goto L4f98;
 						goto L4ff5;
 
 					L4f98:

@@ -611,7 +611,8 @@ namespace OpenCivOne
 				bool isUnitNear = this.parent.UnitManagement.F0_1866_1725_IsUnitNear(playerID, unit.Position.X, unit.Position.Y);
 
 				int nearestCityID = this.parent.GameTools.F0_2dc4_0102_FindNearestCity(unitX, unitY);
-				int nearestCityDistance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(unitX, unitY, this.parent.GameData.Cities[nearestCityID].Position);;
+				int nearestCityDistance = (nearestCityID != -1) ? 
+					this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(unitX, unitY, this.parent.GameData.Cities[nearestCityID].Position) : int.MaxValue;
 
 				int nearestUnitID = this.parent.GameTools.F0_2dc4_0177_FindNearestPlayerUnit(playerID, unitID, unitX, unitY);
 				int nearestUnitDistance = (nearestUnitID == -1) ? int.MaxValue : this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(unitX, unitY, this.parent.GameData.Players[playerID].Units[nearestUnitID].Position);
