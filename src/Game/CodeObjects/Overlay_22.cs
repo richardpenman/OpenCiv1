@@ -1250,9 +1250,6 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x0ecd, size: 5
 			this.oParent.GameTools.F0_2dc4_065f_StopPaletteCycleSlots();
 
-			// Instruction address 0x0000:0x0ed2, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			// Instruction address 0x0000:0x0ee4, size: 5
 			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "SETTLERS.PIC", 0);
 
@@ -1310,7 +1307,7 @@ namespace OpenCivOne
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10), 0x0);
 
 			// Instruction address 0x0000:0x1002, size: 5
-			this.oParent.CommonTools.EmptyKeyboardAndMouse();
+			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa), 0x50);
 			goto L1011;
@@ -1359,16 +1356,12 @@ namespace OpenCivOne
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0xa);
 			if (this.oCPU.Flags.L) goto L10aa;
 
-			// Instruction address 0x0000:0x10b4, size: 5
-			this.oParent.MainCode.F0_11a8_0223_UpdateMouseState();
+			MouseEvent mouseEvent = this.oParent.GetMouseEvent();
 
 			// Instruction address 0x0000:0x10b9, size: 5
-			this.oParent.CAPI.kbhit();
-
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.NE) goto L10cc;
+			if (this.oParent.CAPI.kbhit() != 0) goto L10cc;
 			
-			if (this.oParent.Var_db3a_MouseButton != 0) goto L10cc;
+			if (mouseEvent.Buttons != MouseButtonsEnum.None) goto L10cc;
 			goto L100e;
 
 		L10cc:
@@ -1396,11 +1389,8 @@ namespace OpenCivOne
 			this.oParent.Segment_1238.F0_1238_1beb();
 
 		L1143:
-			// Instruction address 0x0000:0x1143, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
-
 			// Instruction address 0x0000:0x1148, size: 5
-			this.oParent.CommonTools.EmptyKeyboardAndMouse();
+			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
 			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;

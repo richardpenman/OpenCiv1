@@ -15,7 +15,7 @@ namespace OpenCivOne
 		private bool inTimer = false;
 		private Timer? timer = null;
 
-		private BDictionary<int, PaletteCycleSlot> pletteCycleSlots = new BDictionary<int, PaletteCycleSlot>();
+		private BDictionary<int, PaletteCycleSlot> paletteCycleSlots = new BDictionary<int, PaletteCycleSlot>();
 
 		private bool transformFlag = false;
 		private int transformValue = 0;
@@ -95,9 +95,9 @@ namespace OpenCivOne
 		/// <exception cref="Exception"></exception>
 		public void CyclePaletteTimer()
 		{
-			for (int i = 0; i < this.pletteCycleSlots.Count; i++)
+			for (int i = 0; i < this.paletteCycleSlots.Count; i++)
 			{
-				PaletteCycleSlot slot = this.pletteCycleSlots[i].Value;
+				PaletteCycleSlot slot = this.paletteCycleSlots[i].Value;
 
 				if (slot.Active)
 				{
@@ -205,10 +205,10 @@ namespace OpenCivOne
 			// function body
 			lock (VCPU.GraphicsLock)
 			{
-				if (this.pletteCycleSlots.ContainsKey(index))
+				if (this.paletteCycleSlots.ContainsKey(index))
 				{
 					// restore old slot palette
-					PaletteCycleSlot oldSlot = this.pletteCycleSlots.GetValueByKey(index);
+					PaletteCycleSlot oldSlot = this.paletteCycleSlots.GetValueByKey(index);
 					
 					if (oldSlot.Active)
 					{
@@ -228,7 +228,7 @@ namespace OpenCivOne
 					PaletteCycleSlot newSlot = new PaletteCycleSlot(speed, fromColorIndex, palette);
 					//newSlot.Active = oldSlot.Active;
 
-					this.pletteCycleSlots.SetValueByKey(index, newSlot);
+					this.paletteCycleSlots.SetValueByKey(index, newSlot);
 				}
 				else
 				{
@@ -240,7 +240,7 @@ namespace OpenCivOne
 
 					PaletteCycleSlot slot = new PaletteCycleSlot(speed, fromColorIndex, palette);
 
-					this.pletteCycleSlots.Add(index, slot);
+					this.paletteCycleSlots.Add(index, slot);
 				}
 			}
 		}
@@ -254,7 +254,7 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock($"F0_1000_03fa_StartPaletteCycleSlot({index})");
 
 			// function body
-			if (this.pletteCycleSlots.ContainsKey(index))
+			if (this.paletteCycleSlots.ContainsKey(index))
 			{
 				while (this.inTimer)
 				{
@@ -263,7 +263,7 @@ namespace OpenCivOne
 
 				lock (VCPU.GraphicsLock)
 				{
-					this.pletteCycleSlots.GetValueByKey(index).Active = true;
+					this.paletteCycleSlots.GetValueByKey(index).Active = true;
 				}
 			}
 			else
@@ -281,7 +281,7 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock($"F0_1000_042b_StopPaletteCycleSlot({index})");
 
 			// function body
-			if (this.pletteCycleSlots.ContainsKey(index))
+			if (this.paletteCycleSlots.ContainsKey(index))
 			{
 				while (this.inTimer)
 				{
@@ -290,7 +290,7 @@ namespace OpenCivOne
 
 				lock (VCPU.GraphicsLock)
 				{
-					PaletteCycleSlot slot = this.pletteCycleSlots.GetValueByKey(index);
+					PaletteCycleSlot slot = this.paletteCycleSlots.GetValueByKey(index);
 
 					if (slot.Active)
 					{
@@ -444,25 +444,6 @@ namespace OpenCivOne
 		/// <summary>
 		/// ?
 		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="bitmapPtr"></param>
-		public void F0_1000_083f(int x, int y, int bitmapPtr)
-		{
-			//this.oCPU.Log.EnterBlock($"F0_1000_083f({x}, {y}, {BitmapPtr})");
-
-			// function body
-			//this.oParent.Graphics.F0_VGA_0270(x, y, BitmapPtr);
-
-			if (this.parent.Var_5403 != 0)
-			{
-				this.parent.Var_5402 = 0;
-			}
-		}
-
-		/// <summary>
-		/// ?
-		/// </summary>
 		/// <param name="screenID"></param>
 		public void F0_1000_0846(int screenID)
 		{
@@ -471,11 +452,6 @@ namespace OpenCivOne
 			// function body
 			//this.oParent.Graphics.F0_VGA_063c(screenID);
 			this.parent.Graphics.F0_VGA_06b7_DrawScreenToMainScreenWithEffect(screenID);
-
-			if (this.parent.Var_5403 != 0)
-			{
-				this.parent.Var_5402 = 0;
-			}
 		}
 
 		/// <summary>
@@ -555,21 +531,6 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Reset and init the mouse subsystem
-		/// </summary>
-		/// <returns>true if mouse is detected</returns>
-		public void InitMouse()
-		{
-			//this.oCPU.Log.EnterBlock("F0_1000_163e_InitMouse()");
-
-			// function body
-			this.parent.Var_586e_MouseNewX = this.CPU.MouseLocation.X;
-			this.parent.Var_5870_MouseNewY = this.CPU.MouseLocation.Y;
-			this.parent.Var_5872_MouseNewButtons = (int)this.CPU.MouseButtons;
-			this.parent.Var_587d = -1;
-		}
-
-		/// <summary>
 		/// Sets the mouse position and icon
 		/// </summary>
 		/// <param name="x"></param>
@@ -577,7 +538,7 @@ namespace OpenCivOne
 		/// <param name="bitmapPtr"></param>
 		public void SetMousePositionAndIcon(int x, int y, int bitmapPtr)
 		{
-			//this.oCPU.Log.EnterBlock($"F0_1000_1697({param1}, {param2}, {bitmapPtr})");
+			//this.oCPU.Log.EnterBlock($"F0_1000_1697({x}, {y}, {bitmapPtr})");
 
 			// function body
 			this.parent.Var_5878_MouseIconXOffset = x;
@@ -586,56 +547,17 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Update mouse position
+		/// Updates current mouse position and pressed button state.
 		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		public void UpdateMousePosition(int x, int y)
+		public void UpdateMouseState()
 		{
-			//this.oCPU.Log.EnterBlock($"F0_1000_16ae({param1}, {param2})");
-
 			// function body
-			this.parent.Var_586e_MouseNewX = x;
-			this.parent.Var_5870_MouseNewY = y;
-		}
+			this.CPU.DoEvents();
 
-		/// <summary>
-		/// ?
-		/// </summary>
-		public void F0_1000_16db()
-		{
-			//this.oCPU.Log.EnterBlock("F0_1000_16db()");
-
-			// function body
-			if (this.parent.Var_5876_MouseIcon != 0)
-			{
-				if (this.parent.Var_5403 == 0)
-				{
-					// Instruction address 0x1000:0x16fd, size: 5
-					F0_1000_083f(this.parent.Var_586e_MouseNewX - this.parent.Var_5878_MouseIconXOffset,
-						this.parent.Var_5870_MouseNewY - this.parent.Var_587a_MouseIconYOffset,
-						this.parent.Var_5876_MouseIcon);
-
-					this.parent.Var_5403 = 1;
-				}
-			}
-		}
-
-		/// <summary>
-		/// ?
-		/// </summary>
-		public void F0_1000_170b()
-		{
-			//this.oCPU.Log.EnterBlock("F0_1000_170b()");
-
-			// function body
-			if (this.parent.Var_5876_MouseIcon != 0)
-			{
-				if (this.parent.Var_5403 != 0)
-				{
-					this.parent.Var_5403 = 0;
-				}
-			}
+			// Instruction address 0x11a8:0x022a, size: 5
+			//this.parent.Var_db3a_MouseButton = this.parent.Var_5872_MouseNewButtons;
+			//this.parent.Var_db3c_MouseXPos = this.parent.Var_586e_MouseNewX;
+			//this.parent.Var_db3e_MouseYPos = this.parent.Var_5870_MouseNewY;
 		}
 
 		/// <summary>
@@ -646,40 +568,24 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock("F0_1000_17db_MouseEvent()");
 
 			// function body
-			this.parent.Var_5874_MouseNewButtonsOr |= this.CPU.BX.UInt16;
-			this.parent.Var_5872_MouseNewButtons = this.CPU.BX.Int16;
-			this.parent.Var_586e_MouseNewX = this.CPU.CX.Int16;
-			this.parent.Var_5870_MouseNewY = this.CPU.DX.Int16;
-
-			// Mouse location changed
-			if ((this.CPU.AX.UInt16 & 0x1) != 0 && this.parent.Var_5403 != 0)
-			{
-				if (this.parent.Var_5402 == 0)
-				{
-					this.parent.Var_5402 = 0;
-				}
-				else
-				{
-					this.parent.Var_5402 = 2;
-				}
-			}
+			//this.parent.Var_5872_MouseNewButtons = this.CPU.BX.Int16;
+			//this.parent.Var_586e_MouseNewX = this.CPU.CX.Int16;
+			//this.parent.Var_5870_MouseNewY = this.CPU.DX.Int16;
 		}
 
 		/// <summary>
-		/// Empties keyboard buffer and mouse statuses
+		/// Empties keyboard buffer and clears the mouse state
 		/// </summary>
-		public void EmptyKeyboardAndMouse()
+		public void EmptyKeyboardBufferAndClearMouse()
 		{
+			this.CPU.DoEvents();
+
 			while (this.parent.CAPI.kbhit() != 0)
 			{
 				this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
 			}
 
-			do
-			{
-				this.parent.MainCode.F0_11a8_0223_UpdateMouseState();
-			}
-			while (this.parent.Var_db3a_MouseButton != 0);
+			this.parent.EmptyMouseEvents();
 		}
 	}
 }

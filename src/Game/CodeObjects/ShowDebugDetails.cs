@@ -32,8 +32,6 @@ namespace OpenCivOne
 
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
 
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
 			int playerBitMask = 0x1 << selectedPlayerID;
@@ -238,8 +236,6 @@ namespace OpenCivOne
 
 			this.oParent.Var_aa_Screen0_Rectangle.FontID = 1;
 
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
-
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
 		}
 
@@ -289,9 +285,6 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock($"F13_0000_0000({playerID})");
 
 			// function body
-			// Instruction address 0x0000:0x0007, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			// Instruction address 0x0000:0x0024, size: 5
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
 
@@ -428,9 +421,6 @@ namespace OpenCivOne
 
 			// Instruction address 0x0000:0x0542, size: 5
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
-
-			// Instruction address 0x0000:0x054a, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
 		}
 
 		/// <summary>
@@ -441,8 +431,6 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock("F13_0000_0554()");
 
 			// function body
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
 
 			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 1);
@@ -549,8 +537,6 @@ namespace OpenCivOne
 			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
-
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
 		}
 	}
 }

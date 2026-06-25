@@ -6,15 +6,13 @@ namespace OpenCivOne
 	public class MainCode
 	{
 		private OpenCivOneGame parent;
-		private VCPU CPU;
 
-		private int Var_652e_MouseHideCountTemp = 0;
-		private int Var_deea_MouseHideCount = 0;
+		//private int Var_652e_MouseHideCountTemp = 0;
+		//private int Var_deea_MouseHideCount = 0;
 
 		public MainCode(OpenCivOneGame parent)
 		{
 			this.parent = parent;
-			this.CPU = parent.CPU;
 		}
 
 		/// <summary>
@@ -29,22 +27,15 @@ namespace OpenCivOne
 			// Main menu selection
 			// 'N' - No sound, 'A' - Sound blaster, 'R' - Roland MIDI board
 			this.parent.Var_1a30_SoundDriverType = 'N';
-			this.parent.Var_1a3c_MouseAvailable = true;
 
 			this.parent.MainIntro.F2_0000_0000_ShowMainGameIntro();
 
 			// Instruction address 0x11a8:0x010b, size: 5
 			this.parent.Var_6e92_MouseIconHandle = this.parent.Graphics.LoadIcon("TORCH.PIC");
 
-			// Instruction address 0x11a8:0x0122, size: 5
-			this.parent.CommonTools.InitMouse();
-
 			// Instruction address 0x11a8:0x0139, size: 5
 			this.parent.CommonTools.SetMousePositionAndIcon(0, 0, this.parent.Var_6e92_MouseIconHandle);
 			
-			// Instruction address 0x11a8:0x0142, size: 3
-			F0_11a8_0250_ShowMouse();
-
 			// Game type, load, etc. menu
 			// And then after menu Intro
 			// Instruction address 0x11a8:0x0146, size: 3
@@ -70,9 +61,6 @@ namespace OpenCivOne
 				// Instruction address 0x11a8:0x0175, size: 5
 				this.parent.Segment_1238.F0_1238_0092_GameTurn();
 			}
-
-			// Instruction address 0x11a8:0x0188, size: 5
-			this.parent.Var_587d = 0;
 		
 			// Instruction address 0x11a8:0x0191, size: 3
 			this.parent.CommonTools.PlayTune(0, 0);
@@ -81,98 +69,9 @@ namespace OpenCivOne
 			this.parent.CommonTools.CloseSoundEngine();
 
 			// Instruction address 0x11a8:0x019c, size: 5
-			this.parent.CommonTools.StopGameMainTimer();			
-		}
+			this.parent.CommonTools.StopGameMainTimer();
 
-		/// <summary>
-		/// Updates current mouse position and pressed button state.
-		/// </summary>
-		public void F0_11a8_0223_UpdateMouseState()
-		{
-			// function body
-			this.CPU.DoEvents();
-
-			if (this.parent.Var_1a3c_MouseAvailable)
-			{
-				// Instruction address 0x11a8:0x022a, size: 5
-				this.parent.Var_db3a_MouseButton = this.parent.Var_5874_MouseNewButtonsOr | this.parent.Var_5872_MouseNewButtons;
-				this.parent.Var_5874_MouseNewButtonsOr = 0;
-
-				this.parent.Var_db3c_MouseXPos = this.parent.Var_586e_MouseNewX;
-				this.parent.Var_db3e_MouseYPos = this.parent.Var_5870_MouseNewY;
-			}
-			else
-			{
-				this.parent.Var_db3e_MouseYPos = 0;
-				this.parent.Var_db3c_MouseXPos = 0;
-				this.parent.Var_db3a_MouseButton = 0;
-			}
-		}
-
-		/// <summary>
-		/// ?
-		/// </summary>
-		public void F0_11a8_0250_ShowMouse()
-		{
-			//this.oCPU.Log.EnterBlock("F0_11a8_0250()");
-
-			// function body
-			this.Var_deea_MouseHideCount++;
-
-			if (this.parent.Var_1a3c_MouseAvailable && this.Var_deea_MouseHideCount == 1)
-			{
-				// Instruction address 0x11a8:0x0262, size: 5
-				this.parent.CommonTools.F0_1000_16db();
-			}
-		}
-
-		/// <summary>
-		/// ?
-		/// </summary>
-		public void F0_11a8_0268_HideMouse()
-		{
-			//this.oCPU.Log.EnterBlock("F0_11a8_0268()");
-
-			// function body
-			if (this.parent.Var_1a3c_MouseAvailable && this.Var_deea_MouseHideCount == 1)
-			{
-				// Instruction address 0x11a8:0x0276, size: 5
-				this.parent.CommonTools.F0_1000_170b();
-			}
-
-			this.Var_deea_MouseHideCount--;
-		}
-
-		/// <summary>
-		/// ?
-		/// </summary>
-		public void F0_11a8_0280_ShowMouseAndSaveState()
-		{
-			//this.oCPU.Log.EnterBlock("F0_11a8_0280()");
-
-			// function body
-			this.Var_652e_MouseHideCountTemp = this.Var_deea_MouseHideCount;
-
-			while (this.Var_deea_MouseHideCount < 1)
-			{
-				// Instruction address 0x11a8:0x0289, size: 3
-				F0_11a8_0250_ShowMouse();
-			}
-		}
-
-		/// <summary>
-		/// ?
-		/// </summary>
-		public void F0_11a8_0294_HideMouseAndSaveState()
-		{
-			//this.oCPU.Log.EnterBlock("F0_11a8_0294()");
-
-			// function body
-			while (this.Var_deea_MouseHideCount > this.Var_652e_MouseHideCountTemp)
-			{
-				// Instruction address 0x11a8:0x0297, size: 3
-				F0_11a8_0268_HideMouse();
-			}
+			this.parent.GameTools.F0_2dc4_0523_FreeResource(this.parent.Var_6e92_MouseIconHandle, "Mouse icon");
 		}
 
 		/// <summary>
@@ -209,9 +108,6 @@ namespace OpenCivOne
 				switch (this.parent.Var_6b32_SelectedGameType)
 				{
 					case 0:
-						// Instruction address 0x11a8:0x0512, size: 3
-						F0_11a8_0268_HideMouse();
-
 						this.parent.Var_7ef6_PlanetLandMass = 1;
 						this.parent.Var_7ef8_PlanetTemperature = 1;
 						this.parent.Var_7efa_PlanetClimate = 1;
@@ -239,18 +135,12 @@ namespace OpenCivOne
 						}
 						else
 						{
-							// Instruction address 0x11a8:0x07cd, size: 3
-							F0_11a8_0268_HideMouse();
-
 							// Instruction address 0x11a8:0x07e4, size: 5
 							this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 7);
 						}
 						break;
 
 					case 2:
-						// Instruction address 0x11a8:0x0796, size: 3
-						F0_11a8_0268_HideMouse();
-
 						this.parent.Var_d76a_EarthMap = true;
 
 						this.parent.MapInitAndIntro.F7_0000_0012_GenerateMap();
@@ -269,9 +159,6 @@ namespace OpenCivOne
 						break;
 
 					case 3:
-						// Instruction address 0x11a8:0x0592, size: 3
-						F0_11a8_0268_HideMouse();
-
 						// Instruction address 0x11a8:0x05b6, size: 5
 						this.parent.CommonTools.TransformPaletteToColor(5, Color.FromRgb(0, 0, 0));
 
@@ -284,17 +171,11 @@ namespace OpenCivOne
 						// Instruction address 0x11a8:0x0611, size: 5
 						this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 
-						// Instruction address 0x11a8:0x061a, size: 3
-						F0_11a8_0250_ShowMouse();
-
 						this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = 1;
 						this.parent.Var_7ef6_PlanetLandMass = -1;
 
 						while (this.parent.Var_7ef6_PlanetLandMass == -1)
 						{
-							// Instruction address 0x11a8:0x062b, size: 5
-							this.parent.CommonTools.UpdateMousePosition(210, 11);
-
 							// Instruction address 0x11a8:0x064f, size: 5
 							this.parent.Var_7ef6_PlanetLandMass = this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox("LAND MASS:\n Small\n Normal\n Large\n", 200, 1, false, true, true);
 
@@ -312,9 +193,6 @@ namespace OpenCivOne
 
 						while (this.parent.Var_7ef8_PlanetTemperature == -1)
 						{
-							// Instruction address 0x11a8:0x0688, size: 5
-							this.parent.CommonTools.UpdateMousePosition(210, 61);
-
 							// Instruction address 0x11a8:0x06ac, size: 5
 							this.parent.Var_7ef8_PlanetTemperature = this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox("TEMPERATURE:\n Cool\n Temperate\n Warm\n", 200, 51, false, true, true);
 
@@ -332,9 +210,6 @@ namespace OpenCivOne
 
 						while (this.parent.Var_7efa_PlanetClimate == -1)
 						{
-							// Instruction address 0x11a8:0x06e5, size: 5
-							this.parent.CommonTools.UpdateMousePosition(210, 111);
-
 							// Instruction address 0x11a8:0x0709, size: 5
 							this.parent.Var_7efa_PlanetClimate = this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox("CLIMATE:\n Arid\n Normal\n Wet\n", 200, 101, false, true, true);
 
@@ -352,9 +227,6 @@ namespace OpenCivOne
 
 						while (this.parent.Var_7efc_PlanetAge == -1)
 						{
-							// Instruction address 0x11a8:0x0742, size: 5
-							this.parent.CommonTools.UpdateMousePosition(210, 161);
-
 							// Instruction address 0x11a8:0x0766, size: 5
 							this.parent.Var_7efc_PlanetAge = this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox("AGE:\n 3 billion years\n 4 billion years\n 5 billion years\n", 200, 151, false, true, true);
 
@@ -366,9 +238,6 @@ namespace OpenCivOne
 								this.parent.Var_7efc_PlanetAge = -1;
 							}
 						}
-
-						// Instruction address 0x11a8:0x078f, size: 3
-						F0_11a8_0268_HideMouse();
 
 						// Intro...
 						this.parent.MapInitAndIntro.F7_0000_0012_GenerateMap();
@@ -387,15 +256,9 @@ namespace OpenCivOne
 						break;
 
 					case 4:
-						// Instruction address 0x11a8:0x07ef, size: 3
-						F0_11a8_0268_HideMouse();
-
 						this.parent.HallOfFame.F3_0000_002b();
 
 						this.parent.HallOfFame.F3_0000_00d7(-1);
-
-						// Instruction address 0x11a8:0x0804, size: 3
-						F0_11a8_0250_ShowMouse();
 
 						this.parent.Var_6b32_SelectedGameType = -1;
 						break;
@@ -424,9 +287,6 @@ namespace OpenCivOne
 
 			// Instruction address 0x11a8:0x086f, size: 5
 			this.parent.GameTools.F0_2dc4_05dd_AddPaletteCycleSlots();
-
-			// Instruction address 0x11a8:0x0875, size: 3
-			F0_11a8_0250_ShowMouse();
 		}
 
 		/// <summary>

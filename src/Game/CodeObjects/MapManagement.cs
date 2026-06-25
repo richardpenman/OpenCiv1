@@ -103,9 +103,6 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock($"F0_2aea_0008({playerID}, {x}, {y})");
 
 			// function body
-			// Instruction address 0x2aea:0x000f, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 			this.parent.Var_1ae0 = 0;
 
 			this.parent.Segment_1238.F0_1238_0fea_DrawMainMenu();
@@ -267,9 +264,6 @@ namespace OpenCivOne
 			this.parent.DrawTools.DrawRectangle(x - xMap - 1, y - yMap + 7, 17, 10, 15);
 
 			this.parent.Var_d20a = tempValue;
-
-			// Instruction address 0x2aea:0x03b0, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();
 		}
 
 		/// <summary>
@@ -304,9 +298,6 @@ namespace OpenCivOne
 					terrainImprovements = F0_2aea_1585_GetVisibleTerrainImprovements(x, y);
 				}
 			
-				// Instruction address 0x2aea:0x04ac, size: 5
-				this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 				if (terrainType == TerrainTypeEnum.Water)
 				{
 					// Draw ocean, coastal cells and river deltas
@@ -648,9 +639,6 @@ namespace OpenCivOne
 						}
 					}
 				}
-
-				// Instruction address 0x2aea:0x0e1b, size: 5
-				this.parent.MainCode.F0_11a8_0250_ShowMouse();
 			}
 
 			return true;
@@ -677,9 +665,6 @@ namespace OpenCivOne
 				if ((unit.Status & 0x1) == 0 || GetTerrainType(unit.Position.X, unit.Position.Y) != TerrainTypeEnum.Water ||
 					this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Water)
 				{
-					// Instruction address 0x2aea:0x0f57, size: 5
-					this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 					if (unit.NextUnitID != -1)
 					{
 						// There are multiple units stacked
@@ -690,9 +675,6 @@ namespace OpenCivOne
 
 					// Instruction address 0x2aea:0x0fa0, size: 3
 					F0_2aea_0fb3_DrawUnitWithStatus(playerID, unitID, x, y);
-
-					// Instruction address 0x2aea:0x0fa6, size: 5
-					this.parent.MainCode.F0_11a8_0250_ShowMouse();
 
 					return true;
 				}

@@ -50,19 +50,11 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock($"F0_1238_001e_ShowDialog(0x{stringPtr:x4}, {x}, {y})");
 
 			// function body
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
-
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
 
 			int dialogResult = this.oParent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(text, x, y, true, false, true);
 
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
-
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
 
 			return dialogResult;
 		}
@@ -76,9 +68,6 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock("F0_1238_0092_GameTurn()");
 
 			// function body
-			// Instruction address 0x1238:0x009a, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			// Instruction address 0x1238:0x009f, size: 5
 			this.oParent.GameTools.F0_2dc4_0626_StartPaletteCycleSlots();
 
@@ -135,12 +124,6 @@ namespace OpenCivOne
 					// Instruction address 0x1238:0x0164, size: 5
 					this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 2, 192, 6, 6, 8);
 
-					if (i == this.oParent.GameData.HumanPlayerID)
-					{
-						// Instruction address 0x1238:0x0179, size: 5
-						this.oParent.MainCode.F0_11a8_0250_ShowMouse();
-					}
-
 					if (this.oParent.Var_df60 == 0)
 					{
 						// Instruction address 0x1238:0x018d, size: 5
@@ -173,17 +156,10 @@ namespace OpenCivOne
 						if (currentPlayer.CityCount == 0 && currentPlayer.SettlerCount == 0)
 						{
 							// Human player lost the game
-
-							// Instruction address 0x1238:0x0205, size: 5
-							this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 							this.oParent.MainIntro.F2_0000_152a_EndGame_PlayerLost();
 
 							// Game state = player lost (-1)
 							this.oParent.Var_dc48_GameEndType = -1;
-
-							// Instruction address 0x1238:0x0215, size: 5
-							this.oParent.MainCode.F0_11a8_0250_ShowMouse();
 						}
 
 						if (this.oParent.GameData.Year > 0)
@@ -200,12 +176,6 @@ namespace OpenCivOne
 					}
 
 					this.oParent.Var_df60 = 0;
-
-					if (i == this.oParent.GameData.HumanPlayerID)
-					{
-						// Instruction address 0x1238:0x0243, size: 5
-						this.oParent.MainCode.F0_11a8_0268_HideMouse();
-					}
 
 					// Check if game should continue with the next player
 					if (this.oParent.Var_dc48_GameEndType != 0 && this.oParent.Var_b884 == 0)
@@ -226,9 +196,6 @@ namespace OpenCivOne
 					}
 				}
 			}
-
-			// Instruction address 0x1238:0x02a0, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
 
 			// Process barbarian raids
 			// Instruction address 0x1238:0x02a6, size: 3
@@ -449,9 +416,6 @@ namespace OpenCivOne
 			if (playerIDSpaceVictory != -1 || this.oParent.Var_b884 != 0 ||
 				this.oParent.GameData.Year >= 2100 - (20 * this.oParent.GameData.DifficultyLevel))
 			{
-				// Instruction address 0x1238:0x073b, size: 5
-				this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 				if (this.oParent.Var_b884 != 0)
 				{
 					// Conquest victory, don't care about space race
@@ -483,9 +447,6 @@ namespace OpenCivOne
 					// Instruction address 0x1238:0x082e, size: 5
 					this.oParent.CommonTools.PlayTune(1, 0);
 				}
-
-				// Instruction address 0x1238:0x0836, size: 5
-				this.oParent.MainCode.F0_11a8_0250_ShowMouse();
 
 				if ((this.oParent.GameData.SpaceshipFlags & 0x100) == 0)
 				{
@@ -523,9 +484,6 @@ namespace OpenCivOne
 				this.oParent.GameReplay.F9_0000_0000();
 			}
 
-			// Instruction address 0x1238:0x08b7, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			if ((this.oParent.GameData.SpaceshipFlags & 0x100) == 0)
 			{
 				this.oParent.HallOfFame.F3_0000_065d((ushort)((this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceLevel >> 1) - 1),
@@ -536,10 +494,7 @@ namespace OpenCivOne
 				this.oParent.HallOfFame.F3_0000_0513();
 
 				this.oParent.HallOfFame.F3_0000_0083();
-			}
-		
-			// Instruction address 0x1238:0x0901, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
+			}		
 		}
 
 		/// <summary>
@@ -2088,17 +2043,11 @@ namespace OpenCivOne
 			// Instruction address 0x1238:0x1b66, size: 5
 			this.oParent.CommonTools.TransformPaletteToColor(5, Color.FromRgb(0, 0, 0));
 
-			// Instruction address 0x1238:0x1b6e, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			// Instruction address 0x1238:0x1b7f, size: 5
 			this.oParent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.oParent.GameData.HumanPlayerID, this.oParent.Var_d4cc_MapViewX, this.oParent.Var_d75e_MapViewY);
 
 			// Instruction address 0x1238:0x1b97, size: 3
 			F0_1238_1bb2_FillRectangleWithShadow(0, 97, 80, 103);
-
-			// Instruction address 0x1238:0x1b9d, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
 
 			// Instruction address 0x1238:0x1ba3, size: 3
 			F0_1238_1beb();

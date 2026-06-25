@@ -1180,9 +1180,6 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x0d2a, size: 5
 			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
-			// Instruction address 0x0000:0x0d2f, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
-
 			// Instruction address 0x0000:0x0d34, size: 5
 			this.oParent.Segment_1238.F0_1238_1b44();
 
@@ -1611,9 +1608,6 @@ namespace OpenCivOne
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x1);
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x5116, this.oCPU.DEC_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x5116)));
 
-			// Instruction address 0x0000:0x1340, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
-
 			goto L0cc3;
 
 		L1348:
@@ -1642,9 +1636,6 @@ namespace OpenCivOne
 
 			// Instruction address 0x0000:0x13e1, size: 5
 			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
-
-			// Instruction address 0x0000:0x13e6, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
 
 			// Instruction address 0x0000:0x13eb, size: 5
 			this.oParent.Segment_1238.F0_1238_1b44();

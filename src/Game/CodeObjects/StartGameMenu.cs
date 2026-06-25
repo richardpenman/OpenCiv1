@@ -19,14 +19,8 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock("F5_0000_0000()");
 
 			// function body
-			// Instruction address 0x0000:0x0007, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 			// Instruction address 0x0000:0x0024, size: 5
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
-
-			// Instruction address 0x0000:0x002c, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();
 
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 7;
 
@@ -34,15 +28,14 @@ namespace OpenCivOne
 			this.parent.GameData.DifficultyLevel = (short)this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(
 				"Difficulty Level...\n Chieftain (easiest)\n Warlord\n Prince\n King\n Emperor (toughest)\n", 160, 35, false, false, true);
 
-			if (this.parent.Var_1a3c_MouseAvailable && this.parent.Var_2fa2_DialogMousePressed)
+			if (this.parent.Var_2fa2_DialogMousePressed)
 			{
-				// Instruction address 0x0000:0x006f, size: 5
-				this.parent.MainCode.F0_11a8_0223_UpdateMouseState();
+				MouseEvent mouseEvent = this.parent.GetMouseEvent();
 
-				if (this.parent.Var_db3c_MouseXPos < 135)
+				if (mouseEvent.Position.X < 135)
 				{
 					// Instruction address 0x0000:0x0090, size: 5
-					this.parent.GameData.DifficultyLevel = (short)this.parent.GameTools.F0_2dc4_007c_CheckValueRange((this.parent.Var_db3e_MouseYPos - 12) / 35, 0, 4);
+					this.parent.GameData.DifficultyLevel = (short)this.parent.GameTools.F0_2dc4_007c_CheckValueRange((mouseEvent.Position.Y - 12) / 35, 0, 4);
 				}
 			}
 
@@ -50,9 +43,6 @@ namespace OpenCivOne
 			{
 				this.parent.GameData.DifficultyLevel = 0;
 			}
-
-			// Instruction address 0x0000:0x00a8, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
 
 			// Instruction address 0x0000:0x00c0, size: 5
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 150, 200, 0);
@@ -73,9 +63,6 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x0121, size: 5
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 150, 0, 160, 200, this.parent.Var_aa_Screen0_Rectangle, 150, 0);
 
-			// Instruction address 0x0000:0x0129, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();
-
 			StringBuilder competitionList = new();
 			competitionList.Append("Level of Competition...\n ");
 
@@ -95,9 +82,6 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x01a8, size: 5
 			this.parent.GameData.AIOpponentCount = (short)this.parent.GameTools.F0_2dc4_007c_CheckValueRange(6 - this.parent.GameData.AIOpponentCount, 2, 6);
 			this.parent.GameData.ActiveCivilizations = (short)(0xff >> (6 - this.parent.GameData.AIOpponentCount));
-
-			// Instruction address 0x0000:0x01c1, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
 
 			for (int i = this.parent.GameData.AIOpponentCount; i >= 0; i--)
 			{
@@ -189,9 +173,6 @@ namespace OpenCivOne
 
 			// Instruction address 0x0000:0x03ba, size: 5
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 150, 0, 160, 200, this.parent.Var_aa_Screen0_Rectangle, 150, 0);
-
-			// Instruction address 0x0000:0x03c2, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();
 
 			// Instruction address 0x0000:0x03d3, size: 5
 			this.parent.GameData.HumanPlayerID = (short)this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(tribeList.ToString(), 160, 35, false, false, true);
@@ -318,16 +299,10 @@ namespace OpenCivOne
 				}
 			}
 
-			// Instruction address 0x0000:0x062a, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 			// Instruction address 0x0000:0x0645, size: 5
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 150, 0, 170, 200, 0);
 
 			this.parent.TextBoxDialogs.F23_0000_00d6_PlayerNameDialog();
-
-			// Instruction address 0x0000:0x0652, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();
 
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
@@ -358,9 +333,6 @@ namespace OpenCivOne
 			this.parent.CommonTools.PlayTune(
 				this.parent.GameData.Nations[this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].NationalityID].LongTune, 3);
 
-			// Instruction address 0x0000:0x0740, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 			// Instruction address 0x0000:0x0759, size: 5
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 15);
 
@@ -383,9 +355,6 @@ namespace OpenCivOne
 			// Init text fix, we don't want to cut lines here
 			// Instruction address 0x0000:0x07b0, size: 5
 			this.parent.DrawTools.DrawTextBlock(88, 81, startText.ToString().Replace('^', '\n'), 150, 0);
-
-			// Instruction address 0x0000:0x07b8, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();
 
 			// Instruction address 0x0000:0x07bd, size: 5
 			this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();

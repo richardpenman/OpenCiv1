@@ -68,7 +68,6 @@ namespace OpenCivOne
 		public string[] Array_1966 = { "Anarchy", "Despotism", "Monarchy", "Communist", "Republic", "Democratic" };
 
 		public char Var_1a30_SoundDriverType = 'N';
-		public bool Var_1a3c_MouseAvailable = true;
 		public int Var_1a3e = 0;
 		public int Var_1ae0 = 0;
 
@@ -135,16 +134,20 @@ namespace OpenCivOne
 		public int Var_3934 = -1;
 		public int Var_3936 = -1;
 		public int Var_3c62 = 0;
-		public int Var_5402 = 0;
-		public int Var_5403 = 0;
-		public int Var_586e_MouseNewX = 0;
-		public int Var_5870_MouseNewY = 0;
-		public int Var_5872_MouseNewButtons = 0;
-		public int Var_5874_MouseNewButtonsOr = 0;
+
+#region Mouse data
+		// Currently pressed mouse button: 0 - nothing, 1 - left button, 2 - right button
+		//public int Var_db3a_MouseButton = 0;
+		// Current mouse position, in pixels. Position (0, 0) is the top-left corner
+		//public int Var_db3c_MouseXPos = 0;
+		//public int Var_db3e_MouseYPos = 0;
+
 		public int Var_5876_MouseIcon = 0;
 		public int Var_5878_MouseIconXOffset = 0;
 		public int Var_587a_MouseIconYOffset = 0;
-		public int Var_587d = 0;
+
+		public int Var_6e92_MouseIconHandle = 0;
+#endregion
 
 		// 0x652e - after this offset the default values are set to 0
 		public int Var_6b32_SelectedGameType = 0;
@@ -154,7 +157,6 @@ namespace OpenCivOne
 		public int Var_6b92 = 0;
 		public int Var_6c98 = 0;
 		public int[] Array_6e00 = new int[32];
-		public int Var_6e92_MouseIconHandle = 0;
 		public int[] Array_6e96 = new int[9];
 		public int Var_6ed6 = 0;
 		public bool Var_70d8 = false;
@@ -201,11 +203,6 @@ namespace OpenCivOne
 		public bool Var_d806_DebugFlag = false;
 
 		public int Var_db38 = 0;
-		// Currently pressed mouse button: 0 - nothing, 1 - left button, 2 - right button
-		public int Var_db3a_MouseButton = 0;
-		// Current mouse position, in pixels. Position (0, 0) is the top-left corner
-		public int Var_db3c_MouseXPos = 0;
-		public int Var_db3e_MouseYPos = 0;
 
 		public int Var_db42 = 0;
 		public int Var_dc48_GameEndType = 0;

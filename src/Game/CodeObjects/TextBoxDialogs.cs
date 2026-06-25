@@ -38,9 +38,6 @@ namespace OpenCivOne
 			return 0;
 			
 			/*
-			// Instruction address 0x0000:0x0006, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 			// Save main screen graphics before showing popup dialog
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
 
@@ -88,9 +85,6 @@ namespace OpenCivOne
 			// Restore main screen graphics, 'hide' popup dialog
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 
-			// Instruction address 0x0000:0x00ca, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();
-
 			return editBoxResult;//*/
 		}
 
@@ -110,9 +104,6 @@ namespace OpenCivOne
 				(string.IsNullOrEmpty(playerName) ? this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Name : playerName);
 
 			/*
-			// Instruction address 0x0000:0x00d6, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 			// Dialog background
 			// Instruction address 0x0000:0x00f3, size: 5
 			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 158, 88, 160, 32, 15);
@@ -131,10 +122,7 @@ namespace OpenCivOne
 			F23_0000_0414_EditBoxDialog(166, 104, 13);
 
 			// Instruction address 0x0000:0x0165, size: 5
-			this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Name = this.CPU.ReadString(this.CPU.DS.UInt16, 0xba06);
-
-			// Instruction address 0x0000:0x016d, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();*/
+			this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Name = this.CPU.ReadString(this.CPU.DS.UInt16, 0xba06);*/
 		}
 
 		/// <summary>
@@ -156,9 +144,6 @@ namespace OpenCivOne
 			this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Nation = this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Nationality;
 
 			/*
-			// Instruction address 0x0000:0x0179, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 			// Instruction address 0x0000:0x0196, size: 5
 			this.parent.CommonTools.F0_1000_0bfa_FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 158, 88, 160, 32, 15);
 
@@ -184,10 +169,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x023c, size: 5
-			this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Nationality = (nationName.Length > 9) ? nationName.Substring(0, 9) : nationName;
-
-			// Instruction address 0x0000:0x0252, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();*/
+			this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Nationality = (nationName.Length > 9) ? nationName.Substring(0, 9) : nationName;*/
 		}
 
 		/// <summary>
@@ -204,9 +186,6 @@ namespace OpenCivOne
 			string? cityName = EditBox.ShowEditBoxDialog(this.parent.MainWindow, "City name", "City name to search for", null, 12, true);
 
 			/*
-			// Instruction address 0x0000:0x0263, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 			// Save main screen graphics before showing popup dialog
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
 
@@ -252,7 +231,6 @@ namespace OpenCivOne
 					{
 						// Center map at the found city
 						this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, city.Position.X - 7, city.Position.Y - 6);
-						//this.parent.MainCode.F0_11a8_0250_ShowMouse();
 
 						return;
 					}
@@ -264,10 +242,7 @@ namespace OpenCivOne
 
 			/*
 			// Restore main screen graphics, 'hide' dialog
-			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
-
-			// Instruction address 0x0000:0x030e, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();*/
+			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);*/
 		}
 
 		/// <summary>
@@ -351,7 +326,7 @@ namespace OpenCivOne
 
 		L0520:
 			// Instruction address 0x0000:0x0520, size: 5
-			this.parent.MainCode.F0_11a8_0223_UpdateMouseState();
+			this.parent.CommonTools.UpdateMouseState();
 
 		L0525:
 			// Instruction address 0x0000:0x0525, size: 5

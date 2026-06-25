@@ -8,7 +8,7 @@
 		Background="Black" Width="644" Height="404">
 		<Grid>
 			<Viewbox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Uniform" StretchDirection="Both">
-				<Border BorderBrush="Purple" BorderThickness="1">
+				<Border Name="mainImageBorder" Background="Transparent" BorderBrush="Purple" BorderThickness="1">
 					<Image Name="mainImage" Width="320" Height="200" Margin="0" RenderOptions.BitmapInterpolationMode="None"/>
 				</Border>
 			</Viewbox>

@@ -286,15 +286,15 @@ namespace OpenCivOne
 			if (emptyKeyboardAndMouse)
 			{
 				// Instruction address 0x2d05:0x003e, size: 5
-				this.parent.CommonTools.EmptyKeyboardAndMouse();
+				this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 			}
 
 			if (this.parent.Var_db38 == 0)
 			{
-				this.parent.MainCode.F0_11a8_0223_UpdateMouseState();
+				MouseEvent mouseEvent = this.parent.GetMouseEvent();
 
-				int oldMouseX = this.parent.Var_db3c_MouseXPos;
-				int oldMouseY = this.parent.Var_db3e_MouseYPos;
+				int oldMouseX = mouseEvent.Position.X;
+				int oldMouseY = mouseEvent.Position.Y;
 				int oldSelectedOptionIndex = -1;
 				bool mouseActive = false;
 				bool exitLoop = false;
@@ -306,17 +306,16 @@ namespace OpenCivOne
 						this.parent.MeetWithKing.F6_0000_1b33();
 					}
 
-					this.parent.Var_db3a_MouseButton = 0;
+					//this.parent.Var_db3a_MouseButton = 0;
 
-					// Instruction address 0x2d05:0x0165, size: 5
-					this.parent.MainCode.F0_11a8_0223_UpdateMouseState();
+					mouseEvent = this.parent.GetMouseEvent();
 
-					if (this.parent.Var_db3c_MouseXPos >= contentLeft && this.parent.Var_db3c_MouseXPos <= contentLeft + contentWidth &&
-						this.parent.Var_db3e_MouseYPos >= contentTop && this.parent.Var_db3e_MouseYPos <= contentTop + contentHeight)
+					if (mouseEvent.Position.X >= contentLeft && mouseEvent.Position.X <= contentLeft + contentWidth &&
+						mouseEvent.Position.Y >= contentTop && mouseEvent.Position.Y <= contentTop + contentHeight)
 					{
-						if (this.parent.Var_db3c_MouseXPos != oldMouseX && this.parent.Var_db3e_MouseYPos != oldMouseY)
+						if (mouseEvent.Position.X != oldMouseX && mouseEvent.Position.Y != oldMouseY)
 						{
-							int selectedLine = ((this.parent.Var_db3e_MouseYPos - contentTop) / lineHeight);
+							int selectedLine = ((mouseEvent.Position.Y - contentTop) / lineHeight);
 
 							for (int i = 0; i < optionIndexes.Count; i++)
 							{
@@ -328,23 +327,23 @@ namespace OpenCivOne
 								}
 							}
 
-							oldMouseX = this.parent.Var_db3c_MouseXPos;
-							oldMouseY = this.parent.Var_db3e_MouseYPos;
+							oldMouseX = mouseEvent.Position.X;
+							oldMouseY = mouseEvent.Position.Y;
 						}
 					}
-					else if (mouseActive && this.parent.Var_db3a_MouseButton != 0)
+					else if (mouseActive && mouseEvent.Buttons != MouseButtonsEnum.None)
 					{
 						selectedOptionIndex = -1;
 						exitLoop = true;
 					}
 
-					if (!mouseActive && this.parent.Var_db3a_MouseButton == 0)
+					if (!mouseActive && mouseEvent.Buttons == MouseButtonsEnum.None)
 					{
 						mouseActive = true;
 					}
 					else if (mouseActive)
 					{
-						if (this.parent.Var_db3a_MouseButton == 1)
+						if (mouseEvent.Buttons == MouseButtonsEnum.Left)
 						{
 							this.parent.Var_2fa2_DialogMousePressed = true;
 
@@ -353,7 +352,7 @@ namespace OpenCivOne
 								exitLoop = true;
 							}
 						}
-						else if (this.parent.Var_db3a_MouseButton == 2)
+						else if (mouseEvent.Buttons == MouseButtonsEnum.Right)
 						{
 							if (helpOption && selectedOptionIndex == oldSelectedOptionIndex)
 							{

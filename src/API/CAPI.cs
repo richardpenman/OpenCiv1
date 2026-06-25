@@ -28,7 +28,7 @@ namespace OpenCivOne
 		{
 			this.oCPU.DoEvents();
 
-			this.oCPU.AX.UInt16 = (ushort)((this.oCPU.Keys.Count > 0) ? 0xffff : 0);
+			this.oCPU.AX.UInt16 = (ushort)((this.oParent.Keys.Count > 0) ? 0xffff : 0);
 
 			return (short)this.oCPU.AX.UInt16;
 		}
@@ -37,7 +37,7 @@ namespace OpenCivOne
 		{
 			this.oCPU.DoEvents();
 
-			while (this.oCPU.Keys.Count == 0)
+			while (this.oParent.Keys.Count == 0)
 			{
 				Thread.Sleep(200);
 				this.oCPU.DoEvents();
@@ -45,7 +45,7 @@ namespace OpenCivOne
 
 			lock (VCPU.KeyboardLock)
 			{
-				this.oCPU.AX.UInt16 = (ushort)this.oCPU.Keys.Dequeue();
+				this.oCPU.AX.UInt16 = (ushort)this.oParent.Keys.Dequeue();
 			}
 
 			return (short)this.oCPU.AX.UInt16;

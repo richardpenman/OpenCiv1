@@ -28,9 +28,6 @@ namespace OpenCivOne
 			this.oCPU.PUSH_UInt16(this.oCPU.DI.UInt16);
 			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
 
-			// Instruction address 0x0000:0x0009, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			// Instruction address 0x0000:0x0017, size: 5
 			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*PALACE"));
 
@@ -144,18 +141,13 @@ namespace OpenCivOne
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)), 0x3);
 			if (this.oCPU.Flags.L) goto L01cd;
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x102)), 0x0);
-			if (this.oCPU.Flags.NE) goto L022c;
+			if (this.oCPU.Flags.NE) goto L0231;
 			goto L0792;
 
-		L022c:
-			// Instruction address 0x0000:0x022c, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
-
 		L0231:
-			// Instruction address 0x0000:0x0231, size: 5
-			this.oParent.MainCode.F0_11a8_0223_UpdateMouseState();
+			MouseEvent mouseEvent = this.oParent.GetMouseEvent();
 
-			if (this.oParent.Var_db3a_MouseButton != 0) goto L0246;
+			if (mouseEvent.Buttons != MouseButtonsEnum.None) goto L0246;
 
 			// Instruction address 0x0000:0x023d, size: 5
 			this.oParent.CAPI.kbhit();
@@ -169,9 +161,9 @@ namespace OpenCivOne
 			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.NE) goto L02a0;
 
-			if (this.oParent.Var_db3e_MouseYPos >= 154) goto L0292;
+			if (mouseEvent.Position.Y >= 154) goto L0292;
 
-			this.oCPU.AX.Int16 = (short)this.oParent.Var_db3c_MouseXPos;
+			this.oCPU.AX.Int16 = (short)mouseEvent.Position.X;
 			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, 0xc);
 			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
 			this.oCPU.CX.UInt16 = 0x30;
@@ -203,7 +195,7 @@ namespace OpenCivOne
 			goto L02e6;
 
 		L0292:
-			this.oCPU.AX.Int16 = (short)this.oParent.Var_db3c_MouseXPos;
+			this.oCPU.AX.Int16 = (short)mouseEvent.Position.X;
 			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
 			this.oCPU.CX.UInt16 = 0x6b;
 			this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
@@ -265,9 +257,6 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.G) goto L02ef;
 
 		L030e:
-			// Instruction address 0x0000:0x030e, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			// Instruction address 0x0000:0x032b, size: 5
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
 
@@ -537,16 +526,12 @@ namespace OpenCivOne
 			this.oParent.GameTools.F0_2dc4_0523_FreeResource(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x6828), "Palace");
 
 			// Instruction address 0x0000:0x06be, size: 5
-			this.oParent.CommonTools.EmptyKeyboardAndMouse();
-
-			// Instruction address 0x0000:0x06c3, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
+			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 		L06c8:
-			// Instruction address 0x0000:0x06c8, size: 5
-			this.oParent.MainCode.F0_11a8_0223_UpdateMouseState();
+			mouseEvent = this.oParent.GetMouseEvent();
 
-			if (this.oParent.Var_db3a_MouseButton != 0) goto L06dd;
+			if (mouseEvent.Buttons != MouseButtonsEnum.None) goto L06dd;
 
 			// Instruction address 0x0000:0x06d4, size: 5
 			this.oParent.CAPI.kbhit();
@@ -561,7 +546,7 @@ namespace OpenCivOne
 			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.NE) goto L06f5;
 
-			this.oCPU.AX.Int16 = (short)this.oParent.Var_db3c_MouseXPos;
+			this.oCPU.AX.Int16 = (short)mouseEvent.Position.X;
 			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
 			this.oCPU.CX.UInt16 = 0x6b;
 			this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
@@ -580,9 +565,6 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.G) goto L06c8;
 
 		L070a:
-			// Instruction address 0x0000:0x070a, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			this.oParent.Var_aa_Screen0_Rectangle.ScreenID = 1;
 
 			F17_0000_07ec(0);
@@ -612,7 +594,7 @@ namespace OpenCivOne
 			this.oParent.Graphics.F0_VGA_06b7_DrawScreenToMainScreenWithEffect(1);
 
 			// Instruction address 0x0000:0x0788, size: 5
-			this.oParent.CommonTools.EmptyKeyboardAndMouse();
+			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 			// Instruction address 0x0000:0x078d, size: 5
 			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
@@ -626,9 +608,6 @@ namespace OpenCivOne
 
 			// Instruction address 0x0000:0x07dc, size: 5
 			this.oParent.Segment_1238.F0_1238_1b44();
-
-			// Instruction address 0x0000:0x07e1, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
 
 			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
 			this.oCPU.DI.UInt16 = this.oCPU.POP_UInt16();

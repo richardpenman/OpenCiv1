@@ -1,3 +1,4 @@
+using IRB.VirtualCPU;
 using OpenCivOne.Graphics;
 
 namespace OpenCivOne
@@ -456,13 +457,14 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// This function blinks the active unit or 'End Of Turn', it also allows cities to be clicked and managed
+		/// The mouse state that is captured by this function needs to be preserved for the calling function to process
 		/// </summary>
 		/// <param name="playerID"></param>
 		/// <param name="unitID"></param>
 		/// <param name="xOffset"></param>
 		/// <param name="yOffset"></param>
-		public void F0_1866_0ad6(int playerID, int unitID, int xOffset, int yOffset)
+		public void F0_1866_0ad6_ShowActiveUnitOrEndOfTurn(int playerID, int unitID, int xOffset, int yOffset)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1866_0ad6({playerID}, {unitID}, {xOffset}, {yOffset})");
 
@@ -489,11 +491,10 @@ namespace OpenCivOne
 			int newX = this.parent.MapManagement.AdjustXPosition(this.parent.GameData.Players[playerID].Units[unitID].Position.X - this.parent.Var_6ed6);
 			int newY = (unitID < 127) ? (this.parent.GameData.Players[playerID].Units[unitID].Position.Y - local_e + local_a) : (-1 - local_e + local_a);
 
+			MouseEvent mouseState;
+
 			do
 			{
-				// Instruction address 0x1866:0x0b75, size: 5
-				this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 				if (unitID >= 128)
 				{
 					// Instruction address 0x1866:0x0bd9, size: 5
@@ -518,9 +519,6 @@ namespace OpenCivOne
 					this.parent.DrawTools.DrawRectangle(xScreen, yScreen, 15, 15, 15);
 				}
 
-				// Instruction address 0x1866:0x0bfb, size: 5
-				this.parent.MainCode.F0_11a8_0250_ShowMouse();
-
 				// Instruction address 0x1866:0x0c00, size: 5
 				if (this.parent.CAPI.kbhit() != 0)
 				{
@@ -532,9 +530,6 @@ namespace OpenCivOne
 					// Instruction address 0x1866:0x0c12, size: 5
 					this.parent.CommonTools.WaitTimer(10);
 				}
-
-				// Instruction address 0x1866:0x0c1a, size: 5
-				this.parent.MainCode.F0_11a8_0268_HideMouse();
 
 				if (unitID >= 128)
 				{
@@ -569,9 +564,6 @@ namespace OpenCivOne
 					this.parent.DrawTools.DrawRectangle(xScreen, yScreen, 15, 15, 0);
 				}
 
-				// Instruction address 0x1866:0x0cb9, size: 5
-				this.parent.MainCode.F0_11a8_0250_ShowMouse();
-
 				// Instruction address 0x1866:0x0cbe, size: 5
 				if (this.parent.CAPI.kbhit() != 0)
 				{
@@ -584,10 +576,9 @@ namespace OpenCivOne
 					this.parent.CommonTools.WaitTimer(10);
 				}
 
-				// Instruction address 0x1866:0x0cd8, size: 5
-				this.parent.MainCode.F0_11a8_0223_UpdateMouseState();
+				mouseState = this.parent.PeekMouseState();
 			}
-			while (this.parent.CAPI.kbhit() == 0 && this.parent.Var_db3a_MouseButton == 0);
+			while (this.parent.CAPI.kbhit() == 0 && mouseState.Buttons == MouseButtonsEnum.None);
 		}
 
 		/// <summary>
@@ -1888,9 +1879,6 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock($"F0_1866_1d55({playerID}, {unitID}, {moveDirection})");
 
 			// function body
-			// Instruction address 0x1866:0x1d8b, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 			GPoint direction = this.parent.MoveDirections[moveDirection];
 
 			// Instruction address 0x1866:0x1dae, size: 5
@@ -1937,9 +1925,6 @@ namespace OpenCivOne
 						newX, newY, 16, 16, this.parent.Var_aa_Screen0_Rectangle, newX, newY);
 				}
 			}
-
-			// Instruction address 0x1866:0x1f5e, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();
 		}
 
 		/// <summary>
@@ -1952,9 +1937,6 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock($"F0_1866_1f69({playerID}, {unitID})");
 
 			// function body
-			// Instruction address 0x1866:0x1f71, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
 
 			// Instruction address 0x1866:0x1f81, size: 3
@@ -2002,25 +1984,16 @@ namespace OpenCivOne
 			}
 			while (unitCount < 12 && nextUnitID != -1 && nextUnitID != unitID);
 
-			// Instruction address 0x1866:0x20e4, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();
-
 			// Instruction address 0x1866:0x20e9, size: 5
-			this.parent.CommonTools.EmptyKeyboardAndMouse();
+			this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
-			do
+			MouseEvent mouseEvent = this.parent.GetMouseEvent();
+
+			while ((mouseEvent = this.parent.GetMouseEvent()).Buttons == IRB.VirtualCPU.MouseButtonsEnum.None && this.parent.CAPI.kbhit() == 0) { }
+
+			if (mouseEvent.Buttons == IRB.VirtualCPU.MouseButtonsEnum.Left && mouseEvent.Position.X > 100 && mouseEvent.Position.X < 220)
 			{
-				// Instruction address 0x1866:0x20f5, size: 5
-				this.parent.MainCode.F0_11a8_0223_UpdateMouseState();
-			}
-			while (this.parent.Var_db3a_MouseButton == 0 && this.parent.CAPI.kbhit() == 0);
-
-			// Instruction address 0x1866:0x21b7, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
-
-			if (this.parent.Var_db3a_MouseButton == 1 && this.parent.Var_db3c_MouseXPos > 100 && this.parent.Var_db3c_MouseXPos < 220)
-			{
-				nextUnitID = (this.parent.Var_db3e_MouseYPos - yTop - 5) / 16;
+				nextUnitID = (mouseEvent.Position.Y - yTop - 5) / 16;
 
 				if (nextUnitID >= 0 && nextUnitID < unitCount)
 				{
@@ -2042,11 +2015,8 @@ namespace OpenCivOne
 
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 
-			// Instruction address 0x1866:0x225a, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();
-
 			// Instruction address 0x1866:0x225f, size: 5
-			this.parent.CommonTools.EmptyKeyboardAndMouse();
+			this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 			return selectedUnitID;
 		}

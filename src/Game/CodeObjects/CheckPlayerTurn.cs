@@ -1,3 +1,4 @@
+using IRB.VirtualCPU;
 using OpenCivOne.Graphics;
 using System.Text;
 
@@ -225,7 +226,7 @@ namespace OpenCivOne
 			if ((this.parent.GameData.PlayerFlags & (0x1 << playerID)) != 0)
 			{
 				// Instruction address 0x1403:0x044c, size: 5
-				this.parent.CommonTools.EmptyKeyboardAndMouse();
+				this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 			}
 
 			local_a = 0;
@@ -325,14 +326,16 @@ namespace OpenCivOne
 				}
 			}
 
-			this.parent.UnitManagement.F0_1866_0ad6(playerID, unitID, local_e, local_12);
+			this.parent.UnitManagement.F0_1866_0ad6_ShowActiveUnitOrEndOfTurn(playerID, unitID, local_e, local_12);
 
 			if (unitID < 128)
 			{
 				flag5 = true;
 			}
 
-			if (this.parent.Var_db3a_MouseButton == 0)
+			MouseEvent mouseEvent = this.parent.GetMouseEvent();
+
+			if (mouseEvent.Buttons == MouseButtonsEnum.None && this.parent.CAPI.kbhit() != 0)
 			{
 				// Instruction address 0x1403:0x0676, size: 5
 				command = this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
@@ -341,24 +344,24 @@ namespace OpenCivOne
 				{
 					local_1c = local_e;
 					local_26 = local_12;
-					this.parent.Var_db3c_MouseXPos = 80;
-					this.parent.Var_db3e_MouseYPos = 8;
-					this.parent.Var_db3a_MouseButton = 1;
+					//this.parent.Var_db3c_MouseXPos = 80;
+					//this.parent.Var_db3e_MouseYPos = 8;
+					//this.parent.Var_db3a_MouseButton = 1;
 					goto Label114;
 				}
 				goto Label151;
 			}
 
-			local_1c = this.parent.MapManagement.AdjustXPosition(((this.parent.Var_db3c_MouseXPos - 80) / 16) + this.parent.Var_d4cc_MapViewX);
-			local_26 = ((this.parent.Var_db3e_MouseYPos - 8) / 16) + this.parent.Var_d75e_MapViewY;
+			local_1c = this.parent.MapManagement.AdjustXPosition(((mouseEvent.Position.X - 80) / 16) + this.parent.Var_d4cc_MapViewX);
+			local_26 = ((mouseEvent.Position.Y - 8) / 16) + this.parent.Var_d75e_MapViewY;
 
-			if (this.parent.Var_db3e_MouseYPos < 8)
+			if (mouseEvent.Position.Y < 8)
 			{
 				// Instruction address 0x1403:0x0707, size: 5
 				this.parent.GameMenus.F0_2c84_0000_ShowTopMenu(playerID, unitID, -1);
 
 				// Instruction address 0x1403:0x070f, size: 5
-				this.parent.CommonTools.EmptyKeyboardAndMouse();
+				this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 				if (this.parent.GameMenus.Var_d4ca_MenuShortcutKey != -1)
 				{
@@ -370,21 +373,18 @@ namespace OpenCivOne
 				goto Label722;
 			}
 
-			if (this.parent.Var_db3c_MouseXPos < 80)
+			if (mouseEvent.Position.X < 80)
 			{
-				if (this.parent.Var_db3e_MouseYPos < 58)
+				if (mouseEvent.Position.Y < 58)
 				{
 					// Instruction address 0x1403:0x0775, size: 5
 					// Instruction address 0x1403:0x0781, size: 5
 					this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(playerID,
-						this.parent.MapManagement.AdjustXPosition(this.parent.Var_db3c_MouseXPos + this.parent.Var_6ed6 - 7),
-						this.parent.GameTools.F0_2dc4_007c_CheckValueRange(this.parent.Var_db3e_MouseYPos + this.parent.Var_70ea - 14, 0, 49));
+						this.parent.MapManagement.AdjustXPosition(mouseEvent.Position.X + this.parent.Var_6ed6 - 7),
+						this.parent.GameTools.F0_2dc4_007c_CheckValueRange(mouseEvent.Position.Y + this.parent.Var_70ea - 14, 0, 49));
 				}
-				else if (this.parent.Var_db3e_MouseYPos < 72)
+				else if (mouseEvent.Position.Y < 72)
 				{
-					// Instruction address 0x1403:0x0796, size: 5
-					this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 					this.parent.Palace.F17_0000_07ec(0);
 
 					this.parent.Var_aa_Screen0_Rectangle.ScreenID = 0;
@@ -401,9 +401,6 @@ namespace OpenCivOne
 					// Instruction address 0x1403:0x0800, size: 5
 					this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 
-					// Instruction address 0x1403:0x0808, size: 5
-					this.parent.MainCode.F0_11a8_0250_ShowMouse();
-
 					// Instruction address 0x1403:0x080d, size: 5
 					this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
@@ -418,79 +415,69 @@ namespace OpenCivOne
 					goto Label755;
 				}
 
-				this.parent.Var_db3a_MouseButton = 0;
+				//this.parent.Var_db3a_MouseButton = 0;
 			}
 
-			if (this.parent.Var_db3a_MouseButton == 2)
+			if (mouseEvent.Buttons == MouseButtonsEnum.Right && unitID < 128)
 			{
-				if (unitID < 128)
+				while (true)
 				{
-					while (true)
+					mouseEvent = this.parent.GetMouseEvent();
+
+					if (mouseEvent.Buttons == MouseButtonsEnum.None)
 					{
-						// Instruction address 0x1403:0x085a, size: 5
-						this.parent.MainCode.F0_11a8_0223_UpdateMouseState();
+						// Instruction address 0x1403:0x0882, size: 5
+						local_1c = this.parent.MapManagement.AdjustXPosition((mouseEvent.Position.X - 80) / 16 + this.parent.Var_d4cc_MapViewX);
+						local_26 = ((mouseEvent.Position.Y - 8) / 16) + this.parent.Var_d75e_MapViewY;
 
-						if (this.parent.Var_db3a_MouseButton == 0)
+						// Instruction address 0x1403:0x08d0, size: 5
+						local_18 = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(
+							local_1c - this.parent.GameData.Players[playerID].Units[unitID].Position.X,
+							local_26 - this.parent.GameData.Players[playerID].Units[unitID].Position.Y);
+
+						if (Math.Abs(local_1c - this.parent.GameData.Players[playerID].Units[unitID].Position.X) == 79)
 						{
-							// Instruction address 0x1403:0x0882, size: 5
-							local_1c = this.parent.MapManagement.AdjustXPosition((this.parent.Var_db3c_MouseXPos - 80) / 16 + this.parent.Var_d4cc_MapViewX);
-							local_26 = ((this.parent.Var_db3e_MouseYPos - 8) / 16) + this.parent.Var_d75e_MapViewY;
-
-							// Instruction address 0x1403:0x08d0, size: 5
-							local_18 = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(
-								local_1c - this.parent.GameData.Players[playerID].Units[unitID].Position.X,
-								local_26 - this.parent.GameData.Players[playerID].Units[unitID].Position.Y);
-
-							if (Math.Abs(local_1c - this.parent.GameData.Players[playerID].Units[unitID].Position.X) == 79)
+							if (Math.Abs(local_26 - this.parent.GameData.Players[playerID].Units[unitID].Position.Y) <= 1)
 							{
-								if (Math.Abs(local_26 - this.parent.GameData.Players[playerID].Units[unitID].Position.Y) <= 1)
-								{
-									local_18 = 1;
-								}
+								local_18 = 1;
 							}
-
-							if (local_18 == 1)
-							{
-								this.parent.GameData.Players[playerID].Units[unitID].GoToDestination.X = local_1c;
-								this.parent.GameData.Players[playerID].Units[unitID].GoToDestination.Y = local_26;
-								this.parent.GameData.Players[playerID].Units[unitID].GoToNextDirection = -1;
-								this.parent.Var_db3a_MouseButton = 0;
-								flag3 = false;
-
-								// Instruction address 0x1403:0x095b, size: 5
-								this.parent.CommonTools.SetMousePositionAndIcon(0, 0, (short)this.parent.Array_d4ce[7]);
-							}
-							else
-							{
-								this.parent.Var_db3a_MouseButton = 2;
-							}
-							break;
 						}
+
+						if (local_18 == 1)
+						{
+							this.parent.GameData.Players[playerID].Units[unitID].GoToDestination.X = local_1c;
+							this.parent.GameData.Players[playerID].Units[unitID].GoToDestination.Y = local_26;
+							this.parent.GameData.Players[playerID].Units[unitID].GoToNextDirection = -1;
+							//this.parent.Var_db3a_MouseButton = 0;
+							flag3 = false;
+
+							// Instruction address 0x1403:0x095b, size: 5
+							this.parent.CommonTools.SetMousePositionAndIcon(0, 0, (short)this.parent.Array_d4ce[7]);
+						}
+						else
+						{
+							//this.parent.Var_db3a_MouseButton = 2;
+						}
+						break;
 					}
 				}
 			}
 
-			if (this.parent.Var_db3a_MouseButton == 2)
+			if (mouseEvent.Buttons == MouseButtonsEnum.Right)
 			{
 				if ((this.parent.GameData.MapVisibility[local_1c, local_26] & (0x1 << this.parent.GameData.HumanPlayerID)) != 0 ||
 					this.parent.Var_d806_DebugFlag)
 				{
-					// Instruction address 0x1403:0x09a5, size: 5
-					this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 					// Instruction address 0x1403:0x09b4, size: 5
 					this.parent.Encyclopedia.F8_0000_062a_DisplayEncyclopediaTopic(EncyclopediaTopicEnum.TerrainType, (int)this.parent.MapManagement.GetTerrainType(local_1c, local_26));
 
 					// Instruction address 0x1403:0x09c5, size: 5
 					this.parent.Segment_1238.F0_1238_1b44();
-
-					// Instruction address 0x1403:0x09ca, size: 5
-					this.parent.MainCode.F0_11a8_0250_ShowMouse();
 				}
 			}
 
 		Label114:
-			if (this.parent.Var_db3a_MouseButton == 1)
+			if (mouseEvent.Buttons == MouseButtonsEnum.Left)
 			{
 				if (flag3 && unitID < 128)
 				{
@@ -601,7 +588,7 @@ namespace OpenCivOne
 			command = -1;
 
 			// Instruction address 0x1403:0x0cfb, size: 5
-			this.parent.CommonTools.EmptyKeyboardAndMouse();
+			this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 		Label151:
 			if (unitID < 128) goto Label152;
@@ -799,45 +786,18 @@ namespace OpenCivOne
 					break;
 
 				case 'g':
-					if (!this.parent.Var_1a3c_MouseAvailable)
+					int local_56 = 0;
+
+					if (flag3)
 					{
-						if (!flag3)
-						{
-							if (!flag1)
-							{
-								flag1 = true;
-								local_e = this.parent.GameData.Players[playerID].Units[unitID].Position.X;
-								local_12 = this.parent.GameData.Players[playerID].Units[unitID].Position.Y;
-							}
-						}
-						else if (flag1)
-						{
-							flag1 = false;
-
-							if ((this.parent.GameData.MapVisibility[local_e, local_12] & (0x1 << playerID)) != 0)
-							{
-								// Instruction address 0x1403:0x107b, size: 5
-								this.parent.MapManagement.F0_2aea_11d4_DrawCellWithUnit(local_e, local_12);
-							}
-
-							local_e = -1;
-						}
+						local_56 = 7;
 					}
 					else
 					{
-						ushort local_56 = 0;
-
-						if (flag3)
-						{
-							local_56 = 7;
-						}
-						else
-						{
-							local_56 = 2;
-						}
-
-						this.parent.CommonTools.SetMousePositionAndIcon(0, 0, this.parent.Array_d4ce[local_56]);
+						local_56 = 2;
 					}
+
+					this.parent.CommonTools.SetMousePositionAndIcon(0, 0, this.parent.Array_d4ce[local_56]);
 
 					flag3 ^= true;
 					break;
@@ -1991,69 +1951,10 @@ namespace OpenCivOne
 					}
 					break;
 
-				// Tab
-				case 0x9:
-					if (!this.parent.Var_1a3c_MouseAvailable)
-					{
-						if (flag1)
-						{
-							if ((this.parent.GameData.MapVisibility[local_e, local_12] & (0x1 << playerID)) != 0)
-							{
-								// Instruction address 0x1403:0x3992, size: 5
-								this.parent.MapManagement.F0_2aea_11d4_DrawCellWithUnit(local_e, local_12);
-							}
-							local_e = -1;
-							flag1 ^= true;
-							goto Label722;
-						}
-						else
-						{
-							if (unitID < 128 &&
-								F0_1403_4508(this.parent.GameData.Players[playerID].Units[unitID].Position.X, this.parent.GameData.Players[playerID].Units[unitID].Position.Y))
-							{
-								local_e = this.parent.GameData.Players[playerID].Units[unitID].Position.X;
-								local_12 = this.parent.GameData.Players[playerID].Units[unitID].Position.Y;
-							}
-							else
-							{
-								local_e = this.parent.Var_d4cc_MapViewX + 7;
-								local_12 = this.parent.Var_d75e_MapViewY + 6;
-							}
-
-							if ((this.parent.GameData.MapVisibility[local_e, local_12] & (0x1 << playerID)) != 0)
-							{
-								// Instruction address 0x1403:0x3a2b, size: 5
-								this.parent.MapManagement.F0_2aea_11d4_DrawCellWithUnit(local_e, local_12);
-							}
-
-							flag1 ^= true;
-						}
-					}
-					break;
-
 				// Enter
 				case 0xd:
 				case ' ':
 					if (unitID >= 128) goto Label755;
-					break;
-
-				// ESC
-				case 0x1b:
-					if (!this.parent.Var_1a3c_MouseAvailable)
-					{
-						if (flag1)
-						{
-							flag1 = false;
-
-							if ((this.parent.GameData.MapVisibility[local_e, local_12] & (0x1 << playerID)) != 0)
-							{
-								// Instruction address 0x1403:0x3945, size: 5
-								this.parent.MapManagement.F0_2aea_11d4_DrawCellWithUnit(local_e, local_12);
-							}
-
-							local_e = -1;
-						}
-					}
 					break;
 
 				case '+':
@@ -2254,12 +2155,6 @@ namespace OpenCivOne
 					this.parent.Segment_1238.F0_1238_001e_ShowDialog($"Sounds {((this.parent.GameData.GameSettingFlags.Sound) ? "ON\n" : "OFF\n")}", 100, 80);
 					break;
 
-				// Alt + M
-				case 0x3200:
-					// Instruction address 0x1403:0x35c6, size: 5
-					this.parent.CommonTools.InitMouse();
-					break;
-
 				// F1 - City status
 				case 0x3b00:
 					if (this.parent.Var_d806_DebugFlag)
@@ -2288,9 +2183,6 @@ namespace OpenCivOne
 				case 0x3d00:
 					if (this.parent.Var_d806_DebugFlag)
 					{
-						// Instruction address 0x1403:0x33a5, size: 5
-						this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 						// Instruction address 0x1403:0x33ae, size: 5
 						this.parent.CommonTools.F0_1000_0846(2);
 
@@ -2299,9 +2191,6 @@ namespace OpenCivOne
 
 						// Instruction address 0x1403:0x33bf, size: 5
 						this.parent.CommonTools.F0_1000_0846(0);
-
-						// Instruction address 0x1403:0x33c7, size: 5
-						this.parent.MainCode.F0_11a8_0250_ShowMouse();
 					}
 					else
 					{
@@ -2555,12 +2444,8 @@ namespace OpenCivOne
 		Label755:
 			if (playerID == this.parent.GameData.HumanPlayerID)
 			{
-				// Instruction address 0x1403:0x3eac, size: 5
-				this.parent.MainCode.F0_11a8_0268_HideMouse();
 				// Instruction address 0x1403:0x3ec1, size: 5
 				this.parent.Segment_1238.F0_1238_1bb2_FillRectangleWithShadow(0, 97, 80, 103);
-				// Instruction address 0x1403:0x3ec9, size: 5
-				this.parent.MainCode.F0_11a8_0250_ShowMouse();
 			}
 		}
 
@@ -2663,8 +2548,6 @@ namespace OpenCivOne
 			int Local_12;
 
 			// function body
-			// Instruction address 0x1403:0x4068, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
 			// Instruction address 0x1403:0x407c, size: 5
 			this.parent.Segment_1238.F0_1238_1bb2_FillRectangleWithShadow(0, 97, 80, 103);
 
@@ -2831,9 +2714,6 @@ namespace OpenCivOne
 					}
 				}
 			}
-
-			// Instruction address 0x1403:0x44fd, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();
 		}
 
 		/// <summary>

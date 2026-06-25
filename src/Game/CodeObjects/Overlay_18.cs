@@ -26,9 +26,6 @@ namespace OpenCivOne
 			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x2);
 			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
 
-			// Instruction address 0x0000:0x0007, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			// Instruction address 0x0000:0x000c, size: 5
 			this.oParent.GameTools.F0_2dc4_065f_StopPaletteCycleSlots();
 
@@ -78,9 +75,6 @@ namespace OpenCivOne
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))));
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 0x14);
 			if (this.oCPU.Flags.L) goto L0095;
-
-			// Instruction address 0x0000:0x00cb, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
 
 			// Instruction address 0x0000:0x00e0, size: 5
 			this.oParent.CommonTools.AddPaletteCycleSlot(1, 30, 208, 223);
@@ -205,9 +199,6 @@ namespace OpenCivOne
 			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x20);
 			this.oCPU.PUSH_UInt16(this.oCPU.DI.UInt16);
 			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
-
-			// Instruction address 0x0000:0x0261, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
 
 			if (playerID == this.oParent.GameData.HumanPlayerID) goto L0275;
 
@@ -801,24 +792,15 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.E) goto L0ae5;
 
 			// Instruction address 0x0000:0x0ae0, size: 5
-			this.oParent.CommonTools.EmptyKeyboardAndMouse();
+			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 		L0ae5:
-			// Instruction address 0x0000:0x0ae5, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
-
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 0x0);
 			if (this.oCPU.Flags.NE) goto L0af3;
 			goto L0bfc;
 
 		L0af3:
-			// Instruction address 0x0000:0x0af3, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			F18_0000_0c49();
-
-			// Instruction address 0x0000:0x0afc, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
 
 			this.oCPU.AX.UInt16 = 0x1;
 			this.oCPU.CX.LowUInt8 = (byte)playerID;
@@ -835,24 +817,22 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x0b18, size: 5
 			this.oParent.CommonTools.WaitTimer((short)this.oCPU.AX.UInt16);
 
-			// Instruction address 0x0000:0x0b20, size: 5
-			this.oParent.MainCode.F0_11a8_0223_UpdateMouseState();
+			MouseEvent mouseEvent = this.oParent.GetMouseEvent();
 
 			// Instruction address 0x0000:0x0b25, size: 5
 			this.oParent.CAPI.kbhit();
 
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.NE) goto L0b3a;
+			if (this.oParent.CAPI.kbhit() != 0) goto L0b3a;
 
 			param2--;
 			if (param2 == 0) goto L0b3a;
 
-			if (this.oParent.Var_db3a_MouseButton == 0) goto L0af3;
+			if (mouseEvent.Buttons == MouseButtonsEnum.None) goto L0af3;
 
 		L0b3a:
 			if (param2 == 0) goto L0b4f;
 
-			if (this.oParent.Var_db3a_MouseButton != 0) goto L0b4f;
+			if (mouseEvent.Buttons != MouseButtonsEnum.None) goto L0b4f;
 
 			// Instruction address 0x0000:0x0b47, size: 5
 			this.oCPU.AX.Int16 = (short)this.oParent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
@@ -874,11 +854,11 @@ namespace OpenCivOne
 			goto L0bfc;
 
 		L0b6c:
-			if (this.oParent.Var_db3a_MouseButton == 0) goto L0b83;
+			if (mouseEvent.Buttons == MouseButtonsEnum.None) goto L0b83;
 
-			if (this.oParent.Var_db3c_MouseXPos <= 242) goto L0b83;
+			if (mouseEvent.Position.X <= 242) goto L0b83;
 
-			if (this.oParent.Var_db3e_MouseYPos >= 190) goto L0b89;
+			if (mouseEvent.Position.Y >= 190) goto L0b89;
 
 		L0b83:
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16)), 0x6c);
@@ -1234,7 +1214,7 @@ namespace OpenCivOne
 			F18_0000_0000();
 
 			// Instruction address 0x0000:0x0f17, size: 5
-			this.oParent.CommonTools.EmptyKeyboardAndMouse();
+			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 			iPos = (12 * this.oParent.GameData.SpaceshipCells[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))].XPos) +
 				this.oParent.GameData.SpaceshipCells[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))].YPos;
@@ -1252,7 +1232,7 @@ namespace OpenCivOne
 			this.oParent.GameData.SpaceshipFlags |= (short)this.oCPU.AX.UInt16;
 
 			// Instruction address 0x0000:0x0f71, size: 5
-			this.oParent.CommonTools.EmptyKeyboardAndMouse();
+			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 			F18_0000_016d();
 
@@ -1293,13 +1273,10 @@ namespace OpenCivOne
 			F18_0000_0259(playerID, 15, 0);
 
 			// Instruction address 0x0000:0x0fbb, size: 5
-			this.oParent.CommonTools.EmptyKeyboardAndMouse();
+			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 		L0fc0:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16), 0x2);
-
-			// Instruction address 0x0000:0x0fc5, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
 
 			this.oCPU.CMP_UInt16(param2, 0x1);
 			if (this.oCPU.Flags.NE) goto L1000;
@@ -1343,9 +1320,6 @@ namespace OpenCivOne
 			goto L12de;
 
 		L1036:
-			// Instruction address 0x0000:0x1036, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			this.oCPU.CMP_UInt16(param2, 0x0);
 			if (this.oCPU.Flags.E) goto L1044;
 			goto L1169;
@@ -1562,17 +1536,11 @@ namespace OpenCivOne
 			this.oParent.GameData.SpaceshipFlags |= (short)this.oCPU.AX.UInt16;
 
 		L12c2:
-			// Instruction address 0x0000:0x12c2, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
-
 			F18_0000_0259(playerID, -1, 1);
 			
 			this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].SpaceshipSuccessRate = (short)this.oCPU.AX.UInt16;
 
 		L12de:
-			// Instruction address 0x0000:0x12de, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			F18_0000_016d();
 
 			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
@@ -1658,14 +1626,11 @@ namespace OpenCivOne
 			this.oCPU.AX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.AX.UInt16, this.oCPU.CX.LowUInt8);
 			this.oParent.GameData.SpaceshipFlags |= (short)this.oCPU.AX.UInt16;
 
-			// Instruction address 0x0000:0x15d3, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			// Instruction address 0x0000:0x15eb, size: 5
 			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
 			// Instruction address 0x0000:0x15f3, size: 5
-			this.oParent.CommonTools.EmptyKeyboardAndMouse();
+			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 			this.oCPU.SI.UInt16 = (ushort)playerID;
 			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
@@ -1700,15 +1665,12 @@ namespace OpenCivOne
 
 		L16a1:
 			// Instruction address 0x0000:0x16a1, size: 5
-			this.oParent.CommonTools.EmptyKeyboardAndMouse();
+			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 			// Instruction address 0x0000:0x16a6, size: 5
 			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			F18_0000_0259(playerID, -1, 0);
-
-			// Instruction address 0x0000:0x16bd, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
 			
 			if (playerID == this.oParent.GameData.HumanPlayerID) goto L16ce;
 

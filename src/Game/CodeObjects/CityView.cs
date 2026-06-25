@@ -561,7 +561,7 @@ namespace OpenCivOne
 				if (this.parent.CAPI.kbhit() != 0)
 				{
 					// Instruction address 0x0000:0x0f84, size: 5
-					this.parent.CommonTools.EmptyKeyboardAndMouse();
+					this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 				}
 				else
 				{
@@ -897,9 +897,6 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x1698, size: 5
 			this.parent.Graphics.SetPaletteColor(0xfd, GBitmap.Color18ToColor(3, 3, 3));
 
-			// Instruction address 0x0000:0x16a5, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 			int[] bitmaps = new int[10];
 
 			// Instruction address 0x0000:0x16b1, size: 5
@@ -965,19 +962,14 @@ namespace OpenCivOne
 					Thread.Sleep(1);
 				}
 
-				// Instruction address 0x0000:0x188a, size: 5
-				this.parent.MainCode.F0_11a8_0223_UpdateMouseState();
+				MouseEvent mouseEvent = this.parent.GetMouseEvent();
 
-				// Instruction address 0x0000:0x188f, size: 5
-				if (this.parent.CAPI.kbhit() != 0 || this.parent.Var_db3a_MouseButton != 0)
+				if (this.parent.CAPI.kbhit() != 0 || mouseEvent.Buttons != MouseButtonsEnum.None)
 					break;
 			}
 
-			// Instruction address 0x0000:0x18a2, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();
-
 			// Instruction address 0x0000:0x18a7, size: 5
-			this.parent.CommonTools.EmptyKeyboardAndMouse();
+			this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 			// Instruction address 0x0000:0x18b7, size: 5
 			this.parent.GameTools.F0_2dc4_0626_StartPaletteCycleSlots();
@@ -1001,9 +993,6 @@ namespace OpenCivOne
 
 			// Instruction address 0x0000:0x18c8, size: 5
 			this.parent.GameTools.F0_2dc4_065f_StopPaletteCycleSlots();
-
-			// Instruction address 0x0000:0x18cd, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
 
 			// Instruction address 0x0000:0x18df, size: 5
 			if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.University))
@@ -1064,19 +1053,15 @@ namespace OpenCivOne
 					Thread.Sleep(1);
 				}
 
-				// Instruction address 0x0000:0x1aaf, size: 5
-				this.parent.MainCode.F0_11a8_0223_UpdateMouseState();
+				MouseEvent mouseEvent = this.parent.GetMouseEvent();
 
 				// Instruction address 0x0000:0x1ab4, size: 5
-				if (this.parent.CAPI.kbhit() != 0 || this.parent.Var_db3a_MouseButton != 0)
+				if (this.parent.CAPI.kbhit() != 0 || mouseEvent.Buttons != MouseButtonsEnum.None)
 					break;
 			}
 
-			// Instruction address 0x0000:0x1ac7, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();
-
 			// Instruction address 0x0000:0x1acc, size: 5
-			this.parent.CommonTools.EmptyKeyboardAndMouse();
+			this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 			for (int i = 0; i < 10; i++)
 			{
@@ -1116,9 +1101,6 @@ namespace OpenCivOne
 				bitmaps[i] = this.parent.Graphics.F0_VGA_0b85_ScreenToBitmap(1, 1 + ((i % 4) * 79), 1 + ((i >> 2) * 66), 78, 65);
 			}
 
-			// Instruction address 0x0000:0x1b74, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 			// Instruction address 0x0000:0x1b94, size: 5
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_aa_Screen0_Rectangle, 0, 100, 320, 100, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
 
@@ -1151,18 +1133,14 @@ namespace OpenCivOne
 					Thread.Sleep(1);
 				}
 
-				// Instruction address 0x0000:0x1c71, size: 5
-				this.parent.MainCode.F0_11a8_0223_UpdateMouseState();
+				MouseEvent mouseEvent = this.parent.GetMouseEvent();
 
-				if (this.parent.CAPI.kbhit() != 0 || this.parent.Var_db3a_MouseButton != 0)
+				if (this.parent.CAPI.kbhit() != 0 || mouseEvent.Buttons != MouseButtonsEnum.None)
 					break;
 			}
 
-			// Instruction address 0x0000:0x1c89, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();
-
 			// Instruction address 0x0000:0x1c8e, size: 5
-			this.parent.CommonTools.EmptyKeyboardAndMouse();
+			this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 			for (int i = 0; i < 10; i++)
 			{

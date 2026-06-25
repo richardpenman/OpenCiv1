@@ -70,6 +70,8 @@ namespace OpenCivOne
 
 			this.parent.GameData.GameSettingFlags.Sound = true;
 
+			MouseEvent mouseEvent = this.parent.GetMouseEvent();
+
 			// Instruction address 0x0000:0x0329, size: 5
 			using (StreamReader reader = new($"{this.parent.ResourcePath}CREDITS.TXT"))
 			{
@@ -133,14 +135,16 @@ namespace OpenCivOne
 
 					while ((21 * i) / 4 > this.parent.CommonTools.SoundEngineTimer() && this.parent.CAPI.kbhit() == 0) ;
 
+					mouseEvent = this.parent.GetMouseEvent();
+
 					// Instruction address 0x0000:0x04c1, size: 5
-					if (this.parent.CAPI.kbhit() != 0)
+					if (this.parent.CAPI.kbhit() != 0 || mouseEvent.Buttons != MouseButtonsEnum.None)
 					{
 						break;
 					}
 				}
 
-				if (this.parent.CAPI.kbhit() == 0)
+				if (this.parent.CAPI.kbhit() == 0  && mouseEvent.Buttons == MouseButtonsEnum.None)
 				{
 					introText = "";
 
@@ -198,7 +202,9 @@ namespace OpenCivOne
 
 						while ((21 * i) / 4 + 1680 > this.parent.CommonTools.SoundEngineTimer() && this.parent.CAPI.kbhit() == 0) ;
 
-						if (this.parent.CAPI.kbhit() != 0)
+						mouseEvent = this.parent.GetMouseEvent();
+
+						if (this.parent.CAPI.kbhit() != 0 || mouseEvent.Buttons != MouseButtonsEnum.None)
 						{
 							break;
 						}
@@ -208,39 +214,45 @@ namespace OpenCivOne
 
 			this.parent.Var_6b32_SelectedGameType = -2;
 
-			if (this.parent.CAPI.kbhit() != 0)
+			if (this.parent.CAPI.kbhit() != 0 || mouseEvent.Buttons != MouseButtonsEnum.None)
 			{
 				this.parent.Var_6b32_SelectedGameType = -1;
 
-				// Instruction address 0x0000:0x09ec, size: 5
-				switch (this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey())
+				if (this.parent.CAPI.kbhit() != 0)
 				{
-					case 'N':
-					case 'n':
-						this.parent.Var_6b32_SelectedGameType = 0;
-						break;
+					// Instruction address 0x0000:0x09ec, size: 5
+					switch (this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey())
+					{
+						case 'N':
+						case 'n':
+							this.parent.Var_6b32_SelectedGameType = 0;
+							break;
 
-					case 'C':
-					case 'c':
-						this.parent.Var_6b32_SelectedGameType = 3;
-						break;
+						case 'C':
+						case 'c':
+							this.parent.Var_6b32_SelectedGameType = 3;
+							break;
 
-					case 'E':
-					case 'e':
-						this.parent.Var_6b32_SelectedGameType = 2;
-						break;
+						case 'E':
+						case 'e':
+							this.parent.Var_6b32_SelectedGameType = 2;
+							break;
 
-					case 'L':
-					case 'l':
-						this.parent.Var_6b32_SelectedGameType = 1;
-						break;
+						case 'L':
+						case 'l':
+							this.parent.Var_6b32_SelectedGameType = 1;
+							break;
+					}
 				}
 			}
 
 			if (this.parent.Var_6b32_SelectedGameType == -2)
 			{
 				// Instruction address 0x0000:0x0a19, size: 5
-				while (this.parent.CommonTools.SoundEngineTimer() < 3463) ;
+				while (this.parent.CommonTools.SoundEngineTimer() < 3463 && this.parent.CAPI.kbhit() == 0 && mouseEvent.Buttons == MouseButtonsEnum.None) { }
+
+				// !!! Assuming that passing tune 0 stops all music
+				this.parent.CommonTools.PlayTune(0, 0);
 
 				// Instruction address 0x0000:0x0a6b, size: 5
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19e8_Screen2_Rectangle, 0, 0, 320, 200, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
@@ -270,7 +282,7 @@ namespace OpenCivOne
 				}
 
 				// Instruction address 0x0000:0x0b1b, size: 5
-				this.parent.CommonTools.EmptyKeyboardAndMouse();
+				this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 				this.parent.Var_6b32_SelectedGameType = -1;
 			}
@@ -621,8 +633,6 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock("F2_0000_17d9()");
 
 			// function body
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 			int startX = this.parent.Var_d4cc_MapViewX + 7;
 			int startY = this.parent.Var_d75e_MapViewY + 6;
 
@@ -668,8 +678,6 @@ namespace OpenCivOne
 			this.parent.Graphics.F0_VGA_0599_DrawLine(this.parent.Var_aa_Screen0_Rectangle, 40, 128, 88, 170 + 6, 15);
 			this.parent.Var_db38 = 1;
 			this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox("Active Unit\n", 88, 170, true, false, true);
-
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();
 
 			this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 		}

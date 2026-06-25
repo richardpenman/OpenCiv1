@@ -69,9 +69,6 @@ namespace OpenCivOne
 			F9_0000_0c30();
 
 		L0085:
-			// Instruction address 0x0000:0x0085, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xe), 0x0);
@@ -700,9 +697,6 @@ namespace OpenCivOne
 
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
 
-			// Instruction address 0x0000:0x087c, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
-
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x680a), 0x3);
 			if (this.oCPU.Flags.NE) goto L0894;
 			
@@ -1319,9 +1313,6 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x0dea, size: 5
 			this.oParent.GameTools.F0_2dc4_065f_StopPaletteCycleSlots();
 
-			// Instruction address 0x0000:0x0def, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xb1d4, 0x0);
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x0);
 
@@ -1369,7 +1360,7 @@ namespace OpenCivOne
 			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 167, 23);
 
 			// Instruction address 0x0000:0x0f35, size: 5
-			this.oParent.CommonTools.EmptyKeyboardAndMouse();
+			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 			// Instruction address 0x0000:0x0f3a, size: 5
 			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
@@ -1378,9 +1369,6 @@ namespace OpenCivOne
 			this.oParent.CommonTools.PlayTune(1, 0);
 
 			this.oParent.Var_aa_Screen0_Rectangle.FontID = 1;
-
-			// Instruction address 0x0000:0x0f65, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
 
 			// Instruction address 0x0000:0x0f6a, size: 5
 			this.oParent.Segment_1238.F0_1238_1b44();

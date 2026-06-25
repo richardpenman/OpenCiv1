@@ -636,9 +636,6 @@ namespace OpenCivOne
 			param1 = 0x13;
 
 		L06ba:
-			// Instruction address 0x0000:0x06ba, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
 
 			// Instruction address 0x0000:0x06c8, size: 5
@@ -788,9 +785,6 @@ namespace OpenCivOne
 
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
 
-			// Instruction address 0x0000:0x09a3, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
-
 		L09a8:
 			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
 			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
@@ -904,9 +898,6 @@ namespace OpenCivOne
 			goto L09ef;
 
 		L0a8e:
-			// Instruction address 0x0000:0x0a8e, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
 
 			// Instruction address 0x0000:0x0aac, size: 5
@@ -1023,9 +1014,6 @@ namespace OpenCivOne
 			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
-
-			// Instruction address 0x0000:0x0c6d, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
 
 			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
 			this.oCPU.DI.UInt16 = this.oCPU.POP_UInt16();

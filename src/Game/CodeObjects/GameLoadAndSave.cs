@@ -155,9 +155,6 @@ namespace OpenCivOne
 			// function body
 			this.loadingGame = false;
 
-			// Instruction address 0x0000:0x0378, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 15);
 
 			// Instruction address 0x0000:0x03d3, size: 5
@@ -175,14 +172,8 @@ namespace OpenCivOne
 					saveGameList.Append(F11_0000_0103_ReadGameInfo($"CIVIL{i}.SVE", out temp));
 				}
 
-				// Instruction address 0x0000:0x03e4, size: 5
-				this.parent.MainCode.F0_11a8_0250_ShowMouse();
-
 				// Instruction address 0x0000:0x03f5, size: 5
 				this.gameIndex = this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(saveGameList.ToString(), 48, 33, false, false, true);
-
-				// Instruction address 0x0000:0x0400, size: 5
-				this.parent.MainCode.F0_11a8_0268_HideMouse();
 			}
 			else
 			{
@@ -216,9 +207,6 @@ namespace OpenCivOne
 			}
 
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
-
-			// Instruction address 0x0000:0x04e6, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();
 		}
 
 		/// <summary>

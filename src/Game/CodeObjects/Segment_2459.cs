@@ -308,16 +308,10 @@ namespace OpenCivOne
 
 			if (!this.oParent.GameData.GameSettingFlags.Animations) goto L03b7;
 
-			// Instruction address 0x2459:0x036c, size: 5
-			this.oParent.MainCode.F0_11a8_0268_HideMouse();
-
 			this.oParent.CityView.F19_0000_0000_ShowCityLayout(cityID, -2,
 				$"{this.oParent.GameData.Players[playerID].Nation} capture\n{F0_2459_08c6_GetCityName(cityID)}." +
 				$"{this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))} gold\npieces plundered.\n");
 			
-			// Instruction address 0x2459:0x0380, size: 5
-			this.oParent.MainCode.F0_11a8_0250_ShowMouse();
-
 			this.oParent.CityView.F19_0000_167b_InvadersAnimation(playerID);
 
 			// Instruction address 0x2459:0x03b0, size: 5
@@ -787,39 +781,21 @@ namespace OpenCivOne
 		/// </summary>
 		public void F0_2459_0918_WaitForKeyPressOrMouseClick()
 		{
-			this.oCPU.Log.EnterBlock("F0_2459_0918_WaitForKeyPressOrMouseClick()");
+			//this.oCPU.Log.EnterBlock("F0_2459_0918_WaitForKeyPressOrMouseClick()");
 
 			// function body
 			// Instruction address 0x2459:0x0918, size: 5
-			this.oParent.CommonTools.EmptyKeyboardAndMouse();
+			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
-		L091d:
-			// Instruction address 0x2459:0x091d, size: 5
-			this.oParent.MainCode.F0_11a8_0223_UpdateMouseState();
+			MouseEvent mouseEvent;
 
-			if (this.oParent.Var_db3a_MouseButton != 0) goto L0932;
+			while ((mouseEvent = this.oParent.GetMouseEvent()).Buttons == MouseButtonsEnum.None && this.oParent.CAPI.kbhit() == 0) { }
 
-			// Instruction address 0x2459:0x0929, size: 5
-			this.oParent.CAPI.kbhit();
-
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L091d;
-
-		L0932:
-			if (this.oParent.Var_db3a_MouseButton != 0) goto L0947;
-
-			// Instruction address 0x2459:0x0939, size: 5
-			this.oParent.CAPI.getch();
-
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.NE) goto L0947;
-
-			// Instruction address 0x2459:0x0942, size: 5
-			this.oParent.CAPI.getch();
-
-		L0947:
-			// Far return
-			this.oCPU.Log.ExitBlock("F0_2459_0918_WaitForKeyPressOrMouseClick");
+			if (mouseEvent.Buttons == MouseButtonsEnum.None && this.oParent.CAPI.getch() == 0)
+			{
+				// Instruction address 0x2459:0x0942, size: 5
+				this.oParent.CAPI.getch();
+			}
 		}
 
 		/// <summary>

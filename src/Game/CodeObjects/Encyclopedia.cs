@@ -1,5 +1,6 @@
 using System.Text;
 using IRB.Collections.Generic;
+using IRB.VirtualCPU;
 using OpenCivOne.Graphics;
 
 namespace OpenCivOne
@@ -36,9 +37,6 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x0006, size: 5
 			this.parent.GameTools.F0_2dc4_065f_StopPaletteCycleSlots();
 
-			// Instruction address 0x0000:0x000b, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 			int itemStartIndex = 0;
 			int result = 0;
 
@@ -64,9 +62,6 @@ namespace OpenCivOne
 
 			// Instruction address 0x0000:0x0058, size: 5
 			this.parent.GameTools.F0_2dc4_0626_StartPaletteCycleSlots();
-
-			// Instruction address 0x0000:0x005d, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();
 		}
 
 		/// <summary>
@@ -236,21 +231,17 @@ namespace OpenCivOne
 				this.Var_6808 = 0;
 			}
 
-			// Instruction address 0x0000:0x040c, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();
-
 			while (true)
 			{
-				// Instruction address 0x0000:0x0411, size: 5
-				this.parent.MainCode.F0_11a8_0223_UpdateMouseState();
+				MouseEvent mouseEvent = this.parent.GetMouseEvent();
 
-				if (this.parent.Var_db3a_MouseButton != 0 || this.parent.CAPI.kbhit() != 0)
+				if (mouseEvent.Buttons != MouseButtonsEnum.None || this.parent.CAPI.kbhit() != 0)
 				{
-					x = (this.parent.Var_db3c_MouseXPos - 10) / topicNameMaximumWidth;
+					x = (mouseEvent.Position.X - 10) / topicNameMaximumWidth;
 
-					if (this.parent.Var_db3e_MouseYPos >= 16)
+					if (mouseEvent.Position.Y >= 16)
 					{
-						y = (this.parent.Var_db3e_MouseYPos - 16) / 7;
+						y = (mouseEvent.Position.Y - 16) / 7;
 					}
 					else
 					{
@@ -259,10 +250,7 @@ namespace OpenCivOne
 
 					selectedTopicIndex = (26 * x) + y;
 
-					// Instruction address 0x0000:0x045e, size: 5
-					this.parent.MainCode.F0_11a8_0268_HideMouse();
-
-					if (this.parent.Var_db3a_MouseButton == 2)
+					if (mouseEvent.Buttons == MouseButtonsEnum.Right)
 					{
 						y = -1;
 						x = 2;
@@ -296,7 +284,7 @@ namespace OpenCivOne
 						}
 
 						// Instruction address 0x0000:0x061c, size: 5
-						this.parent.CommonTools.EmptyKeyboardAndMouse();
+						this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 						return selectedTopicIndex;
 					}
@@ -321,9 +309,6 @@ namespace OpenCivOne
 
 			// Instruction address 0x0000:0x063a, size: 5
 			this.parent.GameTools.F0_2dc4_065f_StopPaletteCycleSlots();
-
-			// Instruction address 0x0000:0x063f, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
 
 			int colour = 15;
 
@@ -825,14 +810,8 @@ namespace OpenCivOne
 
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
-			// Instruction address 0x0000:0x165e, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();
-
 			// Instruction address 0x0000:0x1663, size: 5
 			this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
-
-			// Instruction address 0x0000:0x1668, size: 5
-			this.parent.MainCode.F0_11a8_0268_HideMouse();
 
 			this.parent.Var_3c62 = 0;
 
@@ -843,10 +822,7 @@ namespace OpenCivOne
 
 				// Instruction address 0x0000:0x16b4, size: 5
 				this.parent.GameTools.F0_2dc4_0626_StartPaletteCycleSlots();
-			}
-		
-			// Instruction address 0x0000:0x16b9, size: 5
-			this.parent.MainCode.F0_11a8_0250_ShowMouse();
+			}		
 		}
 
 		/// <summary>

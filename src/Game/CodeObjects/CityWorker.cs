@@ -1,3 +1,4 @@
+using IRB.VirtualCPU;
 using OpenCivOne.Graphics;
 
 namespace OpenCivOne
@@ -106,9 +107,6 @@ namespace OpenCivOne
 			if (city.StatusFlag != 0xff)
 			{
 				this.Var_2496 = 0;
-
-				// Instruction address 0x1d12:0x007e, size: 5
-				this.parent.MainCode.F0_11a8_0268_HideMouse();
 
 				for (int i = 0; i < 5; i++)
 				{
@@ -358,9 +356,6 @@ namespace OpenCivOne
 								this.parent.Segment_1ade.F0_1ade_018e(cityID, city.Position.X, city.Position.Y);
 
 								this.parent.StartGameMenu.F5_0000_0e6c_TestIfAIPlayerDestroyed(this.Var_6548_PlayerID, 0);
-
-								// Instruction address 0x1d12:0x085b, size: 5
-								this.parent.MainCode.F0_11a8_0250_ShowMouse();
 
 								goto L6927;
 							}
@@ -829,9 +824,6 @@ namespace OpenCivOne
 
 										this.parent.StartGameMenu.F5_0000_0e6c_TestIfAIPlayerDestroyed(this.Var_6548_PlayerID, 0);
 
-										// Instruction address 0x1d12:0x1743, size: 5
-										this.parent.MainCode.F0_11a8_0250_ShowMouse();
-
 										goto L6927;
 									}
 								}
@@ -1146,17 +1138,11 @@ namespace OpenCivOne
 
 								if (local_e8 == 38)
 								{
-									// Instruction address 0x1d12:0x2136, size: 5
-									this.parent.MainCode.F0_11a8_0280_ShowMouseAndSaveState();
-
 									// Instruction address 0x1d12:0x2143, size: 5
 									this.parent.Segment_1ade.F0_1ade_1584(this.Var_6548_PlayerID, 0);
 
 									// Instruction address 0x1d12:0x2153, size: 5
 									this.parent.Segment_1ade.F0_1ade_1584(this.Var_6548_PlayerID, 0);
-
-									// Instruction address 0x1d12:0x215b, size: 5
-									this.parent.MainCode.F0_11a8_0294_HideMouseAndSaveState();
 								}
 
 								if (local_e8 == 43 && this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID)
@@ -2423,29 +2409,18 @@ namespace OpenCivOne
 							local_c0 = 1;
 						}
 
-						// Instruction address 0x1d12:0x4994, size: 5
-						this.parent.MainCode.F0_11a8_0250_ShowMouse();
+						MouseEvent mouseEvent;
 
-						while (this.parent.Var_db3a_MouseButton != 0)
-						{
-							// Instruction address 0x1d12:0x49a3, size: 5
-							this.parent.MainCode.F0_11a8_0223_UpdateMouseState();
-						}
+						while ((mouseEvent = this.parent.GetMouseEvent()).Buttons != MouseButtonsEnum.None) { }
 
-						while (this.parent.Var_db3a_MouseButton == 0)
+						while ((mouseEvent = this.parent.GetMouseEvent()).Buttons == MouseButtonsEnum.None)
 						{
 							// Instruction address 0x1d12:0x49b5, size: 5
 							if (this.parent.CAPI.kbhit() != 0 || local_b8 != 0)
 								break;
 
-							// Instruction address 0x1d12:0x49cc, size: 5
-							this.parent.MainCode.F0_11a8_0223_UpdateMouseState();
-
 							if (local_c0 != 0)
 							{
-								// Instruction address 0x1d12:0x49db, size: 5
-								this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 								local_c0++;
 
 								if ((local_c0 & 1) != 0)
@@ -2458,9 +2433,6 @@ namespace OpenCivOne
 									// Instruction address 0x1d12:0x4a32, size: 5
 									this.parent.Graphics.F0_VGA_009a_ReplaceColor(this.parent.Var_aa_Screen0_Rectangle, 231, 106, 32, 8, 9, 14);
 								}
-
-								// Instruction address 0x1d12:0x4a3a, size: 5
-								this.parent.MainCode.F0_11a8_0250_ShowMouse();
 
 								// Instruction address 0x1d12:0x4a43, size: 5
 								this.parent.CommonTools.WaitTimer(10);
@@ -2482,16 +2454,12 @@ namespace OpenCivOne
 							// Instruction address 0x1d12:0x4a61, size: 5
 							local_f0 = this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
 
-							this.parent.Var_db3e_MouseYPos = 0;
-							this.parent.Var_db3c_MouseXPos = 0;
+							//this.parent.Var_db3e_MouseYPos = 0;
+							//this.parent.Var_db3c_MouseXPos = 0;
 						}
 
-						// Instruction address 0x1d12:0x4a86, size: 5
-						this.parent.MainCode.F0_11a8_0268_HideMouse();
-
-						if ((this.parent.Var_db3a_MouseButton == 2 &&
-							this.parent.Var_db3c_MouseXPos >= 230 && this.parent.Var_db3c_MouseXPos < 270 &&
-							this.parent.Var_db3e_MouseYPos >= 106 && this.parent.Var_db3e_MouseYPos <= 116) ||
+						if ((mouseEvent.Position.X >= 230 && mouseEvent.Position.X < 270 &&
+							mouseEvent.Position.Y >= 106 && mouseEvent.Position.Y <= 116 && mouseEvent.Buttons == MouseButtonsEnum.Right) ||
 							local_f0 == 'A')
 						{
 							city.StatusFlag ^= 0x10;
@@ -2537,19 +2505,19 @@ namespace OpenCivOne
 						if (local_f0 != -1)
 							goto L4be2;
 
-						if (this.parent.Var_db3a_MouseButton == 1) goto L4bce;
+						if (mouseEvent.Buttons == MouseButtonsEnum.Left) goto L4bce;
 						goto L4ff5;
 
 					L4bce:
-						if (this.parent.Var_db3e_MouseYPos >= 106) goto L4bd8;
+						if (mouseEvent.Position.Y >= 106) goto L4bd8;
 						goto L4ff5;
 
 					L4bd8:
-						if (this.parent.Var_db3e_MouseYPos <= 116) goto L4be2;
+						if (mouseEvent.Position.Y <= 116) goto L4be2;
 						goto L4ff5;
 
 					L4be2:
-						if (this.parent.Var_db3c_MouseXPos < 296) goto L4bed;
+						if (mouseEvent.Position.X < 296) goto L4bed;
 						goto L4bf7;
 
 					L4bed:
@@ -2598,32 +2566,23 @@ namespace OpenCivOne
 							completeProductionText += "Do you want to continue?\n Yes\n No\n";
 						}
 
-						// Instruction address 0x1d12:0x4e18, size: 5
-						this.parent.MainCode.F0_11a8_0250_ShowMouse();
-
 						this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
 						// Instruction address 0x1d12:0x4e32, size: 5
-						if (this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(completeProductionText, 100, 80, true, false, true) == 0 &&
-							(city.StatusFlag & 0x1) != 0 && this.parent.GameData.Players[this.Var_6548_PlayerID].Coins >= local_e8)
+						if ((city.StatusFlag & 0x1) == 0 && this.parent.GameData.Players[this.Var_6548_PlayerID].Coins >= local_e8 &&
+							this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(completeProductionText, 100, 80, true, false, true) == 0)
 						{
 							city.ShieldsCount = (short)(local_106 * 10);
 
 							this.parent.GameData.Players[this.Var_6548_PlayerID].Coins -= (short)local_e8;
 						}
 
-						// Instruction address 0x1d12:0x4e78, size: 5
-						this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 						goto L045f;
 
 					L4e80:
-						if ((this.parent.Var_db3c_MouseXPos >= 230 && this.parent.Var_db3c_MouseXPos < 270) || local_f0 == 'c')
+						if (((mouseEvent.Position.X >= 230 && mouseEvent.Position.X < 270) || local_f0 == 'c') && local_f0 != 0x1b)
 						{
 							city.StatusFlag &= 0xef;
-
-							// Instruction address 0x1d12:0x4ead, size: 5
-							this.parent.MainCode.F0_11a8_0250_ShowMouse();
 
 							if (city.CurrentProductionID >= 0)
 							{
@@ -2637,9 +2596,6 @@ namespace OpenCivOne
 							{
 								this.parent.GameData.Players[this.Var_6548_PlayerID].UnitsInProduction[city.CurrentProductionID]++;
 							}
-
-							// Instruction address 0x1d12:0x4f2f, size: 5
-							this.parent.MainCode.F0_11a8_0268_HideMouse();
 
 							goto L045f;
 						}
@@ -2676,11 +2632,11 @@ namespace OpenCivOne
 						goto L4faf;
 
 					L4f83:
-						if (this.parent.Var_db3c_MouseXPos >= 96 && this.parent.Var_db3c_MouseXPos < 224) goto L4f98;
+						if (local_f0 != 0x1b && mouseEvent.Position.X >= 96 && mouseEvent.Position.X < 224) goto L4f98;
 						goto L4ff5;
 
 					L4f98:
-						this.Var_2496 = (this.parent.Var_db3c_MouseXPos - 96) / 32;
+						this.Var_2496 = (mouseEvent.Position.X - 96) / 32;
 
 					L4faf:
 						this.parent.Var_70da_Arr[1] = local_10a;
@@ -3074,24 +3030,24 @@ namespace OpenCivOne
 						goto L56a6;
 
 					L567b:
-						if (this.parent.Var_db3a_MouseButton == 1) goto L5685;
+						if (mouseEvent.Buttons == MouseButtonsEnum.Left) goto L5685;
 						goto L56c8;
 
 					L5685:
-						if (this.parent.Var_db3c_MouseXPos >= 231) goto L5690;
+						if (mouseEvent.Position.X >= 231) goto L5690;
 						goto L56c8;
 
 					L5690:
-						if (this.parent.Var_db3e_MouseYPos > 190) goto L569b;
+						if (mouseEvent.Position.Y > 190) goto L569b;
 						goto L56c8;
 
 					L569b:
-						if (this.parent.Var_db3c_MouseXPos < 270) goto L56a6;
+						if (mouseEvent.Position.X < 270) goto L56a6;
 						goto L56c8;
 
 					L56a6:
 						// Instruction address 0x1d12:0x56a6, size: 5
-						this.parent.CommonTools.EmptyKeyboardAndMouse();
+						this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 						this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
@@ -3102,19 +3058,19 @@ namespace OpenCivOne
 						goto L045f;
 
 					L56c8:
-						if (this.parent.Var_db3a_MouseButton == 1) goto L56d2;
+						if (mouseEvent.Buttons == MouseButtonsEnum.Left) goto L56d2;
 						goto L5cc2;
 
 					L56d2:
-						if (this.parent.Var_db3c_MouseXPos >= 288) goto L56dd;
+						if (mouseEvent.Position.X >= 288) goto L56dd;
 						goto L5719;
 
 					L56dd:
-						if (this.parent.Var_db3e_MouseYPos < 96) goto L56e7;
+						if (mouseEvent.Position.Y < 96) goto L56e7;
 						goto L5719;
 
 					L56e7:
-						if (this.parent.Var_db3e_MouseYPos > 88) goto L56f1;
+						if (mouseEvent.Position.Y > 88) goto L56f1;
 						goto L5719;
 
 					L56f1:
@@ -3129,15 +3085,15 @@ namespace OpenCivOne
 						goto L12c2;
 
 					L5719:
-						if (this.parent.Var_db3c_MouseXPos >= 300) goto L5724;
+						if (mouseEvent.Position.X >= 300) goto L5724;
 						goto L58ac;
 
 					L5724:
-						if (this.parent.Var_db3e_MouseYPos < 94) goto L572e;
+						if (mouseEvent.Position.Y < 94) goto L572e;
 						goto L58ac;
 
 					L572e:
-						local_106 = ((this.parent.Var_db3e_MouseYPos - 2) / 6) - local_40;
+						local_106 = ((mouseEvent.Position.Y - 2) / 6) - local_40;
 
 					L5740:
 						local_bc = local_da;
@@ -3166,9 +3122,6 @@ namespace OpenCivOne
 					L57a5:
 						this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
-						// Instruction address 0x1d12:0x5823, size: 5
-						this.parent.MainCode.F0_11a8_0250_ShowMouse();
-
 						// Instruction address 0x1d12:0x5834, size: 5
 						if (this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox("Do you want to sell\nyour " +
 							$"{this.parent.GameData.GetImprovementType(local_bc + 1).Name} for " +
@@ -3186,17 +3139,14 @@ namespace OpenCivOne
 						this.parent.Var_6b64 = 1;
 
 					L58a1:
-						// Instruction address 0x1d12:0x58a1, size: 5
-						this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 						goto L045f;
 
 					L58ac:
-						if (this.parent.Var_db3c_MouseXPos < 200) goto L58b7;
+						if (mouseEvent.Position.X < 200) goto L58b7;
 						goto L596b;
 
 					L58b7:
-						if (this.parent.Var_db3e_MouseYPos < 20) goto L58c1;
+						if (mouseEvent.Position.Y < 20) goto L58c1;
 						goto L596b;
 
 					L58c1:
@@ -3204,7 +3154,7 @@ namespace OpenCivOne
 						goto L5953;
 
 					L58d3:
-						local_ea = (this.parent.Var_db3c_MouseXPos - 16) / local_f4;
+						local_ea = (mouseEvent.Position.X - 16) / local_f4;
 						local_ea -= city.ActualSize - local_50;
 
 						if (local_ea < 0)
@@ -3244,19 +3194,19 @@ namespace OpenCivOne
 						goto L12c2;
 
 					L596b:
-						if (this.parent.Var_db3c_MouseXPos >= 100) goto L5975;
+						if (mouseEvent.Position.X >= 100) goto L5975;
 						goto L5a60;
 
 					L5975:
-						if (this.parent.Var_db3c_MouseXPos < 9600) goto L5980;
+						if (mouseEvent.Position.X < 320) goto L5980;
 						goto L5a60;
 
 					L5980:
-						if (this.parent.Var_db3e_MouseYPos >= 116) goto L598a;
+						if (mouseEvent.Position.Y >= 116) goto L598a;
 						goto L5a60;
 
 					L598a:
-						local_106 = (((this.parent.Var_db3e_MouseYPos - 116) / 16) * 6) + ((this.parent.Var_db3c_MouseXPos - 100) / 16);
+						local_106 = (((mouseEvent.Position.Y - 116) / 16) * 6) + ((mouseEvent.Position.X - 100) / 16);
 
 						if (local_106 >= local_4e)
 							goto L5a60;
@@ -3277,16 +3227,16 @@ namespace OpenCivOne
 						goto L12c2;
 
 					L5a60:
-						if (this.parent.Var_db3e_MouseYPos >= 24) goto L5a6a;
+						if (mouseEvent.Position.Y >= 24) goto L5a6a;
 						goto L5cc2;
 
 					L5a6a:
-						if (this.parent.Var_db3e_MouseYPos < 104) goto L5a74;
+						if (mouseEvent.Position.Y < 104) goto L5a74;
 						goto L5cc2;
 
 					L5a74:
-						local_f6 = (this.parent.Var_db3c_MouseXPos / 16) - 10;
-						local_fc = ((this.parent.Var_db3e_MouseYPos - 24) / 16) - 2;
+						local_f6 = (mouseEvent.Position.X / 16) - 10;
+						local_fc = ((mouseEvent.Position.Y - 24) / 16) - 2;
 
 					L5aa6:
 						// Instruction address 0x1d12:0x5aae, size: 5
@@ -3665,14 +3615,8 @@ namespace OpenCivOne
 				goto L6351;
 
 			L6337:
-				// Instruction address 0x1d12:0x6337, size: 5
-				this.parent.MainCode.F0_11a8_0280_ShowMouseAndSaveState();
-
 				// Instruction address 0x1d12:0x6344, size: 5
 				this.parent.Segment_1ade.F0_1ade_1584(this.Var_6548_PlayerID, 0);
-
-				// Instruction address 0x1d12:0x634c, size: 5
-				this.parent.MainCode.F0_11a8_0294_HideMouseAndSaveState();
 
 			L6351:
 				this.parent.GameData.Players[this.Var_6548_PlayerID].ResearchProgress = 0;
@@ -3740,14 +3684,8 @@ namespace OpenCivOne
 				goto L64b8;
 
 			L649e:
-				// Instruction address 0x1d12:0x649e, size: 5
-				this.parent.MainCode.F0_11a8_0280_ShowMouseAndSaveState();
-
 				// Instruction address 0x1d12:0x64ab, size: 5
 				this.parent.Segment_1ade.F0_1ade_1584(this.Var_6548_PlayerID, 0);
-
-				// Instruction address 0x1d12:0x64b3, size: 5
-				this.parent.MainCode.F0_11a8_0294_HideMouseAndSaveState();
 
 			L64b8:
 				this.parent.GameData.Players[this.Var_6548_PlayerID].Score +=
@@ -3927,9 +3865,6 @@ namespace OpenCivOne
 
 			L690f:
 				this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
-
-				// Instruction address 0x1d12:0x6918, size: 5
-				this.parent.MainCode.F0_11a8_0250_ShowMouse();
 
 				// !!! Do we really need to return a value?
 				return this.parent.Var_70e2 - this.parent.Var_70e4;

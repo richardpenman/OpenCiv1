@@ -24,8 +24,6 @@ namespace OpenCivOne
 
 			if (!string.IsNullOrEmpty(content))
 			{
-				this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
 
 				this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 2);
@@ -37,8 +35,6 @@ namespace OpenCivOne
 				this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
-
-				this.parent.MainCode.F0_11a8_0250_ShowMouse();
 			}
 		
 			this.parent.Var_2f9c_MenuBoxHelpRequested = false;
@@ -140,8 +136,6 @@ namespace OpenCivOne
 			{
 				string content = this.parent.LanguageTools.F0_2f4d_0471_ReplaceKeywords(this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey("HELP", topic));
 
-				this.parent.MainCode.F0_11a8_0268_HideMouse();
-
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
 
 				int windowHeight = this.parent.DrawTools.GetTextBlockHeight(content, 25, 256) + 4;
@@ -161,8 +155,6 @@ namespace OpenCivOne
 				this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
-
-				this.parent.MainCode.F0_11a8_0250_ShowMouse();
 			}
 		}
 
@@ -178,8 +170,6 @@ namespace OpenCivOne
 			if (this.parent.Var_6b90 == this.parent.GameData.HumanPlayerID)
 			{
 				string content = this.parent.LanguageTools.F0_2f4d_0471_ReplaceKeywords(this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey("ERROR", topic));
-
-				this.parent.MainCode.F0_11a8_0268_HideMouse();
 
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
 
@@ -200,8 +190,6 @@ namespace OpenCivOne
 				this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
-
-				this.parent.MainCode.F0_11a8_0250_ShowMouse();
 			}
 		}
 	}

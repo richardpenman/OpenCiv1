@@ -4,6 +4,7 @@ using IRB.VirtualCPU;
 using OpenCivOne.Graphics;
 using OpenCivOne.Resources;
 using SkiaSharp;
+using System.Diagnostics;
 
 namespace OpenCivOne
 {
@@ -72,6 +73,14 @@ namespace OpenCivOne
 		private string gameResourcePath = "";
 		private string gameMainPath = "";
 		private string gameSavePath = "";
+
+		// Keyboard
+		public static readonly object KeyboardAndMouseLock = new();
+		private Queue<int> keys = new Queue<int>();
+
+		// Mouse
+		private List<MouseEvent> mouseEvents = new List<MouseEvent>();
+		private MouseEvent lastMouseEvent = new MouseEvent(new GPoint(160, 100), MouseButtonsEnum.None);
 
 		public OpenCivOneGame(Window mainWindow)
 		{
@@ -378,6 +387,72 @@ namespace OpenCivOne
 			this.CAPI.exit(0);
 		}
 
+		public MouseEvent PeekMouseState()
+		{
+			this.oCPU.DoEvents();
+
+			lock (OpenCivOneGame.KeyboardAndMouseLock)
+			{
+				if (this.mouseEvents.Count > 0)
+				{
+					MouseEvent mouseEvent = this.mouseEvents[0];
+
+					// We can safely remove mouse movement event
+					if (mouseEvent.Buttons == MouseButtonsEnum.None)
+					{
+						this.mouseEvents.RemoveAt(0);
+						this.lastMouseEvent = mouseEvent;
+					}
+					
+					return mouseEvent;
+				}
+
+				return this.lastMouseEvent;
+			}
+		}
+
+		public MouseEvent GetMouseEvent()
+		{
+			this.oCPU.DoEvents();
+
+			lock (OpenCivOneGame.KeyboardAndMouseLock)
+			{
+				if (this.mouseEvents.Count > 0)
+				{
+					MouseEvent mouseEvent = this.mouseEvents[0];
+					this.mouseEvents.RemoveAt(0);
+					this.lastMouseEvent = mouseEvent;
+
+					return mouseEvent;
+				}
+
+				return this.lastMouseEvent;
+			}
+		}
+
+		/// <summary>
+		/// Empties the mouse buffer and ensures no mouse key is pressed
+		/// </summary>
+		public void EmptyMouseEvents()
+		{
+			lock (OpenCivOneGame.KeyboardAndMouseLock)
+			{
+				if (this.mouseEvents.Count > 0)
+				{
+					this.lastMouseEvent = this.mouseEvents[this.mouseEvents.Count - 1];
+				}
+
+				this.mouseEvents.Clear();
+			}
+
+			if (this.lastMouseEvent.Buttons != MouseButtonsEnum.None)
+			{
+				MouseEvent mouseEvent;
+
+				while ((mouseEvent = this.GetMouseEvent()).Buttons != MouseButtonsEnum.None) { Thread.Sleep(1); }
+			}
+		}
+
 		public Window MainWindow { get => this.mainWindow; }
 
 		public VCPU CPU { get => this.oCPU; }
@@ -389,6 +464,16 @@ namespace OpenCivOne
 		public string MainPath { get => this.gameMainPath; }
 
 		public string SavePath { get => this.gameSavePath; }
+
+		public Queue<int> Keys
+		{
+			get { return this.keys; }
+		}
+
+		public List<MouseEvent> MouseEvents
+		{
+			get { return this.mouseEvents; }
+		}
 
 		#region Logs
 		public LogWrapper Log
