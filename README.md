@@ -12,6 +12,8 @@
 <li>The game logic is <b>Based on Original 1991 DOS Civilization game version 475.05</b>.</li>
 <li>The game is still very popular and easy to play. But the obsolescence of DOS or Windows 16-bit platform and the bugs that have never been fixed are hindering the popularity of the game. <a href="https://forums.civfanatics.com/threads/dos-civilization-1-1991-bug-s-discussion-what-should-be-fixed-in-opencivone.688773/" target="_blank">Original game bug(s) discussion page</a></li>
 <li>The news, discussions about this project and release news are published regularly on <a href="https://forums.civfanatics.com/threads/opencivone-project-free-and-open-source-foss-preservation-effort-and-rewrite-of-the-iconic-1991-civilization-game.682623/" target="_blank">Civilization Fanatics OpenCivOne Forum page</a></li>
+<li>The OpenCivOne project in not affiliated or sponsored by Civilization Fanatics’ Center,
+Microprose, Firaxis Games or Take-Two Interactive Software.</li>
 <li>For contact purposes openciv1@yahoo.com public email address can be used.</li>
 </ul>
 
@@ -30,7 +32,7 @@ What this project will not do:
 <li>Copy any of the original game source code or it's executable code,</li>
 <li>Copy any of it's copyrighted assets (graphics, music, etc.),</li>
 <li>Copy or use any of the protected trademarks,</li>
-<li>Associate itself in any way with any of the companies that sell games.</li>
+<li>Associate itself with any of the companies that sell games.</li>
 </ul>
 
 <p><b>The available source code and resources are not a full working copy of the game.</b>
@@ -47,8 +49,8 @@ The other resources (like graphics, music and text) will also be completely repl
 
 <p>Anyone can contribute to this repository in accordance with these <a href="https://codeberg.org/rhorvat/OpenCivOne/src/branch/master/CONTRIBUTING/CONTRIBUTING.md">Contributing guidelines</a>.</p>
 <p>The more detailed current project <a href="https://codeberg.org/rhorvat/OpenCivOne/src/branch/master/CONTRIBUTING/roadmap.md">roadmap is here</a>.</p>
-<p><b>Important! Before you write any bugfix, patch and submit any Pull Request please first create an Issue. 
-Otherwise, you may be fixing the problem that has already been fixed, 
+<p><b>Important! Before you write any bugfix, patch and submit any Pull Request, please, create an Issue first.
+Otherwise, you may be fixing the issue that has already been fixed
 or you are fixing the issue with the component that is currently being replaced.</b></p>
 Currently, you can contribute to this repository in one of the following ways:
 <ul>

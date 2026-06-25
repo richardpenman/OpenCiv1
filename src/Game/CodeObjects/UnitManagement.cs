@@ -576,7 +576,13 @@ namespace OpenCivOne
 					this.parent.CommonTools.WaitTimer(10);
 				}
 
-				mouseState = this.parent.PeekMouseState();
+				mouseState = this.parent.PeekMouseEvent();
+
+				if (mouseState.Buttons == MouseButtonsEnum.None)
+				{
+					// We can safely consume this mouse event
+					mouseState = this.parent.GetMouseEvent();
+				}
 			}
 			while (this.parent.CAPI.kbhit() == 0 && mouseState.Buttons == MouseButtonsEnum.None);
 		}

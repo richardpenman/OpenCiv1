@@ -387,7 +387,7 @@ namespace OpenCivOne
 			this.CAPI.exit(0);
 		}
 
-		public MouseEvent PeekMouseState()
+		public MouseEvent PeekMouseEvent()
 		{
 			this.oCPU.DoEvents();
 
