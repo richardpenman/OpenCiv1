@@ -484,11 +484,11 @@ namespace OpenCivOne
 				}				
 			}
 
-			int local_e = (this.parent.Var_70ea < 0) ? 0 : this.parent.Var_70ea;
-			int local_a = local_e - this.parent.Var_70ea;
+			int local_e = (this.parent.Var_70ea_MiniMapY < 0) ? 0 : this.parent.Var_70ea_MiniMapY;
+			int local_a = local_e - this.parent.Var_70ea_MiniMapY;
 			
 			// Instruction address 0x1866:0x0b5b, size: 5
-			int newX = this.parent.MapManagement.AdjustXPosition(this.parent.GameData.Players[playerID].Units[unitID].Position.X - this.parent.Var_6ed6);
+			int newX = this.parent.MapManagement.AdjustXPosition(this.parent.GameData.Players[playerID].Units[unitID].Position.X - this.parent.Var_6ed6_MiniMapX);
 			int newY = (unitID < 127) ? (this.parent.GameData.Players[playerID].Units[unitID].Position.Y - local_e + local_a) : (-1 - local_e + local_a);
 
 			MouseEvent mouseState;

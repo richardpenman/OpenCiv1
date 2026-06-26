@@ -12,7 +12,7 @@
 <li>The game logic is <b>Based on Original 1991 DOS Civilization game version 475.05</b>.</li>
 <li>The game is still very popular and easy to play. But the obsolescence of DOS or Windows 16-bit platform and the bugs that have never been fixed are hindering the popularity of the game. <a href="https://forums.civfanatics.com/threads/dos-civilization-1-1991-bug-s-discussion-what-should-be-fixed-in-opencivone.688773/" target="_blank">Original game bug(s) discussion page</a></li>
 <li>The news, discussions about this project and release news are published regularly on <a href="https://forums.civfanatics.com/threads/opencivone-project-free-and-open-source-foss-preservation-effort-and-rewrite-of-the-iconic-1991-civilization-game.682623/" target="_blank">Civilization Fanatics OpenCivOne Forum page</a></li>
-<li>The OpenCivOne project in not affiliated or sponsored by Civilization Fanatics’ Center,
+<li>The OpenCivOne project in not affiliated or sponsored by Civilization Fanatics' Center,
 Microprose, Firaxis Games or Take-Two Interactive Software.</li>
 <li>For contact purposes openciv1@yahoo.com public email address can be used.</li>
 </ul>

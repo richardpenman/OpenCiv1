@@ -158,13 +158,12 @@ namespace OpenCivOne
 		public int Var_6c98 = 0;
 		public int[] Array_6e00 = new int[32];
 		public int[] Array_6e96 = new int[9];
-		public int Var_6ed6 = 0;
+		
 		public bool Var_70d8 = false;
 		public int[] Var_70da_Arr = new int[4];
 		public int Var_70e2 = 0;
 		public int Var_70e4 = 0;
 		public int Var_70e6 = 0;
-		public int Var_70ea = 0;
 		public int[] Array_7eec = new int[4];
 
 		public int Var_7ef6_PlanetLandMass = 1;
@@ -190,10 +189,15 @@ namespace OpenCivOne
 		public int Var_d2e0 = 0;
 		public int Var_d2f6 = 0;
 
+#region Map coordinates
 		/// <summary>X coordinate of the top left cell in map view</summary>
 		public int Var_d4cc_MapViewX = 0;
 		/// <summary>Y coordinate of the top left cell in map view</summary>
 		public int Var_d75e_MapViewY = 0;
+
+		public int Var_6ed6_MiniMapX = 0;
+		public int Var_70ea_MiniMapY = 0;
+#endregion
 
 		public int[] Array_d4ce = new int[320];
 		public bool Var_d760_HumanPlayerMessageFlag = false;

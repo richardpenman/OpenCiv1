@@ -119,29 +119,28 @@ namespace OpenCivOne
 
 			this.VisibleCities.Clear();
 
-			// redraw Visible Map on screen
-			int cellXPos;
-			int cellYPos;
-			int cellDrawOrder = this.parent.CAPI.RNG.Next(256);
+			// Draw Visible Map on screen
+
+			/*int cellDrawOrder = this.parent.CAPI.RNG.Next(256);
 
 			for (int i = 0; i < 256; i++)
 			{
-				cellXPos = (cellDrawOrder & 0xf);
-				cellYPos = (cellDrawOrder & 0xf0) >> 4;
+				int cellXPos = (cellDrawOrder & 0xf);
+				int cellYPos = (cellDrawOrder & 0xf0) >> 4;
 
-				if (cellYPos < 12 && cellXPos < 15)
+				if (cellXPos < 15 && cellYPos < 12)
 				{
 					if (this.parent.Var_d806_DebugFlag ||
-						(this.parent.GameData.MapVisibility[this.parent.MapManagement.AdjustXPosition(cellXPos + this.parent.Var_d4cc_MapViewX),
-							cellYPos + this.parent.Var_d75e_MapViewY] & mapPlayerVisibilityMask) != 0)
+						(this.parent.GameData.MapVisibility[this.parent.MapManagement.AdjustXPosition(this.parent.Var_d4cc_MapViewX + cellXPos),
+							this.parent.Var_d75e_MapViewY + cellYPos] & mapPlayerVisibilityMask) != 0)
 					{
 						// Instruction address 0x2aea:0x0122, size: 3
-						F0_2aea_11d4_DrawCellWithUnit(this.parent.MapManagement.AdjustXPosition(cellXPos + this.parent.Var_d4cc_MapViewX), cellYPos + this.parent.Var_d75e_MapViewY);
+						F0_2aea_11d4_DrawCellWithUnit(this.parent.MapManagement.AdjustXPosition(this.parent.Var_d4cc_MapViewX + cellXPos), this.parent.Var_d75e_MapViewY + cellYPos);
 					}
 					else
 					{
 						// Instruction address 0x2aea:0x0094, size: 5
-						this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, (cellXPos * 16) + 80, (cellYPos * 16) + 8, 16, 16, 0);
+						this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 80 + (cellXPos * 16), 8 + (cellYPos * 16), 16, 16, 0);
 					}
 				}
 
@@ -150,6 +149,26 @@ namespace OpenCivOne
 				// A bit of delay should be introduced in the future so that appearing map cells effect can be seen
 				//this.oParent.Segment_1000.F0_1182_0134_WaitTimer(1);
 				//Thread.Sleep(2);
+			}//*/
+
+			for (int i = 0; i < 15; i++)
+			{
+				for (int j = 0; j < 12; j++)
+				{
+					int mapX = this.parent.MapManagement.AdjustXPosition(this.parent.Var_d4cc_MapViewX + i);
+					int mapY = this.parent.Var_d75e_MapViewY + j;
+
+					if (this.parent.Var_d806_DebugFlag || (this.parent.GameData.MapVisibility[mapX, mapY] & mapPlayerVisibilityMask) != 0)
+					{
+						// Instruction address 0x2aea:0x0122, size: 3
+						F0_2aea_11d4_DrawCellWithUnit(mapX, mapY);
+					}
+					else
+					{
+						// Instruction address 0x2aea:0x0094, size: 5
+						this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 80 + (i * 16), 8 + (j * 16), 16, 16, 0);
+					}
+				}
 			}
 
 			// Draw city names
@@ -207,8 +226,10 @@ namespace OpenCivOne
 				mapYDst -= yMap;
 			}
 
-			this.parent.Var_6ed6 = xMap;
-			this.parent.Var_70ea = yMap;
+			this.parent.Var_6ed6_MiniMapX = xMap;
+			this.parent.Var_70ea_MiniMapY = yMap;
+
+			// Draw Mini Map
 
 			// Instruction address 0x2aea:0x0233, size: 5
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 8, 80, 50, 0);
@@ -245,8 +266,8 @@ namespace OpenCivOne
 				if (city.StatusFlag != 0xff && (city.VisibleSize != 0 || city.PlayerID == this.parent.GameData.HumanPlayerID))
 				{
 					// Instruction address 0x2aea:0x031a, size: 5
-					cellXPos = this.parent.MapManagement.AdjustXPosition(city.Position.X - mapXSrc);
-					cellYPos = city.Position.Y - mapYSrc + mapYOffset;
+					int cellXPos = this.parent.MapManagement.AdjustXPosition(city.Position.X - mapXSrc);
+					int cellYPos = city.Position.Y - mapYSrc + mapYOffset;
 
 					if (cellYPos >= 0 && cellYPos < 50)
 					{
