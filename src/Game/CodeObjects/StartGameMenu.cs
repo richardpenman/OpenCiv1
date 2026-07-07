@@ -112,7 +112,7 @@ namespace OpenCivOne
 
 			for (int i = 0; i < 256; i++)
 			{
-				this.parent.GameData.CityPositions[i].X = -1;
+				this.parent.GameData.CityPositions[i] = OpenCivOneGame.InvalidPosition;
 			}
 
 			for (int i = 0; i < 72; i++)
@@ -274,7 +274,7 @@ namespace OpenCivOne
 				{
 					this.parent.GameData.Players[i].UnitsDestroyed[j] = 0;
 				}
-				F5_0000_07c7(i);
+				F5_0000_07c7_InitPlayerData(i);
 			}
 
 			//F5_0000_0fe6();
@@ -365,7 +365,7 @@ namespace OpenCivOne
 		/// </summary>
 		/// <param name="playerID"></param>
 		/// <returns></returns>
-		public int F5_0000_07c7(int playerID)
+		public int F5_0000_07c7_InitPlayerData(int playerID)
 		{
 			//this.oCPU.Log.EnterBlock($"F5_0000_07c7({playerID})");
 
@@ -688,7 +688,7 @@ namespace OpenCivOne
 						}
 					}
 
-					F5_0000_07c7(playerID);
+					F5_0000_07c7_InitPlayerData(playerID);
 				}
 			}
 		}

@@ -235,7 +235,7 @@ namespace OpenCivOne
 					if (this.parent.MapManagement.GetTerrainType(newX, newY) == TerrainTypeEnum.Water ||
 						terrainType != TerrainTypeEnum.Water)
 					{
-						this.parent.GameData.Players[this.parent.Var_d7f0].Units[activeUnitID].GoToDestination.X = -1;
+						this.parent.GameData.Players[this.parent.Var_d7f0].Units[activeUnitID].GoToDestination = OpenCivOneGame.InvalidPosition;
 					}
 
 					// Instruction address 0x1866:0x054e, size: 5
@@ -243,7 +243,7 @@ namespace OpenCivOne
 						terrainType == TerrainTypeEnum.Water ||
 						this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].MovementType == UnitMovementTypeEnum.Air)
 					{
-						this.parent.GameData.Players[playerID].Units[unitID].GoToDestination.X = -1;
+						this.parent.GameData.Players[playerID].Units[unitID].GoToDestination = OpenCivOneGame.InvalidPosition;
 					}
 
 					if (!newVisibleTerrainImprovements.HasFlag(TerrainImprovementFlagsEnum.City))
@@ -392,7 +392,7 @@ namespace OpenCivOne
 									this.parent.MapManagement.GetTerrainType(x, y) == TerrainTypeEnum.Water))
 							{
 								this.parent.GameData.Players[this.parent.Var_d7f0].Units[activeUnitID].Status &= 0xfe;
-								this.parent.GameData.Players[this.parent.Var_d7f0].Units[activeUnitID].GoToDestination.X = -1;
+								this.parent.GameData.Players[this.parent.Var_d7f0].Units[activeUnitID].GoToDestination = OpenCivOneGame.InvalidPosition;
 
 								if (!visibleTerrainImprovements.HasFlag(TerrainImprovementFlagsEnum.City))
 								{
@@ -491,7 +491,7 @@ namespace OpenCivOne
 			int newX = this.parent.MapManagement.AdjustXPosition(this.parent.GameData.Players[playerID].Units[unitID].Position.X - this.parent.Var_6ed6_MiniMapX);
 			int newY = (unitID < 127) ? (this.parent.GameData.Players[playerID].Units[unitID].Position.Y - local_e + local_a) : (-1 - local_e + local_a);
 
-			MouseEvent mouseState;
+			//MouseEvent mouseState;
 
 			do
 			{
@@ -576,15 +576,15 @@ namespace OpenCivOne
 					this.parent.CommonTools.WaitTimer(10);
 				}
 
-				mouseState = this.parent.PeekMouseEvent();
+				/*mouseState = this.parent.PeekMouseEvent();
 
 				if (mouseState.Buttons == MouseButtonsEnum.None)
 				{
 					// We can safely consume this mouse event
 					mouseState = this.parent.GetMouseEvent();
-				}
+				}*/
 			}
-			while (this.parent.CAPI.kbhit() == 0 && mouseState.Buttons == MouseButtonsEnum.None);
+			while (this.parent.CAPI.kbhit() == 0 && !this.parent.HasNewMouseEvent());
 		}
 
 		/// <summary>
@@ -623,7 +623,7 @@ namespace OpenCivOne
 			else
 			{
 				Unit unit = player.Units[unitID];
-				unit.Position.X = -1;
+				unit.Position = OpenCivOneGame.InvalidPosition;
 				unit.NextUnitID = -1;
 
 				// Instruction address 0x1866:0x0d39, size: 5
@@ -638,7 +638,7 @@ namespace OpenCivOne
 				unit.Position = new GPoint(x, y);
 				unit.UnitType = unitType;
 				unit.VisibleByPlayer = (ushort)(1 << playerID);
-				unit.GoToDestination.X = -1;
+				unit.GoToDestination = OpenCivOneGame.InvalidPosition;
 				unit.GoToNextDirection = -1;
 				unit.SpecialMoves = this.parent.GameData.Units[(int)unit.UnitType].TurnsOutside;
 
@@ -1059,19 +1059,23 @@ namespace OpenCivOne
 			int oldUnitID = unitID;
 			int count = 0;
 
-			for (int i = 0; i < 10 && oldUnitID != -1; i++)
+			// just in case we get invalid playerID or unitID
+			if (playerID >= 0 && unitID >= 0)
 			{
-				int newUnitID = this.parent.GameData.Players[playerID].Units[oldUnitID].NextUnitID;
-
-				if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType].UnitRoleType == unitRole)
+				for (int i = 0; i < 10 && oldUnitID != -1; i++)
 				{
-					count++;
+					int newUnitID = this.parent.GameData.Players[playerID].Units[oldUnitID].NextUnitID;
+
+					if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType].UnitRoleType == unitRole)
+					{
+						count++;
+					}
+
+					oldUnitID = newUnitID;
+
+					if (oldUnitID == unitID)
+						break;
 				}
-
-				oldUnitID = newUnitID;
-
-				if (oldUnitID == unitID)
-					break;
 			}
 
 			return count;
@@ -1218,7 +1222,7 @@ namespace OpenCivOne
 				}
 			}
 
-			this.parent.GameData.Players[playerID].Units[unitID].GoToDestination.X = -1;
+			this.parent.GameData.Players[playerID].Units[unitID].GoToDestination = OpenCivOneGame.InvalidPosition;
 			this.parent.GameData.Players[playerID].Units[unitID].GoToNextDirection = -1;
 		}
 
@@ -1305,7 +1309,7 @@ namespace OpenCivOne
 			}
 
 			this.parent.GameData.Players[playerID].Units[unitID].Status &= 0x30;
-			this.parent.GameData.Players[playerID].Units[unitID].GoToDestination.X = -1;
+			this.parent.GameData.Players[playerID].Units[unitID].GoToDestination = OpenCivOneGame.InvalidPosition;
 
 			if (playerID == this.parent.GameData.HumanPlayerID)
 			{
@@ -2012,7 +2016,7 @@ namespace OpenCivOne
 					}
 
 					this.parent.GameData.Players[playerID].Units[selectedUnitID].Status &= 0x30;
-					this.parent.GameData.Players[playerID].Units[selectedUnitID].GoToDestination.X = -1;
+					this.parent.GameData.Players[playerID].Units[selectedUnitID].GoToDestination = OpenCivOneGame.InvalidPosition;
 
 					// !!!!! This looks like a closed loop
 					if (unitCount > 1) goto L1fe2;

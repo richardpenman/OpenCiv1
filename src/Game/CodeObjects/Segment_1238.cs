@@ -1702,7 +1702,7 @@ namespace OpenCivOne
 		/// </summary>
 		public string F0_1238_1720_GetCurrentYearAsString()
 		{
-			return $"{Math.Abs(this.oParent.GameData.Year)} {((this.oParent.GameData.Year >= 0) ? " AD" : " BC")}";
+			return $"{Math.Abs(this.oParent.GameData.Year)} {((this.oParent.GameData.Year >= 0) ? "AD" : "BC")}";
 		}
 
 		/// <summary>

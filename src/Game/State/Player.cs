@@ -95,6 +95,7 @@ namespace OpenCivOne
 			for (int i = 0; i < this.Units.Length; i++)
 			{
 				this.Units[i] = new Unit();
+				this.Units[i].ID = i;
 			}
 
 			for (int i = 0; i < this.UnitsInProduction.Length; i++)

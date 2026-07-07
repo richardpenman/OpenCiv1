@@ -143,7 +143,7 @@ namespace OpenCivOne
 			this.oCPU.AX.UInt16 = this.oCPU.NOT_UInt16(this.oCPU.AX.UInt16);
 			oParent.GameData.ActiveCivilizations &= (short)this.oCPU.AX.UInt16;
 
-			this.oParent.StartGameMenu.F5_0000_07c7(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16)));
+			this.oParent.StartGameMenu.F5_0000_07c7_InitPlayerData(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16)));
 
 			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.E) goto L0100;

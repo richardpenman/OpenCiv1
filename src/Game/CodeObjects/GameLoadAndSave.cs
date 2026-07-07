@@ -181,29 +181,32 @@ namespace OpenCivOne
 				this.gameIndex = 4 + (((this.parent.GameData.TurnCount / 50) - 1) % 6);
 			}
 
-			this.parent.Var_db38 = 1;
-
-			StringBuilder saveGameText = new();
-
-			saveGameText.Append($" CIVIL{this.gameIndex}.SVE\n {this.parent.Array_33a2_GameDifficultyNames[this.parent.GameData.DifficultyLevel]} ");
-			saveGameText.Append($"{this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Name}\n {this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Nation}");
-			saveGameText.Append($"/{Math.Abs(this.parent.GameData.Year)}" + ((this.parent.GameData.Year < 0) ? " BC\n" : " AD\n"));
-			saveGameText.Append("\n ... save in progress.\n");
-
-			// Instruction address 0x0000:0x05c3, size: 5
-			this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(saveGameText.ToString(), 64, 86, true, false, true);
-
-			if (F11_0000_08f6_SaveGameData($"CIVIL{this.gameIndex}.SVE"))
+			if (this.gameIndex != -1)
 			{
-				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Game has been saved.", 125, 132, 0);
-				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Press key to continue.", 125, 142, 0);
-				this.parent.CAPI.getch();
-			}
-			else
-            {
-				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("The current game was NOT saved.", 125, 132, 0);
-				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Press key to continue.", 125, 142, 0);
-				this.parent.CAPI.getch();
+				this.parent.Var_db38 = 1;
+
+				StringBuilder saveGameText = new();
+
+				saveGameText.Append($" CIVIL{this.gameIndex}.SVE\n {this.parent.Array_33a2_GameDifficultyNames[this.parent.GameData.DifficultyLevel]} ");
+				saveGameText.Append($"{this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Name}\n {this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Nation}");
+				saveGameText.Append($"/{Math.Abs(this.parent.GameData.Year)} {((this.parent.GameData.Year < 0) ? "BC\n" : "AD\n")}");
+				saveGameText.Append("\n ... save in progress.\n");
+
+				// Instruction address 0x0000:0x05c3, size: 5
+				this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(saveGameText.ToString(), 64, 86, true, false, true);
+
+				if (F11_0000_08f6_SaveGameData($"CIVIL{this.gameIndex}.SVE"))
+				{
+					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Game has been saved.", 125, 132, 0);
+					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Press key to continue.", 125, 142, 0);
+					this.parent.CAPI.getch();
+				}
+				else
+				{
+					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("The current game was NOT saved.", 125, 132, 0);
+					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Press key to continue.", 125, 142, 0);
+					this.parent.CAPI.getch();
+				}
 			}
 
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
@@ -452,7 +455,7 @@ namespace OpenCivOne
 				{
 					for (int j = 0; j < 128; j++)
 					{
-						this.parent.GameData.Players[i].Units[j] = Unit.FromStream(reader);
+						this.parent.GameData.Players[i].Units[j] = Unit.FromStream(j, reader);
 					}
 				}
 
@@ -484,7 +487,7 @@ namespace OpenCivOne
 				{
 					for (int j = 0; j < 16; j++)
 					{
-						this.parent.GameData.Players[i].ContinentPolicies[j].Position.X = (sbyte)ReadUInt8(reader);
+						this.parent.GameData.Players[i].ContinentPolicies[j].Position =new((sbyte)ReadUInt8(reader),0);
 					}
 				}
 
@@ -492,7 +495,7 @@ namespace OpenCivOne
 				{
 					for (int j = 0; j < 16; j++)
 					{
-						this.parent.GameData.Players[i].ContinentPolicies[j].Position.Y = (sbyte)ReadUInt8(reader);
+						this.parent.GameData.Players[i].ContinentPolicies[j].Position = new(this.parent.GameData.Players[i].ContinentPolicies[j].Position.X, (sbyte)ReadUInt8(reader));
 					}
 				}
 
@@ -607,12 +610,12 @@ namespace OpenCivOne
 
 				for (int i = 0; i < this.parent.GameData.CityPositions.Length; i++)
 				{
-					this.parent.GameData.CityPositions[i].X = (sbyte)ReadUInt8(reader);
+					this.parent.GameData.CityPositions[i] = new((sbyte)ReadUInt8(reader), 0);
 				}
 
 				for (int i = 0; i < this.parent.GameData.CityPositions.Length; i++)
 				{
-					this.parent.GameData.CityPositions[i].Y = (sbyte)ReadUInt8(reader);
+					this.parent.GameData.CityPositions[i] = new(this.parent.GameData.CityPositions[i].X, (sbyte)ReadUInt8(reader));
 				}
 
 				this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].PalaceLevel = ReadInt16(reader);

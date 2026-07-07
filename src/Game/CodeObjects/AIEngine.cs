@@ -482,8 +482,7 @@ namespace OpenCivOne
 
 							if (unitPolicyID != -1)
 							{
-								this.parent.GameData.Players[playerID].Units[i].GoToDestination.X = this.parent.GameData.Players[playerID].UnitPolicies[unitPolicyID].Position.X;
-								this.parent.GameData.Players[playerID].Units[i].GoToDestination.Y = this.parent.GameData.Players[playerID].UnitPolicies[unitPolicyID].Position.Y;
+								this.parent.GameData.Players[playerID].Units[i].GoToDestination = this.parent.GameData.Players[playerID].UnitPolicies[unitPolicyID].Position;
 								this.parent.GameData.Players[playerID].Units[i].Status |= 0x10;
 								this.parent.GameData.Players[playerID].Units[i].Status &= 0xf0;
 
@@ -558,8 +557,7 @@ namespace OpenCivOne
 					{
 						if (this.parent.GameData.Units[(int)unit.UnitType].MoveCount > minimumDistance)
 						{
-							unit.GoToDestination.X = this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Units[selectedUnitID].Position.X;
-							unit.GoToDestination.Y = this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Units[selectedUnitID].Position.Y;
+							unit.GoToDestination = this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Units[selectedUnitID].Position;
 						}
 						else
 						{
@@ -597,8 +595,7 @@ namespace OpenCivOne
 								return ' ';
 							}
 						
-							unit.GoToDestination.X = this.parent.GameData.Cities[selectedCityID].Position.X;
-							unit.GoToDestination.Y = this.parent.GameData.Cities[selectedCityID].Position.Y;
+							unit.GoToDestination = this.parent.GameData.Cities[selectedCityID].Position;
 						}
 					}
 				}
@@ -717,8 +714,7 @@ namespace OpenCivOne
 						return ' ';
 					}
 
-					unit.GoToDestination.X = this.parent.GameData.Cities[nearestCityID].Position.X;
-					unit.GoToDestination.Y = this.parent.GameData.Cities[nearestCityID].Position.Y;
+					unit.GoToDestination = this.parent.GameData.Cities[nearestCityID].Position;
 
 					for (int i = 1; i < 9; i++)
 					{
@@ -733,8 +729,7 @@ namespace OpenCivOne
 							// Instruction address 0x25fb:0x1253, size: 5
 							this.parent.MapManagement.F0_2aea_1412_SetCellActivePlayerID(unitX, unitY, playerID, unitID);
 
-							unit.Position.X = newX;
-							unit.Position.Y = newY;
+							unit.Position =new(newX, newY);
 
 							// Instruction address 0x25fb:0x1275, size: 5
 							this.parent.MapManagement.F0_2aea_13cb_SetCellPlayerID(newX, newY, playerID, unitID);
@@ -757,8 +752,7 @@ namespace OpenCivOne
 					{
 						if (this.parent.GameData.Cities[nearestCityID].PlayerID != playerID)
 						{
-							unit.GoToDestination.X = this.parent.GameData.Cities[nearestCityID].Position.X;
-							unit.GoToDestination.Y = this.parent.GameData.Cities[nearestCityID].Position.Y;
+							unit.GoToDestination = this.parent.GameData.Cities[nearestCityID].Position;
 
 							return '\x0';
 						}
@@ -1015,8 +1009,7 @@ namespace OpenCivOne
 									{
 										minimumDistance = distance;
 
-										unit.GoToDestination.X = this.parent.GameData.Cities[i].Position.X;
-										unit.GoToDestination.Y = this.parent.GameData.Cities[i].Position.Y;
+										unit.GoToDestination = this.parent.GameData.Cities[i].Position;
 
 										currentContinentStrategy = this.parent.GameData.Players[playerID].Continents[cityGroupID].Strategy;
 									}
@@ -1109,14 +1102,14 @@ namespace OpenCivOne
 												}
 
 												unit.RemainingMoves = 0;
-												unit.GoToDestination.X = -1;
+												unit.GoToDestination = OpenCivOneGame.InvalidPosition;
 
 												return 'u';
 											}
 
 											if ((this.parent.GameData.TurnCount & 0x3) == 0)
 											{
-												unit.GoToDestination.X = -1;
+												unit.GoToDestination = OpenCivOneGame.InvalidPosition;
 											}
 											break;
 										}
@@ -1159,8 +1152,7 @@ namespace OpenCivOne
 											if (currentDistance < minimumDistance)
 											{
 												minimumDistance = currentDistance;
-												unit.GoToDestination.X = this.parent.GameData.Cities[i].Position.X;
-												unit.GoToDestination.Y = this.parent.GameData.Cities[i].Position.Y;
+												unit.GoToDestination = this.parent.GameData.Cities[i].Position;
 											}
 										}
 									}
@@ -1201,8 +1193,7 @@ namespace OpenCivOne
 												if (currentDistance < minimumDistance)
 												{
 													minimumDistance = currentDistance;
-													unit.GoToDestination.X = this.parent.GameData.Cities[i].Position.X;
-													unit.GoToDestination.Y = this.parent.GameData.Cities[i].Position.Y;
+													unit.GoToDestination = this.parent.GameData.Cities[i].Position;
 												}
 											}
 										}
@@ -1223,8 +1214,7 @@ namespace OpenCivOne
 									if (newY > 2 && newY < 47 && this.parent.MapManagement.GetTerrainType(newX, newY) != TerrainTypeEnum.Water &&
 										this.parent.GameData.Players[playerID].Continents[this.parent.MapManagement.F0_2aea_1942_GetGroupID(newX, newY)].CityCount == 0)
 									{
-										unit.GoToDestination.X = newX;
-										unit.GoToDestination.Y = newY;
+										unit.GoToDestination =new(newX, newY);
 										break;
 									}
 								}
@@ -1269,14 +1259,14 @@ namespace OpenCivOne
 
 										if (preferredImprovement == TerrainImprovementFlagsEnum.Irrigation)
 										{
-											unit.GoToDestination.X = -1;
+											unit.GoToDestination = OpenCivOneGame.InvalidPosition;
 
 											return 'i';
 										}
 
 										if (preferredImprovement == TerrainImprovementFlagsEnum.Mines)
 										{
-											unit.GoToDestination.X = -1;
+											unit.GoToDestination = OpenCivOneGame.InvalidPosition;
 
 											return 'm';
 										}
@@ -1289,7 +1279,7 @@ namespace OpenCivOne
 											(terrainType == TerrainTypeEnum.Invalid || terrainType == TerrainTypeEnum.Desert ||
 												terrainType == TerrainTypeEnum.Plains || terrainType == TerrainTypeEnum.Grassland))
 										{
-											unit.GoToDestination.X = -1;
+											unit.GoToDestination = OpenCivOneGame.InvalidPosition;
 
 											return 'r';
 										}
@@ -1300,7 +1290,7 @@ namespace OpenCivOne
 											(((terrainImprovements & TerrainImprovementFlagsEnum.Road) == TerrainImprovementFlagsEnum.Road) ? 1 : 2) <=
 											this.parent.CityWorker.F0_1d12_6abc_GetCityResourceCount(playerID, unit.HomeCityID, unitX, unitY, CityResourceTypeEnum.Production))
 										{
-											unit.GoToDestination.X = -1;
+											unit.GoToDestination = OpenCivOneGame.InvalidPosition;
 
 											return 'r';
 										}
@@ -1348,8 +1338,7 @@ namespace OpenCivOne
 												if (this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(newX - this.parent.GameData.Cities[nearestCityID].Position.X,
 													newY - this.parent.GameData.Cities[nearestCityID].Position.Y) < 3)
 												{
-													unit.GoToDestination.X = newX;
-													unit.GoToDestination.Y = newY;
+													unit.GoToDestination = new(newX, newY);
 
 													return '\x0';
 												}
@@ -1443,8 +1432,7 @@ namespace OpenCivOne
 							// !!! Illegal memory access this.oCPU.ReadUInt16(this.oCPU.SS.Word, (ushort)(this.oCPU.BP.Word - 0x26)) == -1
 							if ((MapUnitRoles[newX, newY] & 0x3) == 0)
 							{
-								unit.GoToDestination.X = unit.Position.X + (direction.X * 4);
-								unit.GoToDestination.Y = unit.Position.Y + (direction.Y * 4);
+								unit.GoToDestination = new(unit.Position.X + (direction.X * 4), unit.Position.Y + (direction.Y * 4));
 
 								if (this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(unit.GoToDestination.X, unit.GoToDestination.Y) &&
 									this.parent.GameData.Terrains[(int)this.parent.MapManagement.GetTerrainType(unit.GoToDestination.X, unit.GoToDestination.Y)].Production != 0 &&
@@ -1453,7 +1441,7 @@ namespace OpenCivOne
 									return '\x0';
 								}
 
-								unit.GoToDestination.X = -1;
+								unit.GoToDestination = OpenCivOneGame.InvalidPosition;
 							}
 						}
 					}
@@ -1490,8 +1478,7 @@ namespace OpenCivOne
 				
 					if (this.parent.GameData.Cities[nearestCityID].PlayerID == playerID && this.parent.GameData.Cities[nearestCityID].ActualSize < 10)
 					{
-						unit.GoToDestination.X = this.parent.GameData.Cities[nearestCityID].Position.X;
-						unit.GoToDestination.Y = this.parent.GameData.Cities[nearestCityID].Position.Y;
+						unit.GoToDestination = this.parent.GameData.Cities[nearestCityID].Position;
 
 						return '\x0';
 					}
@@ -1921,8 +1908,7 @@ namespace OpenCivOne
 
 						if (this.parent.GameData.Players[playerID].Units[i].RemainingMoves >= distance * 2)
 						{
-							this.parent.GameData.Players[playerID].Units[i].GoToDestination.X = x;
-							this.parent.GameData.Players[playerID].Units[i].GoToDestination.Y = y;
+							this.parent.GameData.Players[playerID].Units[i].GoToDestination = new(x, y);
 							this.parent.GameData.Players[playerID].Units[i].Status |= 0x10;
 							this.parent.GameData.Players[playerID].Units[i].Status &= 0xf0;
 							break;
@@ -1951,8 +1937,7 @@ namespace OpenCivOne
 						}
 					}
 
-					this.parent.GameData.Players[playerID].UnitPolicies[i].Position.X = x;
-					this.parent.GameData.Players[playerID].UnitPolicies[i].Position.Y = y;
+					this.parent.GameData.Players[playerID].UnitPolicies[i].Position = new(x, y);
 					this.parent.GameData.Players[playerID].UnitPolicies[i].UnitRoleType = unitRoleType;
 					this.parent.GameData.Players[playerID].UnitPolicies[i].Policy = policy;
 
@@ -2007,11 +1992,8 @@ namespace OpenCivOne
 					{
 						if (this.parent.GameData.Players[playerID].ContinentPolicies[j].Policy != 0)
 						{
-							this.parent.GameData.Players[playerID].ContinentPolicies[j + 1].Position.X =
-								this.parent.GameData.Players[playerID].ContinentPolicies[j].Position.X;
-
-							this.parent.GameData.Players[playerID].ContinentPolicies[j + 1].Position.Y =
-								this.parent.GameData.Players[playerID].ContinentPolicies[j].Position.Y;
+							this.parent.GameData.Players[playerID].ContinentPolicies[j + 1].Position =
+								this.parent.GameData.Players[playerID].ContinentPolicies[j].Position;
 
 							this.parent.GameData.Players[playerID].ContinentPolicies[j + 1].UnitRoleType =
 								this.parent.GameData.Players[playerID].ContinentPolicies[j].UnitRoleType;
@@ -2279,8 +2261,7 @@ namespace OpenCivOne
 						return ' ';
 					}
 
-					unit.GoToDestination.X = this.parent.GameData.Cities[cityID].Position.X;
-					unit.GoToDestination.Y = this.parent.GameData.Cities[cityID].Position.Y;
+					unit.GoToDestination = this.parent.GameData.Cities[cityID].Position;
 
 					return '\x0';
 				}
@@ -2340,12 +2321,11 @@ namespace OpenCivOne
 
 			if (yStep != -2)
 			{
-				unit.GoToDestination.X = this.parent.GameData.Cities[nearestCityID].Position.X;
-				unit.GoToDestination.Y = this.parent.GameData.Cities[nearestCityID].Position.Y;
+				unit.GoToDestination = this.parent.GameData.Cities[nearestCityID].Position;
 				unit.GoToNextDirection = (short)this.parent.UnitGoTo.GetNextGoToMove(playerID, unitID);
 			}
 		
-			unit.GoToDestination.X = -1;
+			unit.GoToDestination = OpenCivOneGame.InvalidPosition;
 
 			if (unit.UnitType == UnitTypeEnum.Diplomat)
 			{
@@ -2377,8 +2357,7 @@ namespace OpenCivOne
 
 					if (nearestUnitDistance < 4 && this.parent.GameData.Players[playerID].Units[playerUnitID].UnitType != UnitTypeEnum.Diplomat)
 					{
-						unit.GoToDestination.X = this.parent.GameData.Players[playerID].Units[playerUnitID].Position.X;
-						unit.GoToDestination.Y = this.parent.GameData.Players[playerID].Units[playerUnitID].Position.Y;
+						unit.GoToDestination = this.parent.GameData.Players[playerID].Units[playerUnitID].Position;
 
 						return '\x0';
 					}
@@ -2548,8 +2527,7 @@ namespace OpenCivOne
 								if (this.parent.GameData.Units[(int)this.parent.GameData.Players[i].Units[j].UnitType].MoveCount * 3 >
 									this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(this.parent.GameData.Players[i].Units[j].Position, cityX, cityY))
 								{
-									this.parent.GameData.Players[i].Units[j].GoToDestination.X = cityX;
-									this.parent.GameData.Players[i].Units[j].GoToDestination.Y = cityY;
+									this.parent.GameData.Players[i].Units[j].GoToDestination = new(cityX, cityY);
 								}
 							}
 						}

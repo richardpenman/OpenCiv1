@@ -5,6 +5,7 @@ namespace OpenCivOne
 {
 	public class Unit
 	{
+		public int ID = -1;
 		public UnitTypeEnum UnitType = UnitTypeEnum.None;
 		public short Status = 0;
 		public GPoint Position = new GPoint(-1);
@@ -30,18 +31,17 @@ namespace OpenCivOne
 			return (this.Status & status) != 0;
 		}
 
-		public static Unit FromStream(Stream stream)
+		public static Unit FromStream(int id, Stream stream)
 		{
 			Unit unit = new Unit();
 
+			unit.ID = id;
 			unit.Status = (sbyte)GameLoadAndSave.ReadUInt8(stream);
-			unit.Position.X = (sbyte)GameLoadAndSave.ReadUInt8(stream);
-			unit.Position.Y = (sbyte)GameLoadAndSave.ReadUInt8(stream);
+			unit.Position = new((sbyte)GameLoadAndSave.ReadUInt8(stream), (sbyte)GameLoadAndSave.ReadUInt8(stream));
 			unit.UnitType = (UnitTypeEnum)((sbyte)GameLoadAndSave.ReadUInt8(stream));
 			unit.RemainingMoves = (sbyte)GameLoadAndSave.ReadUInt8(stream);
 			unit.SpecialMoves = (sbyte)GameLoadAndSave.ReadUInt8(stream);
-			unit.GoToDestination.X = (sbyte)GameLoadAndSave.ReadUInt8(stream);
-			unit.GoToDestination.Y = (sbyte)GameLoadAndSave.ReadUInt8(stream);
+			unit.GoToDestination = new((sbyte)GameLoadAndSave.ReadUInt8(stream), (sbyte)GameLoadAndSave.ReadUInt8(stream));
 			unit.GoToNextDirection = (sbyte)GameLoadAndSave.ReadUInt8(stream);
 			unit.VisibleByPlayer = GameLoadAndSave.ReadUInt8(stream);
 			unit.NextUnitID = (sbyte)GameLoadAndSave.ReadUInt8(stream);

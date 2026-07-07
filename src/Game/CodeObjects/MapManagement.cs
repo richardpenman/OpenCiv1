@@ -1357,6 +1357,18 @@ namespace OpenCivOne
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
+		public int F0_2aea_1942_GetGroupID(GPoint pt)
+		{
+			// Instruction address 0x2aea:0x1953, size: 5
+			return F0_2aea_1942_GetGroupID(pt.X, pt.Y);
+		}
+
+		/// <summary>
+		/// Gets map cell group ID at selected coordinates
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
 		public int F0_2aea_1942_GetGroupID(int x, int y)
 		{
 			// Instruction address 0x2aea:0x1953, size: 5

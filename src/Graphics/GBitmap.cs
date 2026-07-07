@@ -376,13 +376,13 @@ namespace OpenCivOne.Graphics
 			{
 				srcRect1.X -= destPoint.X;
 				srcRect1.Width += destPoint.X;
-				destPoint.X = 0;
+				destPoint = new( 0, destPoint.Y);
 			}
 			if (destPoint.Y < 0)
 			{
 				srcRect1.Y -= destPoint.Y;
 				srcRect1.Height += destPoint.Y;
-				destPoint.Y = 0;
+				destPoint = new(destPoint.X, 0);
 			}
 
 			GRectangle destRect = new GRectangle(destPoint, srcRect1.Size);

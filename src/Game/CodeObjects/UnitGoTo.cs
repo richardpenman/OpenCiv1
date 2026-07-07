@@ -247,15 +247,28 @@ namespace OpenCivOne
 		{
 			if (unit.GoToDestination != OpenCivOneGame.InvalidPosition)
 			{
+				// Rules to satisfy:
+				// 1) Source or destination cell position is out of range
+				// 2) Destination is the same as the source position
+				// 3) Destination has to be in the same movement group that the unit is
+				// 4) For the unit that is moving on Land or Water we have to be on the same group.
+				// 4.1) Exceptions: water unit entering or exiting from a coastal city, the land units on a transport
+				// 5) Destination cell has to be visible to the Player
+
 				bool destinationReached = false; // remains false if we can't find a path to a destination
 				TerrainMapGroupTypeEnum group1; // The unit can move on this terrain type
 				TerrainMapGroupTypeEnum group2; // The unit can move on this terrain type
-				UnitMovementTypeEnum movementType = this.gameData.Units[(int)unit.UnitType].MovementType;
+				UnitMovementTypeEnum unitMovementType = this.gameData.Units[(int)unit.UnitType].MovementType;
 				MapManagement map = this.parent.MapManagement;
-				
+				GPoint[] moveDirections = this.parent.MoveDirections;
+				int startGroup = map.F0_2aea_1942_GetGroupID(unit.Position.X, unit.Position.Y);
+				TerrainMapGroupTypeEnum startGroupType = map.GetGroupType(unit.Position);
+				int destinationGroup = map.F0_2aea_1942_GetGroupID(unit.GoToDestination.X, unit.GoToDestination.Y);
+				TerrainMapGroupTypeEnum destinationGroupType = map.GetGroupType(unit.GoToDestination);
+
 				unit.GoToPath.Clear();
 
-				switch (movementType)
+				switch (unitMovementType)
 				{
 					case UnitMovementTypeEnum.Land:
 						group1 = TerrainMapGroupTypeEnum.Land;
@@ -276,20 +289,68 @@ namespace OpenCivOne
 						throw new Exception("Unknown Unit Movement Type"); // should never happen, but we want to make compiler happy
 				}
 
-				// Rules to satisfy:
-				// Source or destination cell position is out of range
-				// Destination is the same as the source position
-				// Destination has to be in the same movement group that the unit is
-				// For the unit that is moving on Land or Water we have to be on the same group
-				// Destination cell has to be visible to the Player
+				// Exception rules temporary values
+				bool startGroupAdjacentToDestination = startGroup == destinationGroup; // the start group is adjacent to unit destination position
+				bool destinationGroupAdjacentToStart = startGroup == destinationGroup; // the destination group is adjacent to unit current position
+
+				if (!destinationGroupAdjacentToStart)
+				{
+					for (int i = 1; i < 9; i++)
+					{
+						if (startGroup == map.F0_2aea_1942_GetGroupID(unit.Position + moveDirections[i]))
+						{
+							destinationGroupAdjacentToStart = true;
+							break;
+						}
+					}
+				}
+
+				if (!startGroupAdjacentToDestination)
+				{
+					for (int i = 1; i < 9; i++)
+					{
+						if (startGroup == map.F0_2aea_1942_GetGroupID(unit.GoToDestination + moveDirections[i]))
+						{
+							startGroupAdjacentToDestination = true;
+							break;
+						}
+					}
+				}
+
+				bool landUnitOnTransport = (startGroupType == TerrainMapGroupTypeEnum.Water) && 
+					(this.parent.UnitManagement.F0_1866_1380_GetStackUnitCount(unit.PlayerID, unit.ID, UnitRoleTypeEnum.SeaTransport) > 0);
+
+				int destinationPlayerID = map.F0_2aea_14e0_GetCellUnitPlayerID(unit.GoToDestination.X, unit.GoToDestination.Y);
+				int destinationUnitID = map.F0_2aea_1458_GetCellActiveUnitID(unit.GoToDestination.X, unit.GoToDestination.Y);
+				bool destinationIsTransport = (destinationPlayerID >= 0 && destinationUnitID >= 0 && 
+					this.parent.UnitManagement.F0_1866_1380_GetStackUnitCount(destinationPlayerID, destinationUnitID, UnitRoleTypeEnum.SeaTransport) > 0);
+
+				int startCityID = this.parent.GameTools.F0_2dc4_00ba_GetCityByLocation(unit.Position.X, unit.Position.Y);
+				int destinationCityID = this.parent.GameTools.F0_2dc4_00ba_GetCityByLocation(unit.GoToDestination.X, unit.GoToDestination.Y);
+
+				// Exception rules
+				bool landUnitCanMove = (unitMovementType == UnitMovementTypeEnum.Land) && 
+					landUnitOnTransport && 
+					((destinationGroupType == TerrainMapGroupTypeEnum.Land && destinationGroupAdjacentToStart) || 
+						(map.GetDistance(unit.Position, unit.GoToDestination) == 1 && destinationIsTransport));
+
+				bool waterUnitCanMove = (unitMovementType == UnitMovementTypeEnum.Water) && 
+					startGroupAdjacentToDestination &&
+					((startCityID >= 0 && startGroupType == TerrainMapGroupTypeEnum.Land && destinationGroupType == TerrainMapGroupTypeEnum.Water) ||
+					(destinationCityID >= 0 && startGroupType == TerrainMapGroupTypeEnum.Water && destinationGroupType == TerrainMapGroupTypeEnum.Land));
+
 				if (!map.F0_2aea_1326_ValidateMapCoordinates(unit.Position) || !map.F0_2aea_1326_ValidateMapCoordinates(unit.GoToDestination) ||
 					unit.Position == unit.GoToDestination ||
-					(map.GetGroupType(unit.GoToDestination) != group1 && map.GetGroupType(unit.GoToDestination) != group2) ||
-					(movementType != UnitMovementTypeEnum.Air && map.F0_2aea_1942_GetGroupID(unit.Position.X, unit.Position.Y) != map.F0_2aea_1942_GetGroupID(unit.GoToDestination.X, unit.GoToDestination.Y)) ||
+					(map.GetGroupType(unit.GoToDestination) != group1 && map.GetGroupType(unit.GoToDestination) != group2 && !landUnitCanMove && !waterUnitCanMove) ||
+					(unitMovementType != UnitMovementTypeEnum.Air && startGroup != destinationGroup && !landUnitCanMove && !waterUnitCanMove) ||
 					(testVisibility && (this.parent.GameData.MapVisibility[unit.GoToDestination.X, unit.GoToDestination.Y] & (1 << unit.PlayerID)) == 0))
 				{
 					return;
 				}
+
+				// This reassignment of groups is because of exception rules, so we can cover these
+				group1 = startGroupType;
+				group2 = destinationGroupType;
 
 				AStarCell[,] cells = new AStarCell[80, 50];
 
@@ -335,7 +396,7 @@ namespace OpenCivOne
 								continue;
 
 							GPoint newPos = pos.Offset(j, i);
-							newPos.X = this.parent.MapManagement.AdjustXPosition(newPos.X);
+							newPos = new(this.parent.MapManagement.AdjustXPosition(newPos.X), newPos.Y);
 
 							// If new cell successor position is a valid position
 							if (map.F0_2aea_1326_ValidateMapCoordinates(newPos))
@@ -444,7 +505,7 @@ namespace OpenCivOne
 				}
 				else
 				{
-					// We have sucessfuly found a path from Source to Destination position
+					// We have successfully found a path from Source to Destination position
 					GPoint pos = unit.GoToDestination;
 
 					// Exclude out source position
@@ -542,10 +603,8 @@ namespace OpenCivOne
 				Unit unit = this.parent.GameData.Players[0].Units[127];
 
 				unit.UnitType = (waterUnit ? UnitTypeEnum.Trireme : UnitTypeEnum.Militia);
-				unit.Position.X = x;
-				unit.Position.Y = y;
-				unit.GoToDestination.X = x1;
-				unit.GoToDestination.Y = y1;
+				unit.Position = new(x, y);
+				unit.GoToDestination = new(x1, y1);
 
 				this.Var_6590_DestinationX = (short)x1;
 				this.Var_6592_DestinationY = (short)y1;
@@ -554,10 +613,8 @@ namespace OpenCivOne
 				result = F0_2e31_0c1d_FindShortestPath(unit, param6);
 
 				unit.UnitType = UnitTypeEnum.None;
-				unit.Position.X = -1;
-				unit.Position.Y = -1;
-				unit.GoToDestination.X = -1;
-				unit.GoToDestination.Y = -1;
+				unit.Position = OpenCivOneGame.InvalidPosition;
+				unit.GoToDestination = OpenCivOneGame.InvalidPosition;
 
 				if (result != -1)
 				{
@@ -593,8 +650,7 @@ namespace OpenCivOne
 
 			if (playerID == this.parent.GameData.HumanPlayerID && absMove.X < 2 && absMove.Y < 2)
 			{
-				move.X = (absMove.X >= 40) ? -Math.Sign(move.X) : Math.Sign(move.X);
-				move.Y = Math.Sign(move.Y);
+				move = new((absMove.X >= 40) ? -Math.Sign(move.X) : Math.Sign(move.X), Math.Sign(move.Y));
 
 				unit.GoToDestination = new GPoint(-1);
 
@@ -647,14 +703,13 @@ namespace OpenCivOne
 				}
 			}
 
-			move.X = this.Var_6590_DestinationX - unit.Position.X;
-			move.Y = this.Var_6592_DestinationY - unit.Position.Y;
+			move = new(this.Var_6590_DestinationX - unit.Position.X, this.Var_6592_DestinationY - unit.Position.Y);
 			absMove = GPoint.Abs(move);
 			int vector = (absMove.X > absMove.Y) ? Math.Abs(move.X) : Math.Abs(move.Y) + absMove.X + absMove.Y;
 
 			if (move.X == 0 && move.Y == 0)
 			{
-				unit.GoToDestination.X = -1;
+				unit.GoToDestination = OpenCivOneGame.InvalidPosition;
 				unit.GoToNextDirection = -1;
 				unit.RemainingMoves = 0;
 
@@ -675,8 +730,7 @@ namespace OpenCivOne
 					GPoint direction = this.parent.MoveDirections[i];
 					int unitNewX = unit.Position.X + direction.X;
 					int unitNewY = unit.Position.Y + direction.Y;
-					absMove.X = Math.Abs(move.X - direction.X);
-					absMove.Y = Math.Abs(move.Y - direction.Y);
+					absMove = new(Math.Abs(move.X - direction.X), Math.Abs(move.Y - direction.Y));
 					int newVector = ((absMove.X <= absMove.Y) ? absMove.Y : absMove.X) + absMove.X + absMove.Y;
 
 					if (playerID != this.parent.GameData.HumanPlayerID || newVector <= vector)
@@ -744,7 +798,7 @@ namespace OpenCivOne
 
 				if (newMoveDirection == 0)
 				{
-					unit.GoToDestination.X = -1;
+					unit.GoToDestination = OpenCivOneGame.InvalidPosition;
 					unit.GoToNextDirection = -1;
 
 					return -1;

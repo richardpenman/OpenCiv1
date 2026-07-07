@@ -3,14 +3,14 @@ using IRB.VirtualCPU;
 
 namespace OpenCivOne
 {
-	public class MainCode
+	public class StartGame
 	{
 		private OpenCivOneGame parent;
 
 		//private int Var_652e_MouseHideCountTemp = 0;
 		//private int Var_deea_MouseHideCount = 0;
 
-		public MainCode(OpenCivOneGame parent)
+		public StartGame(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 		}
@@ -18,7 +18,7 @@ namespace OpenCivOne
 		/// <summary>
 		/// Main game entry
 		/// </summary>
-		public void F0_11a8_0008_Main()
+		public void F0_11a8_0008_StartGame()
 		{
 			// this.oCPU.Log.EnterBlock("F0_11a8_0008_Main()");
 
@@ -87,7 +87,8 @@ namespace OpenCivOne
 			while (this.parent.Var_6b32_SelectedGameType == -1)
 			{
 				// Instruction address 0x11a8:0x04b0, size: 5
-				this.parent.Var_6b32_SelectedGameType = this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(" Start a New Game\n Load a Saved Game\n EARTH\n Customize World\n View Hall of Fame\n", 100, 140, true, false, true);
+				this.parent.Var_6b32_SelectedGameType = this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(
+					" Start a New Game\n Load a Saved Game\n EARTH\n Customize World\n View Hall of Fame\n", 100, 140, true, false, true);
 
 				int timerValue = 0;
 				do
@@ -300,7 +301,7 @@ namespace OpenCivOne
 			// Instruction address 0x11a8:0x0891, size: 5
 			this.parent.CommonTools.SetMousePositionAndIcon(0, 0, this.parent.Array_d4ce[7]);
 
-			if (this.parent.GameData.TurnCount == 0)
+			if (this.parent.Var_6b32_SelectedGameType == 0)
 			{
 				// Instruction address 0x11a8:0x08a8, size: 5
 				this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "DIFFS.PIC", 1);

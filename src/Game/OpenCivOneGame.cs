@@ -18,7 +18,7 @@ namespace OpenCivOne
 		private VCPU oCPU;
 
 		#region Segment definitions
-		private MainCode mainCode;
+		private StartGame startGame;
 		private CommonTools commonTools;
 		private Segment_1238 oSegment_1238;
 		private MenuBoxDialog menuBoxDialog;
@@ -139,7 +139,7 @@ namespace OpenCivOne
 			this.graphics = new GDriver(this);
 			this.sound = new NSound(this);
 
-			this.mainCode = new MainCode(this);
+			this.startGame = new StartGame(this);
 			this.commonTools = new CommonTools(this);
 			this.oSegment_1238 = new Segment_1238(this);
 			this.menuBoxDialog = new MenuBoxDialog(this);
@@ -382,7 +382,7 @@ namespace OpenCivOne
 			this.oCPU.BP.UInt16 = 0x0;
 
 			// Call our Main function
-			this.MainCode.F0_11a8_0008_Main();
+			this.StartGame.F0_11a8_0008_StartGame();
 
 			this.CAPI.exit(0);
 		}
@@ -408,6 +408,21 @@ namespace OpenCivOne
 				}
 
 				return this.lastMouseEvent;
+			}
+		}
+
+		public bool HasNewMouseEvent()
+		{
+			this.oCPU.DoEvents();
+
+			lock (OpenCivOneGame.KeyboardAndMouseLock)
+			{
+				if (this.mouseEvents.Count > 0)
+				{
+					return true;
+				}
+
+				return false;
 			}
 		}
 
@@ -507,9 +522,9 @@ namespace OpenCivOne
 		#endregion
 
 		#region Public Segment getters
-		public MainCode MainCode
+		public StartGame StartGame
 		{
-			get { return this.mainCode; }
+			get { return this.startGame; }
 		}
 
 		public CommonTools CommonTools

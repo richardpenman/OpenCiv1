@@ -290,8 +290,7 @@ namespace OpenCivOne
 			City city = new City(id);
 
 			city.ImprovementFlags = GameLoadAndSave.ReadUInt32(stream);
-			city.Position.X = GameLoadAndSave.ReadUInt8(stream);
-			city.Position.Y = GameLoadAndSave.ReadUInt8(stream);
+			city.Position = new((sbyte)GameLoadAndSave.ReadUInt8(stream), (sbyte)GameLoadAndSave.ReadUInt8(stream));
 			city.StatusFlag = GameLoadAndSave.ReadUInt8(stream);
 			city.ActualSize = (sbyte)GameLoadAndSave.ReadUInt8(stream);
 			city.VisibleSize = (sbyte)GameLoadAndSave.ReadUInt8(stream);

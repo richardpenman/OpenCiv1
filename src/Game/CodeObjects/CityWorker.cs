@@ -917,8 +917,7 @@ namespace OpenCivOne
 
 											if (local_ba != -1)
 											{
-												this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_ba].GoToDestination.X = this.parent.GameData.Cities[local_b0].Position.X;
-												this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_ba].GoToDestination.Y = this.parent.GameData.Cities[local_b0].Position.Y;
+												this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_ba].GoToDestination = this.parent.GameData.Cities[local_b0].Position;
 											}
 										}
 									}
@@ -2736,7 +2735,7 @@ namespace OpenCivOne
 							}
 
 							this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].Status &= 0x30;
-							this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].GoToDestination.X = -1;
+							this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].GoToDestination = OpenCivOneGame.InvalidPosition;
 						}
 					
 						// Escape
@@ -3224,7 +3223,7 @@ namespace OpenCivOne
 
 					L5a18:
 						this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].Status &= 0x30;
-						this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].GoToDestination.X = -1;
+						this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].GoToDestination = OpenCivOneGame.InvalidPosition;
 
 						this.parent.Var_70da_Arr[1] = local_10a;
 						this.parent.Var_70da_Arr[2] = local_a;

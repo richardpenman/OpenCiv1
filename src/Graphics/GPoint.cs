@@ -5,7 +5,7 @@ namespace OpenCivOne.Graphics
 {
 	/// <summary>Represents an X and Y coordinate that define a point in a two-dimensional plane</summary>
 	[Serializable]
-	public class GPoint
+	public struct GPoint
 	{
 		private int x;
 		private int y;
@@ -42,6 +42,14 @@ namespace OpenCivOne.Graphics
 			this.y = sz.Height;
 		}
 
+		/// <summary>Clones a instance of the GPoint class</summary>
+		/// <param name="pt">A GPoint class to clone</param>
+		public GPoint(GPoint pt)
+		{
+			this.x = pt.X;
+			this.y = pt.y;
+		}
+
 		/// <summary>Clones a current GPoint class into new GPoint class</summary>
 		/// <returns>A new GPoint class with the same X and Y coordinates</returns>
 		public GPoint Clone()
@@ -58,7 +66,6 @@ namespace OpenCivOne.Graphics
 		public int X
 		{
 			get => this.x;
-			set => this.x = value;
 		}
 
 		/// <summary>Gets or sets the y-coordinate of this GPoint class</summary>
@@ -66,12 +73,11 @@ namespace OpenCivOne.Graphics
 		public int Y
 		{
 			get => this.y;
-			set => this.y = value;
 		}
 
 		/// <summary>Converts the specified GPoint class to a GSize class</summary>
 		/// <returns>The GSize that results from the conversion</returns>
-		/// <param name="p">The GPoint to be converted</param>
+		/// <param name="pt">The GPoint to be converted</param>
 		public static explicit operator GSize(GPoint pt) => new GSize(pt.X, pt.Y);
 
 		/// <summary>Adds the X and Y coordinate of one GPoint class with the X and Y coordinate of another GPoint class</summary>

@@ -46,7 +46,7 @@ namespace OpenCivOne
 			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, (ushort)playerID);
 			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
 
-			this.oParent.GameData.Players[playerID].Units[unitID].GoToDestination.X = -1;
+			this.oParent.GameData.Players[playerID].Units[unitID].GoToDestination = OpenCivOneGame.InvalidPosition;
 
 			// Instruction address 0x0000:0x003a, size: 5
 			this.oParent.CAPI.strcpy(0xba06, this.oParent.GameData.Players[playerID].Nationality);

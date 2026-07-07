@@ -88,30 +88,12 @@ namespace OpenCivOne
 		public int X
 		{
 			get => this.oPosition.X;
-			set
-			{
-				if (this.oParent != null)
-				{
-					throw new InvalidOperationException("Cell position can't be changed once it's a part of the Map");
-				}
-
-				this.oPosition.X = value;
-			}
 		}
 
 		[XmlIgnore]
 		public int Y
 		{
 			get => this.oPosition.Y;
-			set
-			{
-				if (this.oParent != null)
-				{
-					throw new InvalidOperationException("Cell position can't be changed once it's a part of the Map");
-				}
-
-				this.oPosition.Y = value;
-			}
 		}
 
 		public TerrainTypeEnum TerrainType
