@@ -251,13 +251,15 @@ namespace OpenCivOne
 				// 1) Source or destination cell position is out of range
 				// 2) Destination is the same as the source position
 				// 3) Destination has to be in the same movement group that the unit is
-				// 4) For the unit that is moving on Land or Water we have to be on the same group.
-				// 4.1) Exceptions: water unit entering or exiting from a coastal city, the land units on a transport
+				// 4) For the unit that is moving on Land or Water we have to be on the same group
+				// 4.1) Exception: water unit entering or exiting from a coastal city
+				// 4.2) Exception: land unit embarking or disembarking to/from a transport
 				// 5) Destination cell has to be visible to the Player
 
 				bool destinationReached = false; // remains false if we can't find a path to a destination
 				TerrainMapGroupTypeEnum group1; // The unit can move on this terrain type
 				TerrainMapGroupTypeEnum group2; // The unit can move on this terrain type
+				TerrainMapGroupTypeEnum group3; // The unit can move on this terrain type
 				UnitMovementTypeEnum unitMovementType = this.gameData.Units[(int)unit.UnitType].MovementType;
 				MapManagement map = this.parent.MapManagement;
 				GPoint[] moveDirections = this.parent.MoveDirections;
@@ -289,6 +291,8 @@ namespace OpenCivOne
 						throw new Exception("Unknown Unit Movement Type"); // should never happen, but we want to make compiler happy
 				}
 
+				group3 = group2;
+
 				// Exception rules temporary values
 				bool startGroupAdjacentToDestination = startGroup == destinationGroup; // the start group is adjacent to unit destination position
 				bool destinationGroupAdjacentToStart = startGroup == destinationGroup; // the destination group is adjacent to unit current position
@@ -297,7 +301,7 @@ namespace OpenCivOne
 				{
 					for (int i = 1; i < 9; i++)
 					{
-						if (startGroup == map.F0_2aea_1942_GetGroupID(unit.Position + moveDirections[i]))
+						if (destinationGroup == map.F0_2aea_1942_GetGroupID(unit.Position + moveDirections[i]))
 						{
 							destinationGroupAdjacentToStart = true;
 							break;
@@ -317,27 +321,28 @@ namespace OpenCivOne
 					}
 				}
 
-				bool landUnitOnTransport = (startGroupType == TerrainMapGroupTypeEnum.Water) && 
-					(this.parent.UnitManagement.F0_1866_1380_GetStackUnitCount(unit.PlayerID, unit.ID, UnitRoleTypeEnum.SeaTransport) > 0);
-
+				bool startIsTransportUnit = this.parent.UnitManagement.F0_1866_1380_GetStackUnitCount(unit.PlayerID, unit.ID, UnitRoleTypeEnum.SeaTransport) > 0;
 				int destinationPlayerID = map.F0_2aea_14e0_GetCellUnitPlayerID(unit.GoToDestination.X, unit.GoToDestination.Y);
 				int destinationUnitID = map.F0_2aea_1458_GetCellActiveUnitID(unit.GoToDestination.X, unit.GoToDestination.Y);
-				bool destinationIsTransport = (destinationPlayerID >= 0 && destinationUnitID >= 0 && 
+				bool destinationIsTransportUnit = (destinationPlayerID >= 0 && destinationUnitID >= 0 && 
 					this.parent.UnitManagement.F0_1866_1380_GetStackUnitCount(destinationPlayerID, destinationUnitID, UnitRoleTypeEnum.SeaTransport) > 0);
+				int goToDistance = map.GetDistance(unit.Position, unit.GoToDestination);
 
 				int startCityID = this.parent.GameTools.F0_2dc4_00ba_GetCityByLocation(unit.Position.X, unit.Position.Y);
 				int destinationCityID = this.parent.GameTools.F0_2dc4_00ba_GetCityByLocation(unit.GoToDestination.X, unit.GoToDestination.Y);
 
 				// Exception rules
-				bool landUnitCanMove = (unitMovementType == UnitMovementTypeEnum.Land) && 
-					landUnitOnTransport && 
-					((destinationGroupType == TerrainMapGroupTypeEnum.Land && destinationGroupAdjacentToStart) || 
-						(map.GetDistance(unit.Position, unit.GoToDestination) == 1 && destinationIsTransport));
 
+				// water unit entering or exiting from a coastal city
 				bool waterUnitCanMove = (unitMovementType == UnitMovementTypeEnum.Water) && 
-					startGroupAdjacentToDestination &&
-					((startCityID >= 0 && startGroupType == TerrainMapGroupTypeEnum.Land && destinationGroupType == TerrainMapGroupTypeEnum.Water) ||
-					(destinationCityID >= 0 && startGroupType == TerrainMapGroupTypeEnum.Water && destinationGroupType == TerrainMapGroupTypeEnum.Land));
+					((startGroupAdjacentToDestination && destinationCityID >= 0 && startGroupType == TerrainMapGroupTypeEnum.Water && destinationGroupType == TerrainMapGroupTypeEnum.Land) ||
+						(destinationGroupAdjacentToStart && startCityID >= 0 && startGroupType == TerrainMapGroupTypeEnum.Land && destinationGroupType == TerrainMapGroupTypeEnum.Water));
+
+				// land unit embarking or disembarking to/from a transport
+				bool landUnitCanMove = (unitMovementType == UnitMovementTypeEnum.Land) &&
+					((startGroupAdjacentToDestination && startGroupType == TerrainMapGroupTypeEnum.Land && destinationIsTransportUnit) ||
+						(destinationGroupAdjacentToStart && destinationGroupType == TerrainMapGroupTypeEnum.Land && startIsTransportUnit) ||
+						(startGroupType == TerrainMapGroupTypeEnum.Water && startIsTransportUnit && destinationGroupType == TerrainMapGroupTypeEnum.Water && destinationIsTransportUnit));
 
 				if (!map.F0_2aea_1326_ValidateMapCoordinates(unit.Position) || !map.F0_2aea_1326_ValidateMapCoordinates(unit.GoToDestination) ||
 					unit.Position == unit.GoToDestination ||
@@ -348,9 +353,12 @@ namespace OpenCivOne
 					return;
 				}
 
-				// This reassignment of groups is because of exception rules, so we can cover these
-				group1 = startGroupType;
-				group2 = destinationGroupType;
+				// This assignment of group3 is because of exception rules, so we can cover these
+				if (landUnitCanMove || waterUnitCanMove)
+				{
+					group3 = (startGroupType != group1 || startGroupType != group2) ? startGroupType :
+						((destinationGroupType != group1 || destinationGroupType != group2) ? destinationGroupType : group3);
+				}
 
 				AStarCell[,] cells = new AStarCell[80, 50];
 
@@ -402,8 +410,9 @@ namespace OpenCivOne
 							if (map.F0_2aea_1326_ValidateMapCoordinates(newPos))
 							{
 								AStarCell newCell = cells[newPos.X, newPos.Y];
+								TerrainMapGroupTypeEnum cellGroupType = map.GetGroupType(newPos.X, newPos.Y);
 
-								if (map.GetGroupType(newPos.X, newPos.Y) == group1 || map.GetGroupType(newPos.X, newPos.Y) == group2)
+								if (cellGroupType == group1 || cellGroupType == group2 || cellGroupType == group3)
 								{
 									// If the destination cell is the same as the current successor cell
 									// we have reached our destination
