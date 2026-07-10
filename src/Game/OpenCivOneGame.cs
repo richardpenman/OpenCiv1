@@ -52,7 +52,7 @@ namespace OpenCivOne
 		private Overlay_18 oOverlay_18;
 		private Overlay_22 oOverlay_22;
 		private GameReplay gameReplay;
-		private WorldMap worldMap;
+		private GameStatistics gameStatistics;
 		private Overlay_20 oOverlay_20;
 		private Palace palace;
 		private ShowDebugDetails showDebugDetails;
@@ -173,7 +173,7 @@ namespace OpenCivOne
 			this.oOverlay_18 = new Overlay_18(this);
 			this.oOverlay_22 = new Overlay_22(this);
 			this.gameReplay = new GameReplay(this);
-			this.worldMap = new WorldMap(this);
+			this.gameStatistics = new GameStatistics(this);
 			this.oOverlay_20 = new Overlay_20(this);
 			this.palace = new Palace(this);
 			this.showDebugDetails = new ShowDebugDetails(this);
@@ -381,7 +381,7 @@ namespace OpenCivOne
 
 			this.oCPU.BP.UInt16 = 0x0;
 
-			// Call our Main function
+			// Call our StartGame function
 			this.StartGame.F0_11a8_0008_StartGame();
 
 			this.CAPI.exit(0);
@@ -692,9 +692,9 @@ namespace OpenCivOne
 			get { return this.gameReplay; }
 		}
 
-		public WorldMap WorldMap
+		public GameStatistics GameStatistics
 		{
-			get { return this.worldMap; }
+			get { return this.gameStatistics; }
 		}
 
 		public Overlay_20 Overlay_20

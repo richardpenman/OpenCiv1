@@ -204,7 +204,7 @@ namespace OpenCivOne
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2),
 				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))));
 
-			F9_0000_097c(this.oCPU.AX.UInt16);
+			this.oParent.Segment_1238.TurnCountToYear(this.oCPU.AX.Int16);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), this.oCPU.AX.UInt16);
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x6810, 0xffff);
@@ -778,60 +778,6 @@ namespace OpenCivOne
 			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
 			// Far return
 			this.oCPU.Log.ExitBlock("F9_0000_08a3");
-		}
-
-		/// <summary>
-		/// ?
-		/// </summary>
-		/// <param name="param1"></param>
-		/// <returns></returns>
-		public ushort F9_0000_097c(ushort param1)
-		{
-			this.oCPU.Log.EnterBlock($"F9_0000_097c({param1})");
-
-			// function body
-			if (param1 > 250)
-			{
-				param1 -= 250;
-
-				if (param1 > 50)
-				{
-					param1 -= 50;
-
-					if (param1 > 50)
-					{
-						param1 -= 50;
-
-						if (param1 > 50)
-						{
-							param1 -= 50;
-
-							this.oCPU.AX.UInt16 = (ushort)(param1 + 1850);
-						}
-						else
-						{
-							this.oCPU.AX.UInt16 = (ushort)((param1 << 1) + 1750);
-						}
-					}
-					else
-					{
-						this.oCPU.AX.UInt16 = (ushort)((param1 * 5) + 1500);
-					}
-				}
-				else
-				{
-					this.oCPU.AX.UInt16 = (ushort)((param1 * 10) + 1000);
-				}
-			}
-			else
-			{
-				this.oCPU.AX.UInt16 = (ushort)((param1 * 20) - 4000);
-			}
-
-			// Far return
-			this.oCPU.Log.ExitBlock("F9_0000_097c");
-
-			return this.oCPU.AX.UInt16;
 		}
 
 		/// <summary>

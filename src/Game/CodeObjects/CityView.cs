@@ -482,7 +482,7 @@ namespace OpenCivOne
 				{
 					// Instruction address 0x0000:0x0db1, size: 5
 					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringWithShadowToScreen0(
-						$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} ({this.parent.Segment_1238.F0_1238_1720_GetCurrentYearAsString()})", 160, 2, 15);
+						$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} ({this.parent.Segment_1238.GetYearAsString(this.parent.GameData.Year)})", 160, 2, 15);
 				}
 				else
 				{

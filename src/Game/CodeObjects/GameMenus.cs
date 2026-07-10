@@ -457,7 +457,7 @@ namespace OpenCivOne
 			switch (selectedOption)
 			{
 				case 0: // Wonders of the World
-					this.parent.WorldMap.F12_0000_080d_ShowWondersOfTheWorldPopup();
+					this.parent.GameStatistics.F12_0000_080d_ShowWondersOfTheWorldReport();
 					break;
 
 				case 1: // Top 5 Cities
@@ -469,11 +469,11 @@ namespace OpenCivOne
 					break;
 
 				case 3: // World Map
-					this.parent.WorldMap.F12_0000_0000_ShowWorldMapPopup(1);
+					this.parent.GameStatistics.F12_0000_0000_ShowWorldMapReport();
 					break;
 
 				case 4: // Demographics
-					this.parent.WorldMap.F12_0000_0d6d_ShowsDemographicsPopup(this.parent.GameData.HumanPlayerID);
+					this.parent.GameStatistics.F12_0000_0d6d_ShowsDemographicsReport(this.parent.GameData.HumanPlayerID);
 					break;
 
 				case 5: // SpaceShips

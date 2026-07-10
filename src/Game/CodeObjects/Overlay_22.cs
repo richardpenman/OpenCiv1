@@ -1289,7 +1289,7 @@ namespace OpenCivOne
 			this.oParent.CAPI.strcat(0xba06, " founded: ");
 
 			// Instruction address 0x0000:0x0f9c, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.Segment_1238.F0_1238_1720_GetCurrentYearAsString());
+			this.oParent.CAPI.strcat(0xba06, this.oParent.Segment_1238.GetYearAsString(this.oParent.GameData.Year));
 
 			// Instruction address 0x0000:0x0fa9, size: 5
 			this.oParent.CAPI.strcat(0xba06, ".");

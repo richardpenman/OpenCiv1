@@ -2244,7 +2244,7 @@ namespace OpenCivOne
 					}
 					else
 					{
-						this.parent.WorldMap.F12_0000_080d_ShowWondersOfTheWorldPopup();
+						this.parent.GameStatistics.F12_0000_080d_ShowWondersOfTheWorldReport();
 					}
 					break;
 
@@ -2252,7 +2252,7 @@ namespace OpenCivOne
 				case 0x4200:
 					if (this.parent.Var_d806_DebugFlag)
 					{
-						this.parent.WorldMap.F12_0000_0573();
+						this.parent.GameStatistics.F12_0000_0573_ShowPowerGraphReport();
 						this.parent.GameReplay.F9_0000_0000();
 					}
 					else
@@ -2265,7 +2265,7 @@ namespace OpenCivOne
 				case 0x4300:
 					if (this.parent.Var_d806_DebugFlag)
 					{
-						this.parent.WorldMap.F12_0000_03ac();
+						this.parent.GameStatistics.F12_0000_03ac_ShowContinentStatsReport();
 					}
 					else
 					{
@@ -2275,7 +2275,7 @@ namespace OpenCivOne
 
 				// F10 - World Map
 				case 0x4400:
-					this.parent.WorldMap.F12_0000_0000_ShowWorldMapPopup(1);
+					this.parent.GameStatistics.F12_0000_0000_ShowWorldMapReport();
 					break;
 
 				// Shift + Home

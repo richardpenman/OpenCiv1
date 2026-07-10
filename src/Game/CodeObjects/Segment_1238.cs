@@ -341,7 +341,7 @@ namespace OpenCivOne
 				this.oParent.GameData.NextAnthologyTurn = (short)(this.oParent.CAPI.RNG.Next(40) + this.oParent.GameData.TurnCount + 20);
 
 				// Shows anthology popup
-				this.oParent.WorldMap.F12_0000_09e2();
+				this.oParent.GameStatistics.F12_0000_09e2();
 			}
 
 			for (int i = 1; i < 22; i++)
@@ -477,7 +477,7 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock("F0_1238_08a0()");
 
 			// function body
-			this.oParent.WorldMap.F12_0000_0573();
+			this.oParent.GameStatistics.F12_0000_0573_ShowPowerGraphReport();
 
 			if (this.oParent.Var_dc48_GameEndType != 2)
 			{
@@ -1237,7 +1237,7 @@ namespace OpenCivOne
 
 		L119e:
 			// Instruction address 0x1238:0x11b6, size: 5
-			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(F0_1238_1720_GetCurrentYearAsString(), 2, 81, 0);
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(GetYearAsString(this.oParent.GameData.Year), 2, 81, 0);
 
 			if (this.oParent.GameData.Year < 0)
 			{
@@ -1700,9 +1700,61 @@ namespace OpenCivOne
 		/// <summary>
 		/// Gets current year as a String, appends buffer at 0xba06
 		/// </summary>
-		public string F0_1238_1720_GetCurrentYearAsString()
+		public string GetYearAsString(int year)
 		{
-			return $"{Math.Abs(this.oParent.GameData.Year)} {((this.oParent.GameData.Year >= 0) ? "AD" : "BC")}";
+			return $"{Math.Abs(year)} {((year < 0) ? "BC" : "AD")}";
+		}
+
+		/// <summary>
+		/// Convert the turn count to current year
+		/// </summary>
+		/// <param name="turnCount"></param>
+		/// <returns></returns>
+		public int TurnCountToYear(int turnCount)
+		{
+			//this.oCPU.Log.EnterBlock($"F9_0000_097c({turnCount})");
+			int year;
+
+			// function body
+			if (turnCount > 250)
+			{
+				turnCount -= 250;
+
+				if (turnCount > 50)
+				{
+					turnCount -= 50;
+
+					if (turnCount > 50)
+					{
+						turnCount -= 50;
+
+						if (turnCount > 50)
+						{
+							turnCount -= 50;
+
+							year = turnCount + 1850;
+						}
+						else
+						{
+							year = (turnCount * 2) + 1750;
+						}
+					}
+					else
+					{
+						year = (turnCount * 5) + 1500;
+					}
+				}
+				else
+				{
+					year = (turnCount * 10) + 1000;
+				}
+			}
+			else
+			{
+				year = (turnCount * 20) - 4000;
+			}
+
+			return year;
 		}
 
 		/// <summary>

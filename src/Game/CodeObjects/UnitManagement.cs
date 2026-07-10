@@ -520,10 +520,10 @@ namespace OpenCivOne
 				}
 
 				// Instruction address 0x1866:0x0c00, size: 5
-				if (this.parent.CAPI.kbhit() != 0)
+				if (this.parent.CAPI.kbhit() != 0 || this.parent.HasNewMouseEvent())
 				{
 					// Instruction address 0x1866:0x0c12, size: 5
-					this.parent.CommonTools.WaitTimer(1);
+					//this.parent.CommonTools.WaitTimer(1);
 				}
 				else
 				{
@@ -565,10 +565,10 @@ namespace OpenCivOne
 				}
 
 				// Instruction address 0x1866:0x0cbe, size: 5
-				if (this.parent.CAPI.kbhit() != 0)
+				if (this.parent.CAPI.kbhit() != 0 || this.parent.HasNewMouseEvent())
 				{
 					// Instruction address 0x1866:0x0cd0, size: 5
-					this.parent.CommonTools.WaitTimer(1);
+					//this.parent.CommonTools.WaitTimer(1);
 				}
 				else
 				{
