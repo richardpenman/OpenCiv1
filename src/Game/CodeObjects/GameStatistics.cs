@@ -1547,13 +1547,13 @@ namespace OpenCivOne
 		/// <param name="arrayPtr"></param>
 		/// <param name="y"></param>
 		/// <param name="text"></param>
-		public void F12_0000_1968(ushort arrayPtr, int y, string text)
+		private void F12_0000_1968(ushort arrayPtr, int y, string text)
 		{
 			//this.oCPU.Log.EnterBlock($"F12_0000_1968({param1}, {yPos}, 0x{stringPtr:x4})");
 
 			// function body
 			int humanPlayerRank = 1;
-			int local_4 = -9999;
+			int maximumValue = -9999;
 			int selectedPlayerID = this.oParent.GameData.HumanPlayerID;
 
 			for (int i = 1; i < 8; i++)
@@ -1571,9 +1571,9 @@ namespace OpenCivOne
 						humanPlayerRank++;
 					}
 
-					if (local_4 < this.oCPU.ReadInt16(this.oCPU.DS.UInt16, (ushort)(arrayPtr + (i * 2))))
+					if (maximumValue < this.oCPU.ReadInt16(this.oCPU.DS.UInt16, (ushort)(arrayPtr + (i * 2))))
 					{
-						local_4 = this.oCPU.ReadInt16(this.oCPU.DS.UInt16, (ushort)(arrayPtr + (i * 2)));
+						maximumValue = this.oCPU.ReadInt16(this.oCPU.DS.UInt16, (ushort)(arrayPtr + (i * 2)));
 						selectedPlayerID = i;
 					}
 				}
@@ -1609,7 +1609,7 @@ namespace OpenCivOne
 			{
 				if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[selectedPlayerID].HasFlag(DiplomacyFlagsEnum.Unknown40))
 				{
-					string stats = $"({this.oParent.GameData.Players[selectedPlayerID].Nation}: {Math.Abs(local_4)}{text})";
+					string stats = $"({this.oParent.GameData.Players[selectedPlayerID].Nation}: {Math.Abs(maximumValue)}{text})";
 
 					// Instruction address 0x0000:0x1b4a, size: 5
 					this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(

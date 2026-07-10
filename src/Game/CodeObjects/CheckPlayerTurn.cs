@@ -224,7 +224,7 @@ namespace OpenCivOne
 			if ((this.parent.GameData.PlayerFlags & (0x1 << playerID)) != 0)
 			{
 				// Instruction address 0x1403:0x044c, size: 5
-				//this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+				this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 			}
 
 			local_a = 0;
@@ -599,7 +599,7 @@ namespace OpenCivOne
 			command = -1;
 
 			// Instruction address 0x1403:0x0cfb, size: 5
-			//this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
 
 		Label151:
 			if (unitID < 128) goto Label152;
