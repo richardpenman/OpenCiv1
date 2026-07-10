@@ -340,7 +340,7 @@ namespace OpenCivOne
 				// Instruction address 0x1238:0x056b, size: 5
 				this.oParent.GameData.NextAnthologyTurn = (short)(this.oParent.CAPI.RNG.Next(40) + this.oParent.GameData.TurnCount + 20);
 
-				// Shows anthology popup
+				// Shows Anthology popup
 				this.oParent.GameStatistics.F12_0000_09e2();
 			}
 
