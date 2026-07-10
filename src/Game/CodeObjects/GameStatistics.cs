@@ -1552,7 +1552,7 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock($"F12_0000_1968({param1}, {yPos}, 0x{stringPtr:x4})");
 
 			// function body
-			int local_2 = 1;
+			int humanPlayerRank = 1;
 			int local_4 = -9999;
 			int selectedPlayerID = this.oParent.GameData.HumanPlayerID;
 
@@ -1568,7 +1568,7 @@ namespace OpenCivOne
 
 					if (this.oCPU.ReadInt16(this.oCPU.DS.UInt16, (ushort)(arrayPtr + (i * 2))) > this.oCPU.ReadInt16(this.oCPU.DS.UInt16, (ushort)(arrayPtr + (this.oParent.GameData.HumanPlayerID * 2))))
 					{
-						local_2++;
+						humanPlayerRank++;
 					}
 
 					if (local_4 < this.oCPU.ReadInt16(this.oCPU.DS.UInt16, (ushort)(arrayPtr + (i * 2))))
@@ -1579,48 +1579,41 @@ namespace OpenCivOne
 				}
 			}
 
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
-			// Instruction address 0x0000:0x19ff, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.CAPI.itoa(local_2, 10));
-
-			switch (local_2)
-			{
-				case 1:
-					// Instruction address 0x0000:0x1a26, size: 5
-					this.oParent.CAPI.strcat(0xba06, "st");
-					break;
-
-				case 2:
-					// Instruction address 0x0000:0x1a26, size: 5
-					this.oParent.CAPI.strcat(0xba06, "nd");
-					break;
-
-				case 3:
-					// Instruction address 0x0000:0x1a26, size: 5
-					this.oParent.CAPI.strcat(0xba06, "rd");
-					break;
-
-				default:
-					// Instruction address 0x0000:0x1a26, size: 5
-					this.oParent.CAPI.strcat(0xba06, "th");
-					break;
-			}
-
 			// Instruction address 0x0000:0x1a64, size: 5
 			this.oParent.Graphics.F0_VGA_0599_DrawLine(this.oParent.Var_aa_Screen0_Rectangle, 4, Math.Abs(y) - 3, 316, Math.Abs(y) - 3, 9);
 
-			// Instruction address 0x0000:0x1a84, size: 5
-			this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow(0xba06, 192, Math.Abs(y), 15);
+			switch (humanPlayerRank)
+			{
+				case 1:
+					// Instruction address 0x0000:0x1a84, size: 5
+					this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow($"{humanPlayerRank}st", 192, Math.Abs(y), 15);
+					break;
+
+				case 2:
+					// Instruction address 0x0000:0x1a84, size: 5
+					this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow($"{humanPlayerRank}nd", 192, Math.Abs(y), 15);
+					break;
+
+				case 3:
+					// Instruction address 0x0000:0x1a84, size: 5
+					this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow($"{humanPlayerRank}rd", 192, Math.Abs(y), 15);
+					break;
+
+				default:
+					// Instruction address 0x0000:0x1a84, size: 5
+					this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow($"{humanPlayerRank}th", 192, Math.Abs(y), 15);
+					break;
+			}
 
 			if (selectedPlayerID != this.oParent.GameData.HumanPlayerID)
 			{
 				if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[selectedPlayerID].HasFlag(DiplomacyFlagsEnum.Unknown40))
 				{
+					string stats = $"({this.oParent.GameData.Players[selectedPlayerID].Nation}: {Math.Abs(local_4)}{text})";
+
 					// Instruction address 0x0000:0x1b4a, size: 5
-					this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"({this.oParent.GameData.Players[selectedPlayerID].Nation}: {Math.Abs(local_4)}{text})",
-						318 - this.oParent.DrawTools.GetStringWidth(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06)), Math.Abs(y),
-						this.oParent.Array_1946_PlayerColours[selectedPlayerID]);
+					this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+						stats, 318 - this.oParent.DrawTools.GetStringWidth(stats), Math.Abs(y), this.oParent.Array_1946_PlayerColours[selectedPlayerID]);
 				}
 			}
 		}
