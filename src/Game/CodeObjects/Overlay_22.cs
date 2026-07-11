@@ -1307,7 +1307,7 @@ namespace OpenCivOne
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10), 0x0);
 
 			// Instruction address 0x0000:0x1002, size: 5
-			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.oParent.CommonTools.ClearKeyboardAndMouseEvents();
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa), 0x50);
 			goto L1011;
@@ -1390,7 +1390,7 @@ namespace OpenCivOne
 
 		L1143:
 			// Instruction address 0x0000:0x1148, size: 5
-			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.oParent.CommonTools.ClearKeyboardAndMouseEvents();
 
 			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
 			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;

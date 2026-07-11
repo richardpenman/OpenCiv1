@@ -561,7 +561,7 @@ namespace OpenCivOne
 				if (this.parent.CAPI.kbhit() != 0)
 				{
 					// Instruction address 0x0000:0x0f84, size: 5
-					this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+					this.parent.CommonTools.ClearKeyboardAndMouseEvents();
 				}
 				else
 				{
@@ -969,7 +969,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x18a7, size: 5
-			this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.parent.CommonTools.ClearKeyboardAndMouseEvents();
 
 			// Instruction address 0x0000:0x18b7, size: 5
 			this.parent.GameTools.F0_2dc4_0626_StartPaletteCycleSlots();
@@ -1061,7 +1061,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x1acc, size: 5
-			this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.parent.CommonTools.ClearKeyboardAndMouseEvents();
 
 			for (int i = 0; i < 10; i++)
 			{
@@ -1140,7 +1140,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x1c8e, size: 5
-			this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.parent.CommonTools.ClearKeyboardAndMouseEvents();
 
 			for (int i = 0; i < 10; i++)
 			{

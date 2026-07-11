@@ -446,9 +446,9 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Empties the mouse buffer and ensures no mouse key is pressed
+		/// Clears the mouse buffer and ensures no mouse button is pressed
 		/// </summary>
-		public void EmptyMouseEvents()
+		public void ClearMouseEventsAndEnsureNoMouseButtonIsPressed()
 		{
 			lock (OpenCivOneGame.KeyboardAndMouseLock)
 			{
@@ -460,12 +460,7 @@ namespace OpenCivOne
 				this.mouseEvents.Clear();
 			}
 
-			if (this.lastMouseEvent.Buttons != MouseButtonsEnum.None)
-			{
-				MouseEvent mouseEvent;
-
-				while ((mouseEvent = this.GetMouseEvent()).Buttons != MouseButtonsEnum.None) { Thread.Sleep(1); }
-			}
+			while (this.GetMouseEvent().Buttons != MouseButtonsEnum.None) { Thread.Sleep(1); }
 		}
 
 		public Window MainWindow { get => this.mainWindow; }

@@ -3051,7 +3051,7 @@ namespace OpenCivOne
 
 					L56a6:
 						// Instruction address 0x1d12:0x56a6, size: 5
-						this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+						this.parent.CommonTools.ClearKeyboardAndMouseEvents();
 
 						this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 

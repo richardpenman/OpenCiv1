@@ -282,7 +282,7 @@ namespace OpenCivOne
 				}
 
 				// Instruction address 0x0000:0x0b1b, size: 5
-				this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+				this.parent.CommonTools.ClearKeyboardAndMouseEvents();
 
 				this.parent.Var_6b32_SelectedGameType = -1;
 			}

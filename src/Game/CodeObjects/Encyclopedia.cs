@@ -284,7 +284,7 @@ namespace OpenCivOne
 						}
 
 						// Instruction address 0x0000:0x061c, size: 5
-						this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+						this.parent.CommonTools.ClearKeyboardAndMouseEvents();
 
 						return selectedTopicIndex;
 					}

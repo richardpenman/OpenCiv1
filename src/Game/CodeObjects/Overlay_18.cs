@@ -792,7 +792,7 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.E) goto L0ae5;
 
 			// Instruction address 0x0000:0x0ae0, size: 5
-			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.oParent.CommonTools.ClearKeyboardAndMouseEvents();
 
 		L0ae5:
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 0x0);
@@ -1214,7 +1214,7 @@ namespace OpenCivOne
 			F18_0000_0000();
 
 			// Instruction address 0x0000:0x0f17, size: 5
-			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.oParent.CommonTools.ClearKeyboardAndMouseEvents();
 
 			iPos = (12 * this.oParent.GameData.SpaceshipCells[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))].XPos) +
 				this.oParent.GameData.SpaceshipCells[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))].YPos;
@@ -1232,7 +1232,7 @@ namespace OpenCivOne
 			this.oParent.GameData.SpaceshipFlags |= (short)this.oCPU.AX.UInt16;
 
 			// Instruction address 0x0000:0x0f71, size: 5
-			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.oParent.CommonTools.ClearKeyboardAndMouseEvents();
 
 			F18_0000_016d();
 
@@ -1273,7 +1273,7 @@ namespace OpenCivOne
 			F18_0000_0259(playerID, 15, 0);
 
 			// Instruction address 0x0000:0x0fbb, size: 5
-			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.oParent.CommonTools.ClearKeyboardAndMouseEvents();
 
 		L0fc0:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16), 0x2);
@@ -1630,7 +1630,7 @@ namespace OpenCivOne
 			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
 			// Instruction address 0x0000:0x15f3, size: 5
-			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.oParent.CommonTools.ClearKeyboardAndMouseEvents();
 
 			this.oCPU.SI.UInt16 = (ushort)playerID;
 			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
@@ -1665,7 +1665,7 @@ namespace OpenCivOne
 
 		L16a1:
 			// Instruction address 0x0000:0x16a1, size: 5
-			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.oParent.CommonTools.ClearKeyboardAndMouseEvents();
 
 			// Instruction address 0x0000:0x16a6, size: 5
 			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();

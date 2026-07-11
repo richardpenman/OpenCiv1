@@ -574,9 +574,9 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Empties keyboard buffer and clears the mouse state
+		/// Clear keyboard and mouse events and ensure no mouse button is pressed
 		/// </summary>
-		public void EmptyKeyboardBufferAndClearMouse()
+		public void ClearKeyboardAndMouseEvents()
 		{
 			this.CPU.DoEvents();
 
@@ -585,7 +585,22 @@ namespace OpenCivOne
 				this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
 			}
 
-			this.parent.EmptyMouseEvents();
+			this.parent.ClearMouseEventsAndEnsureNoMouseButtonIsPressed();
+		}
+
+		/// <summary>
+		/// Clear keyboard events and ensure no mouse button is pressed
+		/// </summary>
+		public void ClearKeyboardEventsAndEnsureNoMouseButtonIsPressed()
+		{
+			this.CPU.DoEvents();
+
+			while (this.parent.CAPI.kbhit() != 0)
+			{
+				this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
+			}
+
+			while (this.parent.GetMouseEvent().Buttons != MouseButtonsEnum.None) { Thread.Sleep(1); }
 		}
 	}
 }

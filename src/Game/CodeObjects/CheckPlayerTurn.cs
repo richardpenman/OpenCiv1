@@ -224,7 +224,7 @@ namespace OpenCivOne
 			if ((this.parent.GameData.PlayerFlags & (0x1 << playerID)) != 0)
 			{
 				// Instruction address 0x1403:0x044c, size: 5
-				this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+				this.parent.CommonTools.ClearKeyboardAndMouseEvents();
 			}
 
 			local_a = 0;
@@ -363,7 +363,7 @@ namespace OpenCivOne
 				this.parent.GameMenus.F0_2c84_0000_ShowTopMenu(playerID, unitID, -1);
 
 				// Instruction address 0x1403:0x070f, size: 5
-				this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+				this.parent.CommonTools.ClearKeyboardAndMouseEvents();
 
 				if (this.parent.GameMenus.Var_d4ca_MenuShortcutKey != -1)
 				{
@@ -599,7 +599,7 @@ namespace OpenCivOne
 			command = -1;
 
 			// Instruction address 0x1403:0x0cfb, size: 5
-			this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.parent.CommonTools.ClearKeyboardEventsAndEnsureNoMouseButtonIsPressed();
 
 		Label151:
 			if (unitID < 128) goto Label152;

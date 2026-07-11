@@ -785,7 +785,7 @@ namespace OpenCivOne
 
 			// function body
 			// Instruction address 0x2459:0x0918, size: 5
-			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.oParent.CommonTools.ClearKeyboardAndMouseEvents();
 
 			MouseEvent mouseEvent;
 

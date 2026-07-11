@@ -286,7 +286,7 @@ namespace OpenCivOne
 			if (emptyKeyboardAndMouse)
 			{
 				// Instruction address 0x2d05:0x003e, size: 5
-				this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+				this.parent.CommonTools.ClearKeyboardAndMouseEvents();
 			}
 
 			if (this.parent.Var_db38 == 0)

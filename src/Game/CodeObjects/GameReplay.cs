@@ -1306,7 +1306,7 @@ namespace OpenCivOne
 			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 167, 23);
 
 			// Instruction address 0x0000:0x0f35, size: 5
-			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.oParent.CommonTools.ClearKeyboardAndMouseEvents();
 
 			// Instruction address 0x0000:0x0f3a, size: 5
 			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();

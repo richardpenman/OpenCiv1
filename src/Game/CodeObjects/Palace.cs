@@ -526,7 +526,7 @@ namespace OpenCivOne
 			this.oParent.GameTools.F0_2dc4_0523_FreeResource(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x6828), "Palace");
 
 			// Instruction address 0x0000:0x06be, size: 5
-			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.oParent.CommonTools.ClearKeyboardAndMouseEvents();
 
 		L06c8:
 			mouseEvent = this.oParent.GetMouseEvent();
@@ -594,7 +594,7 @@ namespace OpenCivOne
 			this.oParent.Graphics.F0_VGA_06b7_DrawScreenToMainScreenWithEffect(1);
 
 			// Instruction address 0x0000:0x0788, size: 5
-			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.oParent.CommonTools.ClearKeyboardAndMouseEvents();
 
 			// Instruction address 0x0000:0x078d, size: 5
 			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();

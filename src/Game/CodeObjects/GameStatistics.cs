@@ -663,7 +663,7 @@ namespace OpenCivOne
 			this.oParent.GameData.Players[0].CumulativeEpicRanking++;
 
 			// Instruction address 0x0000:0x0d53, size: 5
-			this.oParent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.oParent.CommonTools.ClearKeyboardAndMouseEvents();
 
 			// Instruction address 0x0000:0x0d58, size: 5
 			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();

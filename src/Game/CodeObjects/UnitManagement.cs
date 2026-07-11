@@ -1995,7 +1995,7 @@ namespace OpenCivOne
 			while (unitCount < 12 && nextUnitID != -1 && nextUnitID != unitID);
 
 			// Instruction address 0x1866:0x20e9, size: 5
-			this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.parent.CommonTools.ClearKeyboardAndMouseEvents();
 
 			MouseEvent mouseEvent = this.parent.GetMouseEvent();
 
@@ -2026,7 +2026,7 @@ namespace OpenCivOne
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 
 			// Instruction address 0x1866:0x225f, size: 5
-			this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.parent.CommonTools.ClearKeyboardAndMouseEvents();
 
 			return selectedUnitID;
 		}

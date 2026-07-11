@@ -102,7 +102,7 @@ namespace OpenCivOne
 				(((this.parent.GameData.SpaceshipFlags & 0x100) != 0) ? " View Replay\n" : ""), 16, 8, true, false, false);
 
 			// Instruction address 0x2c84:0x00ff, size: 5
-			this.parent.CommonTools.EmptyKeyboardBufferAndClearMouse();
+			this.parent.CommonTools.ClearKeyboardAndMouseEvents();
 
 			switch (selectedOption)
 			{
