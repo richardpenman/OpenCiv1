@@ -3,13 +3,13 @@ using OpenCivOne.UI;
 
 namespace OpenCivOne
 {
-	public class GameTools
+	public class Tools
 	{
 		private OpenCivOneGame parent;
 
 		private bool Var_2fec_PaletteCycleEnabled = false;
 
-		public GameTools(OpenCivOneGame parent)
+		public Tools(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 		}

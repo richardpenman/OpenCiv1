@@ -141,8 +141,8 @@ namespace OpenCivOne
 			Player player = this.oParent.GameData.Players[playerID];
 			int progressBarValue = (player.DiscoveredTechnologyCount * ((this.oParent.GameData.Year < 0) ? 1 : 2)) *
 				Math.Max((oParent.GameData.DifficultyLevel * 2) + this.oParent.Var_d2de + 6, 11 - player.DiscoveredTechnologyCount);
-			int progressBarSpacing = this.oParent.GameTools.F0_2dc4_007c_CheckValueRange(2432 / (progressBarValue + 1), 1, 64);
-			int progressBarWidth = this.oParent.GameTools.F0_2dc4_007c_CheckValueRange(((progressBarSpacing * progressBarValue) / 8) + 8, 8, 304);
+			int progressBarSpacing = this.oParent.Tools.F0_2dc4_007c_CheckValueRange(2432 / (progressBarValue + 1), 1, 64);
+			int progressBarWidth = this.oParent.Tools.F0_2dc4_007c_CheckValueRange(((progressBarSpacing * progressBarValue) / 8) + 8, 8, 304);
 			int progressBarXStart = 160 - (progressBarWidth / 2);
 
 			if (progressBarXStart > 40)
@@ -154,7 +154,7 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x0244, size: 5
 			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, progressBarXStart, 25, progressBarWidth, 16, 9);
 
-			int progress = this.oParent.GameTools.F0_2dc4_007c_CheckValueRange(player.ResearchProgress, 0, progressBarValue);
+			int progress = this.oParent.Tools.F0_2dc4_007c_CheckValueRange(player.ResearchProgress, 0, progressBarValue);
 
 			for (int i = 0; i < progress; i++)
 			{
@@ -1650,7 +1650,7 @@ namespace OpenCivOne
 
 		L1770:
 			// Instruction address 0x0000:0x1778, size: 5
-			this.oParent.CAPI.strcpy(0xba06, $"Population: {this.oParent.GameTools.F0_2dc4_0337_PopulationValueToString(this.oParent.GameTools.F0_2dc4_02cd_GetPlayerTotalPopulationCount(playerID))}");
+			this.oParent.CAPI.strcpy(0xba06, $"Population: {this.oParent.Tools.F0_2dc4_0337_PopulationValueToString(this.oParent.Tools.F0_2dc4_02cd_GetPlayerTotalPopulationCount(playerID))}");
 
 			// Instruction address 0x0000:0x1793, size: 5
 			this.oParent.CAPI.strcat(0xba06, " Happy:");

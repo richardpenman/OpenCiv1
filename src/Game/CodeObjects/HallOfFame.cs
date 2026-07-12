@@ -318,7 +318,7 @@ namespace OpenCivOne
 			this.oCPU.ES.UInt16 = 0x3772; // segment
 
 			// Instruction address 0x0000:0x03a9, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.GameTools.F0_2dc4_0337_PopulationValueToString(this.oCPU.ReadInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37de))));
+			this.oParent.CAPI.strcat(0xba06, this.oParent.Tools.F0_2dc4_0337_PopulationValueToString(this.oCPU.ReadInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37de))));
 
 			// Instruction address 0x0000:0x03b9, size: 5
 			this.oParent.CAPI.strcat(0xba06, ", Score: ");
@@ -518,9 +518,9 @@ namespace OpenCivOne
 			this.oCPU.WriteInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37d8), oParent.GameData.Year);
 
 			// Instruction address 0x0000:0x05ec, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_02cd_GetPlayerTotalPopulationCount(this.oParent.GameData.HumanPlayerID);
+			this.oCPU.AX.Int16 = (short)this.oParent.Tools.F0_2dc4_02cd_GetPlayerTotalPopulationCount(this.oParent.GameData.HumanPlayerID);
 
-			this.oParent.CAPI.strcat(0xba06, this.oParent.GameTools.F0_2dc4_0337_PopulationValueToString(this.oCPU.AX.Int16));
+			this.oParent.CAPI.strcat(0xba06, this.oParent.Tools.F0_2dc4_0337_PopulationValueToString(this.oCPU.AX.Int16));
 
 			this.oCPU.ES.UInt16 = 0x3772; // segment
 			this.oCPU.WriteUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37de), this.oCPU.AX.UInt16);
@@ -963,7 +963,7 @@ namespace OpenCivOne
 				this.oParent.Var_e8b8, 160);
 
 			// Instruction address 0x0000:0x0bd9, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_007c_CheckValueRange(
+			this.oCPU.AX.Int16 = (short)this.oParent.Tools.F0_2dc4_007c_CheckValueRange(
 				this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))].ActualSize * 8, 
 				0, 160);
 

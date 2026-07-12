@@ -421,7 +421,7 @@ namespace OpenCivOne
 				this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14))].PlayerID == playerID)
 			{
 				// Instruction address 0x0000:0x0431, size: 5
-				this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_0289_GetShortestDistance(
+				this.oCPU.AX.Int16 = (short)this.oParent.Tools.F0_2dc4_0289_GetShortestDistance(
 					this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14))].Position.X,
 					this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14))].Position.Y,
 					this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xe)),
@@ -732,7 +732,7 @@ namespace OpenCivOne
 
 		L0774:
 			// Instruction address 0x0000:0x0780, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_00ba_GetCityByLocation(
+			this.oCPU.AX.Int16 = (short)this.oParent.Tools.F0_2dc4_00ba_GetCityByLocation(
 				this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14))].Position.X,
 				this.oParent.GameData.Players[playerID].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14))].Position.Y);
 
@@ -879,7 +879,7 @@ namespace OpenCivOne
 			this.oCPU.DI.UInt16 = this.oCPU.AX.UInt16;
 
 			// Instruction address 0x0000:0x0905, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_0289_GetShortestDistance(
+			this.oCPU.AX.Int16 = (short)this.oParent.Tools.F0_2dc4_0289_GetShortestDistance(
 				this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))].Position.X,
 				this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))].Position.Y,
 				this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8))].Position.X,

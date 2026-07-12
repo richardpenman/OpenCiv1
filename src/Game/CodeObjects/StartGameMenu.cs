@@ -35,7 +35,7 @@ namespace OpenCivOne
 				if (mouseEvent.Position.X < 135)
 				{
 					// Instruction address 0x0000:0x0090, size: 5
-					this.parent.GameData.DifficultyLevel = (short)this.parent.GameTools.F0_2dc4_007c_CheckValueRange((mouseEvent.Position.Y - 12) / 35, 0, 4);
+					this.parent.GameData.DifficultyLevel = (short)this.parent.Tools.F0_2dc4_007c_CheckValueRange((mouseEvent.Position.Y - 12) / 35, 0, 4);
 				}
 			}
 
@@ -80,7 +80,7 @@ namespace OpenCivOne
 			while (this.parent.GameData.AIOpponentCount == -1);
 
 			// Instruction address 0x0000:0x01a8, size: 5
-			this.parent.GameData.AIOpponentCount = (short)this.parent.GameTools.F0_2dc4_007c_CheckValueRange(6 - this.parent.GameData.AIOpponentCount, 2, 6);
+			this.parent.GameData.AIOpponentCount = (short)this.parent.Tools.F0_2dc4_007c_CheckValueRange(6 - this.parent.GameData.AIOpponentCount, 2, 6);
 			this.parent.GameData.ActiveCivilizations = (short)(0xff >> (6 - this.parent.GameData.AIOpponentCount));
 
 			for (int i = this.parent.GameData.AIOpponentCount; i >= 0; i--)
@@ -197,7 +197,7 @@ namespace OpenCivOne
 			this.parent.GameData.Players[this.parent.GameData.HumanPlayerID & 7].ResearchTechnologyID = -1;
 
 			// Instruction address 0x0000:0x0410, size: 5
-			this.parent.GameData.NextAnthologyTurn += (short)this.parent.CAPI.RNG.Next(50);
+			this.parent.GameData.NextPlayerHistoryRankingTurn += (short)this.parent.CAPI.RNG.Next(50);
 
 			for (int i = 0; i < 12; i++)
 			{
@@ -375,7 +375,7 @@ namespace OpenCivOne
 			if (playerID != this.parent.GameData.HumanPlayerID || this.parent.GameData.TurnCount == 0)
 			{
 				this.parent.GameData.Players[playerID].SpaceshipPopulation = 0;
-				this.parent.GameData.Players[playerID].CumulativeEpicRanking = 0;
+				this.parent.GameData.Players[playerID].HistoryRankingScore = 0;
 				this.parent.GameData.Players[playerID].DiscoveredTechnologyCount = 0;
 				this.parent.GameData.Players[playerID].ResearchProgress = 0;
 				this.parent.GameData.Players[playerID].Coins = 0;
@@ -499,7 +499,7 @@ namespace OpenCivOne
 						this.parent.MapManagement.F0_2aea_1894_CellHasMinorTribeHut(xStart, yStart, this.parent.MapManagement.GetTerrainType(xStart, yStart))) goto L0a5e;
 
 					int distance;
-					int cityID = this.parent.GameTools.F0_2dc4_0102_FindNearestCity(xStart, yStart);
+					int cityID = this.parent.Tools.F0_2dc4_0102_FindNearestCity(xStart, yStart);
 
 					if (cityID == -1)
 					{
@@ -508,7 +508,7 @@ namespace OpenCivOne
 					else
 					{
 						// Instruction address 0x0000:0x0abf, size: 5
-						distance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(xStart, yStart,
+						distance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(xStart, yStart,
 							this.parent.GameData.Cities[cityID].Position.X, this.parent.GameData.Cities[cityID].Position.Y);
 					}
 
@@ -517,7 +517,7 @@ namespace OpenCivOne
 						for (int j = 1; j < playerID; j++)
 						{
 							// Instruction address 0x0000:0x0af2, size: 5
-							int newDistance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(xStart, yStart,
+							int newDistance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(xStart, yStart,
 								this.parent.GameData.Players[j].Units[0].Position.X, this.parent.GameData.Players[j].Units[0].Position.Y);
 
 							if (newDistance < distance)
@@ -595,7 +595,7 @@ namespace OpenCivOne
 					for (int i = 0; i < 128; i++)
 					{
 						if (this.parent.GameData.Players[0].Units[i].UnitType != UnitTypeEnum.None &&
-							this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(xStart, yStart,
+							this.parent.Tools.F0_2dc4_0289_GetShortestDistance(xStart, yStart,
 								this.parent.GameData.Players[0].Units[i].Position.X, this.parent.GameData.Players[0].Units[i].Position.Y) < 9)
 						{
 							// Instruction address 0x0000:0x0e18, size: 5

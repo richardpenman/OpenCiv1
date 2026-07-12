@@ -36,16 +36,16 @@ namespace OpenCivOne
 			Unit unit = new Unit();
 
 			unit.ID = id;
-			unit.Status = (sbyte)GameLoadAndSave.ReadUInt8(stream);
-			unit.Position = new((sbyte)GameLoadAndSave.ReadUInt8(stream), (sbyte)GameLoadAndSave.ReadUInt8(stream));
-			unit.UnitType = (UnitTypeEnum)((sbyte)GameLoadAndSave.ReadUInt8(stream));
-			unit.RemainingMoves = (sbyte)GameLoadAndSave.ReadUInt8(stream);
-			unit.SpecialMoves = (sbyte)GameLoadAndSave.ReadUInt8(stream);
-			unit.GoToDestination = new((sbyte)GameLoadAndSave.ReadUInt8(stream), (sbyte)GameLoadAndSave.ReadUInt8(stream));
-			unit.GoToNextDirection = (sbyte)GameLoadAndSave.ReadUInt8(stream);
-			unit.VisibleByPlayer = GameLoadAndSave.ReadUInt8(stream);
-			unit.NextUnitID = (sbyte)GameLoadAndSave.ReadUInt8(stream);
-			unit.HomeCityID = (sbyte)GameLoadAndSave.ReadUInt8(stream);
+			unit.Status = (sbyte)LoadAndSave.ReadUInt8(stream);
+			unit.Position = new((sbyte)LoadAndSave.ReadUInt8(stream), (sbyte)LoadAndSave.ReadUInt8(stream));
+			unit.UnitType = (UnitTypeEnum)((sbyte)LoadAndSave.ReadUInt8(stream));
+			unit.RemainingMoves = (sbyte)LoadAndSave.ReadUInt8(stream);
+			unit.SpecialMoves = (sbyte)LoadAndSave.ReadUInt8(stream);
+			unit.GoToDestination = new((sbyte)LoadAndSave.ReadUInt8(stream), (sbyte)LoadAndSave.ReadUInt8(stream));
+			unit.GoToNextDirection = (sbyte)LoadAndSave.ReadUInt8(stream);
+			unit.VisibleByPlayer = LoadAndSave.ReadUInt8(stream);
+			unit.NextUnitID = (sbyte)LoadAndSave.ReadUInt8(stream);
+			unit.HomeCityID = (sbyte)LoadAndSave.ReadUInt8(stream);
 
 			return unit;
 		}

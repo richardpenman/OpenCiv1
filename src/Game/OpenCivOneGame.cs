@@ -23,7 +23,7 @@ namespace OpenCivOne
 		private Segment_1238 oSegment_1238;
 		private MenuBoxDialog menuBoxDialog;
 		private CheckPlayerTurn checkPlayerTurn;
-		private GameTools gameTools;
+		private Tools tools;
 		private DrawTools drawTools;
 		private ImageTools imageTools;
 		private LanguageTools languageTools;
@@ -36,12 +36,12 @@ namespace OpenCivOne
 		private CityWorker cityWorker;
 		private Segment_29f3 oSegment_29f3;
 		private Segment_2517 oSegment_2517;
-		private GameMenus gameMenus;
+		private Menus menus;
 		private MainIntro mainIntro;
 		private MeetWithKing meetWithKing;
 		private MapInitAndIntro mapInitAndIntro;
 		private Help help;
-		private GameLoadAndSave gameLoadAndSave;
+		private LoadAndSave loadAndSave;
 		private HallOfFame hallOfFame;
 		private StartGameMenu startGameMenu;
 		private TextBoxDialogs textBoxDialogs;
@@ -51,8 +51,8 @@ namespace OpenCivOne
 		private CityView cityView;
 		private Overlay_18 oOverlay_18;
 		private Overlay_22 oOverlay_22;
-		private GameReplay gameReplay;
-		private GameStatistics gameStatistics;
+		private Replay replay;
+		private Reports reports;
 		private Overlay_20 oOverlay_20;
 		private Palace palace;
 		private ShowDebugDetails showDebugDetails;
@@ -144,7 +144,7 @@ namespace OpenCivOne
 			this.oSegment_1238 = new Segment_1238(this);
 			this.menuBoxDialog = new MenuBoxDialog(this);
 			this.checkPlayerTurn = new CheckPlayerTurn(this);
-			this.gameTools = new GameTools(this);
+			this.tools = new Tools(this);
 			this.drawTools = new DrawTools(this);
 			this.imageTools = new ImageTools(this);
 			this.languageTools = new LanguageTools(this);
@@ -157,12 +157,12 @@ namespace OpenCivOne
 			this.cityWorker = new CityWorker(this);
 			this.oSegment_29f3 = new Segment_29f3(this);
 			this.oSegment_2517 = new Segment_2517(this);
-			this.gameMenus = new GameMenus(this);
+			this.menus = new Menus(this);
 			this.mainIntro = new MainIntro(this);
 			this.meetWithKing = new MeetWithKing(this);
 			this.mapInitAndIntro = new MapInitAndIntro(this);
 			this.help = new Help(this);
-			this.gameLoadAndSave = new GameLoadAndSave(this);
+			this.loadAndSave = new LoadAndSave(this);
 			this.hallOfFame = new HallOfFame(this);
 			this.startGameMenu = new StartGameMenu(this);
 			this.textBoxDialogs = new TextBoxDialogs(this);
@@ -172,8 +172,8 @@ namespace OpenCivOne
 			this.cityView = new CityView(this);
 			this.oOverlay_18 = new Overlay_18(this);
 			this.oOverlay_22 = new Overlay_22(this);
-			this.gameReplay = new GameReplay(this);
-			this.gameStatistics = new GameStatistics(this);
+			this.replay = new Replay(this);
+			this.reports = new Reports(this);
 			this.oOverlay_20 = new Overlay_20(this);
 			this.palace = new Palace(this);
 			this.showDebugDetails = new ShowDebugDetails(this);
@@ -542,9 +542,9 @@ namespace OpenCivOne
 			get { return this.checkPlayerTurn; }
 		}
 
-		public GameTools GameTools
+		public Tools Tools
 		{
-			get { return this.gameTools; }
+			get { return this.tools; }
 		}
 
 		public DrawTools DrawTools
@@ -607,9 +607,9 @@ namespace OpenCivOne
 			get { return this.oSegment_2517; }
 		}
 
-		public GameMenus GameMenus
+		public Menus Menus
 		{
-			get { return this.gameMenus; }
+			get { return this.menus; }
 		}
 
 		public MainIntro MainIntro
@@ -632,9 +632,9 @@ namespace OpenCivOne
 			get { return this.help; }
 		}
 
-		public GameLoadAndSave GameLoadAndSave
+		public LoadAndSave LoadAndSave
 		{
-			get { return this.gameLoadAndSave; }
+			get { return this.loadAndSave; }
 		}
 
 		public HallOfFame HallOfFame
@@ -682,14 +682,14 @@ namespace OpenCivOne
 			get { return this.oOverlay_22; }
 		}
 
-		public GameReplay GameReplay
+		public Replay Replay
 		{
-			get { return this.gameReplay; }
+			get { return this.replay; }
 		}
 
-		public GameStatistics GameStatistics
+		public Reports Reports
 		{
-			get { return this.gameStatistics; }
+			get { return this.reports; }
 		}
 
 		public Overlay_20 Overlay_20

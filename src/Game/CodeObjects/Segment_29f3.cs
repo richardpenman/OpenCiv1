@@ -219,7 +219,7 @@ namespace OpenCivOne
 
 		L0195:
 			// Instruction address 0x29f3:0x01a1, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_00ba_GetCityByLocation(
+			this.oCPU.AX.Int16 = (short)this.oParent.Tools.F0_2dc4_00ba_GetCityByLocation(
 				this.oParent.GameData.Players[playerID2].Units[unitID2].Position.X,
 				this.oParent.GameData.Players[playerID2].Units[unitID2].Position.Y);
 
@@ -1371,7 +1371,7 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.E) goto L0e4d;
 
 			// Instruction address 0x29f3:0x0dee, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_00ba_GetCityByLocation(
+			this.oCPU.AX.Int16 = (short)this.oParent.Tools.F0_2dc4_00ba_GetCityByLocation(
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)));
 
@@ -1501,7 +1501,7 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.E) goto L0ed1;
 
 			// Instruction address 0x29f3:0x0f51, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_00ba_GetCityByLocation(
+			this.oCPU.AX.Int16 = (short)this.oParent.Tools.F0_2dc4_00ba_GetCityByLocation(
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)));
 

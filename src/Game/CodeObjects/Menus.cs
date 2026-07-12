@@ -2,7 +2,7 @@ using System.Text;
 
 namespace OpenCivOne
 {
-	public class GameMenus
+	public class Menus
 	{
 		private OpenCivOneGame parent;
 
@@ -12,7 +12,7 @@ namespace OpenCivOne
 		// public variables
 		public int Var_d4ca_MenuShortcutKey = 0;
 
-		public GameMenus(OpenCivOneGame parent)
+		public Menus(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 		}
@@ -36,7 +36,7 @@ namespace OpenCivOne
 			if (menuIndex == -1)
 			{
 				// Instruction address 0x2c84:0x0026, size: 5
-				menuIndex = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(mouseEvent.Position.X / 60, 0, 4);
+				menuIndex = this.parent.Tools.F0_2dc4_007c_CheckValueRange(mouseEvent.Position.X / 60, 0, 4);
 			}
 
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
@@ -178,7 +178,7 @@ namespace OpenCivOne
 
 				case 9:
 					// View replay
-					this.parent.GameReplay.F9_0000_0000();
+					this.parent.Replay.F9_0000_0000();
 					break;
 			}
 		}
@@ -457,7 +457,7 @@ namespace OpenCivOne
 			switch (selectedOption)
 			{
 				case 0: // Wonders of the World
-					this.parent.GameStatistics.F12_0000_080d_ShowWondersOfTheWorldReport();
+					this.parent.Reports.F12_0000_080d_ShowWondersOfTheWorldReport();
 					break;
 
 				case 1: // Top 5 Cities
@@ -469,11 +469,11 @@ namespace OpenCivOne
 					break;
 
 				case 3: // World Map
-					this.parent.GameStatistics.F12_0000_0000_ShowWorldMapReport();
+					this.parent.Reports.F12_0000_0000_ShowWorldMapReport();
 					break;
 
 				case 4: // Demographics
-					this.parent.GameStatistics.F12_0000_0d6d_ShowsDemographicsReport(this.parent.GameData.HumanPlayerID);
+					this.parent.Reports.F12_0000_0d6d_ShowsDemographicsReport(this.parent.GameData.HumanPlayerID);
 					break;
 
 				case 5: // SpaceShips

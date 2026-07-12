@@ -111,7 +111,7 @@ namespace OpenCivOne
 			int tempValue = this.parent.Var_d20a;
 
 			this.parent.Var_d4cc_MapViewX = this.parent.MapManagement.AdjustXPosition(x);
-			this.parent.Var_d75e_MapViewY = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(y, 0, 38);
+			this.parent.Var_d75e_MapViewY = this.parent.Tools.F0_2dc4_007c_CheckValueRange(y, 0, 38);
 
 			// Another error, the code modified first parameter (playerID) to a
 			// Visibility Mask and that conflicts with other code which expects playerID.
@@ -184,7 +184,7 @@ namespace OpenCivOne
 				// Instruction address 0x2aea:0x018d, size: 5
 				this.parent.DrawTools.F0_1182_0086_DrawStringWithShadow(
 					this.parent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityInfo.CityID), 327 - cityInfo.ScreenPos.X),
-					this.parent.GameTools.F0_2dc4_007c_CheckValueRange(cityInfo.ScreenPos.X - 8, 80, 999), cityInfo.ScreenPos.Y + 16, 11);
+					this.parent.Tools.F0_2dc4_007c_CheckValueRange(cityInfo.ScreenPos.X - 8, 80, 999), cityInfo.ScreenPos.Y + 16, 11);
 			}
 
 			int xMap = x - 32;
@@ -587,7 +587,7 @@ namespace OpenCivOne
 					// Draw city
 
 					// Instruction address 0x2aea:0x0c09, size: 5
-					int cityID = this.parent.GameTools.F0_2dc4_00ba_GetCityByLocation(x, y);
+					int cityID = this.parent.Tools.F0_2dc4_00ba_GetCityByLocation(x, y);
 
 					if (cityID != -1)
 					{

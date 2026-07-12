@@ -93,7 +93,7 @@ namespace OpenCivOne
 				}
 			}
 
-			int unitThreshold = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(this.parent.GameData.Players[playerID].UnitCount / 8, 3, 99);
+			int unitThreshold = this.parent.Tools.F0_2dc4_007c_CheckValueRange(this.parent.GameData.Players[playerID].UnitCount / 8, 3, 99);
 			this.parent.GameData.Players[playerID].TotalCitySize = 0;
 			this.parent.GameData.Players[playerID].CityCount = 0;
 
@@ -408,7 +408,7 @@ namespace OpenCivOne
 										this.parent.GameData.Players[playerID].UnitPolicies[j].Position.Y) != groupID) &&
 									(unitType != UnitTypeEnum.Bomber || (unitRoleType != UnitRoleTypeEnum.SeaAttack && this.parent.GameData.Units[(int)unitType].UnitRoleType != unitRoleType)))) continue;
 
-								int distance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(x, y,
+								int distance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(x, y,
 									this.parent.GameData.Players[playerID].UnitPolicies[j].Position.X, this.parent.GameData.Players[playerID].UnitPolicies[j].Position.Y);
 
 								if (this.parent.GameData.Players[playerID].Units[i].UnitType != UnitTypeEnum.Bomber)
@@ -542,7 +542,7 @@ namespace OpenCivOne
 							(this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Units[i].VisibleByPlayer & playerIDBit) != 0)
 						{
 							// Instruction address 0x25fb:0x0d96, size: 5
-							int distance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(
+							int distance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(
 								unit.Position, this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Units[i].Position);
 
 							if (distance < minimumDistance)
@@ -572,11 +572,11 @@ namespace OpenCivOne
 									{
 										// Instruction address 0x25fb:0x0e55, size: 5
 										if (this.parent.GameData.Units[(int)unit.UnitType].MoveCount >=
-											this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(
+											this.parent.Tools.F0_2dc4_0289_GetShortestDistance(
 												unit.Position, this.parent.GameData.Cities[i].Position))
 										{
 											// Instruction address 0x25fb:0x0ec1, size: 5
-											int distance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(
+											int distance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(
 												this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Units[selectedUnitID].Position,
 												this.parent.GameData.Cities[i].Position);
 
@@ -607,12 +607,12 @@ namespace OpenCivOne
 
 				bool isUnitNear = this.parent.UnitManagement.F0_1866_1725_IsUnitNear(playerID, unit.Position.X, unit.Position.Y);
 
-				int nearestCityID = this.parent.GameTools.F0_2dc4_0102_FindNearestCity(unitX, unitY);
+				int nearestCityID = this.parent.Tools.F0_2dc4_0102_FindNearestCity(unitX, unitY);
 				int nearestCityDistance = (nearestCityID != -1) ? 
-					this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(unitX, unitY, this.parent.GameData.Cities[nearestCityID].Position) : int.MaxValue;
+					this.parent.Tools.F0_2dc4_0289_GetShortestDistance(unitX, unitY, this.parent.GameData.Cities[nearestCityID].Position) : int.MaxValue;
 
-				int nearestUnitID = this.parent.GameTools.F0_2dc4_0177_FindNearestPlayerUnit(playerID, unitID, unitX, unitY);
-				int nearestUnitDistance = (nearestUnitID == -1) ? int.MaxValue : this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(unitX, unitY, this.parent.GameData.Players[playerID].Units[nearestUnitID].Position);
+				int nearestUnitID = this.parent.Tools.F0_2dc4_0177_FindNearestPlayerUnit(playerID, unitID, unitX, unitY);
+				int nearestUnitDistance = (nearestUnitID == -1) ? int.MaxValue : this.parent.Tools.F0_2dc4_0289_GetShortestDistance(unitX, unitY, this.parent.GameData.Players[playerID].Units[nearestUnitID].Position);
 
 				TerrainTypeEnum terrainType = this.parent.MapManagement.GetTerrainType(unitX, unitY);
 				int groupID = this.parent.MapManagement.F0_2aea_1942_GetGroupID(unitX, unitY);
@@ -688,7 +688,7 @@ namespace OpenCivOne
 							for (int j = 0; j < 128; j++)
 							{
 								if (this.parent.GameData.Cities[j].StatusFlag != 0xff && this.parent.GameData.Cities[j].PlayerID == playerID ||
-									this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(this.parent.GameData.Cities[i].Position,
+									this.parent.Tools.F0_2dc4_0289_GetShortestDistance(this.parent.GameData.Cities[i].Position,
 										this.parent.GameData.Cities[j].Position) < 17)
 								{
 									playerCityNearby = true;
@@ -977,7 +977,7 @@ namespace OpenCivOne
 								(this.parent.GameData.Cities[i].StatusFlag & 0x2) != 0)
 							{
 								// Instruction address 0x25fb:0x179d, size: 5
-								int distance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(unitX, unitY,
+								int distance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(unitX, unitY,
 									this.parent.GameData.Cities[i].Position.X, this.parent.GameData.Cities[i].Position.Y);
 
 								// Instruction address 0x25fb:0x17b4, size: 5
@@ -1146,7 +1146,7 @@ namespace OpenCivOne
 										if (this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Ranking < 7 || cityPlayerID == this.parent.GameData.HumanPlayerID)
 										{
 											// Instruction address 0x25fb:0x1d02, size: 5
-											int currentDistance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(unitX, unitY,
+											int currentDistance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(unitX, unitY,
 												this.parent.GameData.Cities[i].Position.X, this.parent.GameData.Cities[i].Position.Y);
 
 											if (currentDistance < minimumDistance)
@@ -1174,7 +1174,7 @@ namespace OpenCivOne
 									if (this.parent.GameData.Cities[i].StatusFlag != 0xff && this.parent.GameData.Cities[i].PlayerID == playerID)
 									{
 										// Instruction address 0x25fb:0x1dcc, size: 5
-										int currentDistance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(unitX, unitY,
+										int currentDistance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(unitX, unitY,
 											this.parent.GameData.Cities[i].Position.X, this.parent.GameData.Cities[i].Position.Y);
 
 										if (currentDistance >= 8)
@@ -1335,7 +1335,7 @@ namespace OpenCivOne
 												this.parent.MapManagement.GetTerrainType(newX, newY) != TerrainTypeEnum.Hills ||
 												this.parent.MapManagement.F0_2aea_1836_CellHasSpecialResource(newX, newY))
 											{
-												if (this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(newX - this.parent.GameData.Cities[nearestCityID].Position.X,
+												if (this.parent.Tools.F0_2dc4_0289_GetShortestDistance(newX - this.parent.GameData.Cities[nearestCityID].Position.X,
 													newY - this.parent.GameData.Cities[nearestCityID].Position.Y) < 3)
 												{
 													unit.GoToDestination = new(newX, newY);
@@ -1808,7 +1808,7 @@ namespace OpenCivOne
 										if (unit.RemainingMoves < 3)
 										{
 											actionScore = (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(playerID, unitID, 1) * actionScore) /
-												this.parent.GameTools.F0_2dc4_007c_CheckValueRange(this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(playerID, unitID, 3), 1, 99);
+												this.parent.Tools.F0_2dc4_007c_CheckValueRange(this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(playerID, unitID, 3), 1, 99);
 										}
 									}
 
@@ -1903,7 +1903,7 @@ namespace OpenCivOne
 							this.parent.GameData.Players[playerID].Units[i].Position.Y) == this.parent.MapManagement.F0_2aea_1942_GetGroupID(x, y))
 					{
 						// Instruction address 0x25fb:0x313c, size: 5
-						int distance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(this.parent.GameData.Players[playerID].Units[i].Position.X,
+						int distance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(this.parent.GameData.Players[playerID].Units[i].Position.X,
 							this.parent.GameData.Players[playerID].Units[i].Position.Y, x, y);
 
 						if (this.parent.GameData.Players[playerID].Units[i].RemainingMoves >= distance * 2)
@@ -2029,7 +2029,7 @@ namespace OpenCivOne
 				if (this.parent.GameData.Players[playerID].ContinentPolicies[i].UnitRoleType == unitRoleType)
 				{
 					// Instruction address 0x25fb:0x3433, size: 5
-					if (this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(x, y, this.parent.GameData.Players[playerID].ContinentPolicies[i].Position) <= maximumDistance)
+					if (this.parent.Tools.F0_2dc4_0289_GetShortestDistance(x, y, this.parent.GameData.Players[playerID].ContinentPolicies[i].Position) <= maximumDistance)
 					{
 						this.parent.GameData.Players[playerID].ContinentPolicies[i].UnitRoleType = UnitRoleTypeEnum.None;
 					}
@@ -2189,8 +2189,8 @@ namespace OpenCivOne
 				}
 
 				// Instruction address 0x25fb:0x36df, size: 5
-				nearestCityID = this.parent.GameTools.F0_2dc4_0102_FindNearestCity(unitX, unitY);
-				nearestCityDistance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(unit.Position, this.parent.GameData.Cities[nearestCityID].Position);
+				nearestCityID = this.parent.Tools.F0_2dc4_0102_FindNearestCity(unitX, unitY);
+				nearestCityDistance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(unit.Position, this.parent.GameData.Cities[nearestCityID].Position);
 
 				for (int i = 1; i < 9; i++)
 				{
@@ -2217,7 +2217,7 @@ namespace OpenCivOne
 
 							// Instruction address 0x25fb:0x3867, size: 5
 							this.parent.Segment_1238.F0_1238_001e_ShowDialog("Barbarian raiding party\nlands near " +
-								$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(this.parent.GameTools.F0_2dc4_0102_FindNearestCity(newX, newY))}!\nCitizens are alarmed.\n", 100, 32);
+								$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(this.parent.Tools.F0_2dc4_0102_FindNearestCity(newX, newY))}!\nCitizens are alarmed.\n", 100, 32);
 						}
 
 						unit.VisibleByPlayer |= this.parent.GameData.MapVisibility[newX, newY];
@@ -2242,7 +2242,7 @@ namespace OpenCivOne
 					{
 						if (this.parent.GameData.Cities[i].StatusFlag != 0xff)
 						{
-							int currentCityProfit = (this.parent.Segment_2459.F0_2459_0687_GetCityTreasury(i) + 50) / (this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(unitX, unitY,
+							int currentCityProfit = (this.parent.Segment_2459.F0_2459_0687_GetCityTreasury(i) + 50) / (this.parent.Tools.F0_2dc4_0289_GetShortestDistance(unitX, unitY,
 								this.parent.GameData.Cities[i].Position.X, this.parent.GameData.Cities[i].Position.Y) + 1);
 
 							if (currentCityProfit > maximumCityProfit)
@@ -2267,8 +2267,8 @@ namespace OpenCivOne
 				}
 			}
 
-			nearestCityID = this.parent.GameTools.F0_2dc4_0102_FindNearestCity(unitX, unitY);
-			nearestCityDistance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(unit.Position, this.parent.GameData.Cities[nearestCityID].Position);
+			nearestCityID = this.parent.Tools.F0_2dc4_0102_FindNearestCity(unitX, unitY);
+			nearestCityDistance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(unit.Position, this.parent.GameData.Cities[nearestCityID].Position);
 			// The algorithm for distance has been contained within FindNearestCity and FindNearestPlayerUnit, so there was a confusion
 			// Perhaps we don't need this at all
 			int nearestDistance = nearestCityDistance;
@@ -2350,16 +2350,19 @@ namespace OpenCivOne
 				else
 				{
 					// Instruction address 0x25fb:0x3b55, size: 5
-					int playerUnitID = this.parent.GameTools.F0_2dc4_0177_FindNearestPlayerUnit(playerID, unitID, unitX, unitY);
-					int nearestUnitDistance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(unit.Position, 
-						this.parent.GameData.Players[playerID].Units[playerUnitID].Position);
-					nearestDistance = nearestUnitDistance;
-
-					if (nearestUnitDistance < 4 && this.parent.GameData.Players[playerID].Units[playerUnitID].UnitType != UnitTypeEnum.Diplomat)
+					int playerUnitID = this.parent.Tools.F0_2dc4_0177_FindNearestPlayerUnit(playerID, unitID, unitX, unitY);
+					if (playerUnitID != -1)
 					{
-						unit.GoToDestination = this.parent.GameData.Players[playerID].Units[playerUnitID].Position;
+						int nearestUnitDistance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(unit.Position,
+							this.parent.GameData.Players[playerID].Units[playerUnitID].Position);
+						nearestDistance = nearestUnitDistance;
 
-						return '\x0';
+						if (nearestUnitDistance < 4 && this.parent.GameData.Players[playerID].Units[playerUnitID].UnitType != UnitTypeEnum.Diplomat)
+						{
+							unit.GoToDestination = this.parent.GameData.Players[playerID].Units[playerUnitID].Position;
+
+							return '\x0';
+						}
 					}
 
 					if ((this.parent.GameData.TurnCount & 0x7) + 4 <= nearestCityDistance)
@@ -2525,7 +2528,7 @@ namespace OpenCivOne
 								this.parent.GameData.Players[i].Units[j].Position.Y) == TerrainTypeEnum.Water)
 							{
 								if (this.parent.GameData.Units[(int)this.parent.GameData.Players[i].Units[j].UnitType].MoveCount * 3 >
-									this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(this.parent.GameData.Players[i].Units[j].Position, cityX, cityY))
+									this.parent.Tools.F0_2dc4_0289_GetShortestDistance(this.parent.GameData.Players[i].Units[j].Position, cityX, cityY))
 								{
 									this.parent.GameData.Players[i].Units[j].GoToDestination = new(cityX, cityY);
 								}

@@ -21,7 +21,8 @@ namespace OpenCivOne
 
 		public short PeaceTurnCount = 0;
 		public short AIOpponentCount = 0;
-		public short NextAnthologyTurn = 80;
+
+		public short NextPlayerHistoryRankingTurn = 80;
 
 		// Game settings
 		public GameSettings GameSettingFlags = new GameSettings();

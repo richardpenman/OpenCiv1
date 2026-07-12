@@ -289,32 +289,32 @@ namespace OpenCivOne
 		{
 			City city = new City(id);
 
-			city.ImprovementFlags = GameLoadAndSave.ReadUInt32(stream);
-			city.Position = new((sbyte)GameLoadAndSave.ReadUInt8(stream), (sbyte)GameLoadAndSave.ReadUInt8(stream));
-			city.StatusFlag = GameLoadAndSave.ReadUInt8(stream);
-			city.ActualSize = (sbyte)GameLoadAndSave.ReadUInt8(stream);
-			city.VisibleSize = (sbyte)GameLoadAndSave.ReadUInt8(stream);
-			city.CurrentProductionID = (sbyte)GameLoadAndSave.ReadUInt8(stream);
-			city.BaseTrade = (sbyte)GameLoadAndSave.ReadUInt8(stream);
-			city.PlayerID = (sbyte)GameLoadAndSave.ReadUInt8(stream);
-			city.FoodCount = GameLoadAndSave.ReadInt16(stream);
-			city.ShieldsCount = GameLoadAndSave.ReadInt16(stream);
-			city.WorkerFlags = GameLoadAndSave.ReadUInt32(stream);
-			city.SpecialWorkerFlags = GameLoadAndSave.ReadUInt16(stream);
-			city.NameID = GameLoadAndSave.ReadUInt8(stream);
+			city.ImprovementFlags = LoadAndSave.ReadUInt32(stream);
+			city.Position = new((sbyte)LoadAndSave.ReadUInt8(stream), (sbyte)LoadAndSave.ReadUInt8(stream));
+			city.StatusFlag = LoadAndSave.ReadUInt8(stream);
+			city.ActualSize = (sbyte)LoadAndSave.ReadUInt8(stream);
+			city.VisibleSize = (sbyte)LoadAndSave.ReadUInt8(stream);
+			city.CurrentProductionID = (sbyte)LoadAndSave.ReadUInt8(stream);
+			city.BaseTrade = (sbyte)LoadAndSave.ReadUInt8(stream);
+			city.PlayerID = (sbyte)LoadAndSave.ReadUInt8(stream);
+			city.FoodCount = LoadAndSave.ReadInt16(stream);
+			city.ShieldsCount = LoadAndSave.ReadInt16(stream);
+			city.WorkerFlags = LoadAndSave.ReadUInt32(stream);
+			city.SpecialWorkerFlags = LoadAndSave.ReadUInt16(stream);
+			city.NameID = LoadAndSave.ReadUInt8(stream);
 
 			for (int i = 0; i < city.TradeCityIDs.Length; i++)
-				city.TradeCityIDs[i] = (sbyte)GameLoadAndSave.ReadUInt8(stream);
+				city.TradeCityIDs[i] = (sbyte)LoadAndSave.ReadUInt8(stream);
 
 			for (int i = 0; i < city.Unknown.Length; i++)
-				city.Unknown[i] = (sbyte)GameLoadAndSave.ReadUInt8(stream);
+				city.Unknown[i] = (sbyte)LoadAndSave.ReadUInt8(stream);
 
 			return city;
 		}
 
 		public void ToStream(Stream stream)
 		{
-			GameLoadAndSave.WriteUInt32(stream, this.ImprovementFlags);
+			LoadAndSave.WriteUInt32(stream, this.ImprovementFlags);
 			stream.WriteByte((byte)this.Position.X);
 			stream.WriteByte((byte)this.Position.Y);
 			stream.WriteByte(this.StatusFlag);
@@ -323,10 +323,10 @@ namespace OpenCivOne
 			stream.WriteByte((byte)this.CurrentProductionID);
 			stream.WriteByte((byte)this.BaseTrade);
 			stream.WriteByte((byte)((short)this.PlayerID));
-			GameLoadAndSave.WriteInt16(stream, this.FoodCount);
-			GameLoadAndSave.WriteInt16(stream, this.ShieldsCount);
-			GameLoadAndSave.WriteUInt32(stream, this.WorkerFlags);
-			GameLoadAndSave.WriteUInt16(stream, this.SpecialWorkerFlags);
+			LoadAndSave.WriteInt16(stream, this.FoodCount);
+			LoadAndSave.WriteInt16(stream, this.ShieldsCount);
+			LoadAndSave.WriteUInt32(stream, this.WorkerFlags);
+			LoadAndSave.WriteUInt16(stream, this.SpecialWorkerFlags);
 			stream.WriteByte(this.NameID);
 
 			for (int i = 0; i < this.TradeCityIDs.Length; i++)

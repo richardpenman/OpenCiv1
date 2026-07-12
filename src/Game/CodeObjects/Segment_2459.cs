@@ -123,7 +123,7 @@ namespace OpenCivOne
 			this.oCPU.AX.Int16 = (short)F0_2459_0687_GetCityTreasury(cityID);
 
 			// Instruction address 0x2459:0x0108, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_007c_CheckValueRange(
+			this.oCPU.AX.Int16 = (short)this.oParent.Tools.F0_2dc4_007c_CheckValueRange(
 				this.oCPU.AX.Int16, 0,
 				this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))].Coins);
 
@@ -835,7 +835,7 @@ namespace OpenCivOne
 			this.oCPU.DI.UInt16 = this.oCPU.AX.UInt16;
 
 			// Instruction address 0x2459:0x098e, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.GameTools.F0_2dc4_0289_GetShortestDistance(
+			this.oCPU.AX.Int16 = (short)this.oParent.Tools.F0_2dc4_0289_GetShortestDistance(
 				this.oParent.GameData.Cities[cityID].Position.X,
 				this.oParent.GameData.Cities[cityID].Position.Y,
 				this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))].Position.X,

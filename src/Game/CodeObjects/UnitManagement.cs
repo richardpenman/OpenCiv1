@@ -192,7 +192,7 @@ namespace OpenCivOne
 						int cityOwnerPlayerID = this.parent.MapManagement.F0_2aea_1369_GetCityOwner(newX, newY);
 
 						// Instruction address 0x1866:0x0426, size: 5
-						int cityID = this.parent.GameTools.F0_2dc4_00ba_GetCityByLocation(newX, newY);
+						int cityID = this.parent.Tools.F0_2dc4_00ba_GetCityByLocation(newX, newY);
 
 						// Instruction address 0x1866:0x0433, size: 3
 						F0_1866_0006(cityID);
@@ -643,7 +643,7 @@ namespace OpenCivOne
 				unit.SpecialMoves = this.parent.GameData.Units[(int)unit.UnitType].TurnsOutside;
 
 				// Instruction address 0x1866:0x0db6, size: 5
-				unit.HomeCityID = (short)this.parent.GameTools.F0_2dc4_0102_FindNearestCity(x, y);
+				unit.HomeCityID = (short)this.parent.Tools.F0_2dc4_0102_FindNearestCity(x, y);
 
 				short cityOwnerID = (short)((unit.HomeCityID < 128 && unit.HomeCityID != -1) ? this.parent.GameData.Cities[unit.HomeCityID].PlayerID : -1);
 
@@ -1537,7 +1537,7 @@ namespace OpenCivOne
 							if (this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY).HasFlag(TerrainImprovementFlagsEnum.City))
 							{
 								// Instruction address 0x1866:0x186e, size: 5
-								int cityID = this.parent.GameTools.F0_2dc4_00ba_GetCityByLocation(newX, newY);
+								int cityID = this.parent.Tools.F0_2dc4_00ba_GetCityByLocation(newX, newY);
 
 								this.parent.GameData.Cities[cityID].VisibleSize = this.parent.GameData.Cities[cityID].ActualSize;
 
@@ -1612,7 +1612,7 @@ namespace OpenCivOne
 
 						if ((this.parent.GameData.MapVisibility[newX, newY] & playerBitmask) != 0 &&
 							mapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY).HasFlag(TerrainImprovementFlagsEnum.City) &&
-							(cityID = this.parent.GameTools.F0_2dc4_00ba_GetCityByLocation(newX, newY)) != -1 &&
+							(cityID = this.parent.Tools.F0_2dc4_00ba_GetCityByLocation(newX, newY)) != -1 &&
 							this.parent.GameData.Cities[cityID].PlayerID != playerID)
 						{
 							return true;
@@ -1673,12 +1673,12 @@ namespace OpenCivOne
 				this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].MovementType != UnitMovementTypeEnum.Air)
 			{
 				// Instruction address 0x1866:0x1980, size: 5
-				int nearestCityID = this.parent.GameTools.F0_2dc4_0102_FindNearestCity(
+				int nearestCityID = this.parent.Tools.F0_2dc4_0102_FindNearestCity(
 					this.parent.GameData.Players[playerID].Units[unitID].Position.X,
 					this.parent.GameData.Players[playerID].Units[unitID].Position.Y);
 
 				// Instruction address 0x1866:0x19a9, size: 5
-				int nearestCityDistance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(
+				int nearestCityDistance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(
 					this.parent.GameData.Players[playerID].Units[unitID].Position.X,
 					this.parent.GameData.Players[playerID].Units[unitID].Position.Y,
 					// !!! Added if city doesn't exist at that location
@@ -1874,7 +1874,7 @@ namespace OpenCivOne
 					}
 				}
 				// Instruction address 0x1866:0x1c86, size: 5
-				i += this.parent.GameTools.F0_2dc4_007c_CheckValueRange(4 - this.parent.GameData.Players[playerID].CityCount, 1, 4);
+				i += this.parent.Tools.F0_2dc4_007c_CheckValueRange(4 - this.parent.GameData.Players[playerID].CityCount, 1, 4);
 			}
 		}
 
@@ -2113,7 +2113,7 @@ namespace OpenCivOne
 			selectedDirection = 0;
 
 			// Instruction address 0x1866:0x244c, size: 5
-			minDistance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(
+			minDistance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(
 				this.parent.GameData.Players[playerID].Units[unitID].Position.X - xPos,
 				this.parent.GameData.Players[playerID].Units[unitID].Position.Y - yPos);
 
@@ -2134,7 +2134,7 @@ namespace OpenCivOne
 						this.parent.MapManagement.F0_2aea_1369_GetCityOwner(x, y) == playerID)
 					{
 						// Instruction address 0x1866:0x24da, size: 5
-						distance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(x - xPos, y - yPos);
+						distance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(x - xPos, y - yPos);
 
 						if (distance < minDistance)
 						{

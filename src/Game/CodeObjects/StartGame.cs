@@ -71,7 +71,7 @@ namespace OpenCivOne
 			// Instruction address 0x11a8:0x019c, size: 5
 			this.parent.CommonTools.StopGameMainTimer();
 
-			this.parent.GameTools.F0_2dc4_0523_FreeResource(this.parent.Var_6e92_MouseIconHandle, "Mouse icon");
+			this.parent.Tools.F0_2dc4_0523_FreeResource(this.parent.Var_6e92_MouseIconHandle, "Mouse icon");
 		}
 
 		/// <summary>
@@ -130,7 +130,7 @@ namespace OpenCivOne
 						break;
 
 					case 1:
-						if (this.parent.GameLoadAndSave.F11_0000_0000_LoadGameDialog() == -1)
+						if (this.parent.LoadAndSave.F11_0000_0000_LoadGameDialog() == -1)
 						{
 							this.parent.Var_6b32_SelectedGameType = -1;
 						}
@@ -287,7 +287,7 @@ namespace OpenCivOne
 			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SP257.PIC", 1);
 
 			// Instruction address 0x11a8:0x086f, size: 5
-			this.parent.GameTools.F0_2dc4_05dd_AddPaletteCycleSlots();
+			this.parent.Tools.F0_2dc4_05dd_AddPaletteCycleSlots();
 		}
 
 		/// <summary>

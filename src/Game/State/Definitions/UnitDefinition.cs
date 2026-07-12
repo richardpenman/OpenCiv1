@@ -46,36 +46,36 @@ namespace OpenCivOne
 		{
 			UnitDefinition ud = new UnitDefinition();
 
-			ud.Name = GameLoadAndSave.ReadString(stream, 12);
-			ud.CancelTechnology = (TechnologyAdvanceEnum)GameLoadAndSave.ReadInt16(stream);
-			ud.MovementType = (UnitMovementTypeEnum)GameLoadAndSave.ReadInt16(stream);
-			ud.MoveCount = GameLoadAndSave.ReadInt16(stream);
-			ud.TurnsOutside = GameLoadAndSave.ReadInt16(stream);
-			ud.AttackStrength = GameLoadAndSave.ReadInt16(stream);
-			ud.DefenseStrength = GameLoadAndSave.ReadInt16(stream);
-			ud.Cost = GameLoadAndSave.ReadInt16(stream);
-			ud.SightRange = GameLoadAndSave.ReadInt16(stream);
-			ud.TransportCapacity = GameLoadAndSave.ReadInt16(stream);
-			ud.UnitRoleType = (UnitRoleTypeEnum)GameLoadAndSave.ReadInt16(stream);
-			ud.RequiredTechnology = (TechnologyAdvanceEnum)GameLoadAndSave.ReadInt16(stream);
+			ud.Name = LoadAndSave.ReadString(stream, 12);
+			ud.CancelTechnology = (TechnologyAdvanceEnum)LoadAndSave.ReadInt16(stream);
+			ud.MovementType = (UnitMovementTypeEnum)LoadAndSave.ReadInt16(stream);
+			ud.MoveCount = LoadAndSave.ReadInt16(stream);
+			ud.TurnsOutside = LoadAndSave.ReadInt16(stream);
+			ud.AttackStrength = LoadAndSave.ReadInt16(stream);
+			ud.DefenseStrength = LoadAndSave.ReadInt16(stream);
+			ud.Cost = LoadAndSave.ReadInt16(stream);
+			ud.SightRange = LoadAndSave.ReadInt16(stream);
+			ud.TransportCapacity = LoadAndSave.ReadInt16(stream);
+			ud.UnitRoleType = (UnitRoleTypeEnum)LoadAndSave.ReadInt16(stream);
+			ud.RequiredTechnology = (TechnologyAdvanceEnum)LoadAndSave.ReadInt16(stream);
 
 			return ud;
 		}
 
 		public void ToStream(Stream stream)
 		{
-			GameLoadAndSave.WriteString(stream, this.Name, 12);
-			GameLoadAndSave.WriteInt16(stream, (short)this.CancelTechnology);
-			GameLoadAndSave.WriteInt16(stream, (short)this.MovementType);
-			GameLoadAndSave.WriteInt16(stream, this.MoveCount);
-			GameLoadAndSave.WriteInt16(stream, this.TurnsOutside);
-			GameLoadAndSave.WriteInt16(stream, this.AttackStrength);
-			GameLoadAndSave.WriteInt16(stream, this.DefenseStrength);
-			GameLoadAndSave.WriteInt16(stream, this.Cost);
-			GameLoadAndSave.WriteInt16(stream, this.SightRange);
-			GameLoadAndSave.WriteInt16(stream, this.TransportCapacity);
-			GameLoadAndSave.WriteInt16(stream, (short)this.UnitRoleType);
-			GameLoadAndSave.WriteInt16(stream, (short)this.RequiredTechnology);
+			LoadAndSave.WriteString(stream, this.Name, 12);
+			LoadAndSave.WriteInt16(stream, (short)this.CancelTechnology);
+			LoadAndSave.WriteInt16(stream, (short)this.MovementType);
+			LoadAndSave.WriteInt16(stream, this.MoveCount);
+			LoadAndSave.WriteInt16(stream, this.TurnsOutside);
+			LoadAndSave.WriteInt16(stream, this.AttackStrength);
+			LoadAndSave.WriteInt16(stream, this.DefenseStrength);
+			LoadAndSave.WriteInt16(stream, this.Cost);
+			LoadAndSave.WriteInt16(stream, this.SightRange);
+			LoadAndSave.WriteInt16(stream, this.TransportCapacity);
+			LoadAndSave.WriteInt16(stream, (short)this.UnitRoleType);
+			LoadAndSave.WriteInt16(stream, (short)this.RequiredTechnology);
 		}
 	}
 }

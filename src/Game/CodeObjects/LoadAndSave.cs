@@ -4,14 +4,14 @@ using System.Text;
 
 namespace OpenCivOne
 {
-	public class GameLoadAndSave
+	public class LoadAndSave
 	{
 		private OpenCivOneGame parent;
 
 		private bool loadingGame = false;
 		private int gameIndex = 0;
 
-		public GameLoadAndSave(OpenCivOneGame parent)
+		public LoadAndSave(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 		}
@@ -158,7 +158,7 @@ namespace OpenCivOne
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 15);
 
 			// Instruction address 0x0000:0x03d3, size: 5
-			this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = this.parent.GameTools.F0_2dc4_007c_CheckValueRange(this.gameIndex, 0, 3);
+			this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = this.parent.Tools.F0_2dc4_007c_CheckValueRange(this.gameIndex, 0, 3);
 
 			if (!autoSave)
 			{
@@ -571,11 +571,11 @@ namespace OpenCivOne
 					this.parent.GameData.Players[i].ScienceTaxRate = ReadInt16(reader);
 				}
 				
-				this.parent.GameData.NextAnthologyTurn = ReadInt16(reader);
+				this.parent.GameData.NextPlayerHistoryRankingTurn = ReadInt16(reader);
 
 				for (int i = 0; i < this.parent.GameData.Players.Length; i++)
 				{
-					this.parent.GameData.Players[i].CumulativeEpicRanking = ReadInt16(reader);
+					this.parent.GameData.Players[i].HistoryRankingScore = ReadInt16(reader);
 				}
 
 				for (int i = 0; i < 8; i++)
@@ -1109,11 +1109,11 @@ namespace OpenCivOne
 					WriteInt16(writer, this.parent.GameData.Players[i].ScienceTaxRate);
 				}
 				
-				WriteInt16(writer, this.parent.GameData.NextAnthologyTurn);
+				WriteInt16(writer, this.parent.GameData.NextPlayerHistoryRankingTurn);
 
 				for (int i = 0; i < this.parent.GameData.Players.Length; i++)
 				{
-					WriteInt16(writer, this.parent.GameData.Players[i].CumulativeEpicRanking);
+					WriteInt16(writer, this.parent.GameData.Players[i].HistoryRankingScore);
 				}
 
 				for (int i = 0; i < 8; i++)

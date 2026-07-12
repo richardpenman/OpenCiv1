@@ -86,9 +86,9 @@ namespace OpenCivOne
 				}
 				else
 				{
-					int nearestCityID = this.parent.GameTools.F0_2dc4_0102_FindNearestCity(this.parent.GameData.Players[playerID].Units[unitID].Position.X, 
+					int nearestCityID = this.parent.Tools.F0_2dc4_0102_FindNearestCity(this.parent.GameData.Players[playerID].Units[unitID].Position.X, 
 						this.parent.GameData.Players[playerID].Units[unitID].Position.Y);
-					int nearestCityDistance = this.parent.GameTools.F0_2dc4_0289_GetShortestDistance(this.parent.GameData.Players[playerID].Units[unitID].Position,
+					int nearestCityDistance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(this.parent.GameData.Players[playerID].Units[unitID].Position,
 						this.parent.GameData.Cities[nearestCityID].Position);
 
 					if (nearestCityID != -1 && this.parent.GameData.Cities[nearestCityID].PlayerID == playerID && nearestCityDistance == 1)

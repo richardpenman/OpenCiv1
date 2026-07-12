@@ -26,7 +26,7 @@ namespace OpenCivOne
 		public PlayerContinent[] Continents = new PlayerContinent[16];
 		public ContinentPolicy[] ContinentPolicies = new ContinentPolicy[16];
 		public short Ranking = 0;
-		public short CumulativeEpicRanking = 0;
+		public short HistoryRankingScore = 0;
 		public short Score = 0;
 
 		// Technology
