@@ -918,7 +918,7 @@ namespace OpenCivOne
 			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
 
 			if (this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.oParent.GameData.Cities[cityID].PlayerID, TechnologyAdvanceEnum.Religion) &&
-				(this.oParent.GameData.Cities[cityID].ImprovementFlags0 & 0x400) == 0)
+				!this.oParent.GameData.Cities[cityID].HasImprovement(ImprovementEnum.Cathedral))
 			{
 				// Instruction address 0x0000:0x09c8, size: 5
 				this.oParent.CAPI.strcat(0xba06, "CATHEDRAL\n");

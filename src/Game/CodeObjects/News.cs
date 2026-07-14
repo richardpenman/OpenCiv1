@@ -27,7 +27,7 @@ namespace OpenCivOne
 					if (this.parent.GameData.Cities[i].StatusFlag != 0xff &&
 						this.parent.GameData.Cities[i].PlayerID == this.parent.GameData.HumanPlayerID)
 					{
-						if (cityID == -1 || (this.parent.GameData.Cities[i].ImprovementFlags0 & 0x1) != 0)
+						if (cityID == -1 || this.parent.GameData.Cities[i].HasImprovement(ImprovementEnum.Palace))
 						{
 							newCityID = i;
 						}

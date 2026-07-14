@@ -648,7 +648,7 @@ namespace OpenCivOne
 								this.parent.DrawTools.DrawRectangle(scrX, scrY, 15, 15, 0);
 							}
 
-							if ((city.ImprovementFlags0 & 0x80) != 0)
+							if (city.HasImprovement(ImprovementEnum.CityWalls))
 							{
 								// Draw city walls
 

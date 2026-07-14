@@ -9,8 +9,8 @@ namespace OpenCivOne
 	{
 		public int ID = -1;
 
-		private uint uiImprovementFlags = 0;
-		public BHashSet<ImprovementEnum> Improvements = new BHashSet<ImprovementEnum>();
+		private uint improvementBitFlags = 0;
+		private BHashSet<ImprovementEnum> Improvements = new BHashSet<ImprovementEnum>();
 		public GPoint Position = new GPoint(0, 0);
 		public byte StatusFlag = 0;
 		public sbyte ActualSize = 0;
@@ -212,19 +212,19 @@ namespace OpenCivOne
 		// Emulate ImprovementFlags for now
 		public ushort ImprovementFlags0
 		{
-			get => (ushort)(this.uiImprovementFlags & 0xffff);
+			get => (ushort)(this.improvementBitFlags & 0xffff);
 			set
 			{
-				this.ImprovementFlags = (uint)((uint)(this.uiImprovementFlags & 0xffff0000) | value);
+				this.ImprovementFlags = (uint)((uint)(this.improvementBitFlags & 0xffff0000) | value);
 			}
 		}
 
 		public ushort ImprovementFlags1
 		{
-			get => (ushort)((this.uiImprovementFlags & 0xffff0000) >> 16);
+			get => (ushort)((this.improvementBitFlags & 0xffff0000) >> 16);
 			set
 			{
-				this.ImprovementFlags = (uint)((uint)(this.uiImprovementFlags & 0xffff) | (uint)((uint)value << 16));
+				this.ImprovementFlags = (uint)((uint)(this.improvementBitFlags & 0xffff) | (uint)((uint)value << 16));
 			}
 		}
 
@@ -232,7 +232,7 @@ namespace OpenCivOne
 		{
 			get
 			{
-				return this.uiImprovementFlags;
+				return this.improvementBitFlags;
 			}
 			set
 			{
@@ -240,7 +240,7 @@ namespace OpenCivOne
 				{
 					uint bit = (uint)(1 << i);
 
-					if ((value & bit) != (this.uiImprovementFlags & bit))
+					if ((value & bit) != (this.improvementBitFlags & bit))
 					{
 						ImprovementEnum improvement = BitToImprovementEnum(i);
 
@@ -255,7 +255,7 @@ namespace OpenCivOne
 					}
 				}
 
-				this.uiImprovementFlags = value;
+				this.improvementBitFlags = value;
 			}
 		}
 
@@ -265,7 +265,7 @@ namespace OpenCivOne
 			{
 				this.Improvements.Add(improvement);
 
-				this.uiImprovementFlags |= ImprovementEnumToBit(improvement);
+				this.improvementBitFlags |= ImprovementEnumToBit(improvement);
 			}
 		}
 
@@ -275,8 +275,8 @@ namespace OpenCivOne
 			{
 				this.Improvements.Remove(improvement);
 
-				this.uiImprovementFlags |= ImprovementEnumToBit(improvement);
-				this.uiImprovementFlags ^= ImprovementEnumToBit(improvement);
+				this.improvementBitFlags |= ImprovementEnumToBit(improvement);
+				this.improvementBitFlags ^= ImprovementEnumToBit(improvement);
 			}
 		}
 

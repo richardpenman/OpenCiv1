@@ -117,19 +117,19 @@ namespace OpenCivOne
 							{
 								if (((i + this.parent.GameData.TurnCount) & 0x3) != 0)
 								{
-									if ((this.parent.GameData.Cities[i].ImprovementFlags0 & 0x80) == 0)
+									if (this.parent.GameData.Cities[i].HasImprovement(ImprovementEnum.CityWalls))
 									{
 										// Instruction address 0x25fb:0x0264, size: 3
 										PlayerAddUnitPolicy(playerID,
 											this.parent.GameData.Cities[i].Position.X, this.parent.GameData.Cities[i].Position.Y,
-											UnitRoleTypeEnum.LandAttack, 5);
+											UnitRoleTypeEnum.LandAttack, 3);
 									}
 									else
 									{
 										// Instruction address 0x25fb:0x0264, size: 3
 										PlayerAddUnitPolicy(playerID,
 											this.parent.GameData.Cities[i].Position.X, this.parent.GameData.Cities[i].Position.Y,
-											UnitRoleTypeEnum.LandAttack, 3);
+											UnitRoleTypeEnum.LandAttack, 5);
 									}
 								}
 							}
@@ -628,7 +628,7 @@ namespace OpenCivOne
 						int attackScore = -1;
 
 						if (this.parent.GameData.Cities[i].StatusFlag != 0xff &&
-							(this.parent.GameData.Cities[i].ImprovementFlags1 & 0x1) == 0)
+							!this.parent.GameData.Cities[i].HasImprovement(ImprovementEnum.SDIDefense))
 						{
 							int militaryPower = this.parent.GameData.Players[playerID].MilitaryPower;
 							int playerID1 = this.parent.GameData.Cities[i].PlayerID;
@@ -874,16 +874,16 @@ namespace OpenCivOne
 
 							int settleCoefficient = this.parent.UnitManagement.F0_1866_1750_IsUnitOrCityNear(playerID, unitX, unitY) ? 3 : 4;
 
-							if ((this.parent.GameData.Cities[nearestCityID].ImprovementFlags0 & 0x1) == 0)
+							if (this.parent.GameData.Cities[nearestCityID].HasImprovement(ImprovementEnum.Palace))
+							{
+								settleCoefficient--;
+							}
+							else
 							{
 								if (continentStrategy == PlayerContinentStrategyEnum.Settle)
 								{
 									settleCoefficient++;
 								}
-							}
-							else
-							{
-								settleCoefficient--;
 							}
 
 							// Instruction address 0x25fb:0x158c, size: 5

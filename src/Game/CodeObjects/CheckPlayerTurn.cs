@@ -1524,7 +1524,7 @@ namespace OpenCivOne
 
 				if (this.parent.GameData.Players[playerID].Units[unitID].UnitType != UnitTypeEnum.None)
 				{
-					if ((this.parent.GameData.Cities[cityID].ImprovementFlags0 & 0x80) == 0)
+					if (!this.parent.GameData.Cities[cityID].HasImprovement(ImprovementEnum.CityWalls))
 					{
 						if (terrainType != TerrainTypeEnum.Water)
 						{
@@ -2265,7 +2265,7 @@ namespace OpenCivOne
 				case 0x4300:
 					if (this.parent.Var_d806_DebugFlag)
 					{
-						this.parent.Reports.F12_0000_03ac_ShowContinentStatsReport();
+						this.parent.Reports.F12_0000_03ac_ShowContinentStatisticReport();
 					}
 					else
 					{
