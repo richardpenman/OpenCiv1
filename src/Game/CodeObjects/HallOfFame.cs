@@ -509,7 +509,7 @@ namespace OpenCivOne
 			this.oCPU.AX.UInt16 = (ushort)this.oParent.GameData.DifficultyLevel;
 			this.oCPU.ES.UInt16 = 0x3772; // segment
 			this.oCPU.WriteUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37d4), this.oCPU.AX.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xdc6a);
+			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xdc6a); // always zero
 			this.oCPU.WriteUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37d6), this.oCPU.AX.UInt16);
 			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xd764);
 			this.oCPU.WriteUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37da), this.oCPU.AX.UInt16);

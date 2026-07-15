@@ -56,7 +56,7 @@ namespace OpenCivOne
 		private Overlay_20 oOverlay_20;
 		private Palace palace;
 		private ShowDebugDetails showDebugDetails;
-		private Schizm schizm;
+		private Secession secession;
 		private CAPI CApi;
 		private GDriver graphics;
 		private NSound sound;
@@ -177,7 +177,7 @@ namespace OpenCivOne
 			this.oOverlay_20 = new Overlay_20(this);
 			this.palace = new Palace(this);
 			this.showDebugDetails = new ShowDebugDetails(this);
-			this.schizm = new Schizm(this);
+			this.secession = new Secession(this);
 			#endregion
 
 			/*string[] aFiles = Directory.GetFiles(this.oParent.ResourcePath, "*.pic");
@@ -707,9 +707,9 @@ namespace OpenCivOne
 			get { return this.showDebugDetails; }
 		}
 
-		public Schizm Schizm
+		public Secession Secession
 		{
-			get { return this.schizm; }
+			get { return this.secession; }
 		}
 
 		public CAPI CAPI

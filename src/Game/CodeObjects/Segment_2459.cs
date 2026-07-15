@@ -71,6 +71,7 @@ namespace OpenCivOne
 
 			this.oCPU.TEST_UInt16(this.oParent.GameData.Cities[cityID].ImprovementFlags0, 0x1);
 			if (this.oCPU.Flags.E) goto L00c5;
+
 			this.oCPU.DI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12));
 			this.oCPU.DI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.DI.UInt16, 0x1);
 
@@ -78,27 +79,22 @@ namespace OpenCivOne
 				this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Ranking >=
 				this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))].Ranking) goto L00c5;
 
-			this.oParent.Schizm.F15_0000_0000(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)));
+			if (!this.oParent.Secession.F15_0000_0000_NationSecession(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))))
+			{
+				this.oParent.GameData.Cities[cityID].PlayerID = (short)playerID;
 
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.NE) goto L00c5;
-			this.oCPU.AX.LowUInt8 = (byte)playerID;
-			this.oParent.GameData.Cities[cityID].PlayerID = (sbyte)this.oCPU.AX.LowUInt8;
+				this.oCPU.AX.Int16 = (short)this.oParent.Secession.F15_0000_08ba_GetRemotestCity(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)));
 
-			this.oCPU.PUSH_UInt16(0); // stack management - push return segment, ignored
-			this.oCPU.PUSH_UInt16(0x00ab); // stack management - push return offset
-			this.oParent.Schizm.F15_0000_08ba(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)));
-			this.oCPU.POP_UInt32(); // stack management - pop return offset and segment
-			
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.AX.UInt16);
+				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.AX.UInt16);
 
-			this.oCPU.AX.UInt16 = 0x1c;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-			this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].CurrentProductionID = -1;
+				this.oCPU.AX.UInt16 = 0x1c;
+				this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
+				this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
+				this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].CurrentProductionID = -1;
 
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12));
-			this.oParent.GameData.Cities[cityID].PlayerID = (sbyte)this.oCPU.AX.LowUInt8;
+				this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12));
+				this.oParent.GameData.Cities[cityID].PlayerID = (sbyte)this.oCPU.AX.LowUInt8;
+			}
 
 		L00c5:
 			this.oCPU.AX.UInt16 = 0x1c;

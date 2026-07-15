@@ -365,7 +365,7 @@ namespace OpenCivOne
 		/// </summary>
 		/// <param name="playerID"></param>
 		/// <returns></returns>
-		public int F5_0000_07c7_InitPlayerData(int playerID)
+		public bool F5_0000_07c7_InitPlayerData(int playerID)
 		{
 			//this.oCPU.Log.EnterBlock($"F5_0000_07c7({playerID})");
 
@@ -572,7 +572,7 @@ namespace OpenCivOne
 							this.parent.Var_b884 = 1;
 						}
 
-						return 0;
+						return false;
 					}
 
 					// Instruction address 0x0000:0x0d26, size: 5
@@ -612,10 +612,10 @@ namespace OpenCivOne
 					this.parent.GameData.Players[playerID].ActiveUnits[i] = 0;
 					this.parent.GameData.Players[playerID].UnitsInProduction[i] = 0;
 				}
-				return 1;
+				return true;
 			}
 
-			return 0;
+			return false;
 		}
 
 		/// <summary>

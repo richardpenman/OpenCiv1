@@ -980,10 +980,10 @@ namespace OpenCivOne
 		{
 			// function body
 			// Instruction address 0x2aea:0x13a2, size: 5
-			ushort usOldValue = this.gameData.Map.GetPixel(x + 160, y);
+			ushort oldValue = this.gameData.Map.GetPixel(x + 160, y);
 
 			// Instruction address 0x2aea:0x13c0, size: 3
-			this.gameData.Map.SetPixel(x + 160, y, (byte)((usOldValue & 0x8) | playerID), 0);
+			this.gameData.Map.SetPixel(x + 160, y, (byte)((oldValue & 0x8) | playerID), 0);
 		}
 
 		/// <summary>
