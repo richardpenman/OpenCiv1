@@ -149,6 +149,8 @@ namespace OpenCivOne
 		public int Var_6e92_MouseIconHandle = 0;
 #endregion
 
+		public bool Var_28bc = false;
+
 		// 0x652e - after this offset the default values are set to 0
 		public int Var_6b32_SelectedGameType = 0;
 		public byte[] Var_6b34 = new byte[48];

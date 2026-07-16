@@ -1202,7 +1202,7 @@ namespace OpenCivOne
 
 		L0e52:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x18), (ushort)this.oParent.GameData.GameSettingFlags.Value);
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x28bc, 0x1);
+			this.oParent.Var_28bc = true;
 
 			if (this.oParent.Var_deba > 1) goto L0e6a;
 
@@ -1211,9 +1211,9 @@ namespace OpenCivOne
 
 		L0e6a:
 			// Instruction address 0x0000:0x0e76, size: 5
-			this.oParent.Segment_2459.F0_2459_0000(playerID, cityID, 1);
+			this.oParent.Segment_2459.F0_2459_0000_CityTakeover(playerID, cityID, true);
 
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x28bc, 0x0);
+			this.oParent.Var_28bc = false;
 			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x18));
 			this.oParent.GameData.GameSettingFlags.Value = (short)this.oCPU.AX.UInt16;
 			this.oCPU.AX.UInt16 = 0x1c;

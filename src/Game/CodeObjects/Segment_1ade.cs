@@ -2266,7 +2266,8 @@ namespace OpenCivOne
 				goto L162c;
 
 			// Instruction address 0x1ade:0x15f2, size: 3
-			F0_1ade_2317(playerID, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46)));
+			this.oCPU.AX.Int16 = (short)F0_1ade_2317_GradeTechnology(playerID, 
+				(TechnologyAdvanceEnum)this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46)));
 
 			this.oCPU.AX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.AX.UInt16, 0x1);
 			this.oCPU.AX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.AX.UInt16, 0x1);
@@ -3161,40 +3162,24 @@ namespace OpenCivOne
 			//	(this.oParent.CivState.Players[playerID].DiscoveredTechnologyFlags[technologyID >> 4] & (1 << (technologyID & 0xf))) == 0))) ? 0 : 1);
 		}
 
+		private static int[] technologyGradeCoefficient1 = { 5, 4, 4, 4, 3, 6, 4, 6, 6, 6, 4, 3, 4, 3, 3, 3, 3, 6, 5, 3, 4, 3, 3, 4, 4, 5, 4, 8, 3, 3, 3, 4, 5, 4, 8, 5, 5, 6, 4, 5, 4, 6, 6, 2, 5, 4, 6, 4, 6, 4, 3, 3, 4, 4, 3, 4, 5, 2, 8, 2, 4, 2, 5, 5, 6, 4, 3, 0, 0, 0, 0, 0};
+		private static int[] technologyGradeCoefficient2 = { 0, 1, 1, 0, 2, 1, 0, -1, -1, -1, 0, 0, 0, 1, -2, 0, 1, -1, -2, 0, 0, 0, 1, -1, 1, 0, 0, -2, 1, 2, 2, -1, -1, -2, -2, -1, -1, -1, -1, -1, 1, 0, 1, 0, 1, 0, -2, 0, -2, 0, 0, 1, -1, 1, 1, 0, -1, 1, -1, 2, 1, 1, -2, -1, -1, -1, 0, 0, 0, 0, 0, 0};
+
 		/// <summary>
-		/// ?
+		/// Grade technology in according with player ideology
 		/// </summary>
 		/// <param name="playerID"></param>
-		/// <param name="param2"></param>
-		public ushort F0_1ade_2317(int playerID, ushort param2)
+		/// <param name="technologyID"></param>
+		public int F0_1ade_2317_GradeTechnology(int playerID, TechnologyAdvanceEnum technology)
 		{
-			this.oCPU.Log.EnterBlock($"F0_1ade_2317({playerID}, {param2})");
+			//this.oCPU.Log.EnterBlock($"F0_1ade_2317({playerID}, {TechnologyID})");
 
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
+			//this.oCPU.CX.Int16 = this.oCPU.ReadInt8(this.oCPU.DS.UInt16, (ushort)(0xb0a + (technologyID * 2)));
+			//this.oCPU.BX.Int16 = this.oCPU.ReadInt8(this.oCPU.DS.UInt16, (ushort)(0xb0b + (technologyID * 2)));
 
-			this.oCPU.SI.UInt16 = param2;
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xb0a));
-			this.oCPU.CBW(this.oCPU.AX);
-			this.oCPU.CX.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xb0b));
-			this.oCPU.CBW(this.oCPU.AX);
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-
-			this.oCPU.AX.UInt16 = (ushort)this.oParent.GameData.Nations[this.oParent.GameData.Players[playerID].NationalityID].Ideology;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.BX.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, this.oCPU.CX.UInt16);
-
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F0_1ade_2317");
-
-			return this.oCPU.AX.UInt16;
+			return (this.oParent.GameData.Nations[this.oParent.GameData.Players[playerID].NationalityID].Ideology * technologyGradeCoefficient2[(int)technology]) + 
+				technologyGradeCoefficient1[(int)technology];
 		}
 	}
 }

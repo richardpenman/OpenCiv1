@@ -364,7 +364,7 @@ namespace OpenCivOne
 						city.FoodCount = 0;
 
 						// Instruction address 0x1d12:0x0879, size: 5
-						this.parent.CheckPlayerTurn.F0_1403_3ed7(local_d8, local_e4);
+						this.parent.PlayerTurn.F0_1403_3ed7(local_d8, local_e4);
 					}
 
 					if ((city.ActualSize + 1) * local_4a <= city.FoodCount)
@@ -395,7 +395,7 @@ namespace OpenCivOne
 						}
 
 						// Instruction address 0x1d12:0x095d, size: 5
-						this.parent.CheckPlayerTurn.F0_1403_3ed7(local_d8, local_e4);
+						this.parent.PlayerTurn.F0_1403_3ed7(local_d8, local_e4);
 					}
 				}
 			
@@ -846,7 +846,7 @@ namespace OpenCivOne
 										}
 
 										// Instruction address 0x1d12:0x180e, size: 5
-										this.parent.Segment_2459.F0_2459_0948(this.Var_6548_PlayerID, local_ba, local_108);
+										this.parent.Segment_2459.F0_2459_0948_CaravanArrivesAtDestinationCity(this.Var_6548_PlayerID, local_ba, local_108);
 									}
 
 									if (city.CurrentProductionID == 26)
@@ -3411,7 +3411,7 @@ namespace OpenCivOne
 
 			L5ea1:
 				// Instruction address 0x1d12:0x5ea9, size: 5
-				this.parent.CheckPlayerTurn.F0_1403_3ed7(local_d8, local_e4);
+				this.parent.PlayerTurn.F0_1403_3ed7(local_d8, local_e4);
 
 				goto L606c;
 
@@ -3474,7 +3474,7 @@ namespace OpenCivOne
 
 			L603f:
 				// Instruction address 0x1d12:0x6047, size: 5
-				this.parent.CheckPlayerTurn.F0_1403_3ed7(local_d8, local_e4);
+				this.parent.PlayerTurn.F0_1403_3ed7(local_d8, local_e4);
 
 			L604f:
 				if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType != 0) goto L605f;

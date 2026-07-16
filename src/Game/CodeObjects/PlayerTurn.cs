@@ -4,11 +4,11 @@ using System.Text;
 
 namespace OpenCivOne
 {
-	public class CheckPlayerTurn
+	public class PlayerTurn
 	{
 		private OpenCivOneGame parent;
 
-		public CheckPlayerTurn(OpenCivOneGame parent)
+		public PlayerTurn(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 		}
@@ -122,7 +122,7 @@ namespace OpenCivOne
 				throw new Exception($"The unit has invalid UnitType of {(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType}, "+
 					$"unitID: {unitID}, player {this.parent.GameData.Players[playerID].Name}");
 
-				this.parent.GameData.Players[playerID].Units[unitID].UnitType = UnitTypeEnum.Militia;
+				//this.parent.GameData.Players[playerID].Units[unitID].UnitType = UnitTypeEnum.Militia;
 			}
 
 			if (!flag6)
@@ -1388,7 +1388,8 @@ namespace OpenCivOne
 
 								if (local_3a == 1)
 								{
-									if (this.parent.Segment_2459.F0_2459_0948(playerID, unitID, cityID) != 0) goto Label674;
+									this.parent.Segment_2459.F0_2459_0948_CaravanArrivesAtDestinationCity(playerID, unitID, cityID);
+									goto Label674;
 								}
 
 								if (local_3a == 2)
@@ -1865,7 +1866,7 @@ namespace OpenCivOne
 				this.parent.GameData.Players[playerID].Units[unitID].VisibleByPlayer |= (ushort)(1 << cityPlayerID1);
 
 				// Instruction address 0x1403:0x303e, size: 5
-				this.parent.Segment_2459.F0_2459_0000(playerID, this.parent.Tools.F0_2dc4_00ba_GetCityByLocation(local_1c, local_26), 0);
+				this.parent.Segment_2459.F0_2459_0000_CityTakeover(playerID, this.parent.Tools.F0_2dc4_00ba_GetCityByLocation(local_1c, local_26), false);
 				// Instruction address 0x1403:0x304c, size: 5
 				this.parent.MapManagement.F0_2aea_1511_ActiveUnitSetFlag8(local_1c, local_26);
 			}

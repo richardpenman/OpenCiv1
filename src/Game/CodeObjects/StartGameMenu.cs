@@ -664,7 +664,7 @@ namespace OpenCivOne
 						 $"{this.parent.GameData.Players[playerID].Nationality}\ncivilization\ndestroyed\nby {this.parent.GameData.Players[playerID1].Nation}!\n", 100, 80);
 
 					// Instruction address 0x0000:0x0f3d, size: 5
-					this.parent.Segment_2459.F0_2459_05ee(playerID);
+					this.parent.Segment_2459.F0_2459_05ee_SpaceshipArrivalFailed(playerID);
 
 					// Instruction address 0x0000:0x0f53, size: 5
 					this.parent.UnitManagement.F0_1866_250e_AddReplayData(13, (byte)playerID, (byte)playerID1);

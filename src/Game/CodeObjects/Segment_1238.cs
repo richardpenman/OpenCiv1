@@ -99,7 +99,7 @@ namespace OpenCivOne
 				if (this.oParent.GameData.DifficultyLevel == 0)
 				{
 					// Instruction address 0x1238:0x012a, size: 5
-					this.oParent.CheckPlayerTurn.F0_1403_4060(this.oParent.GameData.HumanPlayerID, 0);
+					this.oParent.PlayerTurn.F0_1403_4060(this.oParent.GameData.HumanPlayerID, 0);
 
 					// Show UI help on first turn
 					this.oParent.MainIntro.F2_0000_17d9_ShowInstantAdviceElements();
@@ -172,7 +172,7 @@ namespace OpenCivOne
 					if (this.oParent.Var_dc48_GameEndType == 0)
 					{
 						// Instruction address 0x1238:0x022f, size: 5
-						this.oParent.CheckPlayerTurn.F0_1403_000e_CheckPlayerTurn(i);
+						this.oParent.PlayerTurn.F0_1403_000e_CheckPlayerTurn(i);
 					}
 
 					this.oParent.Var_df60 = 0;

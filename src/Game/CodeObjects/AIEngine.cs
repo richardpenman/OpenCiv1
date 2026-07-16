@@ -1255,7 +1255,7 @@ namespace OpenCivOne
 									if ((this.parent.GameData.DebugFlags & 0x2) != 0)
 									{
 										// Instruction address 0x25fb:0x2070, size: 5
-										TerrainImprovementFlagsEnum preferredImprovement = this.parent.CheckPlayerTurn.F0_1403_3f68_GetPreferredImprovement(unitX, unitY);
+										TerrainImprovementFlagsEnum preferredImprovement = this.parent.PlayerTurn.F0_1403_3f68_GetPreferredImprovement(unitX, unitY);
 
 										if (preferredImprovement == TerrainImprovementFlagsEnum.Irrigation)
 										{
@@ -1329,7 +1329,7 @@ namespace OpenCivOne
 										if ((this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Monarchy) ?
 											this.parent.GameData.TerrainModifications[(int)this.parent.MapManagement.GetTerrainType(newX, newY)].AICanImproveAfterMonarchy :
 												this.parent.GameData.TerrainModifications[(int)this.parent.MapManagement.GetTerrainType(newX, newY)].AICanImproveBeforeMonarchy) &&
-											this.parent.CheckPlayerTurn.F0_1403_3f68_GetPreferredImprovement(newX, newY) != 0)
+											this.parent.PlayerTurn.F0_1403_3f68_GetPreferredImprovement(newX, newY) != 0)
 										{
 											if (this.parent.GameData.Cities[nearestCityID].ActualSize >= 3 ||
 												this.parent.MapManagement.GetTerrainType(newX, newY) != TerrainTypeEnum.Hills ||

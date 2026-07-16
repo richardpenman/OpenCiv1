@@ -22,7 +22,7 @@ namespace OpenCivOne
 		private CommonTools commonTools;
 		private Segment_1238 oSegment_1238;
 		private MenuBoxDialog menuBoxDialog;
-		private CheckPlayerTurn checkPlayerTurn;
+		private PlayerTurn playerTurn;
 		private Tools tools;
 		private DrawTools drawTools;
 		private ImageTools imageTools;
@@ -30,7 +30,7 @@ namespace OpenCivOne
 		private MapManagement mapManagement;
 		private UnitManagement unitManagement;
 		private UnitGoTo unitGoTo;
-		private Segment_2459 oSegment_2459;
+		private Actions oSegment_2459;
 		private AIEngine aiEngine;
 		private Segment_1ade oSegment_1ade;
 		private CityWorker cityWorker;
@@ -143,7 +143,7 @@ namespace OpenCivOne
 			this.commonTools = new CommonTools(this);
 			this.oSegment_1238 = new Segment_1238(this);
 			this.menuBoxDialog = new MenuBoxDialog(this);
-			this.checkPlayerTurn = new CheckPlayerTurn(this);
+			this.playerTurn = new PlayerTurn(this);
 			this.tools = new Tools(this);
 			this.drawTools = new DrawTools(this);
 			this.imageTools = new ImageTools(this);
@@ -151,7 +151,7 @@ namespace OpenCivOne
 			this.mapManagement = new MapManagement(this);
 			this.unitManagement = new UnitManagement(this);
 			this.unitGoTo = new UnitGoTo(this);
-			this.oSegment_2459 = new Segment_2459(this);
+			this.oSegment_2459 = new Actions(this);
 			this.aiEngine = new AIEngine(this);
 			this.oSegment_1ade = new Segment_1ade(this);
 			this.cityWorker = new CityWorker(this);
@@ -537,9 +537,9 @@ namespace OpenCivOne
 			get { return this.menuBoxDialog; }
 		}
 
-		public CheckPlayerTurn CheckPlayerTurn
+		public PlayerTurn PlayerTurn
 		{
-			get { return this.checkPlayerTurn; }
+			get { return this.playerTurn; }
 		}
 
 		public Tools Tools
@@ -577,7 +577,7 @@ namespace OpenCivOne
 			get { return this.unitGoTo; }
 		}
 
-		public Segment_2459 Segment_2459
+		public Actions Segment_2459
 		{
 			get { return this.oSegment_2459; }
 		}

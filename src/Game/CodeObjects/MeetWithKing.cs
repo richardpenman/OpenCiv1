@@ -722,7 +722,8 @@ namespace OpenCivOne
 				goto L0709;
 
 			// Instruction address 0x0000:0x06e7, size: 5
-			this.oParent.Segment_1ade.F0_1ade_2317(playerID, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20)));
+			this.oCPU.AX.Int16 = (short)this.oParent.Segment_1ade.F0_1ade_2317_GradeTechnology(playerID, 
+				(TechnologyAdvanceEnum)this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20)));
 
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2c)));
 			if (this.oCPU.Flags.L) goto L0709;
@@ -731,7 +732,7 @@ namespace OpenCivOne
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), this.oCPU.AX.UInt16);
 
 			// Instruction address 0x0000:0x06fe, size: 5
-			this.oParent.Segment_1ade.F0_1ade_2317(playerID, this.oCPU.AX.UInt16);
+			this.oCPU.AX.Int16 = (short)this.oParent.Segment_1ade.F0_1ade_2317_GradeTechnology(playerID, (TechnologyAdvanceEnum)this.oCPU.AX.Int16);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2c), this.oCPU.AX.UInt16);
 
@@ -789,7 +790,7 @@ namespace OpenCivOne
 
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
 
-			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
+			this.oCPU.AX.Int16 = (short)F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
 			if (this.oCPU.Flags.NE) goto L0822;
@@ -800,14 +801,14 @@ namespace OpenCivOne
 			this.oParent.Var_3c62 = 1;
 
 			// Instruction address 0x0000:0x07cf, size: 5
-			this.oParent.Segment_2459.F0_2459_06f2(playerID, oParent.GameData.HumanPlayerID);
+			this.oParent.Segment_2459.F0_2459_06f2_AcquireTechnologyFromAnotherPlayer(playerID, oParent.GameData.HumanPlayerID);
 			
 			this.oParent.Var_aa_Screen0_Rectangle.FontID = this.oCPU.ReadInt16(this.oCPU.DS.UInt16, 0x67ec);
 
 			this.oParent.Var_3c62 = 1;
 
 			// Instruction address 0x0000:0x07ee, size: 5
-			this.oParent.Segment_2459.F0_2459_06f2(this.oParent.GameData.HumanPlayerID, playerID);
+			this.oParent.Segment_2459.F0_2459_06f2_AcquireTechnologyFromAnotherPlayer(this.oParent.GameData.HumanPlayerID, playerID);
 			
 			// Instruction address 0x0000:0x07f6, size: 5
 			this.oParent.Tools.F0_2dc4_065f_StopPaletteCycleSlots();
@@ -902,7 +903,7 @@ namespace OpenCivOne
 			this.oParent.CommonTools.PlayTune(33, 0);
 
 		L08fb:
-			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
+			this.oCPU.AX.Int16 = (short)F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
 			if (this.oCPU.Flags.NE) goto L0952;
@@ -972,7 +973,7 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x09e8, size: 5
 			this.oParent.CommonTools.PlayTune(33, 0);
 
-			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
+			this.oCPU.AX.Int16 = (short)F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
 			if (this.oCPU.Flags.NE) goto L0a23;
@@ -1018,7 +1019,7 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x0a94, size: 5
 			this.oParent.CommonTools.PlayTune(33, 0);
 
-			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
+			this.oCPU.AX.Int16 = (short)F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
 			if (this.oCPU.Flags.NE) goto L0acb;
@@ -1178,7 +1179,7 @@ namespace OpenCivOne
 			this.oParent.Var_3936 = 0;
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
 
-			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
+			this.oCPU.AX.Int16 = (short)F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
 			if (this.oCPU.Flags.NE) goto L0cc6;
@@ -1247,7 +1248,7 @@ namespace OpenCivOne
 			this.oParent.Var_3936 = 0;
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
 
-			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
+			this.oCPU.AX.Int16 = (short)F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
 			if (this.oCPU.Flags.NE) goto L0e0e;
@@ -1319,7 +1320,7 @@ namespace OpenCivOne
 			this.oParent.Var_3936 = 0;
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
 
-			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
+			this.oCPU.AX.Int16 = (short)F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
 			if (this.oCPU.Flags.NE) goto L0eed;
@@ -1368,7 +1369,7 @@ namespace OpenCivOne
 			this.oParent.Var_3936 = 0;
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
 
-			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
+			this.oCPU.AX.Int16 = (short)F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
 			if (this.oCPU.Flags.E) goto L0f8a;
@@ -1575,7 +1576,7 @@ namespace OpenCivOne
 			this.oParent.Var_b276_MenuBoxDisabledOptions |= 0x2;
 
 		L126b:
-			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
+			this.oCPU.AX.Int16 = (short)F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x26), this.oCPU.AX.UInt16);
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x2);
@@ -1610,7 +1611,7 @@ namespace OpenCivOne
 			this.oParent.Var_3936 = 0;
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
 
-			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
+			this.oCPU.AX.Int16 = (short)F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
 			this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Coins += (short)this.oCPU.AX.UInt16;
 			this.oParent.GameData.Players[playerID].Coins -= 
@@ -1691,7 +1692,7 @@ namespace OpenCivOne
 			goto L13fd;
 
 		L1426:
-			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
+			this.oCPU.AX.Int16 = (short)F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22), this.oCPU.AX.UInt16);
 			this.oParent.Var_3936 = 1;
@@ -1772,7 +1773,7 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x153f, size: 5
 			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*MERCENARY"));
 
-			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
+			this.oCPU.AX.Int16 = (short)F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
 			if (this.oCPU.Flags.E) goto L1562;
@@ -3046,13 +3047,25 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// Shows the inline menu with options to choose from
 		/// </summary>
 		/// <param name="stringPtr"></param>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
 		public int F6_0000_251d_ShowInlineDialog(ushort stringPtr, int x, int y)
+		{
+			return this.F6_0000_251d_ShowInlineDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, stringPtr), x, y);
+		}
+
+		/// <summary>
+		/// Shows the inline menu with options to choose from
+		/// </summary>
+		/// <param name="stringPtr"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
+		public int F6_0000_251d_ShowInlineDialog(string menuText, int x, int y)
 		{
 			//this.oCPU.Log.EnterBlock($"F6_0000_251d(0x{stringPtr:x4}, {x}, {y})");
 
@@ -3061,14 +3074,12 @@ namespace OpenCivOne
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 128, 320, 72, this.oParent.Var_19d4_Screen1_Rectangle, 0, 128);
 		
 			// Instruction address 0x0000:0x2567, size: 5
-			int local_2 = this.oParent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(stringPtr, x, y, false, false, true);
+			int selectedChoice = this.oParent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(menuText, x, y, false, false, true);
 
 			// Instruction address 0x0000:0x2595, size: 5
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 128, 320, 72, this.oParent.Var_aa_Screen0_Rectangle, 0, 128);
 
-			this.oCPU.AX.Int16 = (short)local_2;
-
-			return local_2;
+			return selectedChoice;
 		}
 	}
 }

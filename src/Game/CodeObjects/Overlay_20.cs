@@ -944,7 +944,7 @@ namespace OpenCivOne
 			this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
 
 			// Instruction address 0x0000:0x0a07, size: 5
-			this.oParent.CheckPlayerTurn.F0_1403_3ed7(this.oParent.GameData.Cities[cityID].Position.X, this.oParent.GameData.Cities[cityID].Position.Y);
+			this.oParent.PlayerTurn.F0_1403_3ed7(this.oParent.GameData.Cities[cityID].Position.X, this.oParent.GameData.Cities[cityID].Position.Y);
 
 			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
 
@@ -1095,7 +1095,7 @@ namespace OpenCivOne
 			this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
 
 			// Instruction address 0x0000:0x0c0d, size: 5
-			this.oParent.CheckPlayerTurn.F0_1403_3ed7(this.oParent.GameData.Cities[cityID].Position.X, this.oParent.GameData.Cities[cityID].Position.Y);
+			this.oParent.PlayerTurn.F0_1403_3ed7(this.oParent.GameData.Cities[cityID].Position.X, this.oParent.GameData.Cities[cityID].Position.Y);
 
 			goto L0ca3;
 

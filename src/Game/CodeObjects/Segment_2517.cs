@@ -268,7 +268,7 @@ namespace OpenCivOne
 			this.oParent.Var_3936 = 1;
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
 
-			this.oParent.MeetWithKing.F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
+			this.oCPU.AX.Int16 = (short)this.oParent.MeetWithKing.F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
 			if (this.oCPU.Flags.NE) goto L02c2;
@@ -379,7 +379,7 @@ namespace OpenCivOne
 			this.oParent.Var_3936 = 1;
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
 
-			this.oParent.MeetWithKing.F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
+			this.oCPU.AX.Int16 = (short)this.oParent.MeetWithKing.F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
 			if (this.oCPU.Flags.NE) goto L0428;
