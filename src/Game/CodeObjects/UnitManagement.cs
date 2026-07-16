@@ -1444,7 +1444,7 @@ namespace OpenCivOne
 		/// <param name="playerID"></param>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
-		public void F0_1866_16a9(int playerID, int x, int y)
+		public void F0_1866_16a9_CenterMap(int playerID, int x, int y)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1866_16a9({playerID}, {x}, {y})");
 
@@ -1894,9 +1894,9 @@ namespace OpenCivOne
 			// Instruction address 0x1866:0x1dae, size: 5
 			if (this.parent.MapManagement.F0_2aea_03ba_DrawCell(this.parent.GameData.Players[playerID].Units[unitID].Position.X,
 					this.parent.GameData.Players[playerID].Units[unitID].Position.Y) &&
-				this.parent.PlayerTurn.F0_1403_4508(this.parent.GameData.Players[playerID].Units[unitID].Position.X,
+				this.parent.PlayerTurn.F0_1403_4508_ValidateMapCoordinates(this.parent.GameData.Players[playerID].Units[unitID].Position.X,
 					this.parent.GameData.Players[playerID].Units[unitID].Position.Y) &&
-				this.parent.PlayerTurn.F0_1403_4508(this.parent.GameData.Players[playerID].Units[unitID].Position.X + direction.X,
+				this.parent.PlayerTurn.F0_1403_4508_ValidateMapCoordinates(this.parent.GameData.Players[playerID].Units[unitID].Position.X + direction.X,
 					this.parent.GameData.Players[playerID].Units[unitID].Position.Y + direction.Y))
 			{
 				if (this.parent.GameData.Players[playerID].Units[unitID].NextUnitID != -1 &&

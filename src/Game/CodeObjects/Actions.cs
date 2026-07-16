@@ -144,7 +144,7 @@ namespace OpenCivOne
 				if (cityPlayerID == this.parent.GameData.HumanPlayerID)
 				{
 					// Instruction address 0x2459:0x02cb, size: 5
-					this.parent.UnitManagement.F0_1866_16a9(this.parent.GameData.HumanPlayerID, cityX, cityY);
+					this.parent.UnitManagement.F0_1866_16a9_CenterMap(this.parent.GameData.HumanPlayerID, cityX, cityY);
 				}
 
 				// Instruction address 0x2459:0x02d9, size: 5
@@ -259,7 +259,7 @@ namespace OpenCivOne
 				}
 			}
 
-			this.parent.StartGameMenu.F5_0000_0e6c_TestIfAIPlayerDestroyed(cityPlayerID, playerID);
+			this.parent.StartGameMenu.F5_0000_0e6c_TestIfAIPlayerIsDestroyed(cityPlayerID, playerID);
 		}
 
 		/// <summary>

@@ -469,7 +469,7 @@ namespace OpenCivOne
 			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.AX.UInt16);
 
 			// Instruction address 0x29f3:0x03de, size: 5
-			this.oParent.UnitManagement.F0_1866_16a9(this.oParent.GameData.HumanPlayerID,
+			this.oParent.UnitManagement.F0_1866_16a9_CenterMap(this.oParent.GameData.HumanPlayerID,
 				this.oParent.GameData.Players[playerID2].Units[unitID2].Position.X,
 				this.oParent.GameData.Players[playerID2].Units[unitID2].Position.Y);
 

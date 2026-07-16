@@ -625,7 +625,7 @@ namespace OpenCivOne
 		/// </summary>
 		/// <param name="playerID">AI player to test</param>
 		/// <param name="playerID1">The player that destroyed the last city</param>
-		public void F5_0000_0e6c_TestIfAIPlayerDestroyed(int playerID, int playerID1)
+		public void F5_0000_0e6c_TestIfAIPlayerIsDestroyed(int playerID, int playerID1)
 		{
 			//this.oCPU.Log.EnterBlock($"F5_0000_0e6c({playerID}, {playerID1})");
 
