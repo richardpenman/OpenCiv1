@@ -17,12 +17,10 @@ namespace OpenCivOne
 		/// This function handles given Player turn. All unit movements, keyboard and mouse events
 		/// </summary>
 		/// <param name="playerID"></param>
-		public void F0_1403_000e_CheckPlayerTurn(int playerID)
+		public void F0_1403_000e_PlayerTurn(int playerID)
 		{
 			//this.oCPU.Log.EnterBlock("'Fn1'(Cdecl, Far, Return) at 0xe");
 			// Local variables
-			int local_e = -1;
-			int local_12 = 0;
 			GPoint direction;
 
 			// function body
@@ -313,7 +311,7 @@ namespace OpenCivOne
 				}
 			}
 
-			this.parent.UnitManagement.F0_1866_0ad6_ShowActiveUnitOrEndOfTurn(playerID, unitID, local_e, local_12);
+			this.parent.UnitManagement.F0_1866_0ad6_ShowActiveUnitOrEndOfTurn(playerID, unitID, -1, 0);
 
 			if (unitID < 128)
 			{
@@ -570,9 +568,15 @@ namespace OpenCivOne
 				int distanceToObject;
 				int newMoveDirection = 0;
 
-				switch ((char)command)
+				switch (command)
 				{
+					// Enter or Space
+					case '\x0d':
+						if (unitID >= 128) goto Label755;
+						break;
+
 					case ' ':
+						if (unitID >= 128) goto Label755;
 						this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves = 0;
 						break;
 
@@ -1151,9 +1155,403 @@ namespace OpenCivOne
 					case '\x4700':
 						newMoveDirection = 8;
 						goto Label300;
-				}
 
-				goto Label674;
+					case -2:
+						if (this.parent.Segment_1238.F0_1238_001e_ShowDialog(this.parent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*REV"), 64, 80) == 1)
+						{
+							this.parent.GameData.Players[playerID].GovernmentType = 0;
+
+							this.parent.News.F21_0000_0000_ShowNews(-1, $"The {this.parent.GameData.Players[playerID].Nation} are\nrevolting! Citizens\ndemand new government.\n");
+
+							this.parent.StartGameMenu.F5_0000_1af6_LoadGovernmentImage();
+
+							// Instruction address 0x1403:0x35be, size: 5
+							this.parent.Segment_1238.F0_1238_1b44();
+						}
+						break;
+
+					case '+':
+					case '=':
+						StringBuilder taxOptions = new();
+
+						taxOptions.Append("Select new Tax rate:\n ");
+
+						for (int i = 0; this.parent.GameData.Players[playerID].TaxRate + this.parent.GameData.Players[playerID].ScienceTaxRate >= i; i++)
+						{
+							// Instruction address 0x1403:0x362a, size: 5
+							taxOptions.Append($"{i * 10}% Tax, " +
+								$"({(this.parent.GameData.Players[playerID].TaxRate + this.parent.GameData.Players[playerID].ScienceTaxRate - i) * 10}% Science)\n ");
+						}
+
+						this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = this.parent.GameData.Players[playerID].TaxRate;
+
+						// Instruction address 0x1403:0x368b, size: 5
+						int selectedTaxRate = this.parent.Segment_1238.F0_1238_001e_ShowDialog(taxOptions.ToString(), 100, 80);
+
+						if (selectedTaxRate != -1)
+						{
+							this.parent.GameData.Players[playerID].ScienceTaxRate += (short)(this.parent.GameData.Players[playerID].TaxRate - selectedTaxRate);
+							this.parent.GameData.Players[playerID].TaxRate = (short)selectedTaxRate;
+
+							// Instruction address 0x1403:0x36b1, size: 5
+							this.parent.Segment_1238.F0_1238_107e();
+						}
+						break;
+
+					case '-':
+					case '_':
+						StringBuilder luxuryOptions = new();
+
+						// Instruction address 0x1403:0x36c1, size: 5
+						luxuryOptions.Append("Select new Luxuries rate:\n ");
+
+						for (int i = 0; 10 - this.parent.GameData.Players[playerID].TaxRate >= i; i++)
+						{
+							luxuryOptions.Append($"{i * 10}% Luxuries, ({(10 - i + this.parent.GameData.Players[playerID].TaxRate) * 10}% Science)\n ");
+						}
+
+						this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = (10 - this.parent.GameData.Players[playerID].TaxRate + this.parent.GameData.Players[playerID].ScienceTaxRate);
+
+						int newLuxuryRate = this.parent.Segment_1238.F0_1238_001e_ShowDialog(luxuryOptions.ToString(), 100, 80);
+
+						if (newLuxuryRate != -1)
+						{
+							this.parent.GameData.Players[playerID].ScienceTaxRate = (short)(10 - this.parent.GameData.Players[playerID].TaxRate + newLuxuryRate);
+							// Instruction address 0x1403:0x37a3, size: 5
+							this.parent.Segment_1238.F0_1238_107e();
+						}
+						break;
+
+					case '/':
+					case '?':
+						this.parent.TextBoxDialogs.F23_0000_025b_FindCityDialog();
+						break;
+
+					case 'S':
+						// Enable Save game with zero turns
+						//if (this.oParent.GameData.TurnCount != 0)
+						//{
+						// All Top menus are saving the current screenshot, so should we in Save game shortcut
+						this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
+
+						this.parent.LoadAndSave.F11_0000_036a_SaveGameDialog(false);
+						//}
+						break;
+
+					case 't':
+						this.parent.Var_dcfc = 1;
+
+						// Instruction address 0x1403:0x37bc, size: 5
+						this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(playerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
+						// Instruction address 0x1403:0x37c4, size: 5
+						this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+
+						this.parent.Var_dcfc = 0;
+
+						// Instruction address 0x1403:0x37da, size: 5
+						this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(playerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
+						break;
+
+					// Alt + Q
+					case 0x1000:
+						if (this.parent.Segment_1238.F0_1238_001e_ShowDialog("Are you sure you\nwant to Quit?\n Keep Playing\n Yes, Quit\n", 100, 80) != 1)
+						{
+							this.parent.Var_dc48_GameEndType = 0;
+						}
+						else
+						{
+							if (this.parent.Var_dc48_GameEndType == 0)
+							{
+								this.parent.Var_dc48_GameEndType = 1;
+							}
+							unitID = 128;
+						}
+						break;
+
+					// Alt + W
+					case 0x1100:
+						// Instruction address 0x1403:0x3a84, size: 5
+						this.parent.Menus.F0_2c84_0000_ShowTopMenu(playerID, unitID, 3);
+
+						if (this.parent.Menus.Var_d4ca_MenuShortcutKey != -1)
+						{
+							command = this.parent.Menus.Var_d4ca_MenuShortcutKey;
+							goto Label151;
+						}
+						break;
+
+					// Alt + R
+					case 0x1300:
+						for (int i = 0; i < 16; i++)
+						{
+							// Instruction address 0x1403:0x3805, size: 5
+							this.parent.GameData.Nations[i].Mood = (short)(this.parent.CAPI.RNG.Next(3) - 1); // -1 = Friendly, 0 = Neutral, 1 = Aggressive
+
+							// Instruction address 0x1403:0x3816, size: 5
+							this.parent.GameData.Nations[i].Policy = (short)(this.parent.CAPI.RNG.Next(3) - 1); // -1 = Perfectionist, 0 = Neutral, 1 = Expansionist
+
+							// Instruction address 0x1403:0x3827, size: 5
+							this.parent.GameData.Nations[i].Ideology = (short)(this.parent.CAPI.RNG.Next(3) - 1); // -1 = Militaristic, 0 = Neutral, 1 = Civilized
+						}
+
+						// Instruction address 0x1403:0x3843, size: 5
+						this.parent.Segment_1238.F0_1238_001e_ShowDialog(0x2003, 100, 80);
+						break;
+
+					// Alt + O
+					case 0x1800:
+						// Instruction address 0x1403:0x3a5a, size: 5
+						this.parent.Menus.F0_2c84_0000_ShowTopMenu(playerID, unitID, 1);
+
+						if (this.parent.Menus.Var_d4ca_MenuShortcutKey != -1)
+						{
+							command = this.parent.Menus.Var_d4ca_MenuShortcutKey;
+							goto Label151;
+						}
+						break;
+
+					// Alt + A
+					case 0x1e00:
+						// Instruction address 0x1403:0x3a6f, size: 5
+						this.parent.Menus.F0_2c84_0000_ShowTopMenu(playerID, unitID, 2);
+
+						if (this.parent.Menus.Var_d4ca_MenuShortcutKey != -1)
+						{
+							command = this.parent.Menus.Var_d4ca_MenuShortcutKey;
+							goto Label151;
+						}
+						break;
+
+					// Alt + D
+					case 0x2000:
+						this.parent.Var_d806_DebugFlag = !this.parent.Var_d806_DebugFlag;
+
+						// Instruction address 0x1403:0x3506, size: 5
+						this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
+						break;
+
+					// Alt + G
+					case 0x2200:
+						// Instruction address 0x1403:0x3a45, size: 5
+						this.parent.Menus.F0_2c84_0000_ShowTopMenu(playerID, unitID, 0);
+
+						if (this.parent.Menus.Var_d4ca_MenuShortcutKey != -1)
+						{
+							command = this.parent.Menus.Var_d4ca_MenuShortcutKey;
+							goto Label151;
+						}
+						break;
+
+					// Alt + H
+					case 0x2300:
+						this.parent.Help.F4_0000_02d3_ShowInstantAdvicePopup("*HELP1");
+						this.parent.Help.F4_0000_02d3_ShowInstantAdvicePopup("*HELP2");
+						break;
+
+					// Alt + C
+					case 0x2e00:
+						// Instruction address 0x1403:0x3a99, size: 5
+						this.parent.Menus.F0_2c84_0000_ShowTopMenu(playerID, unitID, 4);
+
+						if (this.parent.Menus.Var_d4ca_MenuShortcutKey != -1)
+						{
+							command = this.parent.Menus.Var_d4ca_MenuShortcutKey;
+							goto Label151;
+						}
+						break;
+
+					// Alt + V
+					case 0x2f00:
+						this.parent.GameData.GameSettingFlags.Sound ^= true;
+
+						// Instruction address 0x1403:0x3890, size: 5
+						this.parent.Segment_1238.F0_1238_001e_ShowDialog($"Sounds {((this.parent.GameData.GameSettingFlags.Sound) ? "ON\n" : "OFF\n")}", 100, 80);
+						break;
+
+					// F1 - City status
+					case 0x3b00:
+						if (this.parent.Var_d806_DebugFlag)
+						{
+							this.parent.ShowDebugDetails.ShowMapWithStrategy();
+						}
+						else
+						{
+							this.parent.Overlay_14.F14_0000_186f_CityStatus(this.parent.GameData.HumanPlayerID);
+						}
+						break;
+
+					// F2 - Military Advisor
+					case 0x3c00:
+						if (this.parent.Var_d806_DebugFlag)
+						{
+							this.parent.ShowDebugDetails.ShowUnitStatistics();
+						}
+						else
+						{
+							this.parent.Overlay_14.F14_0000_03ad_MilitaryReport(this.parent.GameData.HumanPlayerID);
+						}
+						break;
+
+					// F3 - Intelligence Advisor
+					case 0x3d00:
+						if (this.parent.Var_d806_DebugFlag)
+						{
+							// Instruction address 0x1403:0x33ae, size: 5
+							this.parent.CommonTools.F0_1000_0846(2);
+
+							// Instruction address 0x1403:0x33b6, size: 5
+							this.parent.CAPI.getch();
+
+							// Instruction address 0x1403:0x33bf, size: 5
+							this.parent.CommonTools.F0_1000_0846(0);
+						}
+						else
+						{
+							this.parent.Overlay_14.F14_0000_0d43_IntelligenceReport();
+						}
+						break;
+
+					// F4 - Attitude Advisor
+					case 0x3e00:
+						this.parent.Overlay_14.F14_0000_15f4_AttitudeReport(this.parent.GameData.HumanPlayerID);
+						break;
+
+					// F5 - Trade Advisor
+					case 0x3f00:
+						this.parent.Overlay_14.F14_0000_07f1_TradeReport(this.parent.GameData.HumanPlayerID);
+						break;
+
+					// F6 - Science Advisor
+					case 0x4000:
+						this.parent.Overlay_14.F14_0000_014b_ScienceReport(this.parent.GameData.HumanPlayerID);
+						break;
+
+					// F7 - Wonders of the World
+					case 0x4100:
+						if (this.parent.Var_d806_DebugFlag)
+						{
+							for (int i = 1; i < 8; i++)
+							{
+								this.parent.ShowDebugDetails.ShowPlayerDetails(i);
+							}
+						}
+						else
+						{
+							this.parent.Reports.F12_0000_080d_ShowWondersOfTheWorldReport();
+						}
+						break;
+
+					// F8 - Top 5 Cities
+					case 0x4200:
+						if (this.parent.Var_d806_DebugFlag)
+						{
+							this.parent.Reports.F12_0000_0573_ShowPowerGraphReport();
+							this.parent.Replay.F9_0000_0000();
+						}
+						else
+						{
+							this.parent.HallOfFame.F3_0000_09ac_ShowTopFiveCitiesPopup();
+						}
+						break;
+
+					// F9 - Civilization Score
+					case 0x4300:
+						if (this.parent.Var_d806_DebugFlag)
+						{
+							this.parent.Reports.F12_0000_03ac_ShowContinentStatisticReport();
+						}
+						else
+						{
+							this.parent.Overlay_20.F20_0000_0ca9_ShowCivilizationScorePopup(this.parent.GameData.HumanPlayerID, true);
+						}
+						break;
+
+					// F10 - World Map
+					case 0x4400:
+						this.parent.Reports.F12_0000_0000_ShowWorldMapReport();
+						break;
+
+					// Shift + Home
+					case 0x4737:
+						direction = this.parent.MoveDirections[8];
+						this.parent.Var_d4cc_MapViewX += direction.X * 4;
+						this.parent.Var_d75e_MapViewY += direction.Y * 4;
+
+						// Instruction address 0x1403:0x3506, size: 5
+						this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
+						break;
+
+					// Shift + Up
+					case 0x4838:
+						direction = this.parent.MoveDirections[1];
+						this.parent.Var_d4cc_MapViewX += direction.X * 4;
+						this.parent.Var_d75e_MapViewY += direction.Y * 4;
+
+						// Instruction address 0x1403:0x3506, size: 5
+						this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
+						break;
+
+					// Shift + PageUp
+					case 0x4939:
+						direction = this.parent.MoveDirections[2];
+						this.parent.Var_d4cc_MapViewX += direction.X * 4;
+						this.parent.Var_d75e_MapViewY += direction.Y * 4;
+
+						// Instruction address 0x1403:0x3506, size: 5
+						this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
+						break;
+
+					// Shift + Left
+					case 0x4b34:
+						direction = this.parent.MoveDirections[7];
+						this.parent.Var_d4cc_MapViewX += direction.X * 4;
+						this.parent.Var_d75e_MapViewY += direction.Y * 4;
+
+						// Instruction address 0x1403:0x3506, size: 5
+						this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
+						break;
+
+					// Shift + Right
+					case 0x4d36:
+						direction = this.parent.MoveDirections[3];
+						this.parent.Var_d4cc_MapViewX += direction.X * 4;
+						this.parent.Var_d75e_MapViewY += direction.Y * 4;
+
+						// Instruction address 0x1403:0x3506, size: 5
+						this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
+						break;
+
+					// Shift + End
+					case 0x4f31:
+						direction = this.parent.MoveDirections[6];
+						this.parent.Var_d4cc_MapViewX += direction.X * 4;
+						this.parent.Var_d75e_MapViewY += direction.Y * 4;
+
+						// Instruction address 0x1403:0x3506, size: 5
+						this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
+						break;
+
+					// Shift + Down
+					case 0x5032:
+						direction = this.parent.MoveDirections[5];
+						this.parent.Var_d4cc_MapViewX += direction.X * 4;
+						this.parent.Var_d75e_MapViewY += direction.Y * 4;
+
+						// Instruction address 0x1403:0x3506, size: 5
+						this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
+						break;
+
+					// Shift + PageDown
+					case 0x5133:
+						direction = this.parent.MoveDirections[4];
+						this.parent.Var_d4cc_MapViewX += direction.X * 4;
+						this.parent.Var_d75e_MapViewY += direction.Y * 4;
+
+						// Instruction address 0x1403:0x3506, size: 5
+						this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
+						break;
+				}
+				goto Label722;
 
 			Label300:
 				#region Move Unit
@@ -1179,7 +1577,7 @@ namespace OpenCivOne
 						}
 
 						this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves = 0;
-						goto Label674;
+						goto Label722;
 					}
 				}
 
@@ -1213,7 +1611,7 @@ namespace OpenCivOne
 
 						this.parent.GameData.Players[playerID].Units[unitID].GoToDestination = OpenCivOneGame.InvalidPosition;
 
-						goto Label674;
+						goto Label722;
 					}
 
 					if (this.parent.GameData.Players[playerID].Units[unitID].UnitType == UnitTypeEnum.Diplomat ||
@@ -1223,7 +1621,7 @@ namespace OpenCivOne
 
 						if (cityID != -1)
 						{
-							if (this.parent.GameData.Cities[cityID].PlayerID != playerID && terrainType == TerrainTypeEnum.Water) goto Label674;
+							if (this.parent.GameData.Cities[cityID].PlayerID != playerID && terrainType == TerrainTypeEnum.Water) goto Label722;
 
 							if (this.parent.GameData.Players[playerID].Units[unitID].UnitType == UnitTypeEnum.Diplomat &&
 								playerID != this.parent.GameData.Cities[cityID].PlayerID)
@@ -1245,7 +1643,7 @@ namespace OpenCivOne
 
 								this.parent.Overlay_22.F22_0000_0000(cityID, playerID, unitID);
 
-								goto Label674;
+								goto Label722;
 							}
 
 							if (this.parent.GameData.Players[playerID].Units[unitID].UnitType == UnitTypeEnum.Caravan)
@@ -1285,7 +1683,7 @@ namespace OpenCivOne
 									if (selectedCaravanOption == 1)
 									{
 										this.parent.Segment_2459.F0_2459_0948_CaravanArrivesAtDestinationCity(playerID, unitID, cityID);
-										goto Label674;
+										goto Label722;
 									}
 
 									if (selectedCaravanOption == 2)
@@ -1296,7 +1694,7 @@ namespace OpenCivOne
 										// Instruction address 0x1403:0x2149, size: 5
 										this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(playerID, unitID);
 
-										goto Label674;
+										goto Label722;
 									}
 								}
 							}
@@ -1317,7 +1715,7 @@ namespace OpenCivOne
 				if (newTerrainType == TerrainTypeEnum.Water && this.parent.GameData.Players[playerID].Units[unitID].UnitType != UnitTypeEnum.None &&
 					this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].MovementType == UnitMovementTypeEnum.Land)
 				{
-					if (playerID != this.parent.Var_d20a || activeUnitID == -1 || this.parent.UnitManagement.F0_1866_13d5(playerID, activeUnitID) <= 0) goto Label674;
+					if (playerID != this.parent.Var_d20a || activeUnitID == -1 || this.parent.UnitManagement.F0_1866_13d5(playerID, activeUnitID) <= 0) goto Label722;
 
 					this.parent.GameData.Players[playerID].Units[unitID].Status |= 1;
 					this.parent.GameData.Players[playerID].Units[unitID].Status &= 0xf3;
@@ -1333,15 +1731,15 @@ namespace OpenCivOne
 
 						this.parent.GameData.Players[playerID].Units[unitID].GoToDestination = OpenCivOneGame.InvalidPosition;
 
-						goto Label674;
+						goto Label722;
 					}
 
-					if (newTerrainType != TerrainTypeEnum.Water && this.parent.GameData.Players[playerID].Units[unitID].UnitType == UnitTypeEnum.Submarine) goto Label674;
+					if (newTerrainType != TerrainTypeEnum.Water && this.parent.GameData.Players[playerID].Units[unitID].UnitType == UnitTypeEnum.Submarine) goto Label722;
 
 					if (playerID != this.parent.GameData.HumanPlayerID &&
-						this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].AttackStrength == 0) goto Label674;
+						this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].AttackStrength == 0) goto Label722;
 
-					if (this.parent.GameData.Players[playerID].Units[unitID].UnitType == UnitTypeEnum.Diplomat) goto Label674;
+					if (this.parent.GameData.Players[playerID].Units[unitID].UnitType == UnitTypeEnum.Diplomat) goto Label722;
 
 					if (this.parent.GameData.Units[(int)this.parent.GameData.Players[this.parent.Var_d20a].Units[activeUnitID].UnitType].MovementType == UnitMovementTypeEnum.Water)
 					{
@@ -1354,7 +1752,7 @@ namespace OpenCivOne
 
 								this.parent.GameData.Players[playerID].Units[unitID].GoToDestination = OpenCivOneGame.InvalidPosition;
 
-								goto Label674;
+								goto Label722;
 							}
 						}
 					}
@@ -1368,12 +1766,12 @@ namespace OpenCivOne
 							{
 								this.parent.GameData.Players[playerID].Units[unitID].GoToDestination = OpenCivOneGame.InvalidPosition;
 
-								goto Label674;
+								goto Label722;
 							}
 						}
 						else
 						{
-							if (this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves < 2) goto Label674;
+							if (this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves < 2) goto Label722;
 						}
 					}
 
@@ -1394,7 +1792,7 @@ namespace OpenCivOne
 					this.parent.GameData.Players[playerID].Units[unitID].GoToDestination = OpenCivOneGame.InvalidPosition;
 					this.parent.Var_70d8 = false;
 
-					if (local_3a == -1) goto Label674;
+					if (local_3a == -1) goto Label722;
 
 					if (this.parent.GameData.Players[playerID].Units[unitID].UnitType == UnitTypeEnum.None)
 					{
@@ -1409,7 +1807,7 @@ namespace OpenCivOne
 						this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves = 0;
 					}
 
-					if (!newImprovements.HasFlag(TerrainImprovementFlagsEnum.City)) goto Label674;
+					if (!newImprovements.HasFlag(TerrainImprovementFlagsEnum.City)) goto Label722;
 
 					int cityID = this.parent.Tools.F0_2dc4_00ba_GetCityByLocation(newX, newY);
 
@@ -1469,7 +1867,7 @@ namespace OpenCivOne
 							this.parent.AIEngine.F0_25fb_3459_PlayerChangeCityProductionForSameContinent(this.parent.Var_d20a, this.parent.MapManagement.F0_2aea_1942_GetGroupID(newX, newY));
 						}
 					}
-					goto Label674;
+					goto Label722;
 				}
 
 				if (newTerrainType != TerrainTypeEnum.Water && !newImprovements.HasFlag(TerrainImprovementFlagsEnum.City) &&
@@ -1477,7 +1875,7 @@ namespace OpenCivOne
 					this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].MovementType == UnitMovementTypeEnum.Air)
 				{
 					this.parent.GameData.Players[playerID].Units[unitID].GoToDestination = OpenCivOneGame.InvalidPosition;
-					goto Label674;
+					goto Label722;
 				}
 
 				if (this.parent.GameData.Players[playerID].Units[unitID].UnitType != UnitTypeEnum.None &&
@@ -1498,12 +1896,12 @@ namespace OpenCivOne
 						// Instruction address 0x1403:0x2730, size: 5
 						this.parent.Segment_29f3.F0_29f3_0d4d(playerID, newX, newY);
 					}
-					goto Label674;
+					goto Label722;
 				}
 
 				if (this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves == 0)
 				{
-					goto Label674;
+					goto Label722;
 				}
 
 				if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].MovementType == UnitMovementTypeEnum.Land)
@@ -1523,7 +1921,7 @@ namespace OpenCivOne
 							this.parent.CAPI.RNG.Next(this.parent.GameData.Terrains[(int)newTerrainType].MovementCost * 3) > this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves)
 						{
 							this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves = 0;
-							goto Label674;
+							goto Label722;
 						}
 
 						this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves -= (short)(this.parent.GameData.Terrains[(int)newTerrainType].MovementCost * 3);
@@ -1551,7 +1949,7 @@ namespace OpenCivOne
 								this.parent.GameData.Players[playerID].Units[unitID].GoToNextDirection = -1;
 								this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves = 0;
 
-								goto Label674;
+								goto Label722;
 							}
 						}
 					}
@@ -1566,7 +1964,7 @@ namespace OpenCivOne
 							this.parent.GameData.Players[playerID].Units[unitID].SpecialMoves != 0))
 					{
 						if (((this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves != 0) ? 4 : 2) <= this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(playerID, activeUnitID, 2))
-							goto Label674;
+							goto Label722;
 					}
 				}
 
@@ -1598,7 +1996,7 @@ namespace OpenCivOne
 									}
 									else
 									{
-										goto Label674;
+										goto Label722;
 									}
 								}
 								else if (ownerPlayerID == this.parent.GameData.HumanPlayerID &&
@@ -1606,7 +2004,7 @@ namespace OpenCivOne
 								{
 									this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves = 0;
 
-									goto Label674;
+									goto Label722;
 								}
 							}
 						}
@@ -1847,411 +2245,6 @@ namespace OpenCivOne
 					}
 				}
 				#endregion
-			}
-
-		Label674:
-			switch (command)
-			{
-				case -2:
-					if (this.parent.Segment_1238.F0_1238_001e_ShowDialog(this.parent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*REV"), 64, 80) == 1)
-					{
-						this.parent.GameData.Players[playerID].GovernmentType = 0;
-
-						this.parent.News.F21_0000_0000_ShowNews(-1, $"The {this.parent.GameData.Players[playerID].Nation} are\nrevolting! Citizens\ndemand new government.\n");
-
-						this.parent.StartGameMenu.F5_0000_1af6_LoadGovernmentImage();
-
-						// Instruction address 0x1403:0x35be, size: 5
-						this.parent.Segment_1238.F0_1238_1b44();
-					}
-					break;
-
-				// Enter
-				case 0xd:
-				case ' ':
-					if (unitID >= 128) goto Label755;
-					break;
-
-				case '+':
-				case '=':
-					StringBuilder taxOptions = new();
-					
-					taxOptions.Append("Select new Tax rate:\n ");
-
-					for (int i = 0; this.parent.GameData.Players[playerID].TaxRate + this.parent.GameData.Players[playerID].ScienceTaxRate >= i; i++)
-					{
-						// Instruction address 0x1403:0x362a, size: 5
-						taxOptions.Append($"{i * 10}% Tax, " +
-							$"({(this.parent.GameData.Players[playerID].TaxRate + this.parent.GameData.Players[playerID].ScienceTaxRate - i) * 10}% Science)\n ");
-					}
-
-					this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = this.parent.GameData.Players[playerID].TaxRate;
-
-					// Instruction address 0x1403:0x368b, size: 5
-					int selectedTaxRate = this.parent.Segment_1238.F0_1238_001e_ShowDialog(taxOptions.ToString(), 100, 80);
-
-					if (selectedTaxRate != -1)
-					{
-						this.parent.GameData.Players[playerID].ScienceTaxRate += (short)(this.parent.GameData.Players[playerID].TaxRate - selectedTaxRate);
-						this.parent.GameData.Players[playerID].TaxRate = (short)selectedTaxRate;
-
-						// Instruction address 0x1403:0x36b1, size: 5
-						this.parent.Segment_1238.F0_1238_107e();
-					}
-					break;
-
-				case '-':
-				case '_':
-					StringBuilder luxuryOptions = new();
-
-					// Instruction address 0x1403:0x36c1, size: 5
-					luxuryOptions.Append("Select new Luxuries rate:\n ");
-
-					for (int i = 0; 10 - this.parent.GameData.Players[playerID].TaxRate >= i; i++)
-					{
-						luxuryOptions.Append($"{i * 10}% Luxuries, ({(10 - i + this.parent.GameData.Players[playerID].TaxRate) * 10}% Science)\n ");
-					}
-
-					this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = (10 - this.parent.GameData.Players[playerID].TaxRate + this.parent.GameData.Players[playerID].ScienceTaxRate);
-
-					int newLuxuryRate = this.parent.Segment_1238.F0_1238_001e_ShowDialog(luxuryOptions.ToString(), 100, 80);
-
-					if (newLuxuryRate != -1)
-					{
-						this.parent.GameData.Players[playerID].ScienceTaxRate = (short)(10 - this.parent.GameData.Players[playerID].TaxRate + newLuxuryRate);
-						// Instruction address 0x1403:0x37a3, size: 5
-						this.parent.Segment_1238.F0_1238_107e();
-					}
-					break;
-
-				case '/':
-				case '?':
-					this.parent.TextBoxDialogs.F23_0000_025b_FindCityDialog();
-					break;
-
-				case 'S':
-					// Enable Save game with zero turns
-					//if (this.oParent.GameData.TurnCount != 0)
-					//{
-					// All Top menus are saving the current screenshot, so should we in Save game shortcut
-					this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
-
-					this.parent.LoadAndSave.F11_0000_036a_SaveGameDialog(false);
-					//}
-					break;
-
-				case 't':
-					this.parent.Var_dcfc = 1;
-
-					// Instruction address 0x1403:0x37bc, size: 5
-					this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(playerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
-					// Instruction address 0x1403:0x37c4, size: 5
-					this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
-
-					this.parent.Var_dcfc = 0;
-
-					// Instruction address 0x1403:0x37da, size: 5
-					this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(playerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
-					break;
-
-				// Alt + Q
-				case 0x1000:
-					if (this.parent.Segment_1238.F0_1238_001e_ShowDialog("Are you sure you\nwant to Quit?\n Keep Playing\n Yes, Quit\n", 100, 80) != 1)
-					{
-						this.parent.Var_dc48_GameEndType = 0;
-					}
-					else
-					{
-						if (this.parent.Var_dc48_GameEndType == 0)
-						{
-							this.parent.Var_dc48_GameEndType = 1;
-						}
-						unitID = 128;
-					}
-					break;
-
-				// Alt + W
-				case 0x1100:
-					// Instruction address 0x1403:0x3a84, size: 5
-					this.parent.Menus.F0_2c84_0000_ShowTopMenu(playerID, unitID, 3);
-
-					if (this.parent.Menus.Var_d4ca_MenuShortcutKey != -1)
-					{
-						command = this.parent.Menus.Var_d4ca_MenuShortcutKey;
-						goto Label151;
-					}
-					break;
-
-				// Alt + R
-				case 0x1300:
-					for (int i = 0; i < 16; i++)
-					{
-						// Instruction address 0x1403:0x3805, size: 5
-						this.parent.GameData.Nations[i].Mood = (short)(this.parent.CAPI.RNG.Next(3) - 1); // -1 = Friendly, 0 = Neutral, 1 = Aggressive
-
-						// Instruction address 0x1403:0x3816, size: 5
-						this.parent.GameData.Nations[i].Policy = (short)(this.parent.CAPI.RNG.Next(3) - 1); // -1 = Perfectionist, 0 = Neutral, 1 = Expansionist
-
-						// Instruction address 0x1403:0x3827, size: 5
-						this.parent.GameData.Nations[i].Ideology = (short)(this.parent.CAPI.RNG.Next(3) - 1); // -1 = Militaristic, 0 = Neutral, 1 = Civilized
-					}
-
-					// Instruction address 0x1403:0x3843, size: 5
-					this.parent.Segment_1238.F0_1238_001e_ShowDialog(0x2003, 100, 80);
-					break;
-
-				// Alt + O
-				case 0x1800:
-					// Instruction address 0x1403:0x3a5a, size: 5
-					this.parent.Menus.F0_2c84_0000_ShowTopMenu(playerID, unitID, 1);
-
-					if (this.parent.Menus.Var_d4ca_MenuShortcutKey != -1)
-					{
-						command = this.parent.Menus.Var_d4ca_MenuShortcutKey;
-						goto Label151;
-					}
-					break;
-
-				// Alt + A
-				case 0x1e00:
-					// Instruction address 0x1403:0x3a6f, size: 5
-					this.parent.Menus.F0_2c84_0000_ShowTopMenu(playerID, unitID, 2);
-
-					if (this.parent.Menus.Var_d4ca_MenuShortcutKey != -1)
-					{
-						command = this.parent.Menus.Var_d4ca_MenuShortcutKey;
-						goto Label151;
-					}
-					break;
-
-				// Alt + D
-				case 0x2000:
-					this.parent.Var_d806_DebugFlag = !this.parent.Var_d806_DebugFlag;
-
-					// Instruction address 0x1403:0x3506, size: 5
-					this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
-					break;
-
-				// Alt + G
-				case 0x2200:
-					// Instruction address 0x1403:0x3a45, size: 5
-					this.parent.Menus.F0_2c84_0000_ShowTopMenu(playerID, unitID, 0);
-
-					if (this.parent.Menus.Var_d4ca_MenuShortcutKey != -1)
-					{
-						command = this.parent.Menus.Var_d4ca_MenuShortcutKey;
-						goto Label151;
-					}
-					break;
-
-				// Alt + H
-				case 0x2300:
-					this.parent.Help.F4_0000_02d3_ShowInstantAdvicePopup("*HELP1");
-					this.parent.Help.F4_0000_02d3_ShowInstantAdvicePopup("*HELP2");
-					break;
-
-				// Alt + C
-				case 0x2e00:
-					// Instruction address 0x1403:0x3a99, size: 5
-					this.parent.Menus.F0_2c84_0000_ShowTopMenu(playerID, unitID, 4);
-
-					if (this.parent.Menus.Var_d4ca_MenuShortcutKey != -1)
-					{
-						command = this.parent.Menus.Var_d4ca_MenuShortcutKey;
-						goto Label151;
-					}
-					break;
-
-				// Alt + V
-				case 0x2f00:
-					this.parent.GameData.GameSettingFlags.Sound ^= true;
-
-					// Instruction address 0x1403:0x3890, size: 5
-					this.parent.Segment_1238.F0_1238_001e_ShowDialog($"Sounds {((this.parent.GameData.GameSettingFlags.Sound) ? "ON\n" : "OFF\n")}", 100, 80);
-					break;
-
-				// F1 - City status
-				case 0x3b00:
-					if (this.parent.Var_d806_DebugFlag)
-					{
-						this.parent.ShowDebugDetails.ShowMapWithStrategy();
-					}
-					else
-					{
-						this.parent.Overlay_14.F14_0000_186f_CityStatus(this.parent.GameData.HumanPlayerID);
-					}
-					break;
-
-				// F2 - Military Advisor
-				case 0x3c00:
-					if (this.parent.Var_d806_DebugFlag)
-					{
-						this.parent.ShowDebugDetails.ShowUnitStatistics();
-					}
-					else
-					{
-						this.parent.Overlay_14.F14_0000_03ad_MilitaryReport(this.parent.GameData.HumanPlayerID);
-					}
-					break;
-
-				// F3 - Intelligence Advisor
-				case 0x3d00:
-					if (this.parent.Var_d806_DebugFlag)
-					{
-						// Instruction address 0x1403:0x33ae, size: 5
-						this.parent.CommonTools.F0_1000_0846(2);
-
-						// Instruction address 0x1403:0x33b6, size: 5
-						this.parent.CAPI.getch();
-
-						// Instruction address 0x1403:0x33bf, size: 5
-						this.parent.CommonTools.F0_1000_0846(0);
-					}
-					else
-					{
-						this.parent.Overlay_14.F14_0000_0d43_IntelligenceReport();
-					}
-					break;
-
-				// F4 - Attitude Advisor
-				case 0x3e00:
-					this.parent.Overlay_14.F14_0000_15f4_AttitudeReport(this.parent.GameData.HumanPlayerID);
-					break;
-
-				// F5 - Trade Advisor
-				case 0x3f00:
-					this.parent.Overlay_14.F14_0000_07f1_TradeReport(this.parent.GameData.HumanPlayerID);
-					break;
-
-				// F6 - Science Advisor
-				case 0x4000:
-					this.parent.Overlay_14.F14_0000_014b_ScienceReport(this.parent.GameData.HumanPlayerID);
-					break;
-
-				// F7 - Wonders of the World
-				case 0x4100:
-					if (this.parent.Var_d806_DebugFlag)
-					{
-						for (int i = 1; i < 8; i++)
-						{
-							this.parent.ShowDebugDetails.ShowPlayerDetails(i);
-						}
-					}
-					else
-					{
-						this.parent.Reports.F12_0000_080d_ShowWondersOfTheWorldReport();
-					}
-					break;
-
-				// F8 - Top 5 Cities
-				case 0x4200:
-					if (this.parent.Var_d806_DebugFlag)
-					{
-						this.parent.Reports.F12_0000_0573_ShowPowerGraphReport();
-						this.parent.Replay.F9_0000_0000();
-					}
-					else
-					{
-						this.parent.HallOfFame.F3_0000_09ac_ShowTopFiveCitiesPopup();
-					}
-					break;
-
-				// F9 - Civilization Score
-				case 0x4300:
-					if (this.parent.Var_d806_DebugFlag)
-					{
-						this.parent.Reports.F12_0000_03ac_ShowContinentStatisticReport();
-					}
-					else
-					{
-						this.parent.Overlay_20.F20_0000_0ca9_ShowCivilizationScorePopup(this.parent.GameData.HumanPlayerID, true);
-					}
-					break;
-
-				// F10 - World Map
-				case 0x4400:
-					this.parent.Reports.F12_0000_0000_ShowWorldMapReport();
-					break;
-
-				// Shift + Home
-				case 0x4737:
-					direction = this.parent.MoveDirections[8];
-					this.parent.Var_d4cc_MapViewX += direction.X * 4;
-					this.parent.Var_d75e_MapViewY += direction.Y * 4;
-
-					// Instruction address 0x1403:0x3506, size: 5
-					this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
-					break;
-
-				// Shift + Up
-				case 0x4838:
-					direction = this.parent.MoveDirections[1];
-					this.parent.Var_d4cc_MapViewX += direction.X * 4;
-					this.parent.Var_d75e_MapViewY += direction.Y * 4;
-
-					// Instruction address 0x1403:0x3506, size: 5
-					this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
-					break;
-
-				// Shift + PageUp
-				case 0x4939:
-					direction = this.parent.MoveDirections[2];
-					this.parent.Var_d4cc_MapViewX += direction.X * 4;
-					this.parent.Var_d75e_MapViewY += direction.Y * 4;
-
-					// Instruction address 0x1403:0x3506, size: 5
-					this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
-					break;
-
-				// Shift + Left
-				case 0x4b34:
-					direction = this.parent.MoveDirections[7];
-					this.parent.Var_d4cc_MapViewX += direction.X * 4;
-					this.parent.Var_d75e_MapViewY += direction.Y * 4;
-
-					// Instruction address 0x1403:0x3506, size: 5
-					this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
-					break;
-
-				// Shift + Right
-				case 0x4d36:
-					direction = this.parent.MoveDirections[3];
-					this.parent.Var_d4cc_MapViewX += direction.X * 4;
-					this.parent.Var_d75e_MapViewY += direction.Y * 4;
-
-					// Instruction address 0x1403:0x3506, size: 5
-					this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
-					break;
-
-				// Shift + End
-				case 0x4f31:
-					direction = this.parent.MoveDirections[6];
-					this.parent.Var_d4cc_MapViewX += direction.X * 4;
-					this.parent.Var_d75e_MapViewY += direction.Y * 4;
-
-					// Instruction address 0x1403:0x3506, size: 5
-					this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
-					break;
-
-				// Shift + Down
-				case 0x5032:
-					direction = this.parent.MoveDirections[5];
-					this.parent.Var_d4cc_MapViewX += direction.X * 4;
-					this.parent.Var_d75e_MapViewY += direction.Y * 4;
-
-					// Instruction address 0x1403:0x3506, size: 5
-					this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
-					break;
-
-				// Shift + PageDown
-				case 0x5133:
-					direction = this.parent.MoveDirections[4];
-					this.parent.Var_d4cc_MapViewX += direction.X * 4;
-					this.parent.Var_d75e_MapViewY += direction.Y * 4;
-
-					// Instruction address 0x1403:0x3506, size: 5
-					this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
-					break;
 			}
 
 		Label722:

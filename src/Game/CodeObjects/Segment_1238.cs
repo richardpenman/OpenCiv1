@@ -172,7 +172,7 @@ namespace OpenCivOne
 					if (this.oParent.Var_dc48_GameEndType == 0)
 					{
 						// Instruction address 0x1238:0x022f, size: 5
-						this.oParent.PlayerTurn.F0_1403_000e_CheckPlayerTurn(i);
+						this.oParent.PlayerTurn.F0_1403_000e_PlayerTurn(i);
 					}
 
 					this.oParent.Var_df60 = 0;
