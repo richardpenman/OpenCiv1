@@ -905,7 +905,7 @@ namespace OpenCivOne
 							unit.Status |= 8;
 
 							if (this.parent.UnitManagement.F0_1866_1089_GetStackStrongestDefenseUnit(playerID, unitID) == unitID &&
-								(this.parent.GameData.Cities[nearestCityID].ActualSize / settleCoefficient) + 1 > this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(playerID, unitID, 4))
+								(this.parent.GameData.Cities[nearestCityID].ActualSize / settleCoefficient) + 1 > this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(playerID, unitID, UnitStackValueTypeEnum.DefenseUnitCount))
 							{
 								unit.Status = tempUnitStatus;
 
@@ -1060,7 +1060,7 @@ namespace OpenCivOne
 
 									if ((unitPlayerID == -1 || unitPlayerID == playerID) &&
 										(unitPlayerID != playerID ||
-										this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(playerID, this.parent.MapManagement.F0_2aea_1458_GetCellActiveUnitID(newX, newY), 2) < 2))
+										this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(playerID, this.parent.MapManagement.F0_2aea_1458_GetCellActiveUnitID(newX, newY), UnitStackValueTypeEnum.UnitCount) < 2))
 									{
 										if (!this.parent.GameData.Players[playerID].Diplomacy[this.parent.GameData.HumanPlayerID].HasFlag(DiplomacyFlagsEnum.Peace) ||
 											this.parent.MapManagement.F0_2aea_1369_GetCityOwner(newX, newY) != this.parent.GameData.HumanPlayerID ||
@@ -1324,7 +1324,7 @@ namespace OpenCivOne
 								{
 									int activeUnitID = this.parent.MapManagement.F0_2aea_1458_GetCellActiveUnitID(newX, newY);
 
-									if (activeUnitID == -1 || (playerID == this.parent.Var_d7f0 && this.parent.UnitManagement.F0_1866_1331(playerID, activeUnitID, UnitTypeEnum.Settler) == 0))
+									if (activeUnitID == -1 || (playerID == this.parent.Var_d7f0 && this.parent.UnitManagement.F0_1866_1331_CountUnitTypesInStack(playerID, activeUnitID, UnitTypeEnum.Settler) == 0))
 									{
 										if ((this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Monarchy) ?
 											this.parent.GameData.TerrainModifications[(int)this.parent.MapManagement.GetTerrainType(newX, newY)].AICanImproveAfterMonarchy :
@@ -1547,7 +1547,7 @@ namespace OpenCivOne
 
 								if (this.parent.GameData.Units[(int)unit.UnitType].MovementType != UnitMovementTypeEnum.Water)
 								{
-									if (selectedActiveUnitID == -1 || newCityPlayerID != playerID || this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(playerID, selectedActiveUnitID, 2) < 2)
+									if (selectedActiveUnitID == -1 || newCityPlayerID != playerID || this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(playerID, selectedActiveUnitID, UnitStackValueTypeEnum.UnitCount) < 2)
 									{
 										flag = true;
 									}
@@ -1559,7 +1559,7 @@ namespace OpenCivOne
 										flag = true;
 									}
 								}
-								else if (selectedActiveUnitID == -1 || newCityPlayerID != playerID || this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(playerID, selectedActiveUnitID, 2) < 2)
+								else if (selectedActiveUnitID == -1 || newCityPlayerID != playerID || this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(playerID, selectedActiveUnitID, UnitStackValueTypeEnum.UnitCount) < 2)
 								{
 									flag = true;
 								}
@@ -1578,17 +1578,17 @@ namespace OpenCivOne
 											{
 												if (unitRoleType == UnitRoleTypeEnum.LandAttack)
 												{
-													actionScore += (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(playerID, selectedActiveUnitID, 1) * 4) / (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(playerID, selectedActiveUnitID, 2) + 1);
+													actionScore += (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(playerID, selectedActiveUnitID, UnitStackValueTypeEnum.DefenseStrength) * 4) / (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(playerID, selectedActiveUnitID, UnitStackValueTypeEnum.UnitCount) + 1);
 												}
 
 												if (unitRoleType == UnitRoleTypeEnum.Settler)
 												{
-													actionScore += (this.parent.GameData.Terrains[(int)newTerrainType].DefenseBonus + this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(playerID, selectedActiveUnitID, 1)) * 2;
+													actionScore += (this.parent.GameData.Terrains[(int)newTerrainType].DefenseBonus + this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(playerID, selectedActiveUnitID, UnitStackValueTypeEnum.DefenseStrength)) * 2;
 												}
 
 												if (unitRoleType == UnitRoleTypeEnum.Defense)
 												{
-													actionScore += (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(playerID, selectedActiveUnitID, 3) * 2) / (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(playerID, selectedActiveUnitID, 1) + 1);
+													actionScore += (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(playerID, selectedActiveUnitID, UnitStackValueTypeEnum.AttackStrength) * 2) / (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(playerID, selectedActiveUnitID, UnitStackValueTypeEnum.DefenseStrength) + 1);
 												}
 											}
 											else
@@ -1667,13 +1667,13 @@ namespace OpenCivOne
 															(this.parent.GameData.Players[newCityPlayerID].Diplomacy[this.parent.GameData.HumanPlayerID] & (DiplomacyFlagsEnum.Contact | DiplomacyFlagsEnum.Peace)) != DiplomacyFlagsEnum.Contact &&
 															this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Continents[groupID].CityCount != 0)
 														{
-															if (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(newCityPlayerID, selectedActiveUnitID, 2) < 2)
+															if (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(newCityPlayerID, selectedActiveUnitID, UnitStackValueTypeEnum.UnitCount) < 2)
 															{
 																if (this.parent.CAPI.RNG.Next(8) == 0 || this.parent.GameData.Cities[nearestCityID].PlayerID == this.parent.GameData.HumanPlayerID)
 																{
 																	if ((this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY) & TerrainImprovementFlagsEnum.City) == TerrainImprovementFlagsEnum.None)
 																	{
-																		this.parent.Overlay_22.F22_0000_0639(newCityPlayerID, selectedActiveUnitID, playerID);
+																		this.parent.Overlay_22.F22_0000_0639_DiplomatInteraction(newCityPlayerID, selectedActiveUnitID, playerID);
 																	}
 																}
 															}
@@ -1691,10 +1691,10 @@ namespace OpenCivOne
 													(this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY) & TerrainImprovementFlagsEnum.City) == TerrainImprovementFlagsEnum.City)
 												{
 													// Instruction address 0x25fb:0x2ad8, size: 5
-													int local_5a = this.parent.Segment_29f3.F0_29f3_000e(playerID, unitID, newCityPlayerID, selectedActiveUnitID, false);
+													int local_5a = this.parent.Segment_29f3.F0_29f3_000e_AttackUnit(playerID, unitID, newCityPlayerID, selectedActiveUnitID, false);
 
 													// Instruction address 0x25fb:0x2aec, size: 5
-													local_5a = (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(newCityPlayerID, selectedActiveUnitID, 0) + 1) * local_5a;
+													local_5a = (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(newCityPlayerID, selectedActiveUnitID, UnitStackValueTypeEnum.Cost) + 1) * local_5a;
 
 													local_5a /= this.parent.GameData.Units[(int)unit.UnitType].Cost;
 
@@ -1709,7 +1709,7 @@ namespace OpenCivOne
 													}
 
 													if (unitRoleType == UnitRoleTypeEnum.LandAttack &&
-														(this.parent.GameData.Units[(int)unit.UnitType].AttackStrength * 2) < this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(playerID, unitID, 3))
+														(this.parent.GameData.Units[(int)unit.UnitType].AttackStrength * 2) < this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(playerID, unitID, UnitStackValueTypeEnum.AttackStrength))
 													{
 														local_5a *= 2;
 													}
@@ -1726,13 +1726,13 @@ namespace OpenCivOne
 																	(this.parent.GameData.Players[newCityPlayerID].Units[selectedActiveUnitID].Status & 0x28) != 0 &&
 																	this.parent.GameData.Terrains[(int)newTerrainType].DefenseBonus >= 4)
 																{
-																	if (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(newCityPlayerID, selectedActiveUnitID, 2) < 2)
+																	if (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(newCityPlayerID, selectedActiveUnitID, UnitStackValueTypeEnum.UnitCount) < 2)
 																	{
 																		if (this.parent.CAPI.RNG.Next(4) == 0)
 																		{
 																			if ((this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY) & TerrainImprovementFlagsEnum.City) == TerrainImprovementFlagsEnum.None)
 																			{
-																				this.parent.Overlay_22.F22_0000_0639(newCityPlayerID, selectedActiveUnitID, playerID);
+																				this.parent.Overlay_22.F22_0000_0639_DiplomatInteraction(newCityPlayerID, selectedActiveUnitID, playerID);
 																			}
 																		}
 																	}
@@ -1807,8 +1807,8 @@ namespace OpenCivOne
 									{
 										if (unit.RemainingMoves < 3)
 										{
-											actionScore = (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(playerID, unitID, 1) * actionScore) /
-												this.parent.Tools.F0_2dc4_007c_CheckValueRange(this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(playerID, unitID, 3), 1, 99);
+											actionScore = (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(playerID, unitID, UnitStackValueTypeEnum.DefenseStrength) * actionScore) /
+												this.parent.Tools.F0_2dc4_007c_CheckValueRange(this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(playerID, unitID, UnitStackValueTypeEnum.AttackStrength), 1, 99);
 										}
 									}
 
@@ -1892,7 +1892,7 @@ namespace OpenCivOne
 				}
 			}
 
-			if (playerID == this.parent.Var_6b90 && playerID != this.parent.GameData.HumanPlayerID && 
+			if (playerID == this.parent.Var_6b90_CurrentPlayer && playerID != this.parent.GameData.HumanPlayerID && 
 				(unitRoleType == UnitRoleTypeEnum.SeaAttack || unitRoleType == UnitRoleTypeEnum.AirAttack))
 			{
 				for (int i = 0; i < 128; i++)

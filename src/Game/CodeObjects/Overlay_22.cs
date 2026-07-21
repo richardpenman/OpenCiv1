@@ -20,7 +20,7 @@ namespace OpenCivOne
 		/// <param name="cityID"></param>
 		/// <param name="playerID"></param>
 		/// <param name="unitID"></param>
-		public void F22_0000_0000(int cityID, int playerID, int unitID)
+		public void F22_0000_0000_DiplomatAction(int cityID, int playerID, int unitID)
 		{
 			this.oCPU.Log.EnterBlock($"F22_0000_0000({cityID}, {playerID}, {unitID})");
 
@@ -197,7 +197,7 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
 			
 			// Instruction address 0x0000:0x01a2, size: 5
-			this.oParent.Segment_29f3.F0_29f3_0c9e(this.oParent.GameData.Cities[cityID].PlayerID);
+			this.oParent.Segment_29f3.F0_29f3_0c9e_ConfirmAttackAction(this.oParent.GameData.Cities[cityID].PlayerID);
 			
 			this.oCPU.AX.UInt16 = this.oCPU.INC_UInt16(this.oCPU.AX.UInt16);
 			if (this.oCPU.Flags.NE) goto L01b0;
@@ -571,7 +571,7 @@ namespace OpenCivOne
 		/// <param name="playerID"></param>
 		/// <param name="unitID"></param>
 		/// <param name="playerID1"></param>
-		public void F22_0000_0639(int playerID, int unitID, int playerID1)
+		public void F22_0000_0639_DiplomatInteraction(int playerID, int unitID, int playerID1)
 		{
 			this.oCPU.Log.EnterBlock($"F22_0000_0639({playerID}, {unitID}, {playerID1})");
 
@@ -583,7 +583,7 @@ namespace OpenCivOne
 			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
 
 			// Instruction address 0x0000:0x064b, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(playerID, unitID, 2);
+			this.oCPU.AX.Int16 = (short)this.oParent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(playerID, unitID, UnitStackValueTypeEnum.UnitCount);
 
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
 			if (this.oCPU.Flags.LE) goto L065b;

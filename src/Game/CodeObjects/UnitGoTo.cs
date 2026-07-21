@@ -1316,7 +1316,7 @@ namespace OpenCivOne
 										if (activeUnitID != -1)
 										{
 											// Instruction address 0x2e31:0x103f, size: 5
-											local_e = (short)this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(unit.PlayerID, activeUnitID, 2) * 4;
+											local_e = (short)this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(unit.PlayerID, activeUnitID, UnitStackValueTypeEnum.UnitCount) * 4;
 										}
 										else
 										{
@@ -1337,7 +1337,7 @@ namespace OpenCivOne
 										if (activeUnitID != -1)
 										{
 											// Instruction address 0x2e31:0x1099, size: 5
-											local_1a = (short)this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueCoefficient(unit.PlayerID, activeUnitID, 2) * 4;
+											local_1a = (short)this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(unit.PlayerID, activeUnitID, UnitStackValueTypeEnum.UnitCount) * 4;
 										}
 										else
 										{

@@ -167,7 +167,7 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock($"F4_0000_03aa_ShowInstantWarningPopup(0x{stringPtr:x4})");
 
 			// function body			
-			if (this.parent.Var_6b90 == this.parent.GameData.HumanPlayerID)
+			if (this.parent.Var_6b90_CurrentPlayer == this.parent.GameData.HumanPlayerID)
 			{
 				string content = this.parent.LanguageTools.F0_2f4d_0471_ReplaceKeywords(this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey("ERROR", topic));
 

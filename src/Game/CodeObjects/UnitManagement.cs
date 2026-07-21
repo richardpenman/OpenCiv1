@@ -1,4 +1,5 @@
 using IRB.VirtualCPU;
+using OpenCivOne.Game.CodeObjects;
 using OpenCivOne.Graphics;
 
 namespace OpenCivOne
@@ -232,8 +233,7 @@ namespace OpenCivOne
 					F0_1866_14a2_UnitStack(this.parent.Var_d7f0, activeUnitID);
 
 					// Instruction address 0x1866:0x051f, size: 5
-					if (this.parent.MapManagement.GetTerrainType(newX, newY) == TerrainTypeEnum.Water ||
-						terrainType != TerrainTypeEnum.Water)
+					if (this.parent.MapManagement.GetTerrainType(newX, newY) == TerrainTypeEnum.Water || terrainType != TerrainTypeEnum.Water)
 					{
 						this.parent.GameData.Players[this.parent.Var_d7f0].Units[activeUnitID].GoToDestination = OpenCivOneGame.InvalidPosition;
 					}
@@ -913,7 +913,7 @@ namespace OpenCivOne
 		/// <param name="unitID"></param>
 		/// <param name="valueType"></param>
 		/// <returns></returns>
-		public int F0_1866_1251_GetStackUnitValueCoefficient(int playerID, int unitID, int valueType)
+		public int F0_1866_1251_GetStackUnitValueSum(int playerID, int unitID, UnitStackValueTypeEnum valueType)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1866_1251({playerID}, {unitID}, {param3})");
 
@@ -927,7 +927,7 @@ namespace OpenCivOne
 		/// </summary>
 		/// <param name="playerID"></param>
 		/// <param name="unitID"></param>
-		private int F0_1866_1280_UnitStack(int playerID, int unitID, int valueType)
+		private int F0_1866_1280_UnitStack(int playerID, int unitID, UnitStackValueTypeEnum valueType)
 		{
 			int oldUnitID = unitID;
 			int value = 0;
@@ -952,7 +952,7 @@ namespace OpenCivOne
 		/// </summary>
 		/// <param name="playerID"></param>
 		/// <param name="unitID"></param>
-		private int F0_1866_1280(int playerID, int unitID, int mainUnitID, int valueType)
+		private int F0_1866_1280(int playerID, int unitID, int mainUnitID, UnitStackValueTypeEnum valueType)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1866_1280({playerID}, {unitID})");
 
@@ -961,23 +961,24 @@ namespace OpenCivOne
 
 			switch (valueType)
 			{
-				case 0:
+				case UnitStackValueTypeEnum.Cost:
 					value += this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].Cost;
 					break;
 
-				case 1:
+				case UnitStackValueTypeEnum.DefenseStrength:
 					value += this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].DefenseStrength;
 					break;
 
-				case 2:
+				case UnitStackValueTypeEnum.UnitCount:
 					value++;
 					break;
 
-				case 3:
+				case UnitStackValueTypeEnum.AttackStrength:
 					value += this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].AttackStrength;
 					break;
 
-				case 4:
+					// !!! To Check: This makes no sense, why would unitID and mainUnitID matter at all?
+				case UnitStackValueTypeEnum.DefenseUnitCount:
 					if (unitID < mainUnitID && 
 						this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].UnitRoleType == UnitRoleTypeEnum.Defense)
 					{
@@ -996,7 +997,7 @@ namespace OpenCivOne
 		/// <param name="unitID"></param>
 		/// <param name="unitType"></param>
 		/// <returns></returns>
-		public int F0_1866_1331(int playerID, int unitID, UnitTypeEnum unitType)
+		public int F0_1866_1331_CountUnitTypesInStack(int playerID, int unitID, UnitTypeEnum unitType)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1866_1331({playerID}, {unitID}, {param3})");
 
@@ -1884,7 +1885,7 @@ namespace OpenCivOne
 		/// <param name="playerID"></param>
 		/// <param name="unitID"></param>
 		/// <param name="moveDirection"></param>
-		public void F0_1866_1d55(int playerID, int unitID, int moveDirection)
+		public void F0_1866_1d55_AnimateUnitMove(int playerID, int unitID, int moveDirection)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1866_1d55({playerID}, {unitID}, {moveDirection})");
 
@@ -1917,8 +1918,6 @@ namespace OpenCivOne
 
 				for (int i = 0; i < 17; i++)
 				{
-					direction = this.parent.MoveDirections[moveDirection];
-
 					// Instruction address 0x1866:0x1f0a, size: 5
 					this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
 						(direction.X * i) + mapX + 1, (direction.Y * i) + mapY + 1,
@@ -1931,8 +1930,7 @@ namespace OpenCivOne
 					int newY = direction.Y * i + mapY;
 
 					// Instruction address 0x1866:0x1f4a, size: 5
-					this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle,
-						newX, newY, 16, 16, this.parent.Var_aa_Screen0_Rectangle, newX, newY);
+					this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, newX, newY, 16, 16, this.parent.Var_aa_Screen0_Rectangle, newX, newY);
 				}
 			}
 		}

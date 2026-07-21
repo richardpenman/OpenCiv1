@@ -1004,7 +1004,7 @@ namespace OpenCivOne
 			if (activeUnitID != -1)
 			{
 				// Instruction address 0x2aea:0x13ed, size: 5
-				this.parent.Segment_29f3.F0_29f3_0b66((short)playerID, (short)unitID, (short)activeUnitID);
+				this.parent.Segment_29f3.F0_29f3_0b66_AddUnitToStack(playerID, unitID, activeUnitID);
 			}
 		
 			// Instruction address 0x2aea:0x140b, size: 3
@@ -1026,7 +1026,7 @@ namespace OpenCivOne
 			if (this.parent.GameData.Players[playerID].Units[unitID].NextUnitID != -1)
 			{
 				// Instruction address 0x2aea:0x1433, size: 5
-				this.parent.Segment_29f3.F0_29f3_0bc9(playerID, unitID);
+				this.parent.Segment_29f3.F0_29f3_0bc9_RemoveUnitFromStack(playerID, unitID);
 			}
 			else
 			{
@@ -1232,7 +1232,7 @@ namespace OpenCivOne
 				this.gameData.Map.SetPixel(x, y + 100, (byte)(current | (ushort)improvements));
 			}
 
-			if (this.parent.Var_6b90 == this.parent.GameData.HumanPlayerID)
+			if (this.parent.Var_6b90_CurrentPlayer == this.parent.GameData.HumanPlayerID)
 			{
 				// Instruction address 0x2aea:0x16e5, size: 3
 				F0_2aea_1601_UpdateVisibleCellStatus(x, y);

@@ -34,7 +34,7 @@ namespace OpenCivOne
 		private AIEngine aiEngine;
 		private Segment_1ade oSegment_1ade;
 		private CityWorker cityWorker;
-		private Segment_29f3 oSegment_29f3;
+		private AttackActions oSegment_29f3;
 		private Segment_2517 oSegment_2517;
 		private Menus menus;
 		private MainIntro mainIntro;
@@ -155,7 +155,7 @@ namespace OpenCivOne
 			this.aiEngine = new AIEngine(this);
 			this.oSegment_1ade = new Segment_1ade(this);
 			this.cityWorker = new CityWorker(this);
-			this.oSegment_29f3 = new Segment_29f3(this);
+			this.oSegment_29f3 = new AttackActions(this);
 			this.oSegment_2517 = new Segment_2517(this);
 			this.menus = new Menus(this);
 			this.mainIntro = new MainIntro(this);
@@ -597,7 +597,7 @@ namespace OpenCivOne
 			get { return this.cityWorker; }
 		}
 
-		public Segment_29f3 Segment_29f3
+		public AttackActions Segment_29f3
 		{
 			get { return this.oSegment_29f3; }
 		}

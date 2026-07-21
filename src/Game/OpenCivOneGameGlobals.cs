@@ -155,7 +155,7 @@ namespace OpenCivOne
 		public int Var_6b32_SelectedGameType = 0;
 		public byte[] Var_6b34 = new byte[48];
 		public int Var_6b64 = 0;
-		public int Var_6b90 = 0;
+		public int Var_6b90_CurrentPlayer = 0;
 		public int Var_6b92 = 0;
 		public int Var_6c98 = 0;
 		public int[] Array_6e00 = new int[32];

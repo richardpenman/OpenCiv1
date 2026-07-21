@@ -3768,7 +3768,7 @@ namespace OpenCivOne
 				this.parent.Overlay_22.F22_0000_0967(local_d8, local_e4);
 
 				// Instruction address 0x1d12:0x66c5, size: 5
-				this.parent.Segment_29f3.F0_29f3_0ec3(local_d8, local_e4);
+				this.parent.Segment_29f3.F0_29f3_0ec3_AddEffectsOfNuclearAttackOrCatastrophe(local_d8, local_e4);
 
 				city.RemoveImprovement(ImprovementEnum.NuclearPlant);
 
