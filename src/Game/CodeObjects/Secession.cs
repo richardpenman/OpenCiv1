@@ -272,7 +272,8 @@ namespace OpenCivOne
 									newPlayerID, unitType,
 									this.parent.GameData.Players[playerID].Units[i].Position.X, this.parent.GameData.Players[playerID].Units[i].Position.Y);
 
-								this.parent.GameData.Players[newPlayerID].Units[newUnitID].Status = (short)(this.parent.GameData.Players[playerID].Units[i].Status & 0xfe);
+								this.parent.GameData.Players[newPlayerID].Units[newUnitID].Status = this.parent.GameData.Players[playerID].Units[i].Status;
+								this.parent.GameData.Players[newPlayerID].Units[newUnitID].ClearStatusFlags(UnitStatusEnum.Sentry);
 							}
 						}
 						else
@@ -312,7 +313,8 @@ namespace OpenCivOne
 							int newUnitID = this.parent.UnitManagement.F0_1866_0cf5_CreateUnit(newPlayerID, unitType,
 								this.parent.GameData.Players[playerID].Units[i].Position.X, this.parent.GameData.Players[playerID].Units[i].Position.Y);
 
-							this.parent.GameData.Players[newPlayerID].Units[newUnitID].Status = (short)(this.parent.GameData.Players[playerID].Units[i].Status & 0xfe);
+							this.parent.GameData.Players[newPlayerID].Units[newUnitID].Status = this.parent.GameData.Players[playerID].Units[i].Status;
+							this.parent.GameData.Players[newPlayerID].Units[newUnitID].ClearStatusFlags(UnitStatusEnum.Sentry);
 							this.parent.GameData.Players[newPlayerID].Units[newUnitID].HomeCityID = this.parent.GameData.Players[playerID].Units[i].HomeCityID;
 
 							while (nextUnitID != -1 && nextUnitID != i)
@@ -338,7 +340,8 @@ namespace OpenCivOne
 										newPlayerID, unitType,
 										this.parent.GameData.Players[playerID].Units[i].Position.X, this.parent.GameData.Players[playerID].Units[i].Position.Y);
 
-									this.parent.GameData.Players[newPlayerID].Units[newUnitID].Status = (short)(this.parent.GameData.Players[playerID].Units[i].Status & 0xfe);
+									this.parent.GameData.Players[newPlayerID].Units[newUnitID].Status = this.parent.GameData.Players[playerID].Units[i].Status;
+									this.parent.GameData.Players[newPlayerID].Units[newUnitID].ClearStatusFlags(UnitStatusEnum.Sentry);
 
 									if (this.parent.GameData.Cities[this.parent.GameData.Players[playerID].Units[nextUnitID].HomeCityID].PlayerID != unitHomeCityID)
 									{

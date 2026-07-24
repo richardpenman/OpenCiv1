@@ -103,7 +103,7 @@ namespace OpenCivOne
 
 			unit.GoToNextDirection = -1;
 
-			if (this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(unit.GoToDestination) && unit.Position != unit.GoToDestination)
+			if (this.parent.MapManagement.ValidateMapCoordinates(unit.GoToDestination) && unit.Position != unit.GoToDestination)
 			{
 				if (unit.GoToPath.Count == 0)
 				{
@@ -122,6 +122,12 @@ namespace OpenCivOne
 					GPoint newPos = unit.GoToPath.Pop();
 
 					direction = this.parent.MapManagement.GetMoveOffset(newPos - unit.Position);
+
+					if (direction > 8)
+					{
+						throw new Exception("Error in GoTo algorithm!");
+					}
+
 					unit.GoToNextDirection = (short)direction;
 				}
 			}
@@ -294,14 +300,17 @@ namespace OpenCivOne
 				group3 = group2;
 
 				// Exception rules temporary values
-				bool startGroupAdjacentToDestination = startGroup == destinationGroup; // the start group is adjacent to unit destination position
-				bool destinationGroupAdjacentToStart = startGroup == destinationGroup; // the destination group is adjacent to unit current position
+				bool startGroupAdjacentToDestination = startGroup == destinationGroup && startGroupType == destinationGroupType; // the start group is adjacent to unit destination position
+				bool destinationGroupAdjacentToStart = startGroup == destinationGroup && startGroupType == destinationGroupType; // the destination group is adjacent to unit current position
 
 				if (!destinationGroupAdjacentToStart)
 				{
 					for (int i = 1; i < 9; i++)
 					{
-						if (destinationGroup == map.F0_2aea_1942_GetGroupID(unit.Position + moveDirections[i]))
+						GPoint newPosition = unit.Position + moveDirections[i];
+
+						if (map.ValidateMapCoordinates(newPosition) && 
+							destinationGroup == map.F0_2aea_1942_GetGroupID(newPosition) && destinationGroupType == map.GetGroupType(newPosition))
 						{
 							destinationGroupAdjacentToStart = true;
 							break;
@@ -313,7 +322,10 @@ namespace OpenCivOne
 				{
 					for (int i = 1; i < 9; i++)
 					{
-						if (startGroup == map.F0_2aea_1942_GetGroupID(unit.GoToDestination + moveDirections[i]))
+						GPoint newPosition = unit.Position + moveDirections[i];
+
+						if (map.ValidateMapCoordinates(newPosition) && 
+							startGroup == map.F0_2aea_1942_GetGroupID(newPosition) && startGroupType == map.GetGroupType(newPosition))
 						{
 							startGroupAdjacentToDestination = true;
 							break;
@@ -322,7 +334,7 @@ namespace OpenCivOne
 				}
 
 				bool startIsTransportUnit = this.parent.UnitManagement.F0_1866_1380_GetStackUnitCount(unit.PlayerID, unit.ID, UnitRoleTypeEnum.SeaTransport) > 0;
-				int destinationPlayerID = map.F0_2aea_14e0_GetCellUnitPlayerID(unit.GoToDestination.X, unit.GoToDestination.Y);
+				int destinationPlayerID = map.F0_2aea_14e0_GetCellActiveUnitPlayerID(unit.GoToDestination.X, unit.GoToDestination.Y);
 				int destinationUnitID = map.F0_2aea_1458_GetCellActiveUnitID(unit.GoToDestination.X, unit.GoToDestination.Y);
 				bool destinationIsTransportUnit = (destinationPlayerID >= 0 && destinationUnitID >= 0 && 
 					this.parent.UnitManagement.F0_1866_1380_GetStackUnitCount(destinationPlayerID, destinationUnitID, UnitRoleTypeEnum.SeaTransport) > 0);
@@ -344,7 +356,7 @@ namespace OpenCivOne
 						(destinationGroupAdjacentToStart && destinationGroupType == TerrainMapGroupTypeEnum.Land && startIsTransportUnit) ||
 						(startGroupType == TerrainMapGroupTypeEnum.Water && startIsTransportUnit && destinationGroupType == TerrainMapGroupTypeEnum.Water && destinationIsTransportUnit));
 
-				if (!map.F0_2aea_1326_ValidateMapCoordinates(unit.Position) || !map.F0_2aea_1326_ValidateMapCoordinates(unit.GoToDestination) ||
+				if (!map.ValidateMapCoordinates(unit.Position) || !map.ValidateMapCoordinates(unit.GoToDestination) ||
 					unit.Position == unit.GoToDestination ||
 					(map.GetGroupType(unit.GoToDestination) != group1 && map.GetGroupType(unit.GoToDestination) != group2 && !landUnitCanMove && !waterUnitCanMove) ||
 					(unitMovementType != UnitMovementTypeEnum.Air && startGroup != destinationGroup && !landUnitCanMove && !waterUnitCanMove) ||
@@ -407,12 +419,12 @@ namespace OpenCivOne
 							newPos = new(this.parent.MapManagement.AdjustXPosition(newPos.X), newPos.Y);
 
 							// If new cell successor position is a valid position
-							if (map.F0_2aea_1326_ValidateMapCoordinates(newPos))
+							if (map.ValidateMapCoordinates(newPos))
 							{
 								AStarCell newCell = cells[newPos.X, newPos.Y];
 								TerrainMapGroupTypeEnum cellGroupType = map.GetGroupType(newPos.X, newPos.Y);
 
-								if (cellGroupType == group1 || cellGroupType == group2 || cellGroupType == group3)
+								if (cellGroupType == group1 || cellGroupType == group2 || (newPos == unit.GoToDestination && cellGroupType == group3))
 								{
 									// If the destination cell is the same as the current successor cell
 									// we have reached our destination
@@ -748,7 +760,7 @@ namespace OpenCivOne
 						TerrainTypeEnum newTerrainType = this.parent.MapManagement.GetTerrainType(unitNewX, unitNewY);
 
 						// Instruction address 0x2e31:0x03c8, size: 5
-						int cellOwner = this.parent.MapManagement.F0_2aea_14e0_GetCellUnitPlayerID(unitNewX, unitNewY);
+						int cellOwner = this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(unitNewX, unitNewY);
 
 						if (((cellOwner == -1 || cellOwner == playerID) &&
 							((((this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Water) ? 1 : 0) == (newTerrainType == TerrainTypeEnum.Water ? 1 : 0) &&
@@ -1221,7 +1233,7 @@ namespace OpenCivOne
 									TerrainTypeEnum local_3e = this.parent.MapManagement.GetTerrainType(newXAdjusted, newY);
 
 									if (Math.Abs(newY - this.Var_6592_DestinationY) < 8 &&
-										this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(newXAdjusted, newY) &&
+										this.parent.MapManagement.ValidateMapCoordinates(newXAdjusted, newY) &&
 										((local_3e == TerrainTypeEnum.Water) == waterUnit ||
 										this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newXAdjusted, newY).HasFlag(TerrainImprovementFlagsEnum.City)))
 									{

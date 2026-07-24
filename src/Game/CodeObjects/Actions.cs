@@ -126,7 +126,7 @@ namespace OpenCivOne
 					int newX = this.parent.MapManagement.AdjustXPosition(cityX + direction.X);
 					int newY = cityY + direction.Y;
 
-					if (this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(newX, newY))
+					if (this.parent.MapManagement.ValidateMapCoordinates(newX, newY))
 					{
 						// Instruction address 0x2459:0x027e, size: 5
 						this.parent.MapManagement.SetPlayerLandOwnership(newX, newY, playerID);

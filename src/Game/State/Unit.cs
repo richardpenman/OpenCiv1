@@ -7,7 +7,7 @@ namespace OpenCivOne
 	{
 		public int ID = -1;
 		public UnitTypeEnum UnitType = UnitTypeEnum.None;
-		public short Status = 0;
+		public UnitStatusEnum Status = UnitStatusEnum.None;
 		public GPoint Position = new GPoint(-1);
 		public short RemainingMoves = 0;
 		public short SpecialMoves = 0;
@@ -17,18 +17,19 @@ namespace OpenCivOne
 		
 		public ushort VisibleByPlayer = 0;
 
-		public GPoint GoToDestination = new GPoint(-1);
+		private GPoint goToDestination = new GPoint(-1);
 		public short GoToNextDirection = 0;
 		public Stack<GPoint> GoToPath = new Stack<GPoint>();
 
-		public void ClearStatus(short status)
+		public void ClearStatusFlags(UnitStatusEnum status)
 		{
-			this.Status &= status;
+			this.Status |= status;
+			this.Status ^= status;
 		}
 
-		public bool TestStatus(short status)
+		public bool TestStatusFlags(UnitStatusEnum status)
 		{
-			return (this.Status & status) != 0;
+			return (this.Status & status) != status;
 		}
 
 		public static Unit FromStream(int id, Stream stream)
@@ -36,12 +37,12 @@ namespace OpenCivOne
 			Unit unit = new Unit();
 
 			unit.ID = id;
-			unit.Status = (sbyte)LoadAndSave.ReadUInt8(stream);
+			unit.Status = (UnitStatusEnum)LoadAndSave.ReadUInt8(stream);
 			unit.Position = new((sbyte)LoadAndSave.ReadUInt8(stream), (sbyte)LoadAndSave.ReadUInt8(stream));
 			unit.UnitType = (UnitTypeEnum)((sbyte)LoadAndSave.ReadUInt8(stream));
 			unit.RemainingMoves = (sbyte)LoadAndSave.ReadUInt8(stream);
 			unit.SpecialMoves = (sbyte)LoadAndSave.ReadUInt8(stream);
-			unit.GoToDestination = new((sbyte)LoadAndSave.ReadUInt8(stream), (sbyte)LoadAndSave.ReadUInt8(stream));
+			unit.goToDestination = new((sbyte)LoadAndSave.ReadUInt8(stream), (sbyte)LoadAndSave.ReadUInt8(stream));
 			unit.GoToNextDirection = (sbyte)LoadAndSave.ReadUInt8(stream);
 			unit.VisibleByPlayer = LoadAndSave.ReadUInt8(stream);
 			unit.NextUnitID = (sbyte)LoadAndSave.ReadUInt8(stream);
@@ -52,18 +53,32 @@ namespace OpenCivOne
 
 		public void ToStream(Stream stream)
 		{
-			stream.WriteByte((byte)((sbyte)this.Status));
+			stream.WriteByte((byte)this.Status);
 			stream.WriteByte((byte)((sbyte)this.Position.X));
 			stream.WriteByte((byte)((sbyte)this.Position.Y));
 			stream.WriteByte((byte)((sbyte)this.UnitType));
 			stream.WriteByte((byte)((sbyte)this.RemainingMoves));
 			stream.WriteByte((byte)((sbyte)this.SpecialMoves));
-			stream.WriteByte((byte)((sbyte)this.GoToDestination.X));
-			stream.WriteByte((byte)((sbyte)this.GoToDestination.Y));
+			stream.WriteByte((byte)((sbyte)this.goToDestination.X));
+			stream.WriteByte((byte)((sbyte)this.goToDestination.Y));
 			stream.WriteByte((byte)((sbyte)this.GoToNextDirection));
 			stream.WriteByte((byte)(this.VisibleByPlayer & 0xff));
 			stream.WriteByte((byte)((sbyte)this.NextUnitID));
 			stream.WriteByte((byte)((sbyte)this.HomeCityID));
+		}
+
+		public GPoint GoToDestination
+		{
+			get => this.goToDestination;
+			set
+			{
+				if (value.X == -1 || value.Y == -1)
+				{
+					this.GoToPath.Clear();
+				}
+
+				this.goToDestination = value;
+			}
 		}
 	}
 }

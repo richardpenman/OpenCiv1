@@ -46,7 +46,7 @@ namespace OpenCivOne
 			{
 				defenseStrength = (this.oParent.GameData.Terrains[(int)defenderTerrainType].DefenseBonus * this.oParent.GameData.Units[(int)unit2Type].DefenseStrength) * 8;
 			}
-			else if ((this.oParent.GameData.Players[playerID2].Units[unitID2].Status & 0x8) != 0)
+			else if ((this.oParent.GameData.Players[playerID2].Units[unitID2].Status & UnitStatusEnum.Fortified) != UnitStatusEnum.None)
 			{
 				defenseStrength = (this.oParent.GameData.Terrains[(int)defenderTerrainType].DefenseBonus * this.oParent.GameData.Units[(int)unit2Type].DefenseStrength) * 6;
 			}
@@ -106,12 +106,12 @@ namespace OpenCivOne
 				}
 			}
 
-			if ((this.oParent.GameData.Players[playerID1].Units[unitID1].Status & 0x20) != 0)
+			if ((this.oParent.GameData.Players[playerID1].Units[unitID1].Status & UnitStatusEnum.Veteran) != UnitStatusEnum.None)
 			{
 				attackStrength += attackStrength / 2;
 			}
 
-			if ((this.oParent.GameData.Players[playerID2].Units[unitID2].Status & 0x20) != 0)
+			if ((this.oParent.GameData.Players[playerID2].Units[unitID2].Status & UnitStatusEnum.Veteran) != UnitStatusEnum.None)
 			{
 				defenseStrength += defenseStrength / 2;
 			}
@@ -417,12 +417,13 @@ namespace OpenCivOne
 							int newY = this.oParent.GameData.Players[playerID2].Units[unitID2].Position.Y + direction.Y;
 
 							// Instruction address 0x29f3:0x0a7f, size: 5
-							defenseStrength = this.oParent.MapManagement.F0_2aea_1458_GetCellActiveUnitID(newX, newY);
+							int activeUnitID = this.oParent.MapManagement.F0_2aea_1458_GetCellActiveUnitID(newX, newY);
+							int activeUnitPlayerID = this.oParent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(newX, newY);
 
-							if (defenseStrength != -1 && this.oParent.Var_d7f0 != this.oParent.GameData.HumanPlayerID)
+							if (activeUnitID != -1 && activeUnitPlayerID != this.oParent.GameData.HumanPlayerID)
 							{
 								// Instruction address 0x29f3:0x0aa7, size: 5
-								this.oParent.UnitManagement.F0_1866_1593_UnitStack(this.oParent.Var_d7f0, defenseStrength);
+								this.oParent.UnitManagement.F0_1866_1593_UnitStack(activeUnitPlayerID, activeUnitID);
 							}
 						}
 
@@ -444,7 +445,7 @@ namespace OpenCivOne
 					return 1;
 				}
 
-				this.oParent.GameData.Players[playerID1].Units[unitID1].Status |= 0x20;
+				this.oParent.GameData.Players[playerID1].Units[unitID1].Status |= UnitStatusEnum.Veteran;
 
 				return 1;
 			}
@@ -456,7 +457,7 @@ namespace OpenCivOne
 
 			if (this.oParent.CAPI.RNG.Next(2) != 0)
 			{
-				this.oParent.GameData.Players[playerID2].Units[unitID2].Status |= 0x20;
+				this.oParent.GameData.Players[playerID2].Units[unitID2].Status |= UnitStatusEnum.Veteran;
 			}
 		
 			return 0;
@@ -588,10 +589,11 @@ namespace OpenCivOne
 				int newX = this.oParent.MapManagement.AdjustXPosition(x + direction.X);
 				int newY = y + direction.Y;
 
-				if (this.oParent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(newX, newY))
+				if (this.oParent.MapManagement.ValidateMapCoordinates(newX, newY))
 				{
 					// Instruction address 0x29f3:0x0dcb, size: 5
 					int activeUnitID = this.oParent.MapManagement.F0_2aea_1458_GetCellActiveUnitID(newX, newY);
+					int activeUnitPlayerID = this.oParent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(newX, newY);
 
 					if (this.oParent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY).HasFlag(TerrainImprovementFlagsEnum.City))
 					{
@@ -610,16 +612,16 @@ namespace OpenCivOne
 					if (activeUnitID != -1)
 					{
 						// Instruction address 0x29f3:0x0e5e, size: 5
-						int unitCount = this.oParent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(this.oParent.Var_d7f0, activeUnitID, UnitStackValueTypeEnum.UnitCount);
+						int unitCount = this.oParent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(activeUnitPlayerID, activeUnitID, UnitStackValueTypeEnum.UnitCount);
 
-						this.oParent.GameData.Players[playerID].UnitsDestroyed[this.oParent.Var_d7f0] += (short)unitCount;
+						this.oParent.GameData.Players[playerID].UnitsDestroyed[activeUnitPlayerID] += (short)unitCount;
 
 						// Instruction address 0x29f3:0x0e89, size: 5
-						this.oParent.UnitManagement.F0_1866_0f10_DeleteUnitStack(this.oParent.Var_d7f0, activeUnitID);
+						this.oParent.UnitManagement.F0_1866_0f10_DeleteUnitStack(activeUnitPlayerID, activeUnitID);
 
-						if (playerID != this.oParent.Var_d7f0)
+						if (playerID != activeUnitPlayerID)
 						{
-							this.oParent.GameData.Players[this.oParent.Var_d7f0].Diplomacy[playerID] |= DiplomacyFlagsEnum.Vendetta | DiplomacyFlagsEnum.Unknown80;
+							this.oParent.GameData.Players[activeUnitPlayerID].Diplomacy[playerID] |= DiplomacyFlagsEnum.Vendetta | DiplomacyFlagsEnum.Unknown80;
 						}
 					}
 				}
@@ -648,7 +650,7 @@ namespace OpenCivOne
 				int newX = this.oParent.MapManagement.AdjustXPosition(x + direction.X);
 				int newY = y + direction.Y;
 
-				if (this.oParent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(newX, newY))
+				if (this.oParent.MapManagement.ValidateMapCoordinates(newX, newY))
 				{
 					if (this.oParent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY).HasFlag(TerrainImprovementFlagsEnum.City))
 					{

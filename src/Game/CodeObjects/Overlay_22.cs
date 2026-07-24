@@ -20,7 +20,7 @@ namespace OpenCivOne
 		/// <param name="cityID"></param>
 		/// <param name="playerID"></param>
 		/// <param name="unitID"></param>
-		public void F22_0000_0000_DiplomatAction(int cityID, int playerID, int unitID)
+		public void F22_0000_0000_DiplomatActionOnACity(int cityID, int playerID, int unitID)
 		{
 			this.oCPU.Log.EnterBlock($"F22_0000_0000({cityID}, {playerID}, {unitID})");
 
@@ -571,7 +571,7 @@ namespace OpenCivOne
 		/// <param name="playerID"></param>
 		/// <param name="unitID"></param>
 		/// <param name="playerID1"></param>
-		public void F22_0000_0639_DiplomatInteraction(int playerID, int unitID, int playerID1)
+		public void F22_0000_0639_DiplomatInteractionWithUnit(int playerID, int unitID, int playerID1)
 		{
 			this.oCPU.Log.EnterBlock($"F22_0000_0639({playerID}, {unitID}, {playerID1})");
 
@@ -613,7 +613,7 @@ namespace OpenCivOne
 			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, (ushort)((short)this.oParent.GameData.Units[(int)this.oParent.GameData.Players[playerID].Units[unitID].UnitType].Cost));
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), this.oCPU.AX.UInt16);
 
-			if (this.oParent.GameData.Players[playerID].Units[unitID].UnitType != 0)
+			if (this.oParent.GameData.Players[playerID].Units[unitID].UnitType != UnitTypeEnum.Settler)
 			{
 				this.oCPU.CX.UInt16 = 0x2;
 				this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);

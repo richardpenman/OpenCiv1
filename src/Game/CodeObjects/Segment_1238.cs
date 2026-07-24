@@ -551,7 +551,7 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.NE) goto L09b8;
 
 			// Instruction address 0x1238:0x09f0, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.MapManagement.F0_2aea_14e0_GetCellUnitPlayerID(
+			this.oCPU.AX.Int16 = (short)this.oParent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xe)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)));
 
@@ -601,7 +601,7 @@ namespace OpenCivOne
 			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)));
 			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
 
-			this.oParent.GameData.Players[0].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c))].Status |= 1;
+			this.oParent.GameData.Players[0].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c))].Status |= UnitStatusEnum.Sentry;
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14), 
 				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14))));
@@ -712,7 +712,7 @@ namespace OpenCivOne
 
 		L0ba8:
 			// Instruction address 0x1238:0x0bae, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.MapManagement.F0_2aea_14e0_GetCellUnitPlayerID(
+			this.oCPU.AX.Int16 = (short)this.oParent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xe)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)));
 

@@ -288,7 +288,7 @@ namespace OpenCivOne
 							(this.parent.GameData.MapVisibility[local_c6, local_d2] & (1 << this.Var_6548_PlayerID)) != 0)
 						{
 							// Instruction address 0x1d12:0x0664, size: 5
-							local_e8 = this.parent.MapManagement.F0_2aea_14e0_GetCellUnitPlayerID(local_c6, local_d2);
+							local_e8 = this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(local_c6, local_d2);
 
 							if (local_e8 != -1 && local_e8 != this.Var_6548_PlayerID)
 							{
@@ -458,7 +458,7 @@ namespace OpenCivOne
 							}
 						}
 
-						if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType == 0)
+						if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType == UnitTypeEnum.Settler)
 						{
 							this.parent.Var_e3c6++;
 						}
@@ -480,7 +480,7 @@ namespace OpenCivOne
 					}
 
 					// Instruction address 0x1d12:0x0bf4, size: 5
-					local_e8 = this.parent.MapManagement.F0_2aea_14e0_GetCellUnitPlayerID(local_c6, local_d2);
+					local_e8 = this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(local_c6, local_d2);
 
 					if (local_e8 != -1 && local_e8 != this.Var_6548_PlayerID)
 					{
@@ -807,7 +807,7 @@ namespace OpenCivOne
 
 								if (city.HasImprovement(ImprovementEnum.Barracks) && local_ba != -1)
 								{
-									this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_ba].Status |= 0x20;
+									this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_ba].Status |= UnitStatusEnum.Veteran;
 								}
 
 								if (local_ba != -1 && city.CurrentProductionID == 0 && (city.ActualSize > 1 || this.parent.GameData.Players[this.Var_6548_PlayerID].CityCount > 1))
@@ -1231,7 +1231,7 @@ namespace OpenCivOne
 						}
 
 						// Instruction address 0x1d12:0x24bb, size: 5
-						if ((this.parent.MapManagement.F0_2aea_14e0_GetCellUnitPlayerID(local_d8, local_e4) == -1 || 
+						if ((this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(local_d8, local_e4) == -1 || 
 							(city.StatusFlag & 0x10) != 0) && city.CurrentProductionID >= 0 && city.ShieldsCount != 0)
 						{
 							// Instruction address 0x1d12:0x2530, size: 5
@@ -1815,7 +1815,7 @@ namespace OpenCivOne
 									}
 									else if (local_c8 > 0 &&
 										this.parent.GameData.Units[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_108].UnitType].MovementType == UnitMovementTypeEnum.Land &&
-										this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_108].UnitType != 0)
+										this.parent.GameData.Players[this.Var_6548_PlayerID].Units[local_108].UnitType != UnitTypeEnum.Settler)
 									{
 										// Instruction address 0x1d12:0x35c9, size: 5
 										this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(this.Var_6548_PlayerID, (short)local_108);
@@ -1854,7 +1854,7 @@ namespace OpenCivOne
 									this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
 										local_f6 + 8, local_fc + 12, this.parent.Array_d4ce[9]);
 								}
-								if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType == 0)
+								if (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType == UnitTypeEnum.Settler)
 								{
 									// Instruction address 0x1d12:0x36f4, size: 5
 									this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
@@ -2663,7 +2663,9 @@ namespace OpenCivOne
 						goto L520e;
 
 					L4fff:
-						for (local_106 = 0; local_106 < local_4e && (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].Status & 0xcf) == 0; local_106++)
+						for (local_106 = 0; local_106 < local_4e && (this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].Status & 
+							(UnitStatusEnum.Sentry | UnitStatusEnum.SettlerBuildRoadOrRail | UnitStatusEnum.Fortifying | UnitStatusEnum.Fortified |
+								UnitStatusEnum.SettlerBuildIrrigation | UnitStatusEnum.SettlerBuildMineOrForest)) == UnitStatusEnum.None; local_106++)
 						{
 						}
 
@@ -2728,13 +2730,15 @@ namespace OpenCivOne
 
 						if (local_fc == '\n' || local_fc == ' ')
 						{
-							if ((this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].Status & 0x9) != 0)
+							if ((this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].Status & (UnitStatusEnum.Sentry | UnitStatusEnum.Fortified)) != UnitStatusEnum.None)
 							{
 								this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].RemainingMoves =
 									(short)(this.parent.GameData.Units[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].UnitType].MoveCount * 3);
 							}
 
-							this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].Status &= 0x30;
+							this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].ClearStatusFlags(
+								UnitStatusEnum.Sentry | UnitStatusEnum.SettlerBuildRoadOrRail | UnitStatusEnum.Fortifying | UnitStatusEnum.Fortified | 
+									UnitStatusEnum.SettlerBuildIrrigation | UnitStatusEnum.SettlerBuildMineOrForest);
 							this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].GoToDestination = OpenCivOneGame.InvalidPosition;
 						}
 					
@@ -3215,14 +3219,16 @@ namespace OpenCivOne
 						if (local_106 >= local_4e)
 							goto L5a60;
 
-						if ((this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].Status & 0x9) == 0)
+						if ((this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].Status & (UnitStatusEnum.Sentry | UnitStatusEnum.Fortified)) == UnitStatusEnum.None)
 							goto L5a18;
 
 						this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].RemainingMoves =
 							(short)(this.parent.GameData.Units[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].UnitType].MoveCount * 3);
 
 					L5a18:
-						this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].Status &= 0x30;
+						this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].ClearStatusFlags(UnitStatusEnum.Sentry |
+							UnitStatusEnum.SettlerBuildRoadOrRail | UnitStatusEnum.Fortifying | UnitStatusEnum.Fortified | UnitStatusEnum.SettlerBuildIrrigation |
+							UnitStatusEnum.SettlerBuildMineOrForest);
 						this.parent.GameData.Players[this.Var_6548_PlayerID].Units[Arr_74[local_106]].GoToDestination = OpenCivOneGame.InvalidPosition;
 
 						this.parent.Var_70da_Arr[1] = local_10a;
@@ -4008,7 +4014,7 @@ namespace OpenCivOne
 
 			// function body
 			// Instruction address 0x1d12:0x6ac9, size: 5
-			if (this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(x, y))
+			if (this.parent.MapManagement.ValidateMapCoordinates(x, y))
 			{
 				// Instruction address 0x1d12:0x6ade, size: 5
 				TerrainTypeEnum terrainType = this.parent.MapManagement.GetTerrainType(x, y);

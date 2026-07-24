@@ -1229,25 +1229,25 @@ namespace OpenCivOne
 
 									local_6 = 4;
 
-									if (!this.map.F0_2aea_1326_ValidateMapCoordinates(newX, newY) ||
+									if (!this.map.ValidateMapCoordinates(newX, newY) ||
 										this.map.GetTerrainType(newX, newY) != TerrainTypeEnum.Water)
 									{
 										local_6--;
 									}
 
-									if (!this.map.F0_2aea_1326_ValidateMapCoordinates(newX + 1, newY) ||
+									if (!this.map.ValidateMapCoordinates(newX + 1, newY) ||
 										this.map.GetTerrainType(newX + 1, newY) != TerrainTypeEnum.Water)
 									{
 										local_6--;
 									}
 
-									if (!this.map.F0_2aea_1326_ValidateMapCoordinates(newX, newY + 1) ||
+									if (!this.map.ValidateMapCoordinates(newX, newY + 1) ||
 										this.map.GetTerrainType(newX, newY + 1) != TerrainTypeEnum.Water)
 									{
 										local_6--;
 									}
 
-									if (!this.map.F0_2aea_1326_ValidateMapCoordinates(newX + 1, newY + 1) ||
+									if (!this.map.ValidateMapCoordinates(newX + 1, newY + 1) ||
 										this.map.GetTerrainType(newX + 1, newY + 1) != TerrainTypeEnum.Water)
 									{
 										local_6--;

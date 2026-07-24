@@ -86,7 +86,7 @@ namespace OpenCivOne
 				for (int j = 0; j < 80; j++)
 				{
 					if (this.parent.Var_d806_DebugFlag || 
-						(this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(0, i + yMedian) && (this.parent.GameData.MapVisibility[j, i] & playerMask) != 0))
+						(this.parent.MapManagement.ValidateMapCoordinates(0, i + yMedian) && (this.parent.GameData.MapVisibility[j, i] & playerMask) != 0))
 					{
 						int cellX = this.parent.MapManagement.AdjustXPosition(j + xOffset) * 4;
 						int cellY = (i + yMedian) * 4;
@@ -118,7 +118,7 @@ namespace OpenCivOne
 						else
 						{
 							// Instruction address 0x0000:0x0215, size: 5
-							int unitPlayerID = this.parent.MapManagement.F0_2aea_14e0_GetCellUnitPlayerID(j, i);
+							int unitPlayerID = this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(j, i);
 
 							if (unitPlayerID != -1)
 							{

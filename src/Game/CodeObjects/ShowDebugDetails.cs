@@ -65,7 +65,7 @@ namespace OpenCivOne
 						}
 						else
 						{
-							int unitPlayerID = this.oParent.MapManagement.F0_2aea_14e0_GetCellUnitPlayerID(j, i);
+							int unitPlayerID = this.oParent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(j, i);
 
 							if (unitPlayerID != -1)
 							{

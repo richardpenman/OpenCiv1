@@ -108,8 +108,6 @@ namespace OpenCivOne
 			this.parent.Segment_1238.F0_1238_0fea_DrawMainMenu();
 			this.parent.Segment_1238.F0_1238_107e();
 
-			int tempValue = this.parent.Var_d20a;
-
 			this.parent.Var_d4cc_MapViewX = this.parent.MapManagement.AdjustXPosition(x);
 			this.parent.Var_d75e_MapViewY = this.parent.Tools.F0_2dc4_007c_CheckValueRange(y, 0, 38);
 
@@ -283,8 +281,6 @@ namespace OpenCivOne
 
 			// Instruction address 0x2aea:0x03a2, size: 5
 			this.parent.DrawTools.DrawRectangle(x - xMap - 1, y - yMap + 7, 17, 10, 15);
-
-			this.parent.Var_d20a = tempValue;
 		}
 
 		/// <summary>
@@ -332,7 +328,7 @@ namespace OpenCivOne
 
 						// Instruction address 0x2aea:0x0570, size: 3
 						if (GetTerrainType(this.parent.MapManagement.AdjustXPosition(x + direction.X), y + direction.Y) != TerrainTypeEnum.Water &&
-							F0_2aea_1326_ValidateMapCoordinates(0, y + direction.Y))
+							ValidateMapCoordinates(0, y + direction.Y))
 						{
 							mask |= 0x80;
 						}
@@ -461,7 +457,7 @@ namespace OpenCivOne
 						GPoint direction = this.parent.MoveDirections[i];
 
 						if (GetTerrainType(this.parent.MapManagement.AdjustXPosition(x + direction.X), y + direction.Y) == terrainType &&
-							F0_2aea_1326_ValidateMapCoordinates(0, y + direction.Y))
+							ValidateMapCoordinates(0, y + direction.Y))
 						{
 							mask |= 0x8;
 						}
@@ -683,7 +679,7 @@ namespace OpenCivOne
 
 			if (x >= 80 && x < 320 && y >= 8 && y < 193)
 			{
-				if ((unit.Status & 0x1) == 0 || GetTerrainType(unit.Position.X, unit.Position.Y) != TerrainTypeEnum.Water ||
+				if ((unit.Status & UnitStatusEnum.Sentry) == UnitStatusEnum.None || GetTerrainType(unit.Position.X, unit.Position.Y) != TerrainTypeEnum.Water ||
 					this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Water)
 				{
 					if (unit.NextUnitID != -1)
@@ -722,7 +718,7 @@ namespace OpenCivOne
 			this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, x, y,
 				this.parent.Array_d4ce[64 + (playerID * 32) + (int)unit.UnitType]);
 
-			if ((unit.Status & 0x8) != 0)
+			if ((unit.Status & UnitStatusEnum.Fortified) != UnitStatusEnum.None)
 			{
 
 				// Instruction address 0x2aea:0x0ffb, size: 5
@@ -730,7 +726,7 @@ namespace OpenCivOne
 			}
 			else
 			{
-				if ((unit.Status & 0x4) != 0)
+				if ((unit.Status & UnitStatusEnum.Fortifying) != UnitStatusEnum.None)
 				{
 					// Instruction address 0x2aea:0x103d, size: 5
 					this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("F", x + 4, y + 7, (byte)((playerID == 1) ? 9 : 15));
@@ -743,25 +739,26 @@ namespace OpenCivOne
 				this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("G", x + 4, y + 7, (byte)((playerID == 1) ? 9 : 15));
 			}
 
-			if (((UnitStatusEnum)unit.Status & UnitStatusEnum.SettlerBuildMask) != 0 && this.parent.GameData.Units[(int)unit.UnitType].MovementType != UnitMovementTypeEnum.Air)
+			if ((unit.Status & (UnitStatusEnum.SettlerBuildRoadOrRail | UnitStatusEnum.SettlerBuildIrrigation | UnitStatusEnum.SettlerBuildMineOrForest)) != UnitStatusEnum.None && 
+				this.parent.GameData.Units[(int)unit.UnitType].MovementType != UnitMovementTypeEnum.Air)
 			{
 				string status = "R";
 
-				if ((unit.Status & 0x40) != 0)
+				if ((unit.Status & UnitStatusEnum.SettlerBuildIrrigation) != UnitStatusEnum.None)
 				{
-					status = (unit.UnitType != (int)UnitTypeEnum.Settler) ? "?" : "I";
+					status = (unit.UnitType != UnitTypeEnum.Settler) ? "?" : "I";
 				}
 
-				if ((unit.Status & 0x80) != 0)
+				if ((unit.Status & UnitStatusEnum.SettlerBuildMineOrForest) != UnitStatusEnum.None)
 				{
 					status = "M";
 
-					if ((unit.Status & 0x40) != 0)
+					if ((unit.Status & UnitStatusEnum.SettlerBuildIrrigation) != UnitStatusEnum.None)
 					{
 						status = "F";
 					}
 
-					if ((unit.Status & 0x2) != 0)
+					if ((unit.Status & UnitStatusEnum.SettlerBuildRoadOrRail) != UnitStatusEnum.None)
 					{
 						status = "P";
 					}
@@ -774,7 +771,7 @@ namespace OpenCivOne
 				this.parent.DrawTools.DrawRectangle(x - 1, y - 1, 15, 15, 7);
 			}
 		
-			if ((unit.Status & 0x1) != 0)
+			if ((unit.Status & UnitStatusEnum.Sentry) != UnitStatusEnum.None)
 			{
 				// Instruction address 0x2aea:0x11a8, size: 5
 				this.parent.Graphics.F0_VGA_009a_ReplaceColor(this.parent.Var_aa_Screen0_Rectangle, x, y, 16, 16, 5, 7);
@@ -804,7 +801,7 @@ namespace OpenCivOne
 
 				if (unitID != -1)
 				{
-					int playerID = this.parent.Var_d20a;
+					int playerID = F0_2aea_14e0_GetCellActiveUnitPlayerID(x, y);
 
 					if (this.parent.Var_d806_DebugFlag || playerID == this.parent.GameData.HumanPlayerID ||
 						(this.parent.GameData.Players[playerID].Units[unitID].VisibleByPlayer & (0x1 << this.parent.GameData.HumanPlayerID)) != 0)
@@ -894,7 +891,7 @@ namespace OpenCivOne
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns>True if given coordinates are within map bounds</returns>
-		public bool F0_2aea_1326_ValidateMapCoordinates(int x, int y)
+		public bool ValidateMapCoordinates(int x, int y)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_2aea_1326_CheckMapBounds({xPos}, {yPos})");
 
@@ -909,12 +906,12 @@ namespace OpenCivOne
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
-		public bool F0_2aea_1326_ValidateMapCoordinates(GPoint pt)
+		public bool ValidateMapCoordinates(GPoint pt)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_2aea_1326_CheckMapBounds({xPos}, {yPos})");
 
 			// function body
-			return F0_2aea_1326_ValidateMapCoordinates(pt.X, pt.Y);
+			return ValidateMapCoordinates(pt.X, pt.Y);
 		}
 
 		/// <summary>
@@ -929,6 +926,19 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock($"F0_2aea_134a_GetTerrainID({xPos}, {yPos})");
 			// function body
 			return this.parent.PixelValuesToTerrainTypes[this.gameData.Map.GetPixel(this.AdjustXPosition(x), y)];
+		}
+
+		/// <summary>
+		/// Returns terrain type at specified map coordinates.
+		/// Only basic terrain types are returned. Terrain addons presence should be checked separately using F0_2aea_1836().
+		/// </summary>
+		/// <param name="pt"></param>
+		/// <returns>terrain ID</returns>
+		public TerrainTypeEnum GetTerrainType(GPoint pt)
+		{
+			//this.oCPU.Log.EnterBlock($"F0_2aea_134a_GetTerrainID({xPos}, {yPos})");
+			// function body
+			return this.parent.PixelValuesToTerrainTypes[this.gameData.Map.GetPixel(this.AdjustXPosition(pt.X), pt.Y)];
 		}
 
 		/// <summary>
@@ -1047,7 +1057,7 @@ namespace OpenCivOne
 
 			// function body
 			// Instruction address 0x2aea:0x1466, size: 3
-			int playerID = F0_2aea_14e0_GetCellUnitPlayerID(x, y);
+			int playerID = F0_2aea_14e0_GetCellActiveUnitPlayerID(x, y);
 
 			if (playerID != -1)
 			{
@@ -1057,9 +1067,6 @@ namespace OpenCivOne
 
 					if (unit.UnitType != UnitTypeEnum.None && unit.Position.X == x && unit.Position.Y == y)
 					{
-						this.parent.Var_d7f0 = playerID;
-						this.parent.Var_d20a = playerID;
-
 						return i;
 					}
 				}
@@ -1077,7 +1084,7 @@ namespace OpenCivOne
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns>Player ID of the active unit present, otherwise -1</returns>
-		public int F0_2aea_14e0_GetCellUnitPlayerID(int x, int y)
+		public int F0_2aea_14e0_GetCellActiveUnitPlayerID(int x, int y)
 		{
 			// function body
 			// Instruction address 0x2aea:0x14f4, size: 5
@@ -1295,11 +1302,6 @@ namespace OpenCivOne
 
 				if (city.StatusFlag != 0xff && city.Position.X == x && city.Position.Y == y)
 				{
-					int playerID = F0_2aea_1369_GetCityOwner(x, y);
-
-					this.parent.Var_d7f0 = playerID;
-					this.parent.Var_d20a = playerID;
-
 					return i;
 				}
 			}

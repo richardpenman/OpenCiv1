@@ -1,25 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OpenCivOne
+﻿namespace OpenCivOne
 {
 	[Flags]
 	public enum UnitStatusEnum
 	{
 		None = 0,
-		Sentry = 1,
-		Fortifying = 4,
-		Fortified = 8,
-		Unknown1 = 0x10,
+		Sentry = 0x1,
+		SettlerBuildRoadOrRail = 0x2,
+		Fortifying = 0x4,
+		Fortified = 0x8,
+		AIUnknownFlag = 0x10,
 		Veteran = 0x20,
-		SettlerBuildRoadOrRail = 2,
 		SettlerBuildIrrigation = 0x40,
 		SettlerBuildMineOrForest = 0x80,
 		SettlerBuildFortress = 0xc0,
-		SettlerCleanPollution = 0x82,
-		SettlerBuildMask = 0xc2
+		SettlerCleanPollution = 0x82
 	}
 }

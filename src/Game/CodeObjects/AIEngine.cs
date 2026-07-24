@@ -49,7 +49,7 @@ namespace OpenCivOne
 			{
 				if (this.parent.GameData.Players[playerID].Units[i].UnitType != UnitTypeEnum.None && this.parent.GameData.Players[playerID].Units[i].UnitType != UnitTypeEnum.Nuclear)
 				{
-					if (this.parent.GameData.Players[playerID].Units[i].UnitType == 0)
+					if (this.parent.GameData.Players[playerID].Units[i].UnitType == UnitTypeEnum.Settler)
 					{
 						this.parent.GameData.Players[playerID].SettlerCount++;
 					}
@@ -60,12 +60,12 @@ namespace OpenCivOne
 
 					this.parent.GameData.Players[playerID].MilitaryPower += this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[i].UnitType].AttackStrength;
 					this.parent.GameData.Players[playerID].MilitaryPower += this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[i].UnitType].DefenseStrength;
-					this.parent.GameData.Players[playerID].Units[i].Status &= 0xef;
+					this.parent.GameData.Players[playerID].Units[i].ClearStatusFlags(UnitStatusEnum.AIUnknownFlag);
 
 					if (this.parent.UnitManagement.F0_1866_1750_IsUnitOrCityNear(playerID,
 						this.parent.GameData.Players[playerID].Units[i].Position.X, this.parent.GameData.Players[playerID].Units[i].Position.Y))
 					{
-						this.parent.GameData.Players[playerID].Units[i].Status |= 0x10;
+						this.parent.GameData.Players[playerID].Units[i].Status |= UnitStatusEnum.AIUnknownFlag;
 					}
 
 					if (this.parent.MapManagement.GetTerrainType(this.parent.GameData.Players[playerID].Units[i].Position.X,
@@ -84,7 +84,7 @@ namespace OpenCivOne
 					{
 						if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[i].UnitType].MovementType == UnitMovementTypeEnum.Land)
 						{
-							this.parent.GameData.Players[playerID].Units[i].Status |= 0x10;
+							this.parent.GameData.Players[playerID].Units[i].Status |= UnitStatusEnum.AIUnknownFlag;
 						}
 					}
 
@@ -374,7 +374,7 @@ namespace OpenCivOne
 				{
 					if (this.parent.GameData.Players[playerID].Units[i].UnitType != UnitTypeEnum.None &&
 						this.parent.GameData.Players[playerID].Units[i].UnitType != UnitTypeEnum.Nuclear &&
-						(this.parent.GameData.Players[playerID].Units[i].Status & 0x10) == 0)
+						(this.parent.GameData.Players[playerID].Units[i].Status & UnitStatusEnum.AIUnknownFlag) == UnitStatusEnum.None)
 					{
 						int minimumDistance = int.MaxValue;
 						int unitPolicyID = -1;
@@ -415,7 +415,7 @@ namespace OpenCivOne
 								{
 									distance = (unitThresholds[j] * distance) / (this.parent.GameData.Players[playerID].UnitPolicies[j].Policy + 1);
 
-									if ((this.parent.GameData.Players[playerID].Units[i].Status & 0xc) == 0)
+									if ((this.parent.GameData.Players[playerID].Units[i].Status & (UnitStatusEnum.Sentry | UnitStatusEnum.SettlerBuildRoadOrRail)) == UnitStatusEnum.None)
 									{
 										if (distance < minimumDistance)
 										{
@@ -447,7 +447,7 @@ namespace OpenCivOne
 										distance = (distance * 2) / (this.parent.GameData.Players[playerID].UnitPolicies[j].Policy + 1);
 									}
 
-									if ((this.parent.GameData.Players[playerID].Units[i].Status & 0xc) == 0)
+									if ((this.parent.GameData.Players[playerID].Units[i].Status & (UnitStatusEnum.Sentry | UnitStatusEnum.SettlerBuildRoadOrRail)) == UnitStatusEnum.None)
 									{
 										if (distance < minimumDistance)
 										{
@@ -483,8 +483,9 @@ namespace OpenCivOne
 							if (unitPolicyID != -1)
 							{
 								this.parent.GameData.Players[playerID].Units[i].GoToDestination = this.parent.GameData.Players[playerID].UnitPolicies[unitPolicyID].Position;
-								this.parent.GameData.Players[playerID].Units[i].Status |= 0x10;
-								this.parent.GameData.Players[playerID].Units[i].Status &= 0xf0;
+								this.parent.GameData.Players[playerID].Units[i].Status |= UnitStatusEnum.AIUnknownFlag;
+								this.parent.GameData.Players[playerID].Units[i].ClearStatusFlags(UnitStatusEnum.Sentry |
+									UnitStatusEnum.SettlerBuildRoadOrRail | UnitStatusEnum.Fortifying | UnitStatusEnum.Fortified);
 
 								unitThresholds[unitPolicyID]++;
 							}
@@ -572,8 +573,7 @@ namespace OpenCivOne
 									{
 										// Instruction address 0x25fb:0x0e55, size: 5
 										if (this.parent.GameData.Units[(int)unit.UnitType].MoveCount >=
-											this.parent.Tools.F0_2dc4_0289_GetShortestDistance(
-												unit.Position, this.parent.GameData.Cities[i].Position))
+											this.parent.Tools.F0_2dc4_0289_GetShortestDistance(unit.Position, this.parent.GameData.Cities[i].Position))
 										{
 											// Instruction address 0x25fb:0x0ec1, size: 5
 											int distance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(
@@ -650,10 +650,10 @@ namespace OpenCivOne
 										int newX = this.parent.MapManagement.AdjustXPosition(this.parent.GameData.Cities[i].Position.X + direction.X);
 										int newY = this.parent.GameData.Cities[i].Position.Y + direction.Y;
 
-										if (this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(newX, newY))
+										if (this.parent.MapManagement.ValidateMapCoordinates(newX, newY))
 										{
 											// Instruction address 0x25fb:0x1044, size: 5
-											int cellOwnerPlayerID = this.parent.MapManagement.F0_2aea_14e0_GetCellUnitPlayerID(newX, newY);
+											int cellOwnerPlayerID = this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(newX, newY);
 
 											if (cellOwnerPlayerID != -1)
 											{
@@ -723,8 +723,8 @@ namespace OpenCivOne
 						int newX = this.parent.MapManagement.AdjustXPosition(unit.GoToDestination.X + direction.X);
 						int newY = unit.GoToDestination.Y + direction.Y;
 
-						if (this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(newX, newY) &&
-							this.parent.MapManagement.F0_2aea_14e0_GetCellUnitPlayerID(newX, newY) == -1)
+						if (this.parent.MapManagement.ValidateMapCoordinates(newX, newY) &&
+							this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(newX, newY) == -1)
 						{
 							// Instruction address 0x25fb:0x1253, size: 5
 							this.parent.MapManagement.F0_2aea_1412_SetCellActivePlayerID(unitX, unitY, playerID, unitID);
@@ -789,7 +789,7 @@ namespace OpenCivOne
 							int newX = this.parent.MapManagement.AdjustXPosition(unitX + direction.X);
 							int newY = unitY + direction.Y;
 
-							if (this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(newX, newY))
+							if (this.parent.MapManagement.ValidateMapCoordinates(newX, newY))
 							{
 								// Instruction address 0x25fb:0x138d, size: 5
 								int newOwnerPlayerID = this.parent.MapManagement.GetPlayerLandOwnership(newX, newY);
@@ -899,10 +899,10 @@ namespace OpenCivOne
 							{
 								return 'f';
 							}
-						
-							short tempUnitStatus = unit.Status;
 
-							unit.Status |= 8;
+							UnitStatusEnum tempUnitStatus = unit.Status;
+
+							unit.Status |= UnitStatusEnum.Fortified;
 
 							if (this.parent.UnitManagement.F0_1866_1089_GetStackStrongestDefenseUnit(playerID, unitID) == unitID &&
 								(this.parent.GameData.Cities[nearestCityID].ActualSize / settleCoefficient) + 1 > this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(playerID, unitID, UnitStackValueTypeEnum.DefenseUnitCount))
@@ -916,7 +916,7 @@ namespace OpenCivOne
 
 							if (((unitID + this.parent.GameData.TurnCount) & 0x7) == 0)
 							{
-								unit.Status &= 0xf2;
+								unit.ClearStatusFlags(UnitStatusEnum.Sentry | UnitStatusEnum.Fortifying | UnitStatusEnum.Fortified);
 							}
 						}
 						else
@@ -943,7 +943,7 @@ namespace OpenCivOne
 
 					while (nextUnitID != -1 && nextUnitID != unitID)
 					{
-						if ((this.parent.GameData.Players[playerID].Units[nextUnitID].Status & 0x8) == 0)
+						if ((this.parent.GameData.Players[playerID].Units[nextUnitID].Status & UnitStatusEnum.Fortified) == UnitStatusEnum.None)
 						{
 							unitRoleBits |= (0x1 << (int)this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].UnitRoleType);
 
@@ -957,7 +957,7 @@ namespace OpenCivOne
 							if (continentStrategy == PlayerContinentStrategyEnum.Transport &&
 								(nearestCityID >= 0 && nearestCityID < 128 && this.parent.GameData.Cities[nearestCityID].ActualSize / 5 < (newUnitDirection++)))
 							{
-								this.parent.GameData.Players[playerID].Units[nextUnitID].Status &= 0xf7;
+								this.parent.GameData.Players[playerID].Units[nextUnitID].ClearStatusFlags(UnitStatusEnum.Fortified);
 
 								unitCount++;
 							}
@@ -1052,11 +1052,11 @@ namespace OpenCivOne
 								int newX = this.parent.MapManagement.AdjustXPosition(unitX + direction.X);
 								int newY = unitY + direction.Y;
 
-								if (this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(newX, newY) &&
+								if (this.parent.MapManagement.ValidateMapCoordinates(newX, newY) &&
 									this.parent.MapManagement.GetTerrainType(newX, newY) != TerrainTypeEnum.Water)
 								{
 									// Instruction address 0x25fb:0x1a94, size: 5
-									int unitPlayerID = this.parent.MapManagement.F0_2aea_14e0_GetCellUnitPlayerID(newX, newY);
+									int unitPlayerID = this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(newX, newY);
 
 									if ((unitPlayerID == -1 || unitPlayerID == playerID) &&
 										(unitPlayerID != playerID ||
@@ -1320,11 +1320,12 @@ namespace OpenCivOne
 								int newX = this.parent.MapManagement.AdjustXPosition(direction.X + unitX);
 								int newY = direction.Y + unitY;
 
-								if (this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(newX, newY))
+								if (this.parent.MapManagement.ValidateMapCoordinates(newX, newY))
 								{
 									int activeUnitID = this.parent.MapManagement.F0_2aea_1458_GetCellActiveUnitID(newX, newY);
+									int activePlayerID = this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(newX, newY);
 
-									if (activeUnitID == -1 || (playerID == this.parent.Var_d7f0 && this.parent.UnitManagement.F0_1866_1331_CountUnitTypesInStack(playerID, activeUnitID, UnitTypeEnum.Settler) == 0))
+									if (activeUnitID == -1 || (playerID == activePlayerID && this.parent.UnitManagement.F0_1866_1331_CountUnitTypesInStack(playerID, activeUnitID, UnitTypeEnum.Settler) == 0))
 									{
 										if ((this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Monarchy) ?
 											this.parent.GameData.TerrainModifications[(int)this.parent.MapManagement.GetTerrainType(newX, newY)].AICanImproveAfterMonarchy :
@@ -1367,7 +1368,7 @@ namespace OpenCivOne
 										int newX = this.parent.MapManagement.AdjustXPosition(unitX + direction.X);
 										int newY = unitY + direction.Y;
 
-										if (this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(newX, newY) &&
+										if (this.parent.MapManagement.ValidateMapCoordinates(newX, newY) &&
 											(this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY) & TerrainImprovementFlagsEnum.Road) == TerrainImprovementFlagsEnum.Road)
 										{
 											roadCellBits |= (0x1 << (i - 1));
@@ -1424,7 +1425,7 @@ namespace OpenCivOne
 						int newX = this.parent.MapManagement.AdjustXPosition(unit.Position.X + direction.X);
 						int newY = unit.Position.Y + direction.Y;
 
-						if (this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(newX, newY))
+						if (this.parent.MapManagement.ValidateMapCoordinates(newX, newY))
 						{
 							newX = (unit.Position.X / 4) + direction.X;
 							newY = (unit.Position.Y / 4) + direction.Y;
@@ -1434,7 +1435,7 @@ namespace OpenCivOne
 							{
 								unit.GoToDestination = new(unit.Position.X + (direction.X * 4), unit.Position.Y + (direction.Y * 4));
 
-								if (this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(unit.GoToDestination.X, unit.GoToDestination.Y) &&
+								if (this.parent.MapManagement.ValidateMapCoordinates(unit.GoToDestination.X, unit.GoToDestination.Y) &&
 									this.parent.GameData.Terrains[(int)this.parent.MapManagement.GetTerrainType(unit.GoToDestination.X, unit.GoToDestination.Y)].Production != 0 &&
 									this.parent.MapManagement.F0_2aea_1942_GetGroupID(unit.GoToDestination.X, unit.GoToDestination.Y) == groupID)
 								{
@@ -1511,7 +1512,7 @@ namespace OpenCivOne
 					int newX = this.parent.MapManagement.AdjustXPosition(unitX + direction.X);
 					int newY = unitY + direction.Y;
 
-					if (this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(newX, newY))
+					if (this.parent.MapManagement.ValidateMapCoordinates(newX, newY))
 					{
 						int newCityPlayerID = this.parent.MapManagement.F0_2aea_1369_GetCityOwner(newX, newY);
 						TerrainTypeEnum newTerrainType = this.parent.MapManagement.GetTerrainType(newX, newY);
@@ -1520,16 +1521,17 @@ namespace OpenCivOne
 						{
 							// Instruction address 0x25fb:0x2705, size: 5
 							int selectedActiveUnitID = this.parent.MapManagement.F0_2aea_1458_GetCellActiveUnitID(newX, newY);
+							int selectedActivePlayerID = this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(newX, newY);
 
-							if (selectedActiveUnitID != -1 && this.parent.GameData.Players[this.parent.Var_d7f0].Units[selectedActiveUnitID].UnitType == UnitTypeEnum.Diplomat)
+							if (selectedActiveUnitID != -1 && this.parent.GameData.Players[selectedActivePlayerID].Units[selectedActiveUnitID].UnitType == UnitTypeEnum.Diplomat)
 							{
 								int activeUnitID = selectedActiveUnitID;
 
 								do
 								{
-									activeUnitID = this.parent.GameData.Players[this.parent.Var_d7f0].Units[activeUnitID].NextUnitID;
+									activeUnitID = this.parent.GameData.Players[selectedActivePlayerID].Units[activeUnitID].NextUnitID;
 								}
-								while ((activeUnitID != -1 && activeUnitID != selectedActiveUnitID) && this.parent.GameData.Players[this.parent.Var_d7f0].Units[activeUnitID].UnitType == UnitTypeEnum.Diplomat);
+								while ((activeUnitID != -1 && activeUnitID != selectedActiveUnitID) && this.parent.GameData.Players[selectedActivePlayerID].Units[activeUnitID].UnitType == UnitTypeEnum.Diplomat);
 
 								if (activeUnitID != -1)
 								{
@@ -1662,7 +1664,7 @@ namespace OpenCivOne
 													if (continentStrategy == PlayerContinentStrategyEnum.Attack)
 													{
 														if (this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Land &&
-															(this.parent.GameData.Players[newCityPlayerID].Units[selectedActiveUnitID].Status & 0x8) != 0 &&
+															(this.parent.GameData.Players[newCityPlayerID].Units[selectedActiveUnitID].Status & UnitStatusEnum.Fortified) != UnitStatusEnum.None &&
 															(this.parent.GameData.Players[playerID].Diplomacy[this.parent.GameData.HumanPlayerID] & (DiplomacyFlagsEnum.Contact | DiplomacyFlagsEnum.Peace)) == DiplomacyFlagsEnum.Contact &&
 															(this.parent.GameData.Players[newCityPlayerID].Diplomacy[this.parent.GameData.HumanPlayerID] & (DiplomacyFlagsEnum.Contact | DiplomacyFlagsEnum.Peace)) != DiplomacyFlagsEnum.Contact &&
 															this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Continents[groupID].CityCount != 0)
@@ -1673,7 +1675,7 @@ namespace OpenCivOne
 																{
 																	if ((this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY) & TerrainImprovementFlagsEnum.City) == TerrainImprovementFlagsEnum.None)
 																	{
-																		this.parent.Overlay_22.F22_0000_0639_DiplomatInteraction(newCityPlayerID, selectedActiveUnitID, playerID);
+																		this.parent.Overlay_22.F22_0000_0639_DiplomatInteractionWithUnit(newCityPlayerID, selectedActiveUnitID, playerID);
 																	}
 																}
 															}
@@ -1723,7 +1725,7 @@ namespace OpenCivOne
 															if (continentStrategy == PlayerContinentStrategyEnum.Attack)
 															{
 																if (this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Land &&
-																	(this.parent.GameData.Players[newCityPlayerID].Units[selectedActiveUnitID].Status & 0x28) != 0 &&
+																	(this.parent.GameData.Players[newCityPlayerID].Units[selectedActiveUnitID].Status & (UnitStatusEnum.Veteran | UnitStatusEnum.Fortified)) != UnitStatusEnum.None &&
 																	this.parent.GameData.Terrains[(int)newTerrainType].DefenseBonus >= 4)
 																{
 																	if (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(newCityPlayerID, selectedActiveUnitID, UnitStackValueTypeEnum.UnitCount) < 2)
@@ -1732,7 +1734,7 @@ namespace OpenCivOne
 																		{
 																			if ((this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY) & TerrainImprovementFlagsEnum.City) == TerrainImprovementFlagsEnum.None)
 																			{
-																				this.parent.Overlay_22.F22_0000_0639_DiplomatInteraction(newCityPlayerID, selectedActiveUnitID, playerID);
+																				this.parent.Overlay_22.F22_0000_0639_DiplomatInteractionWithUnit(newCityPlayerID, selectedActiveUnitID, playerID);
 																			}
 																		}
 																	}
@@ -1765,7 +1767,7 @@ namespace OpenCivOne
 										newX = unitX + (direction.X * 4);
 										newY = unitY + (direction.Y * 4);
 
-										if (this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(newX, newY) &&
+										if (this.parent.MapManagement.ValidateMapCoordinates(newX, newY) &&
 											MapUnitRoles[newX / 4, newY / 4] == 0 &&
 											this.parent.MapManagement.GetTerrainType(newX, newY) != TerrainTypeEnum.Water)
 										{
@@ -1779,7 +1781,7 @@ namespace OpenCivOne
 											int local_e = this.parent.MapManagement.AdjustXPosition(newX + direction.X);
 											int local_16 = direction.Y + newY;
 
-											if (this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(local_e, local_16))
+											if (this.parent.MapManagement.ValidateMapCoordinates(local_e, local_16))
 											{
 												if ((this.parent.GameData.MapVisibility[local_e, local_16] & playerIDBit) == 0)
 												{
@@ -1909,8 +1911,8 @@ namespace OpenCivOne
 						if (this.parent.GameData.Players[playerID].Units[i].RemainingMoves >= distance * 2)
 						{
 							this.parent.GameData.Players[playerID].Units[i].GoToDestination = new(x, y);
-							this.parent.GameData.Players[playerID].Units[i].Status |= 0x10;
-							this.parent.GameData.Players[playerID].Units[i].Status &= 0xf0;
+							this.parent.GameData.Players[playerID].Units[i].Status |= UnitStatusEnum.AIUnknownFlag;
+							this.parent.GameData.Players[playerID].Units[i].ClearStatusFlags(UnitStatusEnum.Sentry | UnitStatusEnum.SettlerBuildRoadOrRail | UnitStatusEnum.Fortifying | UnitStatusEnum.Fortified);
 							break;
 						}
 					}
@@ -2114,9 +2116,9 @@ namespace OpenCivOne
 				int newY = y + direction.Y;
 
 				// Instruction address 0x25fb:0x35f8, size: 5
-				if (this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(newX, newY) && 
+				if (this.parent.MapManagement.ValidateMapCoordinates(newX, newY) && 
 					this.parent.MapManagement.GetTerrainType(newX, newY) == TerrainTypeEnum.Water &&
-					(i == 0 || this.parent.MapManagement.F0_2aea_14e0_GetCellUnitPlayerID(newX, newY) == -1))
+					(i == 0 || this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(newX, newY) == -1))
 				{
 					for (int j = 1; j < 9; j++)
 					{
@@ -2125,9 +2127,9 @@ namespace OpenCivOne
 						int newX1 = newX + direction.X;
 						int newY1 = newY + direction.Y;
 
-						if (this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(newX1, newY1) &&
+						if (this.parent.MapManagement.ValidateMapCoordinates(newX1, newY1) &&
 							this.parent.MapManagement.GetTerrainType(newX1, newY1) != TerrainTypeEnum.Water &&
-							this.parent.MapManagement.F0_2aea_14e0_GetCellUnitPlayerID(newX1, newY1) == -1)
+							this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(newX1, newY1) == -1)
 						{
 							newDirectionCount++;
 
@@ -2201,7 +2203,7 @@ namespace OpenCivOne
 
 					if (nearestCityDistance <= 8 && this.parent.MapManagement.GetTerrainType(newX, newY) != TerrainTypeEnum.Water &&
 						!this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY).HasFlag(TerrainImprovementFlagsEnum.City) &&
-						this.parent.MapManagement.F0_2aea_14e0_GetCellUnitPlayerID(newX, newY) == -1 && newY > 1 && newY < 48)
+						this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(newX, newY) == -1 && newY > 1 && newY < 48)
 					{
 						if ((this.parent.GameData.MapVisibility[newX, newY] & (0x1 << this.parent.GameData.HumanPlayerID)) != 0 &&
 							this.parent.GameData.Cities[nearestCityID].PlayerID == this.parent.GameData.HumanPlayerID &&
@@ -2227,7 +2229,7 @@ namespace OpenCivOne
 						return 'u';
 					}
 
-					if (this.parent.MapManagement.F0_2aea_14e0_GetCellUnitPlayerID(newX, newY) > 0)
+					if (this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(newX, newY) > 0)
 					{
 						return i;
 					}
@@ -2389,9 +2391,10 @@ namespace OpenCivOne
 				if (((this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Water) ? 1 : 0) == 
 					((terrainType == TerrainTypeEnum.Water) ? 1 : 0))
 				{
-					if (this.parent.MapManagement.F0_2aea_1326_ValidateMapCoordinates(newX, newY))
+					if (this.parent.MapManagement.ValidateMapCoordinates(newX, newY))
 					{
 						int activeUnitID = this.parent.MapManagement.F0_2aea_1458_GetCellActiveUnitID(newX, newY);
+						int activeUnitPlayerID = this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(newX, newY);
 
 						if (unit.UnitType != UnitTypeEnum.Diplomat)
 						{
@@ -2417,11 +2420,11 @@ namespace OpenCivOne
 								{
 									flag = true;
 								}
-								else if (playerID != this.parent.Var_d7f0)
+								else if (playerID != activeUnitPlayerID)
 								{
 									if (this.parent.MapManagement.GetTerrainType(unitX, unitY) != TerrainTypeEnum.Water)
 									{
-										if (this.parent.GameData.Players[this.parent.Var_d7f0].Units[activeUnitID].UnitType != UnitTypeEnum.Diplomat)
+										if (this.parent.GameData.Players[activeUnitPlayerID].Units[activeUnitID].UnitType != UnitTypeEnum.Diplomat)
 										{
 											attackScore += 99;
 										}
@@ -2476,7 +2479,7 @@ namespace OpenCivOne
 
 							if (activeUnitID != -1)
 							{
-								attackScore += ((playerID == this.parent.Var_d7f0) ? 99 : -99);
+								attackScore += ((playerID == activeUnitPlayerID) ? 99 : -99);
 							}
 
 							attackScore += this.parent.GameData.Terrains[(int)terrainType].MovementCost + this.parent.CAPI.RNG.Next(4) + (nearestDistance * 4);

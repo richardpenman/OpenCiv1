@@ -324,15 +324,12 @@ namespace OpenCivOne
 						// Disable 'Build Fortress' option
 						this.parent.Var_b276_MenuBoxDisabledOptions |= 0x1 << orderCount;
 					}
+					orders[orderCount++] = 'f';
 				}
 				else if (this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Land)
 				{
 					// Instruction address 0x2c84:0x049c, size: 5
 					menuText.Append(" Fortify \x008ff\n");
-				}
-
-				if (this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Land)
-				{
 					orders[orderCount++] = 'f';
 				}
 
