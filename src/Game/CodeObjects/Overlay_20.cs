@@ -1302,8 +1302,7 @@ namespace OpenCivOne
 			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa));
 			this.oParent.GameData.Players[playerID].TaxRate = (short)this.oCPU.AX.UInt16;
 
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd766, this.oCPU.AX.UInt16);
+			this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].TotalCitizenCount = this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
 
 			// Instruction address 0x0000:0x0e93, size: 5
 			this.oParent.CAPI.strcpy(0xba06, this.oParent.GameData.Players[playerID].Nationality);
@@ -1313,7 +1312,7 @@ namespace OpenCivOne
 
 			// Instruction address 0x0000:0x0ec4, size: 5
 			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa((short)this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xd766), 10));
+				this.oParent.CAPI.itoa(this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].TotalCitizenCount, 10));
 
 			// Instruction address 0x0000:0x0ed4, size: 5
 			this.oParent.CAPI.strcat(0xba06, ")");
@@ -1321,10 +1320,7 @@ namespace OpenCivOne
 			if (!flag) goto L0ef9;
 
 			// Instruction address 0x0000:0x0ef1, size: 5
-			this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow(0xba06,
-				16,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)),
-				15);
+			this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow(0xba06, 16, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 15);
 
 		L0ef9:
 			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xb2bc);
@@ -1332,7 +1328,8 @@ namespace OpenCivOne
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12), this.oCPU.AX.UInt16);
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), this.oCPU.AX.UInt16);
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xe), 0x3e7);
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd764, 0x0);
+
+			this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].AchievementScore = 0;
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10), 0x1);
 
 		L0f15:
@@ -1388,7 +1385,7 @@ namespace OpenCivOne
 				11);
 
 		L0fb4:
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd764, this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xd764), 0x14));
+			this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].AchievementScore += 20;
 
 		L0fb9:
 			if (this.oParent.GameData.WonderCityID[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10))] != -1)
@@ -1411,7 +1408,7 @@ namespace OpenCivOne
 
 			// Instruction address 0x0000:0x1014, size: 5
 			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa((short)this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xd764), 10));
+				this.oParent.CAPI.itoa(this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].AchievementScore, 10));
 
 			// Instruction address 0x0000:0x1024, size: 5
 			this.oParent.CAPI.strcat(0xba06, ")");
@@ -1422,9 +1419,9 @@ namespace OpenCivOne
 			this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow(0xba06, 16, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 15);
 
 		L1049:
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xd764);
-			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xd766));
-			this.oParent.GameData.Players[0].Score = (short)this.oCPU.AX.UInt16;
+			this.oParent.GameData.Players[0].Score = (short)(this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].AchievementScore +
+				this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].TotalCitizenCount);
+
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)), 0xa));
 			this.oCPU.SI.UInt16 = (ushort)this.oParent.GameData.Players[oParent.GameData.HumanPlayerID].SpaceshipPopulation;
 			this.oCPU.SI.UInt16 = this.oCPU.OR_UInt16(this.oCPU.SI.UInt16, this.oCPU.SI.UInt16);
@@ -1611,8 +1608,7 @@ namespace OpenCivOne
 			goto L0cc3;
 
 		L1348:
-			this.oCPU.AX.UInt16 = (ushort)this.oParent.GameData.Players[0].Score;
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xb77e, this.oCPU.AX.UInt16);
+			this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].TotalPlayerScore = this.oParent.GameData.Players[0].Score;
 
 			if (!flag)
 				goto L13f0;

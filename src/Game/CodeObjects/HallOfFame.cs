@@ -1,1026 +1,318 @@
-using System;
-using IRB.VirtualCPU;
-
 namespace OpenCivOne
 {
 	public class HallOfFame
 	{
-		private OpenCivOneGame oParent;
-		private VCPU oCPU;
+		private OpenCivOneGame parent;
+
+		HallOfFameEntry[] entries = new HallOfFameEntry[6];
 
 		public HallOfFame(OpenCivOneGame parent)
 		{
-			this.oParent = parent;
-			this.oCPU = parent.CPU;
+			this.parent = parent;
+
+			for (int i = 0; i < 6; i++)
+			{
+				entries[i] = new HallOfFameEntry();
+			}
 		}
 
 		/// <summary>
-		/// ?
+		/// Initializes Hall Of Fame table
 		/// </summary>
-		public void F3_0000_0000()
+		public void F3_0000_0000_InitHallOfFame()
 		{
-			this.oCPU.Log.EnterBlock("F3_0000_0000()");
+			//this.oCPU.Log.EnterBlock("F3_0000_0000()");
 
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x4);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x0);
-
-		L000b:
-			this.oCPU.AX.UInt16 = 0x2e;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.ES.UInt16 = 0x3772; // segment
-			this.oCPU.WriteUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0x37d2), 0xffff);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 0x6);
-			if (this.oCPU.Flags.L) goto L000b;
-
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-
-			// Far return
-			this.oCPU.Log.ExitBlock("F3_0000_0000");
+			for (int i = 0; i < 6; i++)
+			{
+				entries[i] = new HallOfFameEntry();
+			}
 		}
 
 		/// <summary>
-		/// ?
+		/// Reads Hall Of Fame data from 'FAME.DTA'
 		/// </summary>
-		public void F3_0000_002b()
+		public void F3_0000_002b_ReadHallOfFameFromFile()
 		{
-			this.oCPU.Log.EnterBlock("F3_0000_002b()");
+			//this.oCPU.Log.EnterBlock("F3_0000_002b()");
 
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x2);
-
-			F3_0000_0000();
+			F3_0000_0000_InitHallOfFame();
 
 			// Instruction address 0x0000:0x0041, size: 5
-			this.oParent.CAPI.open("FAME.DTA", 0x8102, 0x80);
+			FileStream file = new FileStream($"{this.parent.ResourcePath}FAME.DTA", FileMode.Open, FileAccess.Read);
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.AX.UInt16);
+			for (int i = 0; i < 6; i++)
+			{
+				entries[i] = HallOfFameEntry.ReadFromStream(file);
+			}
 
-			// Instruction address 0x0000:0x0057, size: 5
-			this.oParent.CAPI.read((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 
-				0xba06, 0x114);
-
-			this.oParent.CAPI.movedata(
-				this.oCPU.DS.UInt16,
-				0xba06,
-				0x3772,
-				0x37d2,
-				0x114);
-
-			// Instruction address 0x0000:0x007a, size: 5
-			this.oParent.CAPI.close((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
-
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F3_0000_002b");
+			file.Close();
 		}
 
 		/// <summary>
-		/// ?
+		/// Writes HallOf Fame Data to 'FAME.DTA'
 		/// </summary>
-		public void F3_0000_0083()
+		public void F3_0000_0083_WriteHallOfFameToFile()
 		{
-			this.oCPU.Log.EnterBlock("F3_0000_0083()");
+			//this.oCPU.Log.EnterBlock("F3_0000_0083()");
 
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x2);
-
 			// Instruction address 0x0000:0x0095, size: 5
-			this.oParent.CAPI.open("fame.dta", 0x8302, 0x80);
+			FileStream file = new FileStream($"{this.parent.ResourcePath}FAME.DTA", FileMode.OpenOrCreate, FileAccess.Write);
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.AX.UInt16);
+			for (int i = 0; i < 6; i++)
+			{
+				entries[i].WriteToStream(file);
+			}
 
-			this.oParent.CAPI.movedata(
-				0x3772,
-				0x37d2,
-				this.oCPU.DS.UInt16,
-				0xba06,
-				0x114);
-
-			// Instruction address 0x0000:0x00c3, size: 5
-			this.oParent.CAPI.write((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)),
-				0xba06, 0x114);
-			
-			// Instruction address 0x0000:0x00ce, size: 5
-			this.oParent.CAPI.close((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
-
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F3_0000_0083");
+			file.Close();			
 		}
 
 		/// <summary>
-		/// ?
+		/// Shows Hall Of Fame window
 		/// </summary>
-		/// <param name="param1"></param>
+		/// <param name="playerIndex"></param>
 		/// <returns></returns>
-		public ushort F3_0000_00d7(short param1)
+		public bool F3_0000_00d7_ShowHallOfFameWindow(int playerIndex)
 		{
-			this.oCPU.Log.EnterBlock($"F3_0000_00d7({param1})");
+			//this.oCPU.Log.EnterBlock($"F3_0000_00d7({playerIndex})");
 
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x1c);
-			this.oCPU.PUSH_UInt16(this.oCPU.DI.UInt16);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
-
 			// Instruction address 0x0000:0x00f3, size: 5
-			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 15);
+			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 15);
 
 			// Instruction address 0x0000:0x010a, size: 5
-			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("CIVILIZATION", 160, 16, 0);
+			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("CIVILIZATION", 160, 16, 0);
 
 			// Instruction address 0x0000:0x0121, size: 5
-			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("HALL OF FAME", 160, 24, 0);
+			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("HALL OF FAME", 160, 24, 0);
 
 			// Instruction address 0x0000:0x013d, size: 5
-			this.oParent.Graphics.F0_VGA_0599_DrawLine(this.oParent.Var_aa_Screen0_Rectangle, 80, 32, 240, 32, 14);
+			this.parent.Graphics.F0_VGA_0599_DrawLine(this.parent.Var_aa_Screen0_Rectangle, 80, 32, 240, 32, 14);
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 0x28);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8), 0x0);
-			goto L0160;
+			int y = 40;
 
-		L0151:
-			if (param1 != 5) goto L01d1;
+			for (int i = 0; i < 6; i++)
+			{
+				HallOfFameEntry entry = entries[i];
 
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)), 0x4);
-			if (this.oCPU.Flags.NE) goto L01d1;
+				int x = 8;
 
-		L015d:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8))));
+				if (entry.TotalScore <= 0)
+				{
+					// Instruction address 0x0000:0x0211, size: 5
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(" ---", 8, y, 0);
 
-		L0160:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)), 0x6);
-			if (this.oCPU.Flags.GE) goto L0174;
+					y += 26;
+				}
+				else
+				{
+					// Instruction address 0x0000:0x037c, size: 5
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{i + 1}. {entry.PlayerName}, {this.parent.Array_33a2_GameDifficultyNames[entry.GameDifficulty]}" +
+						$" of the {entry.NationName} to {this.parent.Segment_1238.YearToString(entry.FinalYear)}", x, y, 0);
 
-			if (this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)) == param1) goto L0151;
+					y += 8;
 
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)), 0x5);
-			if (this.oCPU.Flags.NE) goto L0151;
+					// Instruction address 0x0000:0x0438, size: 5
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+						$"Population: {this.parent.Tools.F0_2dc4_0337_PopulationValueToString(entry.TotalPopulation)}, Score: {entry.TotalScore}", x + 12, y, 7);
 
-		L0174:
-			if (param1 == -1) goto L01ad;
+					y += 8;
 
-			// Instruction address 0x0000:0x0189, size: 5
-			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0("'C\x0083lear'", 252, 189, 0);
+					// Instruction address 0x0000:0x04ab, size: 5
+					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+						$"    --- CIVILIZATION RATING: {(entry.TotalScore * (entry.GameDifficulty + 1)) / 50}% ---", x + 12, y, 12);
 
-			// Instruction address 0x0000:0x01a5, size: 5
-			this.oParent.DrawTools.DrawRectangle(236, 187, 60, 10, 11);
+					y += 10;
 
-		L01ad:
+					if (i == playerIndex)
+					{
+						// Instruction address 0x0000:0x04e8, size: 5
+						this.parent.Graphics.F0_VGA_009a_ReplaceColor(this.parent.Var_aa_Screen0_Rectangle, x - 4, y - 28, 296, 26, 15, 14);
+					}
+				}
+			}
+
+			if (playerIndex != -1)
+			{
+				// Instruction address 0x0000:0x0189, size: 5
+				this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("'C\x0083lear'", 252, 189, 0);
+
+				// Instruction address 0x0000:0x01a5, size: 5
+				this.parent.DrawTools.DrawRectangle(236, 187, 60, 10, 11);
+			}
+		
 			// Instruction address 0x0000:0x01ad, size: 5
-			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), this.oCPU.AX.UInt16);
-			
-			if (param1 != -1) goto L01be;
-			goto L050b;
+			int keyPress = this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
-		L01be:
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x63);
-			if (this.oCPU.Flags.E) goto L01cb;
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x43);
-			if (this.oCPU.Flags.E) goto L01cb;
-			goto L050b;
-
-		L01cb:
-			this.oCPU.AX.UInt16 = 0x1;
-			goto L050d;
-
-		L01d1:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 0x8);
-			this.oCPU.AX.UInt16 = 0x2e;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)));
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.ES.UInt16 = 0x3772; // segment
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0x37d2));
-			this.oCPU.DI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8));
-			this.oCPU.DI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.DI.UInt16, 0x1);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 + this.oCPU.DI.UInt16 - 0x1c), this.oCPU.SI.UInt16);
-			this.oCPU.SI.UInt16 = this.oCPU.OR_UInt16(this.oCPU.SI.UInt16, this.oCPU.SI.UInt16);
-			if (this.oCPU.Flags.G) goto L0220;
-
-			// Instruction address 0x0000:0x01fb, size: 5
-			this.oParent.CAPI.strcpy(0xba06, " ---");
-
-			// Instruction address 0x0000:0x0211, size: 5
-			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, 8, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), 0);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), 0x1a));
-			goto L015d;
-
-		L0220:
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
-			// Instruction address 0x0000:0x023f, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa((short)((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)) + 1), 10));
-
-			// Instruction address 0x0000:0x024f, size: 5
-			this.oParent.CAPI.strcat(0xba06, ". ");
-
-			this.oCPU.AX.UInt16 = 0x2e;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-
-			this.oParent.CAPI.movedata(
-				0x3772,
-				(ushort)(this.oCPU.SI.UInt16 + 0x37e0),
-				this.oCPU.DS.UInt16,
-				(ushort)(0xba06 + this.oParent.CAPI.strlen(0xba06)),
-				16);
-
-			// Instruction address 0x0000:0x028c, size: 5
-			this.oParent.CAPI.strcat(0xba06, ", ");
-
-			this.oCPU.ES.UInt16 = 0x3772; // segment
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37d4));
-
-			// Instruction address 0x0000:0x02a7, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.Array_33a2_GameDifficultyNames[this.oCPU.BX.Int16]);
-
-			// Instruction address 0x0000:0x02b7, size: 5
-			this.oParent.CAPI.strcat(0xba06, " of the ");
-
-			this.oParent.CAPI.movedata(
-				0x3772,
-				(ushort)(this.oCPU.SI.UInt16 + 0x37f0),
-				this.oCPU.DS.UInt16,
-				(ushort)(0xba06 + this.oParent.CAPI.strlen(0xba06)),
-				16);
-
-			// Instruction address 0x0000:0x02e8, size: 5
-			this.oParent.CAPI.strlen(0xba06);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa), this.oCPU.AX.UInt16);
-
-			// Instruction address 0x0000:0x02fb, size: 5
-			this.oParent.CAPI.strcat(0xba06, " to ");
-
-			this.oCPU.ES.UInt16 = 0x3772; // segment
-										
-			// Instruction address 0x0000:0x032a, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(Math.Abs((short)this.oCPU.ReadUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37d8))), 10));
-
-			this.oCPU.ES.UInt16 = 0x3772; // segment
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37d8)), 0x0);
-			if (this.oCPU.Flags.GE) goto L0343;
-			
-			// Instruction address 0x0000:0x034b, size: 5
-			this.oParent.CAPI.strcat(0xba06, " BC.");
-
-			goto L0346;
-
-		L0343:
-			// Instruction address 0x0000:0x034b, size: 5
-			this.oParent.CAPI.strcat(0xba06, " AD.");
-
-		L0346:
-			// Instruction address 0x0000:0x0357, size: 5
-			this.oParent.DrawTools.GetStringWidth(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06));
-
-			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x140);
-			if (this.oCPU.Flags.L) goto L036f;
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa));
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xba06), 0x0);
-
-		L036f:
-			// Instruction address 0x0000:0x037c, size: 5
-			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)),
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)),
-				0);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), 0x8));
-
-			// Instruction address 0x0000:0x0390, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Population: ");
-
-			this.oCPU.AX.UInt16 = 0x2e;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.ES.UInt16 = 0x3772; // segment
-
-			// Instruction address 0x0000:0x03a9, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.Tools.F0_2dc4_0337_PopulationValueToString(this.oCPU.ReadInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37de))));
-
-			// Instruction address 0x0000:0x03b9, size: 5
-			this.oParent.CAPI.strcat(0xba06, ", Score: ");
-
-			this.oCPU.ES.UInt16 = 0x3772; // segment
-
-			// Instruction address 0x0000:0x03df, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa((short)this.oCPU.ReadUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37d2)), 10));
-
-			this.oCPU.ES.UInt16 = 0x3772; // segment
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37d4));
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L0416;
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
-			if (this.oCPU.Flags.NE) goto L03fc;
-			goto L04f3;
-
-		L03fc:
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x2);
-			if (this.oCPU.Flags.NE) goto L0404;
-			goto L04f9;
-
-		L0404:
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x3);
-			if (this.oCPU.Flags.NE) goto L040c;
-			goto L04ff;
-
-		L040c:
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x4);
-			if (this.oCPU.Flags.NE) goto L0414;
-			goto L0505;
-
-		L0414:
-			goto L0426;
-
-		L0416:
-			// Instruction address 0x0000:0x041e, size: 5
-			this.oParent.CAPI.strcat(0xba06, " (Chieftan)");
-
-		L0426:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
-			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, 0xc);
-
-			// Instruction address 0x0000:0x0438, size: 5
-			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, (short)this.oCPU.SI.UInt16,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)),
-				7);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), 0x8));
-
-			// Instruction address 0x0000:0x044c, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "    --- CIVILIZATION RATING: ");
-
-			this.oCPU.AX.UInt16 = 0x2e;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)));
-			this.oCPU.DI.UInt16 = this.oCPU.AX.UInt16;
-			
-			// Instruction address 0x0000:0x0487, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa((short)((((short)this.oCPU.ReadUInt16(0x3772, 
-					(ushort)(this.oCPU.DI.UInt16 + 0x37d4)) + 1) *
-					(short)this.oCPU.ReadUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.DI.UInt16 + 0x37d2))) / 0x32), 10));
-
-			// Instruction address 0x0000:0x0497, size: 5
-			this.oParent.CAPI.strcat(0xba06, "% ---");
-
-			// Instruction address 0x0000:0x04ab, size: 5
-			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(0xba06, (short)this.oCPU.SI.UInt16,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)),
-				12);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), 0x8));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), 0x2));
-
-			if (this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)) == param1) goto L04c6;
-			goto L015d;
-
-		L04c6:
-			// Instruction address 0x0000:0x04e8, size: 5
-			this.oParent.Graphics.F0_VGA_009a_ReplaceColor(this.oParent.Var_aa_Screen0_Rectangle,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)) - 4,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)) - 28,
-				296, 26, 15, 14);
-
-			goto L015d;
-
-		L04f3:
-			// Instruction address 0x0000:0x041e, size: 5
-			this.oParent.CAPI.strcat(0xba06, " (Warlord)");
-
-			goto L0426;
-
-		L04f9:
-			// Instruction address 0x0000:0x041e, size: 5
-			this.oParent.CAPI.strcat(0xba06, " (Prince)");
-
-			goto L0426;
-
-		L04ff:
-			// Instruction address 0x0000:0x041e, size: 5
-			this.oParent.CAPI.strcat(0xba06, " (King)");
-
-			goto L0426;
-
-		L0505:
-			// Instruction address 0x0000:0x041e, size: 5
-			this.oParent.CAPI.strcat(0xba06, " (Emperor)");
-
-			goto L0426;
-
-		L050b:
-			this.oCPU.AX.UInt16 = 0;
-
-		L050d:
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.DI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-
-			// Far return
-			this.oCPU.Log.ExitBlock("F3_0000_00d7");
-
-			return this.oCPU.AX.UInt16;
+			return (playerIndex != -1 && (keyPress == 'c' || keyPress == 'C')) ? true : false;
 		}
 
 		/// <summary>
-		/// ?
+		/// Add new entry to a Hall Of Fame if rating is better than any of the current entries
 		/// </summary>
-		public void F3_0000_0513()
+		public void F3_0000_0513_AddNewEntryToHallOfFame()
 		{
-			this.oCPU.Log.EnterBlock("F3_0000_0513()");
+			//this.oCPU.Log.EnterBlock("F3_0000_0513()");
 
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0xe);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x0);
+			while (true)
+			{
+				HallOfFameEntry entry = new HallOfFameEntry();
+				Player humanPlayer = this.parent.GameData.Players[this.parent.GameData.HumanPlayerID];
 
-		L051f:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 0x0);
-			goto L061a;
+				entry.TotalScore = humanPlayer.TotalPlayerScore;
+				entry.GameDifficulty = this.parent.GameData.DifficultyLevel;
+				entry.AlwaysZero = 0; // always zero
+				entry.FinalYear = this.parent.GameData.Year;
+				entry.AchievementsScore = humanPlayer.AchievementScore;
+				entry.TotalCitizenCount = humanPlayer.TotalCitizenCount;
+				entry.TotalPopulation = this.parent.Tools.F0_2dc4_02cd_GetPlayerTotalPopulationCount(this.parent.GameData.HumanPlayerID);
+				entry.PlayerName = humanPlayer.Name;
+				entry.NationName = humanPlayer.Nation;
 
-		L0527:
-			this.oCPU.AX.UInt16 = 0x2e;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, 0x37d2);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8), 0x3772);
-			this.oCPU.AX.UInt16 = this.oCPU.SI.UInt16;
-			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, 0x37a4);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xe), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 0x3772);
+				int rank = -1;
 
-			// Instruction address 0x0000:0x0557, size: 5
-			this.oParent.CAPI.movedata(
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xe)),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa)),
-				0x2e);
+				for (int i = 0; i < 6; i++)
+				{
+					if (entry.Rating > entries[i].Rating)
+					{
+						for (int j = 4; j > i; j--)
+						{
+							entries[j + 1] = entries[j];
+						}
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 
-				this.oCPU.DEC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))));
+						entries[i] = entry;
+						rank = i;
+						break;
+					}
+				}
 
-		L0562:
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.G) goto L0527;
-			this.oCPU.AX.UInt16 = 0x2e;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xb77e);
-			this.oCPU.ES.UInt16 = 0x3772; // segment
-			this.oCPU.WriteUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37d2), this.oCPU.AX.UInt16);
+				if (!F3_0000_00d7_ShowHallOfFameWindow(rank))
+					return;
 
-			this.oCPU.WriteString(VCPU.ToLinearAddress(0x3772, (ushort)(this.oCPU.SI.UInt16 + 0x37e0)),
-				this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Name, 13);
-
-			this.oCPU.WriteString(VCPU.ToLinearAddress(0x3772, (ushort)(this.oCPU.SI.UInt16 + 0x37f0)),
-				this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Nation, 11);
-
-			this.oCPU.AX.UInt16 = (ushort)this.oParent.GameData.DifficultyLevel;
-			this.oCPU.ES.UInt16 = 0x3772; // segment
-			this.oCPU.WriteUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37d4), this.oCPU.AX.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xdc6a); // always zero
-			this.oCPU.WriteUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37d6), this.oCPU.AX.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xd764);
-			this.oCPU.WriteUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37da), this.oCPU.AX.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xd766);
-			this.oCPU.WriteUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37dc), this.oCPU.AX.UInt16);
-			this.oCPU.WriteInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37d8), oParent.GameData.Year);
-
-			// Instruction address 0x0000:0x05ec, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Tools.F0_2dc4_02cd_GetPlayerTotalPopulationCount(this.oParent.GameData.HumanPlayerID);
-
-			this.oParent.CAPI.strcat(0xba06, this.oParent.Tools.F0_2dc4_0337_PopulationValueToString(this.oCPU.AX.Int16));
-
-			this.oCPU.ES.UInt16 = 0x3772; // segment
-			this.oCPU.WriteUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37de), this.oCPU.AX.UInt16);
-
-			F3_0000_00d7(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L0612;
-
-			F3_0000_0000();
-
-			goto L051f;
-
-		L0612:
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
-			goto L0658;
-
-		L0617:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))));
-
-		L061a:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x6);
-			if (this.oCPU.Flags.GE) goto L0655;
-
-			this.oCPU.AX.UInt16 = 0x2e;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.ES.UInt16 = 0x3772; // segment
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37d4));
-			this.oCPU.AX.UInt16 = this.oCPU.INC_UInt16(this.oCPU.AX.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.INC_UInt16(this.oCPU.AX.UInt16);
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x37d2)));
-			this.oCPU.CX.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.AX.UInt16 = (ushort)this.oParent.GameData.DifficultyLevel;
-			this.oCPU.AX.UInt16 = this.oCPU.INC_UInt16(this.oCPU.AX.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.INC_UInt16(this.oCPU.AX.UInt16);
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xb77e));
-			this.oCPU.CMP_UInt16(this.oCPU.CX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.L) goto L064d;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x5);
-			if (this.oCPU.Flags.NE) goto L0617;
-
-		L064d:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 0x5);
-			goto L0562;
-
-		L0655:
-			this.oCPU.AX.UInt16 = 0xffff;
-
-		L0658:
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F3_0000_0513");
+				F3_0000_0000_InitHallOfFame();
+			}
 		}
 
-		/// <summary>
-		/// ?
-		/// </summary>
-		/// <param name="param1"></param>
-		/// <param name="param2"></param>
-		public void F3_0000_065d(ushort param1, ushort param2)
-		{
-			this.oCPU.Log.EnterBlock($"F3_0000_065d({param1}, {param2})");
-
-			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0xa);
-
-			this.oCPU.CMP_UInt16(param2, 0x0);
-			if (this.oCPU.Flags.E) goto L06a6;
-			this.oCPU.CX.UInt16 = (ushort)this.oParent.GameData.DifficultyLevel;
-			this.oCPU.CX.UInt16 = this.oCPU.INC_UInt16(this.oCPU.CX.UInt16);
-			this.oCPU.AX.UInt16 = param2;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.CX.UInt16 = 0x32;
-			this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.AX.UInt16);
-			param1 = 0xffff;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 0x1);
-
-		L0686:
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.AX.UInt16);
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.CX.UInt16 = 0x3;
-			this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
-			if (this.oCPU.Flags.GE) goto L069d;
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
-			this.oCPU.AX.UInt16 = this.oCPU.DEC_UInt16(this.oCPU.AX.UInt16);
-			param1 = this.oCPU.AX.UInt16;
-
-		L069d:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x14);
-			if (this.oCPU.Flags.LE) goto L0686;
-
-		L06a6:
-			this.oCPU.CMP_UInt16(param1, 0x0);
-			if (this.oCPU.Flags.GE) goto L06af;
-			goto L09a8;
-
-		L06af:
-			this.oCPU.CMP_UInt16(param1, 0x13);
-			if (this.oCPU.Flags.LE) goto L06ba;
-
-			param1 = 0x13;
-
-		L06ba:
-			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
-
-			// Instruction address 0x0000:0x06c8, size: 5
-			this.oParent.CommonTools.PlayTune(34, 0);
-
-			// Instruction address 0x0000:0x06e4, size: 5
-			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 15);
-
-			// Instruction address 0x0000:0x06ec, size: 5
-			this.oParent.UnitManagement.F0_1866_260e();
-
-			// Instruction address 0x0000:0x070e, size: 5
-			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19e8_Screen2_Rectangle, 200, 140, 40, 60, this.oParent.Var_aa_Screen0_Rectangle, 10, 10);
-
-			// Instruction address 0x0000:0x0736, size: 5
-			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19e8_Screen2_Rectangle, 240, 140, 40, 60, this.oParent.Var_aa_Screen0_Rectangle, 270, 10);
-
-			this.oParent.Var_aa_Screen0_Rectangle.FontID = 7;
-
-			// Instruction address 0x0000:0x0757, size: 5
-			this.oParent.DrawTools.FillRectangleWithPattern(80, 4, 160, 27);
-
-			// Instruction address 0x0000:0x0777, size: 5
-			this.oParent.DrawTools.DrawShadowRectangle(80, 4, 159, 26, 11, 8);
-
-			this.oCPU.CMP_UInt16(param2, 0x0);
-			if (this.oCPU.Flags.E) goto L0788;
-			goto L0814;
-
-		L0788:
-			this.oParent.CAPI.movedata(
-				0x36d4,
-				0x1f4,
-				this.oCPU.DS.UInt16,
-				0xba06,
-				0x20);
-
-			// Instruction address 0x0000:0x07b0, size: 5
-			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 6, 15);
-
-			this.oParent.CAPI.movedata(
-				0x36d4,
-				0x20d,
-				this.oCPU.DS.UInt16,
-				0xba06,
-				0x20);
-
-			// Instruction address 0x0000:0x07e0, size: 5
-			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 14, 15);
-
-			this.oParent.CAPI.movedata(
-				0x36d4,
-				(ushort)((0x13 - param1) * 0x19),
-				this.oCPU.DS.UInt16,
-				0xba06,
-				0x20);
-
-			// Instruction address 0x0000:0x08d2, size: 5
-			this.oParent.CAPI.strcat(0xba06, "!");
-
-			goto L08cd;
-
-		L0814:
-			this.oParent.CAPI.movedata(
-				0x36d4,
-				0x226,
-				this.oCPU.DS.UInt16,
-				0xba06,
-				0x20);
-
-			// Instruction address 0x0000:0x083c, size: 5
-			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 6, 15);
-
-			this.oParent.CAPI.movedata(
-				0x36d4,
-				0x23f,
-				this.oCPU.DS.UInt16,
-				0xba06,
-				0x20);
-
-			// Instruction address 0x0000:0x0874, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 10));
-
-			// Instruction address 0x0000:0x0884, size: 5
-			this.oParent.CAPI.strcat(0xba06, "% exceeds even");
-
-			// Instruction address 0x0000:0x089c, size: 5
-			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 14, 15);
-
-			this.oParent.CAPI.movedata(
-				0x36d4,
-				(ushort)((0x13 - param1) * 0x19),
-				this.oCPU.DS.UInt16,
-				0xba06,
-				0x20);
-
-			// Instruction address 0x0000:0x08d2, size: 5
-			this.oParent.CAPI.strcat(0xba06, "!");
-
-		L08cd:
-			// Instruction address 0x0000:0x08ea, size: 5
-			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 22, 15);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 0x0);
-			goto L091d;
-
-		L08f9:
-			this.oCPU.AX.UInt16 = 0x7;
-
-		L08fc:
-			// Instruction address 0x0000:0x0912, size: 5
-			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160,
-				-((this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)) * 8) - 184), this.oCPU.AX.LowUInt8);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))));
-
-		L091d:
-			this.oCPU.AX.UInt16 = param1;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.G) goto L0957;
-
-			this.oParent.CAPI.movedata(
-				0x36d4,
-				(ushort)((0x13 - this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))) * 0x19),
-				this.oCPU.DS.UInt16,
-				0xba06,
-				0x20);
-
-			this.oCPU.AX.UInt16 = param1;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.NE) goto L08f9;
-			this.oCPU.AX.UInt16 = 0;
-			goto L08fc;
-
-		L0957:
-			// Instruction address 0x0000:0x097c, size: 5
-			this.oParent.Graphics.F0_VGA_009a_ReplaceColor(this.oParent.Var_aa_Screen0_Rectangle, 80, 183 - (short)param1 * 8, 160, 8, 15, 14);
-
-			// Instruction address 0x0000:0x0984, size: 5
-			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
-
-			// Instruction address 0x0000:0x098d, size: 5
-			this.oParent.CommonTools.PlayTune(1, 0);
-
-			this.oParent.Var_aa_Screen0_Rectangle.FontID = 1;
-
-			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
-
-		L09a8:
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F3_0000_065d");
-		}
+		private static string[] famousPersons = { "Dan Quayle", "Emperor Nero", "Ferdinand Marcos",
+			"Neville Chamberlain", "Louis the XVI", "Kaiser Wilhelm", "Eric the Red",
+			"Otto von Bismarck", "Simon Bolivar", "Vladimir Lenin", "Charles De Gaulle",
+			"Cleopatra", "Winston Churchill", "Suleyman the Magnificent", "Franklin Roosevelt",
+			"Shogun Tokugawa", "Thomas Jefferson", "King Charlemagne", "Emperor Augustus",
+			"Solomon the Wise"};
 
 		/// <summary>
-		/// Shows Top Five Cities in the World window
+		/// Shows famous persons list and compare them to the player score
 		/// </summary>
-		public void F3_0000_09ac_ShowTopFiveCitiesPopup()
+		/// <param name="personIndex"></param>
+		/// <param name="score"></param>
+		public void F3_0000_065d_ShowFamousPersonsWindow(int personIndex, int score)
 		{
-			this.oCPU.Log.EnterBlock("F3_0000_09ac_ShowTopFiveCitiesPopup()");
+			//this.oCPU.Log.EnterBlock($"F3_0000_065d({param1}, {param2})");
 
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x20);
-			this.oCPU.PUSH_UInt16(this.oCPU.DI.UInt16);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14), 0x0);
+			if (score != 0)
+			{
+				int local_2 = (score * (this.parent.GameData.DifficultyLevel + 1)) / 50;
+				
+				personIndex = -1;
 
-		L09b9:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.BP.UInt16);
-			this.oCPU.AX.UInt16 = 0xffff;
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 - 0x10), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 - 0x20), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14)), 0x5);
-			if (this.oCPU.Flags.L) goto L09b9;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12), 0x0);
-			goto L0a0c;
+				for (int i = 1; i < 21; i++)
+				{
+					if ((i * i) / 3 < local_2)
+					{
+						personIndex = i - 1;
+					}
+				}
+			}
 
-		L09d9:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.BP.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 - 0x20));
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 - 0x1e), this.oCPU.AX.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 - 0x10));
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 - 0xe), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16), this.oCPU.DEC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16))));
+			if (personIndex >= 0)
+			{
+				if (personIndex > 19)
+				{
+					personIndex = 19;
+				}
+			
+				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
 
-		L09ef:
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16)), this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.GE) goto L09d9;
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.BP.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6));
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 - 0x20), this.oCPU.AX.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12));
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 - 0x10), this.oCPU.AX.UInt16);
+				// Instruction address 0x0000:0x06c8, size: 5
+				this.parent.CommonTools.PlayTune(34, 0);
 
-		L0a09:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))));
+				// Instruction address 0x0000:0x06e4, size: 5
+				this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 15);
 
-		L0a0c:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)), 0x80);
-			if (this.oCPU.Flags.GE) goto L0a8e;
-			this.oCPU.AX.UInt16 = 0x1c;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)));
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.CMP_UInt8(this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))].StatusFlag, 0xff);
-			if (this.oCPU.Flags.E) goto L0a09;
+				// Instruction address 0x0000:0x06ec, size: 5
+				this.parent.UnitManagement.F0_1866_260e();
 
-			// Instruction address 0x0000:0x0a29, size: 5
-			this.oParent.CityWorker.F0_1d12_0045_ProcessCityState(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)), -1);
+				// Instruction address 0x0000:0x070e, size: 5
+				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19e8_Screen2_Rectangle, 200, 140, 40, 60, this.parent.Var_aa_Screen0_Rectangle, 10, 10);
 
-			this.oCPU.AX.UInt16 = 0x1c;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)));
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.AX.LowUInt8 = (byte)this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))].ActualSize;
-			this.oCPU.CBW(this.oCPU.AX);
-			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, (ushort)((short)this.oParent.Var_70e2));
-			this.oCPU.AX.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.AX.UInt16, (ushort)((short)this.oParent.Var_70e4));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14), 0x1);
+				// Instruction address 0x0000:0x0736, size: 5
+				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19e8_Screen2_Rectangle, 240, 140, 40, 60, this.parent.Var_aa_Screen0_Rectangle, 270, 10);
 
-		L0a4e:
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12));
-			this.oCPU.CMP_UInt16((ushort)this.oParent.GameData.WonderCityID[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14))], this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.NE) goto L0a60;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), 0xa));
+				this.parent.Var_aa_Screen0_Rectangle.FontID = 7;
 
-		L0a60:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14)), 0x15);
-			if (this.oCPU.Flags.LE) goto L0a4e;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14), 0x0);
-			goto L0a73;
+				// Instruction address 0x0000:0x0757, size: 5
+				this.parent.DrawTools.FillRectangleWithPattern(80, 4, 160, 27);
 
-		L0a70:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14))));
+				// Instruction address 0x0000:0x0777, size: 5
+				this.parent.DrawTools.DrawShadowRectangle(80, 4, 159, 26, 11, 8);
 
-		L0a73:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14)), 0x5);
-			if (this.oCPU.Flags.GE) goto L0a09;
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 + this.oCPU.SI.UInt16 - 0x20)), this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.GE) goto L0a70;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16), 0x3);
-			goto L09ef;
+				if (score == 0)
+				{
+					// Instruction address 0x0000:0x07b0, size: 5
+					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Sire, your fame now", 160, 6, 15);
 
-		L0a8e:
-			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
+					// Instruction address 0x0000:0x07e0, size: 5
+					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("exceeds even that of", 160, 14, 15);
 
-			// Instruction address 0x0000:0x0aac, size: 5
-			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 3);
+					// Instruction address 0x0000:0x08ea, size: 5
+					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0($"{famousPersons[personIndex]}!", 160, 22, 15);
+				}
+				else
+				{
+					int rating = (score * (this.parent.GameData.DifficultyLevel + 1)) / 50;
 
-			// Instruction address 0x0000:0x0ac4, size: 5
-			this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("The Top Five Cities in the World", 80, 12, 15);
+					// Instruction address 0x0000:0x083c, size: 5
+					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Sire, your Civilization", 160, 6, 15);
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 0x20);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14), 0x0);
+					// Instruction address 0x0000:0x089c, size: 5
+					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0($"Rating of {rating}% exceeds even", 160, 14, 15);
 
-		L0ad6:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 + this.oCPU.SI.UInt16 - 0x20)), 0xffff);
-			if (this.oCPU.Flags.NE) goto L0ae4;
-			goto L0c57;
+					// Instruction address 0x0000:0x08ea, size: 5
+					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0($"{famousPersons[personIndex]}!", 160, 22, 15);
+				}
 
-		L0ae4:
-			this.oCPU.DI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14));
-			this.oCPU.DI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.DI.UInt16, 0x1);
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 + this.oCPU.DI.UInt16 - 0x10));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
+				for (int i = 0; i <= personIndex; i++)
+				{
+					if (i != personIndex)
+					{
+						// Instruction address 0x0000:0x0912, size: 5
+						this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(famousPersons[i], 160, 184 - (i * 8), 7);
+					}
+					else
+					{
+						// Instruction address 0x0000:0x0912, size: 5
+						this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(famousPersons[i], 160, 184 - (i * 8), 0);
+					}
+				}
 
-			// Instruction address 0x0000:0x0b0e, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa((short)((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14)) + 1), 10));
+				// Instruction address 0x0000:0x097c, size: 5
+				this.parent.Graphics.F0_VGA_009a_ReplaceColor(this.parent.Var_aa_Screen0_Rectangle, 80, 183 - personIndex * 8, 160, 8, 15, 14);
 
-			// Instruction address 0x0000:0x0b1e, size: 5
-			this.oParent.CAPI.strcat(0xba06, ". ");
+				// Instruction address 0x0000:0x0984, size: 5
+				this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
-			// Instruction address 0x0000:0x0b29, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.Segment_2459.F0_2459_08c6_GetCityName(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))));
+				// Instruction address 0x0000:0x098d, size: 5
+				this.parent.CommonTools.PlayTune(1, 0);
 
-			// Instruction address 0x0000:0x0b39, size: 5
-			this.oParent.CAPI.strcat(0xba06, " (");
+				this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
-			this.oCPU.AX.UInt16 = 0x1c;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-
-			// Instruction address 0x0000:0x0b5a, size: 5
-			this.oParent.CAPI.strcat(0xba06, 
-				this.oParent.GameData.Players[this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))].PlayerID].Nationality);
-
-			// Instruction address 0x0000:0x0b6a, size: 5
-			this.oParent.CAPI.strcat(0xba06, ")");
-
-			// Instruction address 0x0000:0x0b8e, size: 5
-			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)) + 3,
-				this.oParent.Array_1946_PlayerColours[this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))].PlayerID]);
-
-			// Instruction address 0x0000:0x0b9d, size: 5
-			this.oParent.CityWorker.F0_1d12_0045_ProcessCityState(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)), -1);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x30);
-
-			// Instruction address 0x0000:0x0bc0, size: 5
-			this.oParent.CityWorker.F0_1d12_6ed4_DrawResources(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)),
-				48, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)) + 10,
-				this.oParent.Var_e8b8, 160);
-
-			// Instruction address 0x0000:0x0bd9, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Tools.F0_2dc4_007c_CheckValueRange(
-				this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))].ActualSize * 8, 
-				0, 160);
-
-			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, 0x8);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), this.oCPU.AX.UInt16));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16), 0x1);
-
-		L0bec:
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12));
-			this.oCPU.CMP_UInt16((ushort)this.oParent.GameData.WonderCityID[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16))], this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.NE) goto L0c1e;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 0x125);
-			if (this.oCPU.Flags.GE) goto L0c1a;
-
-			// Instruction address 0x0000:0x0c12, size: 5
-			this.oParent.CityWorker.F0_1d12_7045((short)(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16)) + 24),
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)),
-				(short)(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)) + 12));
-
-		L0c1a:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 0x13));
-
-		L0c1e:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16)), 0x15);
-			if (this.oCPU.Flags.LE) goto L0bec;
-
-			this.oCPU.BX.UInt16 = (ushort)this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))].PlayerID;
-
-			// Instruction address 0x0000:0x0c4b, size: 5
-			this.oParent.DrawTools.DrawRectangle(8, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)),
-				303, 25, this.oParent.Array_1946_PlayerColours[this.oCPU.BX.UInt16]);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x20));
-
-		L0c57:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14)), 0x5);
-			if (this.oCPU.Flags.GE) goto L0c63;
-			goto L0ad6;
-
-		L0c63:
-			// Instruction address 0x0000:0x0c63, size: 5
-			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
-
-			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
-
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.DI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F3_0000_09ac_ShowTopFiveCitiesPopup");
+				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
+			}
 		}
 	}
 }

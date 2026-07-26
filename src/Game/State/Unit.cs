@@ -72,7 +72,7 @@ namespace OpenCivOne
 			get => this.goToDestination;
 			set
 			{
-				if (value.X == -1 || value.Y == -1)
+				if (value != this.goToDestination)
 				{
 					this.GoToPath.Clear();
 				}

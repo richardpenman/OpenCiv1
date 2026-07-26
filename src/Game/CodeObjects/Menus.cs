@@ -458,7 +458,7 @@ namespace OpenCivOne
 					break;
 
 				case 1: // Top 5 Cities
-					this.parent.HallOfFame.F3_0000_09ac_ShowTopFiveCitiesPopup();
+					this.parent.Reports.ShowTopFiveCitiesReport();
 					break;
 
 				case 2: // Civilization Score

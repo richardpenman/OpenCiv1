@@ -1,5 +1,6 @@
 using Avalonia.Media;
 using IRB.VirtualCPU;
+using System.Diagnostics;
 
 namespace OpenCivOne
 {
@@ -257,9 +258,9 @@ namespace OpenCivOne
 						break;
 
 					case 4:
-						this.parent.HallOfFame.F3_0000_002b();
+						this.parent.HallOfFame.F3_0000_002b_ReadHallOfFameFromFile();
 
-						this.parent.HallOfFame.F3_0000_00d7(-1);
+						this.parent.HallOfFame.F3_0000_00d7_ShowHallOfFameWindow(-1);
 
 						this.parent.Var_6b32_SelectedGameType = -1;
 						break;

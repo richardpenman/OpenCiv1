@@ -123,9 +123,9 @@ namespace OpenCivOne
 		public string[] Array_2fac = { "Defense Minister:", "Domestic Advisor:", "Foreign Minister:", "Science Advisor:" };
 
 		// { "$US", "$THEM", "$BUCKS", "$RPLC1", "$RPLC2" }
-		public string[] Array_30b8 = new string[] { "", "", "", "", "" };
+		public string[] Array_30b8 = { "", "", "", "", "" };
 
-		public string[] Array_33a2_GameDifficultyNames = { "Chief", "Lord", "Prince", "King", "Emperor" };
+		public string[] Array_33a2_GameDifficultyNames = { "Chieftain", "Warlord", "Prince", "King", "Emperor" };
 
 		public int Var_3484 = -1;
 		public GPoint[] Array_35da = { new(0, 0), new(36, 19), new(45, 22), new(38, 15), new(41, 24), new(12, 18), new(39, 18), new(57, 24), 

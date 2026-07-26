@@ -419,7 +419,7 @@ namespace OpenCivOne
 		/// <summary>
 		/// Waits for Key press or Mouse click
 		/// </summary>
-		public void F0_2459_0918_WaitForKeyPressOrMouseClick()
+		public int F0_2459_0918_WaitForKeyPressOrMouseClick()
 		{
 			//this.oCPU.Log.EnterBlock("F0_2459_0918_WaitForKeyPressOrMouseClick()");
 
@@ -434,8 +434,10 @@ namespace OpenCivOne
 			if (mouseEvent.Buttons == MouseButtonsEnum.None && this.parent.CAPI.getch() == 0)
 			{
 				// Instruction address 0x2459:0x0942, size: 5
-				this.parent.CAPI.getch();
+				return this.parent.CAPI.getch();
 			}
+
+			return -1;
 		}
 
 		private string[] caravanGoodsNames = { "Silk", "Silver", "Wine", "Copper", "Gems", "Dye", "Salt", "Spice" };

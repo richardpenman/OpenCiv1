@@ -69,7 +69,7 @@ Currently, you can contribute to this repository in one of the following ways:
 
 <ul>
 <li>Reaching the initial playability of the game (passed),</li>
-<li>Rewrite of the game code, functionalities and features (in progress... only 16% of the code left to rewrite),</li>
+<li>Rewrite of the game code, functionalities and features (in progress... only 15.1% of the code left to rewrite),</li>
 <li>Test game functionalities for game fidelity and bugs,</li>
 <li>Archive the game code.</li>
 </ul>

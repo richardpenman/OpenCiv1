@@ -225,7 +225,7 @@ namespace OpenCivOne
 				{
 					// Instruction address 0x0000:0x0667, size: 5
 					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
-						this.parent.Segment_1238.GetYearAsString(this.parent.Segment_1238.TurnCountToYear(i)), i / 2, 194, 15);
+						this.parent.Segment_1238.YearToString(this.parent.Segment_1238.TurnCountToYear(i)), i / 2, 194, 15);
 				}
 			}
 
@@ -970,6 +970,118 @@ namespace OpenCivOne
 						stats, 318 - this.parent.DrawTools.GetStringWidth(stats), Math.Abs(y), this.parent.Array_1946_PlayerColours[selectedPlayerID]);
 				}
 			}
+		}
+
+		/// <summary>
+		/// Shows Top Five Cities in the World window
+		/// </summary>
+		public void ShowTopFiveCitiesReport()
+		{
+			//this.oCPU.Log.EnterBlock("F3_0000_09ac_ShowTopFiveCitiesPopup()");
+
+			// function body
+			int[] cityIDs = new int[5];
+			int[] cityScores = new int[5];
+
+			for (int i = 0; i < 5; i++)
+			{
+				cityIDs[i] = -1;
+				cityScores[i] = -1;
+			}
+
+			for (int i = 0; i < 128; i++)
+			{
+				if (this.parent.GameData.Cities[i].StatusFlag != 0xff)
+				{
+					// Instruction address 0x0000:0x0a29, size: 5
+					this.parent.CityWorker.F0_1d12_0045_ProcessCityState(i, -1);
+
+					int cityScore = this.parent.GameData.Cities[i].ActualSize + this.parent.Var_70e2 - this.parent.Var_70e4;
+
+					for (int j = 1; j < 22; j++)
+					{
+						if (this.parent.GameData.WonderCityID[j] == i)
+						{
+							cityScore += 10;
+						}
+					}
+
+					for (int j = 0; j < 5; j++)
+					{
+						if (cityScore > cityScores[j])
+						{
+							for (int k = 3; k > j; k--)
+							{
+								cityScores[k + 1] = cityScores[k];
+								cityIDs[k + 1] = cityIDs[k];
+							}
+
+							cityScores[j] = cityScore;
+							cityIDs[j] = i;
+							break;
+						}
+					}
+				}
+			}
+
+			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
+
+			// Instruction address 0x0000:0x0aac, size: 5
+			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 3);
+
+			// Instruction address 0x0000:0x0ac4, size: 5
+			this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("The Top Five Cities in the World", 80, 12, 15);
+
+			int y = 32;
+
+			for (int i = 0; i < 5; i++)
+			{
+				if (cityScores[i] != -1)
+				{
+					int cityID = cityIDs[i];
+
+					// Instruction address 0x0000:0x0b8e, size: 5
+					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(
+						$"{i + 1}. {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} " +
+						$"({this.parent.GameData.Players[this.parent.GameData.Cities[cityID].PlayerID].Nationality})", 160, y + 3,
+						this.parent.Array_1946_PlayerColours[this.parent.GameData.Cities[cityID].PlayerID]);
+
+					// Instruction address 0x0000:0x0b9d, size: 5
+					this.parent.CityWorker.F0_1d12_0045_ProcessCityState(cityID, -1);
+
+					int wonderX = 48;
+
+					// Instruction address 0x0000:0x0bc0, size: 5
+					this.parent.CityWorker.F0_1d12_6ed4_DrawResources(cityID, 48, y + 10, this.parent.Var_e8b8, 160);
+
+					// Instruction address 0x0000:0x0bd9, size: 5
+					wonderX += this.parent.Tools.F0_2dc4_007c_CheckValueRange(this.parent.GameData.Cities[cityID].ActualSize * 8, 0, 160) + 8;
+
+					for (int j = 1; j < 22; j++)
+					{
+						if (this.parent.GameData.WonderCityID[j] == cityID)
+						{
+							if (wonderX < 293)
+							{
+								// Instruction address 0x0000:0x0c12, size: 5
+								this.parent.CityWorker.F0_1d12_7045(j + 24, wonderX, y + 12);
+							}
+
+							wonderX += 19;
+						}
+					}
+
+					// Instruction address 0x0000:0x0c4b, size: 5
+					this.parent.DrawTools.DrawRectangle(8, y, 303, 25, this.parent.Array_1946_PlayerColours[this.parent.GameData.Cities[cityID].PlayerID]);
+
+					y += 32;
+				}
+			}
+
+			// Instruction address 0x0000:0x0c63, size: 5
+			this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+
+			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 		}
 	}
 }

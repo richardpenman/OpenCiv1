@@ -103,7 +103,7 @@ namespace OpenCivOne
 			this.oParent.CAPI.strcat(0xba06, ": ");
 
 			// Instruction address 0x0000:0x011c, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.Segment_1238.GetYearAsString(this.oParent.GameData.Year));
+			this.oParent.CAPI.strcat(0xba06, this.oParent.Segment_1238.YearToString(this.oParent.GameData.Year));
 
 			// Instruction address 0x0000:0x0131, size: 5
 			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 18, 15);

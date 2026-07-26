@@ -21,6 +21,11 @@ namespace OpenCivOne
 		public short TotalCitySize = 0;
 		public short MapCellCount = 0;
 
+		// End Game Statistics
+		public int TotalPlayerScore = 0;
+		public int AchievementScore = 0;
+		public int TotalCitizenCount = 0;
+
 		// Strategic
 		public DiplomacyFlagsEnum[] Diplomacy = new DiplomacyFlagsEnum[8];
 		public PlayerContinent[] Continents = new PlayerContinent[16];

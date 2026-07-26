@@ -486,14 +486,14 @@ namespace OpenCivOne
 
 			if ((this.oParent.GameData.SpaceshipFlags & 0x100) == 0)
 			{
-				this.oParent.HallOfFame.F3_0000_065d((ushort)((this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceLevel >> 1) - 1),
-					this.oParent.Overlay_20.F20_0000_0ca9_ShowCivilizationScorePopup(this.oParent.GameData.HumanPlayerID, true));
+				this.oParent.HallOfFame.F3_0000_065d_ShowFamousPersonsWindow((this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceLevel / 2) - 1,
+					(short)this.oParent.Overlay_20.F20_0000_0ca9_ShowCivilizationScorePopup(this.oParent.GameData.HumanPlayerID, true));
 
-				this.oParent.HallOfFame.F3_0000_002b();
+				this.oParent.HallOfFame.F3_0000_002b_ReadHallOfFameFromFile();
 
-				this.oParent.HallOfFame.F3_0000_0513();
+				this.oParent.HallOfFame.F3_0000_0513_AddNewEntryToHallOfFame();
 
-				this.oParent.HallOfFame.F3_0000_0083();
+				this.oParent.HallOfFame.F3_0000_0083_WriteHallOfFameToFile();
 			}		
 		}
 
@@ -1237,7 +1237,7 @@ namespace OpenCivOne
 
 		L119e:
 			// Instruction address 0x1238:0x11b6, size: 5
-			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(GetYearAsString(this.oParent.GameData.Year), 2, 81, 0);
+			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(YearToString(this.oParent.GameData.Year), 2, 81, 0);
 
 			if (this.oParent.GameData.Year < 0)
 			{
@@ -1698,9 +1698,9 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Gets current year as a String, appends buffer at 0xba06
+		/// Converts year to String
 		/// </summary>
-		public string GetYearAsString(int year)
+		public string YearToString(int year)
 		{
 			return $"{Math.Abs(year)} {((year < 0) ? "BC" : "AD")}";
 		}

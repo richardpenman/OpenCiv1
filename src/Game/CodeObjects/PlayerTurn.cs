@@ -1519,7 +1519,7 @@ namespace OpenCivOne
 					}
 					else
 					{
-						this.parent.HallOfFame.F3_0000_09ac_ShowTopFiveCitiesPopup();
+						this.parent.Reports.ShowTopFiveCitiesReport();
 					}
 					break;
 

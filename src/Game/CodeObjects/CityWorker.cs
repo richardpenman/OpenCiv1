@@ -4345,15 +4345,15 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// Draws city resorces
 		/// </summary>
 		/// <param name="cityID"></param>
-		/// <param name="xPos"></param>
-		/// <param name="yPos"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
 		/// <param name="param4"></param>
 		/// <param name="width"></param>
 		/// <returns></returns>
-		public int F0_1d12_6ed4_DrawResources(int cityID, int xPos, int yPos, int param4, int width)
+		public int F0_1d12_6ed4_DrawResources(int cityID, int x, int y, int param4, int width)
 		{
 			//this.CPU.Log.EnterBlock($"F0_1d12_6ed4_DrawResources({cityID}, {xPos}, {yPos}, {param4}, {width})");
 
@@ -4374,47 +4374,47 @@ namespace OpenCivOne
 			for (i = 0; i < this.parent.Var_70e2; i++)
 			{
 				// Instruction address 0x1d12:0x6f26, size: 5
-				this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, xPos, yPos, this.parent.Array_6e96[i & 1]);
+				this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, x, y, this.parent.Array_6e96[i & 1]);
 
-				xPos += xSpacing;
+				x += xSpacing;
 			}
 
 			for (i = 0; i < this.parent.GameData.Cities[cityID].ActualSize - param4 - this.parent.Var_70e2 - this.parent.Var_70e4; i++)
 			{
 				// Instruction address 0x1d12:0x6f66, size: 5
-				this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, xPos, yPos, this.parent.Array_6e96[2 + (i & 1)]);
+				this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, x, y, this.parent.Array_6e96[2 + (i & 1)]);
 
-				xPos += xSpacing;
+				x += xSpacing;
 			}
 
 			if (i != 0)
 			{
-				xPos += 2;
+				x += 2;
 			}
 
 			for (i = 0; i < this.parent.Var_70e4; i++)
 			{
 				// Instruction address 0x1d12:0x6fbb, size: 5
-				this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, xPos, yPos, this.parent.Array_6e96[4 + (i & 1)]);
+				this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, x, y, this.parent.Array_6e96[4 + (i & 1)]);
 
 				if (i < this.Var_6542)
 				{
 					// Instruction address 0x1d12:0x6fe5, size: 5
-					this.parent.Graphics.F0_VGA_009a_ReplaceColor(this.parent.Var_aa_Screen0_Rectangle, xPos, yPos, 12, 14, 5, 12);
+					this.parent.Graphics.F0_VGA_009a_ReplaceColor(this.parent.Var_aa_Screen0_Rectangle, x, y, 12, 14, 5, 12);
 				}
 
-				xPos += xSpacing;
+				x += xSpacing;
 			}
 
-			xPos += 4;
+			x += 4;
 
 			for (i = 0; i < param4; i++)
 			{
 				// Instruction address 0x1d12:0x7025, size: 5
 				this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
-					xPos, yPos, this.parent.Array_6e96[5 + F0_1d12_6da1_GetSpecialWorkerFlags(i)]);
+					x, y, this.parent.Array_6e96[5 + F0_1d12_6da1_GetSpecialWorkerFlags(i)]);
 
-				xPos += xSpacing;
+				x += xSpacing;
 			}
 
 			return xSpacing;

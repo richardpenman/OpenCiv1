@@ -1,6 +1,3 @@
-using Avalonia.Media.TextFormatting.Unicode;
-using IRB.VirtualCPU;
-
 namespace OpenCivOne
 {
 	public class Secession
