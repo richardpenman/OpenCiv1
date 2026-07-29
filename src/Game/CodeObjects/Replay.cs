@@ -897,7 +897,7 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.E) goto L0ab6;
 
 			// Instruction address 0x0000:0x0a97, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Tools.GetShortestDistance(
+			this.oCPU.AX.Int16 = (short)this.oParent.MapManagement.GetDistance(
 				xPos, yPos,
 				this.oCPU.ReadInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x100)), this.oCPU.ReadInt16(this.oCPU.ES.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x200)));
 

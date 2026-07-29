@@ -343,7 +343,7 @@ namespace OpenCivOne
 			this.oCPU.AX.Int16 = (short)this.oParent.Tools.FindNearestCity(
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)));
-			int nearestCityDistance = this.oParent.Tools.GetShortestDistance(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)),
+			int nearestCityDistance = this.oParent.MapManagement.GetDistance(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)),
 				this.oParent.GameData.Cities[this.oCPU.AX.Int16].Position);
 

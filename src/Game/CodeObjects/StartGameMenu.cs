@@ -508,8 +508,7 @@ namespace OpenCivOne
 					else
 					{
 						// Instruction address 0x0000:0x0abf, size: 5
-						distance = this.parent.Tools.GetShortestDistance(xStart, yStart,
-							this.parent.GameData.Cities[cityID].Position.X, this.parent.GameData.Cities[cityID].Position.Y);
+						distance = this.parent.MapManagement.GetDistance(xStart, yStart, this.parent.GameData.Cities[cityID].Position);
 					}
 
 					if (this.parent.GameData.TurnCount == 0)
@@ -517,8 +516,7 @@ namespace OpenCivOne
 						for (int j = 1; j < playerID; j++)
 						{
 							// Instruction address 0x0000:0x0af2, size: 5
-							int newDistance = this.parent.Tools.GetShortestDistance(xStart, yStart,
-								this.parent.GameData.Players[j].Units[0].Position.X, this.parent.GameData.Players[j].Units[0].Position.Y);
+							int newDistance = this.parent.MapManagement.GetDistance(xStart, yStart, this.parent.GameData.Players[j].Units[0].Position);
 
 							if (newDistance < distance)
 							{
@@ -595,8 +593,7 @@ namespace OpenCivOne
 					for (int i = 0; i < 128; i++)
 					{
 						if (this.parent.GameData.Players[0].Units[i].UnitType != UnitTypeEnum.None &&
-							this.parent.Tools.GetShortestDistance(xStart, yStart,
-								this.parent.GameData.Players[0].Units[i].Position.X, this.parent.GameData.Players[0].Units[i].Position.Y) < 9)
+							this.parent.MapManagement.GetDistance(xStart, yStart, this.parent.GameData.Players[0].Units[i].Position) < 9)
 						{
 							// Instruction address 0x0000:0x0e18, size: 5
 							this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(0, i);

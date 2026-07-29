@@ -457,7 +457,7 @@ namespace OpenCivOne
 			int homeCityID = this.parent.GameData.Players[playerID].Units[unitID].HomeCityID;
 
 			// Instruction address 0x2459:0x098e, size: 5
-			int caravanGoodsWorth = this.parent.Tools.GetShortestDistance(this.parent.GameData.Cities[cityID].Position, 
+			int caravanGoodsWorth = this.parent.MapManagement.GetDistance(this.parent.GameData.Cities[cityID].Position, 
 				this.parent.GameData.Cities[homeCityID].Position) + 10;
 
 			caravanGoodsWorth *= this.parent.GameData.Cities[cityID].BaseTrade + this.parent.GameData.Cities[homeCityID].BaseTrade;

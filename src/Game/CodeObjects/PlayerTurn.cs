@@ -418,7 +418,7 @@ namespace OpenCivOne
 							mouseY = ((mouseEvent.Position.Y - 8) / 16) + this.parent.Var_d75e_MapViewY;
 
 							// Instruction address 0x1403:0x08d0, size: 5
-							int distance = this.parent.Tools.GetShortestDistance(
+							int distance = this.parent.MapManagement.GetDistance(
 								mouseX - this.parent.GameData.Players[playerID].Units[unitID].Position.X,
 								mouseY - this.parent.GameData.Players[playerID].Units[unitID].Position.Y);
 
@@ -584,7 +584,6 @@ namespace OpenCivOne
 			}
 
 			int nearestCityID;
-			int distanceToObject;
 			int newMoveDirection = 0;
 
 			switch (command)
@@ -823,10 +822,9 @@ namespace OpenCivOne
 				case 'h':
 					if (unit == null || unitID >= 128) break;
 
-					nearestCityID = this.parent.Tools.FindNearestCity(unit.Position.X, unit.Position.Y);
+					nearestCityID = this.parent.Tools.FindNearestCity(unit.Position);
 
-					if (nearestCityID != -1 &&
-						(distanceToObject = this.parent.Tools.GetShortestDistance(unit.Position.X, unit.Position.Y, this.parent.GameData.Cities[nearestCityID].Position)) == 0)
+					if (nearestCityID != -1 && this.parent.MapManagement.GetDistance(unit.Position, this.parent.GameData.Cities[nearestCityID].Position) == 0)
 					{
 						unit.HomeCityID = (short)nearestCityID;
 					}
@@ -1822,9 +1820,7 @@ namespace OpenCivOne
 								// Caravan unit
 								if (unit.UnitType == UnitTypeEnum.Caravan)
 								{
-									int distance = this.parent.Tools.GetShortestDistance(
-										newX, this.parent.GameData.Cities[unit.HomeCityID].Position.X,
-										newY, this.parent.GameData.Cities[unit.HomeCityID].Position.Y);
+									int distance = this.parent.MapManagement.GetDistance(newX, newY, this.parent.GameData.Cities[unit.HomeCityID].Position);
 
 									if (this.parent.GameData.Cities[cityID].PlayerID != playerID ||
 										this.parent.GameData.Cities[cityID].CurrentProductionID < -24 || distance >= 10 ||

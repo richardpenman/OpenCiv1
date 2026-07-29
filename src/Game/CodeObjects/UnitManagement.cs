@@ -1514,14 +1514,11 @@ namespace OpenCivOne
 				this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].MovementType != UnitMovementTypeEnum.Air)
 			{
 				// Instruction address 0x1866:0x1980, size: 5
-				int nearestCityID = this.parent.Tools.FindNearestCity(
-					this.parent.GameData.Players[playerID].Units[unitID].Position.X,
-					this.parent.GameData.Players[playerID].Units[unitID].Position.Y);
+				int nearestCityID = this.parent.Tools.FindNearestCity(this.parent.GameData.Players[playerID].Units[unitID].Position);
 
 				// Instruction address 0x1866:0x19a9, size: 5
-				int nearestCityDistance = (nearestCityID < 0 || nearestCityID > 127) ? int.MaxValue: this.parent.Tools.GetShortestDistance(
-					this.parent.GameData.Players[playerID].Units[unitID].Position.X, this.parent.GameData.Players[playerID].Units[unitID].Position.Y,
-					this.parent.GameData.Cities[nearestCityID].Position.X, this.parent.GameData.Cities[nearestCityID].Position.Y);
+				int nearestCityDistance = (nearestCityID < 0 || nearestCityID > 127) ? int.MaxValue: this.parent.MapManagement.GetDistance(
+					this.parent.GameData.Players[playerID].Units[unitID].Position, this.parent.GameData.Cities[nearestCityID].Position);
 
 				// Instruction address 0x1866:0x19b8, size: 5
 				switch (this.parent.CAPI.RNG.Next(4))
@@ -1948,7 +1945,7 @@ namespace OpenCivOne
 			int selectedDirection = 0;
 
 			// Instruction address 0x1866:0x244c, size: 5
-			minDistance = this.parent.Tools.GetShortestDistance(
+			minDistance = this.parent.MapManagement.GetDistance(
 				this.parent.GameData.Players[playerID].Units[unitID].Position.X - x,
 				this.parent.GameData.Players[playerID].Units[unitID].Position.Y - y);
 
@@ -1971,7 +1968,7 @@ namespace OpenCivOne
 							this.parent.MapManagement.F0_2aea_1369_GetCityOwner(newX, newY) == playerID)
 						{
 							// Instruction address 0x1866:0x24da, size: 5
-							distance = this.parent.Tools.GetShortestDistance(newX - x, newY - y);
+							distance = this.parent.MapManagement.GetDistance(newX - x, newY - y);
 
 							if (distance < minDistance)
 							{

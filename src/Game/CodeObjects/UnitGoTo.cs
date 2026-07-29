@@ -995,14 +995,12 @@ namespace OpenCivOne
 								newDirection = i;
 
 								// Instruction address 0x2e31:0x0976, size: 5
-								pathCost = this.parent.Tools.GetShortestDistance(unit.GoToDestination.X, unit.GoToDestination.Y,
-									newX * 4 + 1, newY * 4 + 1);
+								pathCost = this.parent.MapManagement.GetDistance(unit.GoToDestination, newX * 4 + 1, newY * 4 + 1);
 							}
 							else if (local_6 == local_8)
 							{
 								// Instruction address 0x2e31:0x08b0, size: 5
-								int local_12 = this.parent.Tools.GetShortestDistance(unit.GoToDestination.X, unit.GoToDestination.Y,
-									newX * 4 + 1, newY * 4 + 1);
+								int local_12 = this.parent.MapManagement.GetDistance(unit.GoToDestination, newX * 4 + 1, newY * 4 + 1);
 
 								if (local_12 < pathCost)
 								{
@@ -1086,7 +1084,7 @@ namespace OpenCivOne
 						(!waterUnit && this.Arr_db44_LandPath[newShortX, newShortY] != 0))
 					{
 						// Instruction address 0x2e31:0x0b43, size: 5
-						int distance = this.parent.Tools.GetShortestDistance(x - (newShortX * 4) - 1, y - (newShortY * 4) - 1);
+						int distance = this.parent.MapManagement.GetDistance(x - (newShortX * 4) - 1, y - (newShortY * 4) - 1);
 
 						if (distance < minDistance)
 						{
@@ -1336,7 +1334,7 @@ namespace OpenCivOne
 										}
 
 										// Instruction address 0x2e31:0x1063, size: 5
-										local_e += this.parent.Tools.GetShortestDistance(this.Var_6590_DestinationX, this.Var_6592_DestinationY, newXAdjusted, newY);
+										local_e += this.parent.MapManagement.GetDistance(this.Var_6590_DestinationX, this.Var_6592_DestinationY, newXAdjusted, newY);
 									}
 
 									if (local_6 == local_a)
@@ -1357,7 +1355,7 @@ namespace OpenCivOne
 										}
 
 										// Instruction address 0x2e31:0x10bd, size: 5
-										local_1a += this.parent.Tools.GetShortestDistance(this.Var_6590_DestinationX, this.Var_6592_DestinationY, newXAdjusted, newY);
+										local_1a += this.parent.MapManagement.GetDistance(this.Var_6590_DestinationX, this.Var_6592_DestinationY, newXAdjusted, newY);
 
 										if (local_1a < local_e)
 										{

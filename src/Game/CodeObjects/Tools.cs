@@ -101,7 +101,7 @@ namespace OpenCivOne
 				if (city.StatusFlag != 0xff)
 				{
 					// Instruction address 0x2dc4:0x0142, size: 3
-					int distance = GetShortestDistance(x, y, city.Position);
+					int distance = this.parent.MapManagement.GetDistance(x, y, city.Position);
 
 					if (distance < minDistance)
 					{
@@ -135,8 +135,7 @@ namespace OpenCivOne
 				if (this.parent.GameData.Players[playerID].Units[i].UnitType != UnitTypeEnum.None && i != currentUnitID)
 				{
 					// Instruction address 0x2dc4:0x01b2, size: 3
-					int distance = GetShortestDistance(x, y,
-						this.parent.GameData.Players[playerID].Units[i].Position.X, this.parent.GameData.Players[playerID].Units[i].Position.Y);
+					int distance = this.parent.MapManagement.GetDistance(x, y, this.parent.GameData.Players[playerID].Units[i].Position);
 
 					if (distance < minDistance)
 					{
@@ -147,86 +146,6 @@ namespace OpenCivOne
 			}
 
 			return nearestUnitID;
-		}
-
-		/// <summary>
-		/// Calculates a shortest distance between two points
-		/// </summary>
-		/// <param name="pt1"></param>
-		/// <param name="pt2"></param>
-		/// <returns></returns>
-		public int GetShortestDistance(GPoint pt1, GPoint pt2)
-		{
-			// function body
-			return GetShortestDistance(pt1.X - pt2.X, pt1.Y - pt2.Y);
-		}
-
-		/// <summary>
-		/// Calculates a shortest distance between two points
-		/// </summary>
-		/// <param name="pt1"></param>
-		/// <param name="x1"></param>
-		/// <param name="y1"></param>
-		/// <returns></returns>
-		public int GetShortestDistance(GPoint pt1, int x1, int y1)
-		{
-			// function body
-			return GetShortestDistance(pt1.X - x1, pt1.Y - y1);
-		}
-
-		/// <summary>
-		/// Calculates a shortest distance between two points
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="pt2"></param>
-		/// <returns></returns>
-		public int GetShortestDistance(int x, int y, GPoint pt2)
-		{
-			// function body
-			return GetShortestDistance(x - pt2.X, y - pt2.Y);
-		}
-
-		/// <summary>
-		/// Calculates a shortest distance between two points
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="x1"></param>
-		/// <param name="y1"></param>
-		/// <returns></returns>
-		public int GetShortestDistance(int x, int y, int x1, int y1)
-		{
-			// function body
-			return GetShortestDistance(x - x1, y - y1);
-		}
-
-		/// <summary>
-		/// Calculates a shortest distance
-		/// </summary>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <returns></returns>
-		public int GetShortestDistance(int width, int height)
-		{
-			// function body			
-			width = Math.Abs(width);
-			height = Math.Abs(height);
-
-			// take into account either map direction from median
-			if (width > 40)
-			{
-				width = 80 - width;
-			}
-
-			if (width > height)
-			{
-				return (height / 2) + width;
-			}
-			else
-			{
-				return (width / 2) + height;
-			}
 		}
 
 		/// <summary>

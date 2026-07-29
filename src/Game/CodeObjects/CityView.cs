@@ -89,7 +89,7 @@ namespace OpenCivOne
 				else
 				{
 					// Instruction address 0x0000:0x0195, size: 5
-					int shortestDistance = this.parent.Tools.GetShortestDistance(x1 - 9, y1 - 10);
+					int shortestDistance = this.parent.MapManagement.GetDistance(x1 - 9, y1 - 10);
 
 					cityLayout[x1, y1] = Math.Min(Math.Max(((technologyCount - shortestDistance) / 3) - oRNG.Next(2), technologyCount / 6),
 						Math.Min((city.ActualSize / 4) + 6, 9));

@@ -212,8 +212,7 @@ namespace OpenCivOne
 						if (this.parent.GameData.Cities[j].StatusFlag != 0xff && this.parent.GameData.Cities[j].PlayerID == playerID)
 						{
 							// Instruction address 0x0000:0x0431, size: 5
-							int distance = this.parent.Tools.GetShortestDistance(
-								this.parent.GameData.Cities[j].Position, oldMainCityX, oldMainCityY);
+							int distance = this.parent.MapManagement.GetDistance(this.parent.GameData.Cities[j].Position, oldMainCityX, oldMainCityY);
 
 							if (distance > maximumDistance)
 							{
@@ -441,7 +440,7 @@ namespace OpenCivOne
 						if (this.parent.GameData.Cities[j].PlayerID == playerID && this.parent.GameData.Cities[j].StatusFlag != 0xff)
 						{
 							// Instruction address 0x0000:0x0905, size: 5
-							distanceSum += this.parent.Tools.GetShortestDistance(this.parent.GameData.Cities[i].Position, this.parent.GameData.Cities[j].Position);
+							distanceSum += this.parent.MapManagement.GetDistance(this.parent.GameData.Cities[i].Position, this.parent.GameData.Cities[j].Position);
 						}
 					}
 

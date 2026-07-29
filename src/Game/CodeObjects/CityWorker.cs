@@ -92,11 +92,7 @@ namespace OpenCivOne
 					if (this.parent.GameData.Cities[i].StatusFlag != 0xff && i != city.ID)
 					{
 						// Instruction address 0x1d12:0x01a2, size: 5
-						int intercityDistance = this.parent.Tools.GetShortestDistance(
-							city.Position.X,
-							city.Position.Y,
-							this.parent.GameData.Cities[i].Position.X,
-							this.parent.GameData.Cities[i].Position.Y);
+						int intercityDistance = this.parent.MapManagement.GetDistance(city.Position, this.parent.GameData.Cities[i].Position);
 
 						if (this.parent.GameData.Cities[i].PlayerID == city.PlayerID &&
 							this.parent.GameData.Cities[i].HasImprovement(ImprovementEnum.Palace) && intercityDistance < this.Var_6b30)
@@ -813,7 +809,7 @@ namespace OpenCivOne
 												int nearestUnitID = this.parent.Tools.FindNearestPlayerUnit(this.Var_6548_PlayerID, newUnitID,
 													this.parent.GameData.Cities[i].Position.X, this.parent.GameData.Cities[i].Position.Y);
 
-												int unitDistance = Math.Abs(this.parent.Tools.GetShortestDistance(this.parent.GameData.Cities[i].Position, 
+												int unitDistance = Math.Abs(this.parent.MapManagement.GetDistance(this.parent.GameData.Cities[i].Position, 
 													this.parent.GameData.Players[this.Var_6548_PlayerID].Units[nearestUnitID].Position) - 3);
 
 												if ((this.parent.GameData.Cities[i].StatusFlag & 0x20) != 0)
@@ -1732,11 +1728,7 @@ namespace OpenCivOne
 											this.parent.GameData.Players[this.Var_6548_PlayerID].Units[j].UnitType != UnitTypeEnum.Caravan))
 									{
 										// Instruction address 0x1d12:0x3513, size: 5
-										int distance = this.parent.Tools.GetShortestDistance(
-											city.Position.X,
-											city.Position.Y,
-											this.parent.GameData.Players[this.Var_6548_PlayerID].Units[j].Position.X,
-											this.parent.GameData.Players[this.Var_6548_PlayerID].Units[j].Position.Y);
+										int distance = this.parent.MapManagement.GetDistance(city.Position, this.parent.GameData.Players[this.Var_6548_PlayerID].Units[j].Position);
 
 										if (distance > maximumDistance)
 										{

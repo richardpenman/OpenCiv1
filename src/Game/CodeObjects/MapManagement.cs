@@ -24,7 +24,7 @@ namespace OpenCivOne
 		private GameData gameData;
 
 		// Local variables used exclusively inside this section
-		public static GSize Size = new GSize(80, 50);
+		public static GSize MapSize = new GSize(80, 50);
 		public static int XMedian = 80 / 2;
 
 		/// <summary>Number of cities currently visible on the screen</summary>
@@ -1449,7 +1449,7 @@ namespace OpenCivOne
 
 		public TerrainMapGroupTypeEnum GetGroupType(GPoint pt)
 		{
-			switch (GetTerrainType(pt.X, pt.Y))
+			switch (GetTerrainType(pt))
 			{
 				case TerrainTypeEnum.Desert:
 				case TerrainTypeEnum.Plains:
@@ -1474,6 +1474,33 @@ namespace OpenCivOne
 
 		/// <summary>
 		/// Calculate the shortest map distance (number of moves) between two points in a two dimensional space (Chebyshev distance)
+		/// Before there was Euclidean distance also used, but we are in chessboard map so this is a better distance function to calculate distance between objects
+		/// </summary>
+		/// <param name="pt1">The position of the source point</param>
+		/// <param name="x1">The position of the destination X coordinate</param>
+		/// <param name="y1">The position of the destination Y coordinate</param>
+		/// <returns>The shortest distance (number of moves in a two dimensional space)</returns>
+		public int GetDistance(GPoint pt1, int x1, int y1)
+		{
+			return GetDistance(pt1, new GPoint(x1, y1));
+		}
+
+		/// <summary>
+		/// Calculate the shortest map distance (number of moves) between two points in a two dimensional space (Chebyshev distance)
+		/// Before there was Euclidean distance also used, but we are in chessboard map so this is a better distance function to calculate distance between objects
+		/// </summary>
+		/// <param name="x">The position of the start X coordinate</param>
+		/// <param name="y">The position of the start Y coordinate</param>
+		/// <param name="pt2">The position of the destination point</param>
+		/// <returns>The shortest distance (number of moves in a two dimensional space)</returns>
+		public int GetDistance(int x, int y, GPoint pt2)
+		{
+			return GetDistance(new GPoint(x, y), pt2);
+		}
+
+		/// <summary>
+		/// Calculate the shortest map distance (number of moves) between two points in a two dimensional space (Chebyshev distance)
+		/// Before there was Euclidean distance also used, but we are in chessboard map so this is a better distance function to calculate distance between objects
 		/// </summary>
 		/// <param name="x">The position of the start X coordinate</param>
 		/// <param name="y">The position of the start Y coordinate</param>
@@ -1487,6 +1514,7 @@ namespace OpenCivOne
 
 		/// <summary>
 		/// Calculate the shortest map distance (number of moves) between two points in a two dimensional space (Chebyshev distance)
+		/// Before there was Euclidean distance also used, but we are in chessboard map so this is a better distance function to calculate distance between objects
 		/// </summary>
 		/// <param name="pt1">The position of the start point</param>
 		/// <param name="pt2">The position of the destination point</param>
@@ -1498,6 +1526,7 @@ namespace OpenCivOne
 
 		/// <summary>
 		/// Calculate the shortest map distance (number of moves) between two points in a two dimensional space (Chebyshev distance)
+		/// Before there was Euclidean distance also used, but we are in chessboard map so this is a better distance function to calculate distance between objects
 		/// </summary>
 		/// <param name="width">The width (number of cells between two points in X coordinate)</param>
 		/// <param name="height">The width (number of cells between two points in Y coordinate)</param>
@@ -1509,8 +1538,9 @@ namespace OpenCivOne
 
 		/// <summary>
 		/// Calculate the shortest map distance (number of moves) between two points in a two dimensional space (Chebyshev distance)
+		/// Before there was Euclidean distance also used, but we are in chessboard map so this is a better distance function to calculate distance between objects
 		/// </summary>
-		/// <param name="size">The size (number of cells between two points 2d space)</param>
+		/// <param name="size">The size (number of cells between two points in 2d space)</param>
 		/// <returns>The shortest distance (number of moves in a two dimensional space)</returns>
 		public int GetDistance(GSize size)
 		{
@@ -1518,7 +1548,7 @@ namespace OpenCivOne
 
 			if (size.Width >= MapManagement.XMedian)
 			{
-				size.Width = MapManagement.Size.Width - size.Width;
+				size.Width = MapManagement.MapSize.Width - size.Width;
 			}
 
 			return Math.Max(size.Width, size.Height);
