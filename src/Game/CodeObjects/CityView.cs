@@ -89,7 +89,7 @@ namespace OpenCivOne
 				else
 				{
 					// Instruction address 0x0000:0x0195, size: 5
-					int shortestDistance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(x1 - 9, y1 - 10);
+					int shortestDistance = this.parent.Tools.GetShortestDistance(x1 - 9, y1 - 10);
 
 					cityLayout[x1, y1] = Math.Min(Math.Max(((technologyCount - shortestDistance) / 3) - oRNG.Next(2), technologyCount / 6),
 						Math.Min((city.ActualSize / 4) + 6, 9));
@@ -286,7 +286,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x08e4, size: 5
-			this.parent.Tools.F0_2dc4_065f_StopPaletteCycleSlots();
+			this.parent.Tools.StopPaletteCycleSlots();
 
 			F19_0000_137f_LoadCityViewBitmaps(wonderID, city.PlayerID, cityID);
 
@@ -344,19 +344,19 @@ namespace OpenCivOne
 
 							for (int i = 1; i < 9; i++)
 							{
-								int iPrefixTemp;
 								GPoint direction = this.parent.MoveDirections[i];
+								int xOffset;
 
 								if ((y1 & 0x1) == 0)
 								{
-									iPrefixTemp = ((direction.Y <= 0) ? 0 : -1);
+									xOffset = ((direction.Y <= 0) ? 0 : -1);
 								}
 								else
 								{
-									iPrefixTemp = (direction.Y >= 0) ? 0 : 1;
+									xOffset = (direction.Y >= 0) ? 0 : 1;
 								}
 
-								int iXTemp = x1 + iPrefixTemp + direction.X;
+								int iXTemp = x1 + xOffset + direction.X;
 								int iYTemp = y1 + direction.Y;
 
 								if (iYTemp < 12 && cityLayout[iXTemp, iYTemp] >= 0)
@@ -410,19 +410,19 @@ namespace OpenCivOne
 
 								for (int i = 1; i < 9; i++)
 								{
-									int iPrefixTemp;
 									GPoint direction = this.parent.MoveDirections[i];
+									int xOffset;
 
 									if ((y1 & 1) == 0)
 									{
-										iPrefixTemp = (direction.Y <= 0) ? 0 : -1;
+										xOffset = (direction.Y <= 0) ? 0 : -1;
 									}
 									else
 									{
-										iPrefixTemp = (direction.Y >= 0) ? 0 : 1;
+										xOffset = (direction.Y >= 0) ? 0 : 1;
 									}
 
-									int iXTemp = x1 + iPrefixTemp + direction.X;
+									int iXTemp = x1 + xOffset + direction.X;
 									int iYTemp = y1 + direction.Y;
 
 									if ((i & 1) != 0)
@@ -481,7 +481,7 @@ namespace OpenCivOne
 				if (string.IsNullOrEmpty(message))
 				{
 					// Instruction address 0x0000:0x0db1, size: 5
-					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringWithShadowToScreen0(
+					this.parent.DrawTools.DrawCenteredStringWithShadowToScreen0(
 						$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} ({this.parent.Segment_1238.YearToString(this.parent.GameData.Year)})", 160, 2, 15);
 				}
 				else
@@ -579,12 +579,12 @@ namespace OpenCivOne
 				this.parent.Segment_1238.F0_1238_1beb();
 
 				// Instruction address 0x0000:0x0fd4, size: 5
-				this.parent.Tools.F0_2dc4_0626_StartPaletteCycleSlots();
+				this.parent.Tools.StartPaletteCycleSlots();
 			}
 
 			for (int i = 0; i < 20; i++)
 			{
-				this.parent.Tools.F0_2dc4_0523_FreeResource(this.Array_817a_Houses[i], "City layout");
+				this.parent.Tools.FreeNativeResource(this.Array_817a_Houses[i], "City layout");
 			}
 		}
 
@@ -636,7 +636,7 @@ namespace OpenCivOne
 			{
 				// Instruction address 0x0000:0x10b2, size: 5
 				this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_19d4_Screen1_Rectangle,
-					this.parent.Tools.F0_2dc4_007c_CheckValueRange(((y & 1) * 8) + (x * 16) - 9, 0, 999), 16 + (y << 3),
+					this.parent.Tools.CheckValueRange(((y & 1) * 8) + (x * 16) - 9, 0, 999), 16 + (y << 3),
 					this.Array_81a2_Buildings[bitmapID]);
 
 			}
@@ -647,7 +647,7 @@ namespace OpenCivOne
 
 				// Instruction address 0x0000:0x1115, size: 5
 				this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_19d4_Screen1_Rectangle,
-					this.parent.Tools.F0_2dc4_007c_CheckValueRange(((y & 1) * 8) + (x * 16) - 9, 0, 999), y - 10,
+					this.parent.Tools.CheckValueRange(((y & 1) * 8) + (x * 16) - 9, 0, 999), y - 10,
 					this.Array_68a0_Wonders[bitmapID]);
 			}
 		}
@@ -696,23 +696,23 @@ namespace OpenCivOne
 				xStep = 12;
 			}
 
-			int local_2 = this.parent.Tools.F0_2dc4_007c_CheckValueRange(this.parent.Var_70e2, 0, this.parent.GameData.Cities[cityID].ActualSize);
-			int local_4 = this.parent.Tools.F0_2dc4_007c_CheckValueRange(this.parent.Var_70e4, 0, this.parent.GameData.Cities[cityID].ActualSize);
+			int happyCitizenCount = this.parent.Tools.CheckValueRange(this.parent.Var_70e2_CityHappyCitizenCount, 0, this.parent.GameData.Cities[cityID].ActualSize);
+			int unhappyCitizenCount = this.parent.Tools.CheckValueRange(this.parent.Var_70e4_CityUnhappyCitizenCount, 0, this.parent.GameData.Cities[cityID].ActualSize);
 
-			while (local_2 + local_4 > this.parent.Tools.F0_2dc4_007c_CheckValueRange(this.parent.GameData.Cities[cityID].ActualSize - this.parent.Var_e8b8, 0, 99))
+			while (happyCitizenCount + unhappyCitizenCount > this.parent.Tools.CheckValueRange(this.parent.GameData.Cities[cityID].ActualSize - this.parent.Var_e8b8, 0, 99))
 			{
-				local_2--;
+				happyCitizenCount--;
 
 				// Instruction address 0x0000:0x11fc, size: 5
-				local_2 = this.parent.Tools.F0_2dc4_007c_CheckValueRange(local_2, 0, this.parent.GameData.Cities[cityID].ActualSize);
+				happyCitizenCount = this.parent.Tools.CheckValueRange(happyCitizenCount, 0, this.parent.GameData.Cities[cityID].ActualSize);
 
-				local_4--;
+				unhappyCitizenCount--;
 
 				// Instruction address 0x0000:0x1214, size: 5
-				local_4 = this.parent.Tools.F0_2dc4_007c_CheckValueRange(local_4, 0, this.parent.GameData.Cities[cityID].ActualSize);
+				unhappyCitizenCount = this.parent.Tools.CheckValueRange(unhappyCitizenCount, 0, this.parent.GameData.Cities[cityID].ActualSize);
 			}
 
-			for (int i = 0; i < local_2; i++)
+			for (int i = 0; i < happyCitizenCount; i++)
 			{
 				// Instruction address 0x0000:0x1270, size: 5
 				this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, x, y, bitmaps[i & 0x1]);
@@ -720,14 +720,14 @@ namespace OpenCivOne
 				x += xStep;
 			}
 
-			if (local_2 != 0)
+			if (happyCitizenCount != 0)
 			{
 				x += 8;
 			}
 		
 			int j;
 
-			for (j = 0; (this.parent.GameData.Cities[cityID].ActualSize - local_2 - local_4 - this.parent.Var_e8b8) > j; j++)
+			for (j = 0; (this.parent.GameData.Cities[cityID].ActualSize - happyCitizenCount - unhappyCitizenCount - this.parent.Var_e8b8) > j; j++)
 			{
 				// Instruction address 0x0000:0x12b6, size: 5
 				this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, x, y, bitmaps[2 + (j & 0x1)]);
@@ -740,7 +740,7 @@ namespace OpenCivOne
 				x += 8;
 			}
 
-			for (int i = 0; i < local_4; i++)
+			for (int i = 0; i < unhappyCitizenCount; i++)
 			{
 				// Instruction address 0x0000:0x1312, size: 5
 				this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, x, y, bitmaps[4 + (i & 0x1)]);
@@ -762,7 +762,7 @@ namespace OpenCivOne
 			for (int i = 0; i < 9; i++)
 			{
 				// Instruction address 0x0000:0x1372, size: 5
-				this.parent.Tools.F0_2dc4_0523_FreeResource(bitmaps[i], "Draw city population");
+				this.parent.Tools.FreeNativeResource(bitmaps[i], "Draw city population");
 			}
 		}
 
@@ -892,7 +892,7 @@ namespace OpenCivOne
 
 			// function body
 			// Instruction address 0x0000:0x1682, size: 5
-			this.parent.Tools.F0_2dc4_065f_StopPaletteCycleSlots();
+			this.parent.Tools.StopPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x1698, size: 5
 			this.parent.Graphics.SetPaletteColor(0xfd, GBitmap.Color18ToColor(3, 3, 3));
@@ -972,12 +972,12 @@ namespace OpenCivOne
 			this.parent.CommonTools.ClearKeyboardAndMouseEvents();
 
 			// Instruction address 0x0000:0x18b7, size: 5
-			this.parent.Tools.F0_2dc4_0626_StartPaletteCycleSlots();
+			this.parent.Tools.StartPaletteCycleSlots();
 
 			for (int i = 0; i < 10; i++)
 			{
 				// Instruction address 0x0000:0x1ad4, size: 5
-				this.parent.Tools.F0_2dc4_0523_FreeResource(bitmaps[i], "Invaders");
+				this.parent.Tools.FreeNativeResource(bitmaps[i], "Invaders");
 			}
 		}
 
@@ -992,7 +992,7 @@ namespace OpenCivOne
 			int[] bitmaps = new int[10];
 
 			// Instruction address 0x0000:0x18c8, size: 5
-			this.parent.Tools.F0_2dc4_065f_StopPaletteCycleSlots();
+			this.parent.Tools.StopPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x18df, size: 5
 			if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.University))
@@ -1066,7 +1066,7 @@ namespace OpenCivOne
 			for (int i = 0; i < 10; i++)
 			{
 				// Instruction address 0x0000:0x1ad4, size: 5
-				this.parent.Tools.F0_2dc4_0523_FreeResource(bitmaps[i], "Civil disorder");
+				this.parent.Tools.FreeNativeResource(bitmaps[i], "Civil disorder");
 			}
 		}
 
@@ -1079,7 +1079,7 @@ namespace OpenCivOne
 
 			// function body
 			// Instruction address 0x0000:0x1ae8, size: 5
-			this.parent.Tools.F0_2dc4_065f_StopPaletteCycleSlots();
+			this.parent.Tools.StopPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x1afa, size: 5
 			if (!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Industrialization))
@@ -1145,7 +1145,7 @@ namespace OpenCivOne
 			for (int i = 0; i < 10; i++)
 			{
 				// Instruction address 0x0000:0x1ad4, size: 5
-				this.parent.Tools.F0_2dc4_0523_FreeResource(bitmaps[i], "Love leader");
+				this.parent.Tools.FreeNativeResource(bitmaps[i], "Love leader");
 			}
 		}
 	}

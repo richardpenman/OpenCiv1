@@ -51,9 +51,9 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Generates a game map while showing the animation
+		/// Generates a new game map while showing the animation
 		/// </summary>
-		public void F7_0000_0012_GenerateMap()
+		public void GenerateNewMap()
 		{
 			//this.oCPU.Log.EnterBlock("F7_0000_0012_GameIntro()");
 
@@ -71,7 +71,7 @@ namespace OpenCivOne
 				this.map.CreateNewEmptyMap();
 
 				#region Stage 1 - Generate continents
-				F7_0000_17cf_AdvanceAnimation();
+				AdvanceAnimation();
 
 				int totalCellCount = this.parent.Var_7ef6_PlanetLandMass * 320 + 640;
 
@@ -162,7 +162,7 @@ namespace OpenCivOne
 
 					i += cloudCellCount;
 
-					F7_0000_17cf_AdvanceAnimation();
+					AdvanceAnimation();
 				}
 
 				/*for (int i = 0; i < 80; i++)
@@ -239,7 +239,7 @@ namespace OpenCivOne
 							}
 						}
 
-						F7_0000_17cf_AdvanceAnimation();
+						AdvanceAnimation();
 					}
 				}
 				#endregion
@@ -366,7 +366,7 @@ namespace OpenCivOne
 						}
 					}
 
-					F7_0000_17cf_AdvanceAnimation();
+					AdvanceAnimation();
 				}
 				#endregion
 
@@ -455,7 +455,7 @@ namespace OpenCivOne
 
 				for (int i = 0; i < 256 && riverCellCount <= riverValue; i++)
 				{
-					int local_16 = 0;
+					int riverStepCount = 0;
 					int riverX;
 					int riverY;
 
@@ -516,7 +516,7 @@ namespace OpenCivOne
 						}
 
 						oldDirection = newDirection;
-						newDirection = ((rng.Next(2) - (local_16 & 1)) * 2 + newDirection) & 0x7;
+						newDirection = ((rng.Next(2) - (riverStepCount & 1)) * 2 + newDirection) & 0x7;
 
 						if ((oldDirection ^ 0x4) > newDirection)
 						{
@@ -532,11 +532,11 @@ namespace OpenCivOne
 						// Instruction address 0x0000:0x07a1, size: 5
 						cellValue = this.map.GetTerrainType(newRiverX, newRiverY);
 
-						local_16++;
+						riverStepCount++;
 					}
 					while (!riverEnds && cellValue != TerrainTypeEnum.Water && cellValue != TerrainTypeEnum.River && cellValue != TerrainTypeEnum.Mountains);
 
-					if ((!riverEnds && cellValue != TerrainTypeEnum.River) || local_16 < 5)
+					if ((!riverEnds && cellValue != TerrainTypeEnum.River) || riverStepCount < 5)
 					{
 						// restore map copy
 						for (int j = 0; j < 80; j++)
@@ -567,7 +567,7 @@ namespace OpenCivOne
 						}
 					}
 
-					F7_0000_17cf_AdvanceAnimation();
+					AdvanceAnimation();
 				}
 				#endregion
 			}
@@ -649,7 +649,7 @@ namespace OpenCivOne
 
 										currentGroupID = groupID;
 
-										F7_0000_17cf_AdvanceAnimation();
+										AdvanceAnimation();
 									}
 
 								L0b87:
@@ -702,7 +702,7 @@ namespace OpenCivOne
 											}
 											currentGroupID = groupID;
 
-											F7_0000_17cf_AdvanceAnimation();
+											AdvanceAnimation();
 										}
 										goto L0b87;
 									}
@@ -759,7 +759,7 @@ namespace OpenCivOne
 						}
 					}
 
-					F7_0000_17cf_AdvanceAnimation();
+					AdvanceAnimation();
 				}
 				//
 
@@ -875,15 +875,15 @@ namespace OpenCivOne
 						break;
 				}
 
-				F7_0000_17cf_AdvanceAnimation();
+				AdvanceAnimation();
 			}
 			#endregion
 
 			// For 'Save game' compatibility reasons
-			F7_0000_1188_ConstructLandPath();
+			ConstructLandPathArray();
 			//F7_0000_1440_ConstructWaterPath();
 
-			F7_0000_17cf_AdvanceAnimation();
+			AdvanceAnimation();
 
 			#region Stage 7 - Look for suitable places to build cities
 			int[] terrainCoefficients = new int[24];
@@ -897,23 +897,23 @@ namespace OpenCivOne
 			{
 				terrainCoefficients[i] = this.parent.GameData.Terrains[i].Trade + (3 * this.parent.GameData.Terrains[i].Food);
 
-				int local_2 = i % 12;
+				int terrainModificationIndex = i % 12;
 
-				if (local_2 != 2 && local_2 != 11)
+				if (terrainModificationIndex != 2 && terrainModificationIndex != 11)
 				{
 					terrainCoefficients[i] += this.parent.GameData.Terrains[i].Production * 2;
 				}
 
-				if (this.parent.GameData.TerrainModifications[local_2].MiningEffect >= 0)
+				if (this.parent.GameData.TerrainModifications[terrainModificationIndex].MiningEffect >= 0)
 				{
-					if (this.parent.GameData.TerrainModifications[local_2].IrrigationEffect < 0)
+					if (this.parent.GameData.TerrainModifications[terrainModificationIndex].IrrigationEffect < 0)
 					{
-						terrainCoefficients[i] += (-1 - this.parent.GameData.TerrainModifications[local_2].IrrigationEffect) * 2;
+						terrainCoefficients[i] += (-1 - this.parent.GameData.TerrainModifications[terrainModificationIndex].IrrigationEffect) * 2;
 					}
 				}
 				else
 				{
-					terrainCoefficients[i] += -1 - this.parent.GameData.TerrainModifications[local_2].MiningEffect;
+					terrainCoefficients[i] += -1 - this.parent.GameData.TerrainModifications[terrainModificationIndex].MiningEffect;
 				}
 			}
 
@@ -974,7 +974,7 @@ namespace OpenCivOne
 						}
 
 						// Instruction address 0x0000:0x1111, size: 5
-						totalLocationScore = this.parent.Tools.F0_2dc4_007c_CheckValueRange((totalLocationScore - 120) / 8, 1, 15) / 2 + 8;
+						totalLocationScore = this.parent.Tools.CheckValueRange((totalLocationScore - 120) / 8, 1, 15) / 2 + 8;
 
 						// !!! Sets build score to Land ownership field also, why this needs reworking!
 						this.map.SetBuildLocationScore(i, j, totalLocationScore);
@@ -1018,7 +1018,7 @@ namespace OpenCivOne
 
 			this.mapFinished = true;
 
-			while (F7_0000_17cf_AdvanceAnimation())
+			while (AdvanceAnimation())
 			{
 				Thread.Sleep(1);
 			}
@@ -1031,7 +1031,7 @@ namespace OpenCivOne
 		/// <summary>
 		/// Constructs the Land path array for old GoTo algorithm (needed for old save format)
 		/// </summary>
-		public void F7_0000_1188_ConstructLandPath()
+		public void ConstructLandPathArray()
 		{
 			//this.oCPU.Log.EnterBlock("F7_0000_1188()");
 
@@ -1149,7 +1149,7 @@ namespace OpenCivOne
 		/// <summary>
 		/// Constructs the Water path array for old GoTo algorithm
 		/// </summary>
-		public void F7_0000_1440_ConstructWaterPath()
+		public void ConstructWaterPathArray()
 		{
 			//this.oCPU.Log.EnterBlock($"F7_0000_1440()");
 
@@ -1164,12 +1164,12 @@ namespace OpenCivOne
 				}
 			}
 
-			for (int local_14 = 0; local_14 < 20; local_14++)
+			for (int i = 0; i < 20; i++)
 			{
-				for (int local_18 = 0; local_18 < 12; local_18++)
+				for (int j = 0; j < 12; j++)
 				{
-					int x = (local_14 * 4) + 1;
-					int y = (local_18 * 4) + 1;
+					int x = (i * 4) + 1;
+					int y = (j * 4) + 1;
 					int groupID = -1;
 
 					if (this.map.GetTerrainType(x, y) == TerrainTypeEnum.Water)
@@ -1191,9 +1191,9 @@ namespace OpenCivOne
 
 					if (groupID != -1)
 					{
-						for (int local_a = 1; local_a < 9; local_a++)
+						for (int k = 1; k < 9; k++)
 						{
-							GPoint direction = this.parent.MoveDirections[local_a];
+							GPoint direction = this.parent.MoveDirections[k];
 							int newX = x + (direction.X * 4);
 							int newY = y + (direction.Y * 4);
 							int newGroupID = -1;
@@ -1219,62 +1219,61 @@ namespace OpenCivOne
 							{
 								newX = x;
 								newY = y;
-								int local_6 = 0;
+								int landCellCount = 0;
 
 								for (int local_12 = 0; local_12 < 5; local_12++)
 								{
-									direction = this.parent.MoveDirections[local_a];
+									direction = this.parent.MoveDirections[k];
 									newX += direction.X;
 									newY += direction.Y;
 
-									local_6 = 4;
+									landCellCount = 4;
 
 									if (!this.map.ValidateMapCoordinates(newX, newY) ||
 										this.map.GetTerrainType(newX, newY) != TerrainTypeEnum.Water)
 									{
-										local_6--;
+										landCellCount--;
 									}
 
 									if (!this.map.ValidateMapCoordinates(newX + 1, newY) ||
 										this.map.GetTerrainType(newX + 1, newY) != TerrainTypeEnum.Water)
 									{
-										local_6--;
+										landCellCount--;
 									}
 
 									if (!this.map.ValidateMapCoordinates(newX, newY + 1) ||
 										this.map.GetTerrainType(newX, newY + 1) != TerrainTypeEnum.Water)
 									{
-										local_6--;
+										landCellCount--;
 									}
 
 									if (!this.map.ValidateMapCoordinates(newX + 1, newY + 1) ||
 										this.map.GetTerrainType(newX + 1, newY + 1) != TerrainTypeEnum.Water)
 									{
-										local_6--;
+										landCellCount--;
 									}
 
-									if (local_6 < 2)
+									if (landCellCount < 2)
 									{
 										break;
 									}
 								}
 
-								if (local_6 > 1 || (local_18 == 11 && local_a == 3))
+								if (landCellCount > 1 || (j == 11 && k == 3))
 								{
-									direction = this.parent.MoveDirections[local_a];
+									direction = this.parent.MoveDirections[k];
 
-									int local_1a = local_18 + direction.Y;
+									newY = j + direction.Y;
 
-									if (local_1a < 12)
+									if (newY < 12)
 									{
-										waterPath[local_14, local_18] |= 0x1 << (local_a - 1);
+										waterPath[i, j] |= 0x1 << (k - 1);
 
-										newX = local_14 + direction.X;
-										newY = local_1a;
+										newX = i + direction.X;
 
-										if (newX >= 0 && newX < 20 && local_1a >= 0 && local_1a < 13)
+										if (newX >= 0 && newX < 20 && newY >= 0 && newY < 13)
 										{
-											waterPath[newX, local_1a] |= 0x1 << ((local_a + 3) & 0x7);
+											waterPath[newX, newY] |= 0x1 << ((k + 3) & 0x7);
 										}
 									}
 								}
@@ -1299,7 +1298,7 @@ namespace OpenCivOne
 		/// <summary>
 		/// Advances the story animation
 		/// </summary>
-		public bool F7_0000_17cf_AdvanceAnimation()
+		public bool AdvanceAnimation()
 		{
 			//this.oCPU.Log.EnterBlock("F7_0000_17cf()");
 
@@ -1336,7 +1335,7 @@ namespace OpenCivOne
 					if (this.animationStage != 2 && this.storyTimeIndex < 40)
 					{
 						// Instruction address 0x0000:0x18df, size: 5
-						this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(this.storyText, 160, 160, 3);
+						this.parent.DrawTools.DrawCenteredStringToScreen0(this.storyText, 160, 160, 3);
 
 						// Instruction address 0x0000:0x18eb, size: 5
 						this.parent.CommonTools.WaitTimer(5);
@@ -1368,13 +1367,13 @@ namespace OpenCivOne
 						this.parent.CommonTools.WaitTimer(10);
 
 						// Instruction address 0x0000:0x196b, size: 5
-						this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(this.storyText, 160, 160, 3);
+						this.parent.DrawTools.DrawCenteredStringToScreen0(this.storyText, 160, 160, 3);
 
 						// Instruction address 0x0000:0x1977, size: 5
 						this.parent.CommonTools.WaitTimer(5);
 
 						// Instruction address 0x0000:0x198c, size: 5
-						this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(this.storyText, 160, 160, 11);
+						this.parent.DrawTools.DrawCenteredStringToScreen0(this.storyText, 160, 160, 11);
 
 						// Instruction address 0x0000:0x199e, size: 5
 						if (this.storyText.Length > 3)

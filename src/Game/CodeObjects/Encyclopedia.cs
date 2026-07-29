@@ -9,7 +9,7 @@ namespace OpenCivOne
 	{
 		private OpenCivOneGame parent;
 
-		private string[] Array_3c64_GameConcepts = ["Veteran Units", "Fortify", "Irrigation", "Mining", "Roads", "RailRoads", 
+		private string[] gameConcepts = ["Veteran Units", "Fortify", "Irrigation", "Mining", "Roads", "RailRoads", 
 			"Anarchy", "Despotism", "Monarchy", "Communism", "Republic", "Democracy", "Fortress", "Pillage", "Disband", 
 			"Pollution", "Sentry", "Luxuries", "Taxes", "Science", "Trade Routes"];
 		private int Var_6808 = 0;
@@ -29,20 +29,20 @@ namespace OpenCivOne
 		/// Shows one of the Encyclopedia topics and handles player input
 		/// </summary>
 		/// <param name="topicType">Encyclopedia topic to show</param>
-		public void F8_0000_0000_ShowEncyclopediaByTopic(EncyclopediaTopicEnum topicType)
+		public void ShowEncyclopediaByTopic(EncyclopediaTopicEnum topicType)
 		{
 			//this.oCPU.Log.EnterBlock($"F8_0000_0000_ShowEncyclopedia({windowIndex})");
 
 			// function body
 			// Instruction address 0x0000:0x0006, size: 5
-			this.parent.Tools.F0_2dc4_065f_StopPaletteCycleSlots();
+			this.parent.Tools.StopPaletteCycleSlots();
 
 			int itemStartIndex = 0;
 			int result = 0;
 
 			while (result != -2)
 			{
-				result = F8_0000_0066_ShowEncyclopediaWindow(topicType, itemStartIndex);
+				result = ShowEncyclopediaWindow(topicType, itemStartIndex);
 
 				if (result == -1)
 				{
@@ -61,7 +61,7 @@ namespace OpenCivOne
 			this.parent.Segment_1238.F0_1238_1b44();
 
 			// Instruction address 0x0000:0x0058, size: 5
-			this.parent.Tools.F0_2dc4_0626_StartPaletteCycleSlots();
+			this.parent.Tools.StartPaletteCycleSlots();
 		}
 
 		/// <summary>
@@ -70,7 +70,7 @@ namespace OpenCivOne
 		/// <param name="topicType">window to show</param>
 		/// <param name="topicStartIndex"></param>
 		/// <returns></returns>
-		private int F8_0000_0066_ShowEncyclopediaWindow(EncyclopediaTopicEnum topicType, int topicStartIndex)
+		private int ShowEncyclopediaWindow(EncyclopediaTopicEnum topicType, int topicStartIndex)
 		{
 			//this.oCPU.Log.EnterBlock($"F8_0000_0066({itemStartIndex}, {windowIndex})");
 
@@ -89,18 +89,18 @@ namespace OpenCivOne
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 60, 2, 200, 9, 15);
 
 			// Instruction address 0x0000:0x00c9, size: 5
-			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Game Encyclopedia", 161, 4, 0);
+			this.parent.DrawTools.DrawCenteredStringToScreen0("Game Encyclopedia", 161, 4, 0);
 
 			// Instruction address 0x0000:0x00e1, size: 5
-			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Game Encyclopedia", 160, 3, 10);
+			this.parent.DrawTools.DrawCenteredStringToScreen0("Game Encyclopedia", 160, 3, 10);
 
 			// Instruction address 0x0000:0x00f9, size: 5
-			this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("EXIT", 286, 4, 12);
+			this.parent.DrawTools.DrawStringToScreen0("EXIT", 286, 4, 12);
 
 			if (topicType == EncyclopediaTopicEnum.AllTopics)
 			{
 				// Instruction address 0x0000:0x0117, size: 5
-				this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("MORE", 8, 4, 12);
+				this.parent.DrawTools.DrawStringToScreen0("MORE", 8, 4, 12);
 			}
 
 			// Instruction address 0x0000:0x0137, size: 5
@@ -187,14 +187,14 @@ namespace OpenCivOne
 				{
 					for (int j = 0; j < 21; j++)
 					{
-						if (string.Compare(Array_3c64_GameConcepts[j], oldTopicText, true) > 0 &&
-							string.Compare(Array_3c64_GameConcepts[j], topicText, true) < 0)
+						if (string.Compare(gameConcepts[j], oldTopicText, true) > 0 &&
+							string.Compare(gameConcepts[j], topicText, true) < 0)
 						{
 							itemTopic = EncyclopediaTopicEnum.GameConcept;
 							topicIndex = j;
 
 							// Instruction address 0x0000:0x0348, size: 5
-							topicText = Array_3c64_GameConcepts[j];
+							topicText = gameConcepts[j];
 						}
 					}
 				}
@@ -205,7 +205,7 @@ namespace OpenCivOne
 				if (topicCount >= topicStartIndex)
 				{
 					// Instruction address 0x0000:0x0396, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(this.parent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(topicText, topicNameMaximumWidth), x, y, 0);
+					this.parent.DrawTools.DrawStringToScreen0(this.parent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(topicText, topicNameMaximumWidth), x, y, 0);
 
 					displayItems[topicCount - topicStartIndex] = new BKeyValuePair<EncyclopediaTopicEnum, int>(itemTopic, topicIndex);
 
@@ -269,7 +269,7 @@ namespace OpenCivOne
 					{
 						if (y >= 0)
 						{
-							F8_0000_062a_DisplayEncyclopediaTopic(displayItems[selectedTopicIndex].Key, displayItems[selectedTopicIndex].Value);
+							DisplayEncyclopediaTopic(displayItems[selectedTopicIndex].Key, displayItems[selectedTopicIndex].Value);
 						}
 						else
 						{
@@ -295,11 +295,11 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// Displays the topic from the encyclopedia
 		/// </summary>
 		/// <param name="topicType"></param>
 		/// <param name="topicIndex"></param>
-		public void F8_0000_062a_DisplayEncyclopediaTopic(EncyclopediaTopicEnum topicType, int topicIndex)
+		public void DisplayEncyclopediaTopic(EncyclopediaTopicEnum topicType, int topicIndex)
 		{
 			//this.oCPU.Log.EnterBlock($"F8_0000_062a({topicIndex}, {topicID})");
 
@@ -308,7 +308,7 @@ namespace OpenCivOne
 				return;
 
 			// Instruction address 0x0000:0x063a, size: 5
-			this.parent.Tools.F0_2dc4_065f_StopPaletteCycleSlots();
+			this.parent.Tools.StopPaletteCycleSlots();
 
 			int colour = 15;
 
@@ -328,7 +328,7 @@ namespace OpenCivOne
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, (byte)colour);
 
 			// Instruction address 0x0000:0x06b9, size: 5
-			this.parent.UnitManagement.F0_1866_260e();
+			this.parent.UnitManagement.F0_1866_260e_DrawRandomFoodIcons();
 
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 7;
 
@@ -353,19 +353,19 @@ namespace OpenCivOne
 				case EncyclopediaTopicEnum.TechnologyAdvance:
 					if (this.parent.Var_3c62 == 0)
 					{
-						int fileID = F8_0000_16c4_GetTechnologyAdvanceFileID(topicIndex);
+						int fileID = GetTechnologyAdvanceFileID(topicIndex);
 
 						// Instruction address 0x0000:0x0760, size: 5
 						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, $"ICONPG{(fileID / 9) + 1}.PIC", 0);
 
 						// Instruction address 0x0000:0x076c, size: 5
-						this.parent.Tools.F0_2dc4_047d_ReadAndSetPalette("ICONPG1.PAL");
+						this.parent.Tools.ReadAndSetPalette("ICONPG1.PAL");
 
-						F8_0000_16f7_DrawEncyclopediaImage(((fileID % 3) * 111) + 1, (((fileID % 9) / 3) * 69) + 1, 110, 68, 62, 42);
+						DrawEncyclopediaImage(((fileID % 3) * 111) + 1, (((fileID % 9) / 3) * 69) + 1, 110, 68, 62, 42);
 					}
 
 					// Instruction address 0x0000:0x07da, size: 5
-					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Technology Advance", xPosition, 36, 7);
+					this.parent.DrawTools.DrawCenteredStringToScreen0("Technology Advance", xPosition, 36, 7);
 
 					topicName = this.parent.GameData.TechnologyAdvances[topicIndex].Name;
 
@@ -378,7 +378,7 @@ namespace OpenCivOne
 						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "CITYPIX2.PIC", 0);
 
 						// Instruction address 0x0000:0x0934, size: 5
-						this.parent.Tools.F0_2dc4_047d_ReadAndSetPalette("HILL.PAL");
+						this.parent.Tools.ReadAndSetPalette("HILL.PAL");
 
 						// Instruction address 0x0000:0x0973, size: 5
 						int bitmapID = this.parent.Graphics.F0_VGA_0b85_ScreenToBitmap(1, (((topicIndex - 2) >> 2) * 50) + 1, (((topicIndex - 2) & 0x3) * 50) + 1, 49, 49);
@@ -387,18 +387,18 @@ namespace OpenCivOne
 						this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, 37, 17, bitmapID);
 
 						// Instruction address 0x0000:0x099d, size: 5
-						this.parent.Tools.F0_2dc4_0523_FreeResource(bitmapID, "Encyclopedia");
+						this.parent.Tools.FreeNativeResource(bitmapID, "Encyclopedia");
 					}
 
 					if (topicIndex > 24)
 					{
 						// Instruction address 0x0000:0x07da, size: 5
-						this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Wonder of the World", xPosition, 36, 7);
+						this.parent.DrawTools.DrawCenteredStringToScreen0("Wonder of the World", xPosition, 36, 7);
 					}
 					else
 					{
 						// Instruction address 0x0000:0x07da, size: 5
-						this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("City Improvement", xPosition, 36, 7);
+						this.parent.DrawTools.DrawCenteredStringToScreen0("City Improvement", xPosition, 36, 7);
 					}
 
 					topicName = this.parent.GameData.GetImprovementType(topicIndex).Name;
@@ -408,19 +408,19 @@ namespace OpenCivOne
 				case EncyclopediaTopicEnum.UnitType:
 					if (this.parent.Var_3c62 == 0)
 					{
-						int fileID = F8_0000_1790_GetUnitTypeFileID(topicIndex);
+						int fileID = GetUnitTypeFileID(topicIndex);
 
 						// Instruction address 0x0000:0x0a14, size: 5
 						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, $"ICONPG{(char)('A' + (fileID / 6))}.PIC", 0);
 
 						// Instruction address 0x0000:0x0a20, size: 5
-						this.parent.Tools.F0_2dc4_047d_ReadAndSetPalette("ICONPGA.PAL");
+						this.parent.Tools.ReadAndSetPalette("ICONPGA.PAL");
 
-						F8_0000_16f7_DrawEncyclopediaImage(((fileID & 1) * 160) + 1, ((fileID % 6) >> 1) * 61, 158, 61, 88, 42);
+						DrawEncyclopediaImage(((fileID & 1) * 160) + 1, ((fileID % 6) >> 1) * 61, 158, 61, 88, 42);
 					}
 
 					// Instruction address 0x0000:0x0a87, size: 5
-					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Unit Type", xPosition, 36, 7);
+					this.parent.DrawTools.DrawCenteredStringToScreen0("Unit Type", xPosition, 36, 7);
 
 					// Instruction address 0x0000:0x0aa4, size: 5
 					this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
@@ -435,7 +435,7 @@ namespace OpenCivOne
 					{
 						byte[] palette;
 
-						int fileID = F8_0000_17c3_GetTerrainTypeFileID(topicIndex);
+						int fileID = GetTerrainTypeFileID(topicIndex);
 
 						// Instruction address 0x0000:0x0ae8, size: 5
 						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, $"ICONPGT{((fileID / 6) + 1)}.PIC", 0);
@@ -449,11 +449,11 @@ namespace OpenCivOne
 						// Instruction address 0x0000:0x0b1d, size: 5
 						this.parent.Graphics.SetPaletteColor(253, GBitmap.Color18ToColor(61, 61, 61));
 
-						F8_0000_16f7_DrawEncyclopediaImage(((fileID % 3) * 107) + 1, (((fileID % 6) / 3) * 87) + 5, 106, 77, 76, 46);
+						DrawEncyclopediaImage(((fileID % 3) * 107) + 1, (((fileID % 6) / 3) * 87) + 5, 106, 77, 76, 46);
 					}
 
 					// Instruction address 0x0000:0x07da, size: 5
-					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Terrain Type", xPosition, 36, 7);
+					this.parent.DrawTools.DrawCenteredStringToScreen0("Terrain Type", xPosition, 36, 7);
 
 					// Instruction address 0x0000:0x0b76, size: 5
 					topicName = this.parent.GameData.Terrains[topicIndex].Name;
@@ -462,10 +462,10 @@ namespace OpenCivOne
 
 				case EncyclopediaTopicEnum.GameConcept:
 					// Instruction address 0x0000:0x07da, size: 5
-					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Game Concept", xPosition, 36, 7);
+					this.parent.DrawTools.DrawCenteredStringToScreen0("Game Concept", xPosition, 36, 7);
 
 					// Instruction address 0x0000:0x0b9c, size: 5
-					topicName = Array_3c64_GameConcepts[topicIndex];
+					topicName = gameConcepts[topicIndex];
 
 					break;
 			}
@@ -473,7 +473,7 @@ namespace OpenCivOne
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 6;
 
 			// Instruction address 0x0000:0x0802, size: 5
-			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(topicName, xPosition, 20, 0);
+			this.parent.DrawTools.DrawCenteredStringToScreen0(topicName, xPosition, 20, 0);
 
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 7;
 			
@@ -516,7 +516,7 @@ namespace OpenCivOne
 					if (tech1.RequiresTechnologyAdvance1 != TechnologyAdvanceEnum.None)
 					{
 						// Instruction address 0x0000:0x0c37, size: 5
-						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+						this.parent.DrawTools.DrawStringToScreen0(
 							$"Requires {this.parent.GameData.TechnologyAdvances[(int)tech1.RequiresTechnologyAdvance1].Name}" +
 								$"{((tech1.RequiresTechnologyAdvance2 != TechnologyAdvanceEnum.None) ? $" and {this.parent.GameData.TechnologyAdvances[(int)tech1.RequiresTechnologyAdvance2].Name}" : "")}",
 							32, yPosition, 1);
@@ -525,7 +525,7 @@ namespace OpenCivOne
 					yPosition += 16;
 
 					// Instruction address 0x0000:0x0c52, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("Allows: ", 32, yPosition, 1);
+					this.parent.DrawTools.DrawStringToScreen0("Allows: ", 32, yPosition, 1);
 
 					yPosition += 8;
 
@@ -538,7 +538,7 @@ namespace OpenCivOne
 						if (tech1.RequiresTechnologyAdvance1 == (TechnologyAdvanceEnum)topicIndex)
 						{
 							// Instruction address 0x0000:0x0cd9, size: 5
-							this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+							this.parent.DrawTools.DrawStringToScreen0(
 								$"{tech1.Name}" +
 								$"{((tech1.RequiresTechnologyAdvance2 != TechnologyAdvanceEnum.None) ? $" (with {this.parent.GameData.TechnologyAdvances[(int)tech1.RequiresTechnologyAdvance2].Name})" : "")}",
 								40, yPosition, 9);
@@ -549,7 +549,7 @@ namespace OpenCivOne
 						if (tech1.RequiresTechnologyAdvance2 == (TechnologyAdvanceEnum)topicIndex)
 						{
 							// Instruction address 0x0000:0x0d55, size: 5
-							this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+							this.parent.DrawTools.DrawStringToScreen0(
 								$"{tech1.Name}" +
 								$"{((tech1.RequiresTechnologyAdvance1 != TechnologyAdvanceEnum.None) ? $" (with {this.parent.GameData.TechnologyAdvances[(int)tech1.RequiresTechnologyAdvance1].Name})" : "")}",
 								40, yPosition, 9);
@@ -569,7 +569,7 @@ namespace OpenCivOne
 								40, yPosition - 4, this.parent.Array_d4ce[64 + i + (this.parent.GameData.HumanPlayerID * 32)]);
 
 							// Instruction address 0x0000:0x0ddc, size: 5
-							this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{this.parent.GameData.Units[i].Name} unit", 60, yPosition, 12);
+							this.parent.DrawTools.DrawStringToScreen0($"{this.parent.GameData.Units[i].Name} unit", 60, yPosition, 12);
 
 							yPosition += 12;
 						}
@@ -580,10 +580,10 @@ namespace OpenCivOne
 						if ((int)this.parent.GameData.GetImprovementType(i).RequiresTechnology == topicIndex)
 						{
 							// Instruction address 0x0000:0x0e4a, size: 5
-							this.parent.CityWorker.F0_1d12_7045(i, 40, yPosition - 2);
+							this.parent.CityWorker.F0_1d12_7045_DrawWonderOrImprovement(i, 40, yPosition - 2);
 
 							// Instruction address 0x0000:0x0e17, size: 5
-							this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+							this.parent.DrawTools.DrawStringToScreen0(
 								$"{this.parent.GameData.GetImprovementType(i).Name}{((i > 24) ? " Wonder" : " improvement")}", 60, yPosition, 2);
 
 							yPosition += 12;
@@ -593,7 +593,7 @@ namespace OpenCivOne
 					if (oldYPosition + 4 == yPosition)
 					{
 						// Instruction address 0x0000:0x0e8c, size: 5
-						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("Allows: ", 32, yPosition - 12, (byte)colour);
+						this.parent.DrawTools.DrawStringToScreen0("Allows: ", 32, yPosition - 12, (byte)colour);
 					}
 
 					int technologyAcquiredFrom = this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].TechnologyAcquiredFrom[topicIndex];
@@ -602,7 +602,7 @@ namespace OpenCivOne
 					{
 						case -2:
 							// Instruction address 0x0000:0x0f20, size: 5
-							this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("(from Great Library)", xPosition, 48, 7);
+							this.parent.DrawTools.DrawCenteredStringToScreen0("(from Great Library)", xPosition, 48, 7);
 
 							break;
 
@@ -611,13 +611,13 @@ namespace OpenCivOne
 
 						case 0:
 							// Instruction address 0x0000:0x0f20, size: 5
-							this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("(Discovered)", xPosition, 48, 7);
+							this.parent.DrawTools.DrawCenteredStringToScreen0("(Discovered)", xPosition, 48, 7);
 
 							break;
 
 						default:
 							// Instruction address 0x0000:0x0f20, size: 5
-							this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(
+							this.parent.DrawTools.DrawCenteredStringToScreen0(
 								$"(Taken from {this.parent.GameData.Players[technologyAcquiredFrom].Nation})", xPosition, 48, 7);
 
 							break;
@@ -628,25 +628,25 @@ namespace OpenCivOne
 					if (this.parent.GameData.GetImprovementType(topicIndex).RequiresTechnology != TechnologyAdvanceEnum.None)
 					{
 						// Instruction address 0x0000:0x0f75, size: 5
-						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+						this.parent.DrawTools.DrawStringToScreen0(
 							$"Requires {this.parent.GameData.TechnologyAdvances[(int)this.parent.GameData.GetImprovementType(topicIndex).RequiresTechnology].Name}", 12, yPosition, 9);
 					}
 					else
 					{
-						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Requires no Advancement", 12, yPosition, 9);
+						this.parent.DrawTools.DrawStringToScreen0($"Requires no Advancement", 12, yPosition, 9);
 
 					}
 
 					yPosition += 8;
 
 					// Instruction address 0x0000:0x0fd5, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+					this.parent.DrawTools.DrawStringToScreen0(
 						$"Cost: {10 * this.parent.GameData.GetImprovementType(topicIndex).Cost} shields.", 12, yPosition, 9);
 
 					yPosition += 8;
 
 					// Instruction address 0x0000:0x101e, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+					this.parent.DrawTools.DrawStringToScreen0(
 						$"Maintenance: {this.parent.GameData.GetImprovementType(topicIndex).MaintenanceCost} shields.", 12, yPosition, 12);
 
 					yPosition += 8;
@@ -655,7 +655,7 @@ namespace OpenCivOne
 
 				case EncyclopediaTopicEnum.UnitType:
 					// Instruction address 0x0000:0x1081, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+					this.parent.DrawTools.DrawStringToScreen0(
 						$"Required technology: " +
 						$"{((this.parent.GameData.Units[topicIndex].RequiredTechnology == TechnologyAdvanceEnum.None) ? "None" :
 						this.parent.GameData.TechnologyAdvances[(int)this.parent.GameData.Units[topicIndex].RequiredTechnology].Name)}" +
@@ -665,24 +665,24 @@ namespace OpenCivOne
 					yPosition += 8;
 
 					// Instruction address 0x0000:0x10e9, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+					this.parent.DrawTools.DrawStringToScreen0(
 						$"Cost: {10 * this.parent.GameData.Units[topicIndex].Cost} shields.", 100, yPosition, 9);
 
 					yPosition += 8;
 
 					// Instruction address 0x0000:0x1135, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Attack Strength: {this.parent.GameData.Units[topicIndex].AttackStrength}", 100, yPosition, 12);
+					this.parent.DrawTools.DrawStringToScreen0($"Attack Strength: {this.parent.GameData.Units[topicIndex].AttackStrength}", 100, yPosition, 12);
 
 					yPosition += 8;
 
 					// Instruction address 0x0000:0x1181, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+					this.parent.DrawTools.DrawStringToScreen0(
 						$"Defense Strength: {this.parent.GameData.Units[topicIndex].DefenseStrength}", 100, yPosition, 12);
 
 					yPosition += 8;
 
 					// Instruction address 0x0000:0x101e, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+					this.parent.DrawTools.DrawStringToScreen0(
 						$"Moves: {this.parent.GameData.Units[topicIndex].MoveCount}", 100, yPosition, 0);
 
 					yPosition += 8;
@@ -695,7 +695,7 @@ namespace OpenCivOne
 						if (i == topicIndex || this.parent.GameData.Terrains[topicIndex].Food != 2)
 						{
 							// Instruction address 0x0000:0x1206, size: 5
-							this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(this.parent.GameData.Terrains[i].Name, 12, yPosition, 1);
+							this.parent.DrawTools.DrawStringToScreen0(this.parent.GameData.Terrains[i].Name, 12, yPosition, 1);
 
 							yPosition += 8;
 
@@ -717,7 +717,7 @@ namespace OpenCivOne
 								description.Append(" units.");
 
 								// Instruction address 0x0000:0x1312, size: 5
-								this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(description.ToString(), 16, yPosition, 9);
+								this.parent.DrawTools.DrawStringToScreen0(description.ToString(), 16, yPosition, 9);
 
 								yPosition += 8;
 							}
@@ -744,7 +744,7 @@ namespace OpenCivOne
 								description.Append(" units.");
 
 								// Instruction address 0x0000:0x1427, size: 5
-								this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(description.ToString(), 16, yPosition, 9);
+								this.parent.DrawTools.DrawStringToScreen0(description.ToString(), 16, yPosition, 9);
 
 								yPosition += 8;
 							}
@@ -766,7 +766,7 @@ namespace OpenCivOne
 								}
 
 								// Instruction address 0x0000:0x151d, size: 5
-								this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(description.ToString(), 16, yPosition, 9);
+								this.parent.DrawTools.DrawStringToScreen0(description.ToString(), 16, yPosition, 9);
 
 								yPosition += 8;
 							}
@@ -774,7 +774,7 @@ namespace OpenCivOne
 							if (i == 7)
 							{
 								// Instruction address 0x0000:0x153e, size: 5
-								this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("nothing", 16, yPosition, 9);
+								this.parent.DrawTools.DrawStringToScreen0("nothing", 16, yPosition, 9);
 
 								yPosition += 8;
 							}
@@ -784,23 +784,23 @@ namespace OpenCivOne
 					}
 
 					// Instruction address 0x0000:0x156f, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("*  -1 if government is Despotism/Anarchy.", 16, yPosition, 9);
+					this.parent.DrawTools.DrawStringToScreen0("*  -1 if government is Despotism/Anarchy.", 16, yPosition, 9);
 
 					yPosition += 8;
 
 					// Instruction address 0x0000:0x158a, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("%  +1 if government is Republic/Democracy.", 16, yPosition, 9);
+					this.parent.DrawTools.DrawStringToScreen0("%  +1 if government is Republic/Democracy.", 16, yPosition, 9);
 
 					yPosition += 12;
 
 					// Instruction address 0x0000:0x15ed, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+					this.parent.DrawTools.DrawStringToScreen0(
 						$"Movement cost: {this.parent.GameData.Terrains[topicIndex].MovementCost} MP", 12, yPosition, 12);
 
 					yPosition += 8;
 
 					// Instruction address 0x0000:0x101e, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+					this.parent.DrawTools.DrawStringToScreen0(
 						$"Defense bonus: +{(50 * this.parent.GameData.Terrains[topicIndex].DefenseBonus) - 100}%", 12, yPosition, 12);
 
 					yPosition += 8;
@@ -821,16 +821,16 @@ namespace OpenCivOne
 				this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 8, 8, 304, 184, (byte)colour);
 
 				// Instruction address 0x0000:0x16b4, size: 5
-				this.parent.Tools.F0_2dc4_0626_StartPaletteCycleSlots();
+				this.parent.Tools.StartPaletteCycleSlots();
 			}		
 		}
 
 		/// <summary>
-		/// ?
+		/// Gets file ID according to chosen topic
 		/// </summary>
 		/// <param name="topicIndex"></param>
 		/// <returns></returns>
-		public int F8_0000_16c4_GetTechnologyAdvanceFileID(int topicIndex)
+		public int GetTechnologyAdvanceFileID(int topicIndex)
 		{
 			//this.oCPU.Log.EnterBlock($"F8_0000_16c4({topicID})");
 
@@ -847,11 +847,11 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// Gets file ID according to chosen unit type
 		/// </summary>
 		/// <param name="topicIndex"></param>
 		/// <returns></returns>
-		public int F8_0000_1790_GetUnitTypeFileID(int topicIndex)
+		public int GetUnitTypeFileID(int topicIndex)
 		{
 			//this.oCPU.Log.EnterBlock($"F8_0000_1790({topicID})");
 
@@ -868,11 +868,11 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// Gets file ID according to chosen terrain type
 		/// </summary>
 		/// <param name="topicIndex"></param>
 		/// <returns></returns>
-		public int F8_0000_17c3_GetTerrainTypeFileID(int topicIndex)
+		public int GetTerrainTypeFileID(int topicIndex)
 		{
 			//this.oCPU.Log.EnterBlock($"F8_0000_17c3({topicID})");
 
@@ -897,7 +897,7 @@ namespace OpenCivOne
 		/// <param name="height"></param>
 		/// <param name="xOffset"></param>
 		/// <param name="yOffset"></param>
-		public void F8_0000_16f7_DrawEncyclopediaImage(int x, int y, int width, int height, int xOffset, int yOffset)
+		public void DrawEncyclopediaImage(int x, int y, int width, int height, int xOffset, int yOffset)
 		{
 			//this.oCPU.Log.EnterBlock($"F8_0000_16f7({x}, {y}, {width}, {height}, {xOffset}, {yOffset})");
 

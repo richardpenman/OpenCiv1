@@ -442,10 +442,10 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// Draws the referenced screen to main screen (0) with appearing pixels effect
 		/// </summary>
 		/// <param name="screenID"></param>
-		public void F0_1000_0846(int screenID)
+		public void DrawScreenToMainScreenWithEffect(int screenID)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1000_0846({screenID})");
 

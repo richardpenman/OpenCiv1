@@ -80,7 +80,7 @@ namespace OpenCivOne
 				this.oParent.GameData.Players[playerID2].Units[unitID2].Position.Y).HasFlag(TerrainImprovementFlagsEnum.City))
 			{
 				// Instruction address 0x29f3:0x01a1, size: 5
-				attackedCityID = this.oParent.Tools.F0_2dc4_00ba_GetCityByLocation(
+				attackedCityID = this.oParent.Tools.GetCityByLocation(
 					this.oParent.GameData.Players[playerID2].Units[unitID2].Position.X, this.oParent.GameData.Players[playerID2].Units[unitID2].Position.Y);
 
 				if (this.oParent.GameData.Cities[attackedCityID].HasImprovement(ImprovementEnum.CityWalls) &&
@@ -300,8 +300,8 @@ namespace OpenCivOne
 				}
 			}
 
-			this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] |= DiplomacyFlagsEnum.Unknown20;
-			this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] |= DiplomacyFlagsEnum.Unknown20;
+			this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] |= DiplomacyFlagsEnum.EverFought;
+			this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] |= DiplomacyFlagsEnum.EverFought;
 
 			if (playerID1 != 0 && playerID2 != 0)
 			{
@@ -310,15 +310,15 @@ namespace OpenCivOne
 
 			if ((playerID2 == this.oParent.GameData.HumanPlayerID &&
 				this.oParent.GameData.Players[playerID2].Diplomacy[playerID1].HasFlag(DiplomacyFlagsEnum.Peace)) ||
-				this.oParent.GameData.Players[playerID1].Diplomacy[playerID2].HasFlag(DiplomacyFlagsEnum.Unknown200))
+				this.oParent.GameData.Players[playerID1].Diplomacy[playerID2].HasFlag(DiplomacyFlagsEnum.warDeclared))
 			{
 				this.oParent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DefenseMinisterReport;
 
 				// Instruction address 0x29f3:0x07c9, size: 5
 				this.oParent.Segment_1238.F0_1238_001e_ShowDialog($"Sneak attack by\n{this.oParent.GameData.Players[playerID1].Nationality} forces!\n", 100, 80);
 
-				this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] |= DiplomacyFlagsEnum.Unknown200;
-				this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] ^= DiplomacyFlagsEnum.Unknown200;
+				this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] |= DiplomacyFlagsEnum.warDeclared;
+				this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] ^= DiplomacyFlagsEnum.warDeclared;
 			}
 
 			if (this.oParent.GameData.Players[playerID2].Diplomacy[playerID1].HasFlag(DiplomacyFlagsEnum.Peace) ||
@@ -347,8 +347,8 @@ namespace OpenCivOne
 
 			if (playerID1 == this.oParent.GameData.HumanPlayerID)
 			{
-				this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] |= DiplomacyFlagsEnum.Unknown200;
-				this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] ^= DiplomacyFlagsEnum.Unknown200;
+				this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] |= DiplomacyFlagsEnum.warDeclared;
+				this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] ^= DiplomacyFlagsEnum.warDeclared;
 			}
 
 			if (unit1Type == UnitTypeEnum.Nuclear)
@@ -423,7 +423,7 @@ namespace OpenCivOne
 							if (activeUnitID != -1 && activeUnitPlayerID != this.oParent.GameData.HumanPlayerID)
 							{
 								// Instruction address 0x29f3:0x0aa7, size: 5
-								this.oParent.UnitManagement.F0_1866_1593_UnitStack(activeUnitPlayerID, activeUnitID);
+								this.oParent.UnitManagement.F0_1866_1593_UpdateUnitStatusInStack(activeUnitPlayerID, activeUnitID);
 							}
 						}
 
@@ -598,7 +598,7 @@ namespace OpenCivOne
 					if (this.oParent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY).HasFlag(TerrainImprovementFlagsEnum.City))
 					{
 						// Instruction address 0x29f3:0x0dee, size: 5
-						int cityID = this.oParent.Tools.F0_2dc4_00ba_GetCityByLocation(newX, newY);
+						int cityID = this.oParent.Tools.GetCityByLocation(newX, newY);
 
 						if (this.oParent.GameData.Cities[cityID].HasImprovement(ImprovementEnum.SDIDefense))
 						{
@@ -621,7 +621,7 @@ namespace OpenCivOne
 
 						if (playerID != activeUnitPlayerID)
 						{
-							this.oParent.GameData.Players[activeUnitPlayerID].Diplomacy[playerID] |= DiplomacyFlagsEnum.Vendetta | DiplomacyFlagsEnum.Unknown80;
+							this.oParent.GameData.Players[activeUnitPlayerID].Diplomacy[playerID] |= DiplomacyFlagsEnum.Vendetta | DiplomacyFlagsEnum.TributeDemanded;
 						}
 					}
 				}
@@ -655,7 +655,7 @@ namespace OpenCivOne
 					if (this.oParent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY).HasFlag(TerrainImprovementFlagsEnum.City))
 					{
 						// Instruction address 0x29f3:0x0f51, size: 5
-						int cityID = this.oParent.Tools.F0_2dc4_00ba_GetCityByLocation(newX, newY);
+						int cityID = this.oParent.Tools.GetCityByLocation(newX, newY);
 
 						this.oParent.GameData.Cities[cityID].ActualSize -= (sbyte)(this.oParent.GameData.Cities[cityID].ActualSize / 2);
 					}

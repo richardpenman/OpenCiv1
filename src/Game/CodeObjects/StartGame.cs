@@ -8,9 +8,6 @@ namespace OpenCivOne
 	{
 		private OpenCivOneGame parent;
 
-		//private int Var_652e_MouseHideCountTemp = 0;
-		//private int Var_deea_MouseHideCount = 0;
-
 		public StartGame(OpenCivOneGame parent)
 		{
 			this.parent = parent;
@@ -19,7 +16,7 @@ namespace OpenCivOne
 		/// <summary>
 		/// Main game entry
 		/// </summary>
-		public void F0_11a8_0008_StartGame()
+		public void StartMainGame()
 		{
 			// this.oCPU.Log.EnterBlock("F0_11a8_0008_Main()");
 
@@ -40,11 +37,18 @@ namespace OpenCivOne
 			// Game type, load, etc. menu
 			// And then after menu Intro
 			// Instruction address 0x11a8:0x0146, size: 3
-			F0_11a8_0486_LogoAndMainGameMenu();
+			ShowLogoAndMainGameMenu();
 
 			// Start Game menu, level, tribe, name
-			// Instruction address 0x11a8:0x014a, size: 3
-			F0_11a8_087c_NewGameMenu();
+			if (this.parent.Var_6b32_SelectedGameType == 0)
+			{
+				// Instruction address 0x11a8:0x08a8, size: 5
+				this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "DIFFS.PIC", 1);
+
+				this.parent.StartGameMenu.F5_0000_0000_InitNewGameData();
+			}
+
+			this.parent.StartGameMenu.F5_0000_1af6_LoadGovernmentImage();
 
 			if (this.parent.Var_6b32_SelectedGameType == 1)
 			{
@@ -72,13 +76,13 @@ namespace OpenCivOne
 			// Instruction address 0x11a8:0x019c, size: 5
 			this.parent.CommonTools.StopGameMainTimer();
 
-			this.parent.Tools.F0_2dc4_0523_FreeResource(this.parent.Var_6e92_MouseIconHandle, "Mouse icon");
+			this.parent.Tools.FreeNativeResource(this.parent.Var_6e92_MouseIconHandle, "Mouse icon");
 		}
 
 		/// <summary>
-		/// ?
+		/// Shows game logo and main game menu
 		/// </summary>
-		public void F0_11a8_0486_LogoAndMainGameMenu()
+		public void ShowLogoAndMainGameMenu()
 		{
 			//this.oCPU.Log.EnterBlock("F0_11a8_0486_LogoAndMainGameMenu()");
 
@@ -116,12 +120,12 @@ namespace OpenCivOne
 						this.parent.Var_7efc_PlanetAge = 1;
 
 						// Intro...
-						this.parent.MapInitAndIntro.F7_0000_0012_GenerateMap();
+						this.parent.MapInitAndIntro.GenerateNewMap();
 
 						this.parent.Var_aa_Screen0_Rectangle.ScreenID = 0;
 
 						// Instruction address 0x11a8:0x053e, size: 5
-						this.parent.CommonTools.F0_1000_0846(0);
+						this.parent.CommonTools.DrawScreenToMainScreenWithEffect(0);
 
 						// Instruction address 0x11a8:0x054e, size: 5
 						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "SP299.PIC", 0);
@@ -131,7 +135,7 @@ namespace OpenCivOne
 						break;
 
 					case 1:
-						if (this.parent.LoadAndSave.F11_0000_0000_LoadGameDialog() == -1)
+						if (this.parent.LoadAndSave.ShowLoadGameDialog() == -1)
 						{
 							this.parent.Var_6b32_SelectedGameType = -1;
 						}
@@ -145,12 +149,12 @@ namespace OpenCivOne
 					case 2:
 						this.parent.Var_d76a_EarthMap = true;
 
-						this.parent.MapInitAndIntro.F7_0000_0012_GenerateMap();
+						this.parent.MapInitAndIntro.GenerateNewMap();
 
 						this.parent.Var_aa_Screen0_Rectangle.ScreenID = 0;
 
 						// Instruction address 0x11a8:0x07af, size: 5
-						this.parent.CommonTools.F0_1000_0846(0);
+						this.parent.CommonTools.DrawScreenToMainScreenWithEffect(0);
 
 						// Instruction address 0x11a8:0x054e, size: 5
 						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "SP299.PIC", 0);
@@ -242,12 +246,12 @@ namespace OpenCivOne
 						}
 
 						// Intro...
-						this.parent.MapInitAndIntro.F7_0000_0012_GenerateMap();
+						this.parent.MapInitAndIntro.GenerateNewMap();
 
 						this.parent.Var_aa_Screen0_Rectangle.ScreenID = 0;
 
 						// Instruction address 0x11a8:0x053e, size: 5
-						this.parent.CommonTools.F0_1000_0846(0);
+						this.parent.CommonTools.DrawScreenToMainScreenWithEffect(0);
 
 						// Instruction address 0x11a8:0x054e, size: 5
 						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "SP299.PIC", 0);
@@ -288,29 +292,7 @@ namespace OpenCivOne
 			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SP257.PIC", 1);
 
 			// Instruction address 0x11a8:0x086f, size: 5
-			this.parent.Tools.F0_2dc4_05dd_AddPaletteCycleSlots();
-		}
-
-		/// <summary>
-		/// ?
-		/// </summary>
-		public void F0_11a8_087c_NewGameMenu()
-		{
-			//this.oCPU.Log.EnterBlock("F0_11a8_087c_NewGameMenu()");
-
-			// function body
-			// Instruction address 0x11a8:0x0891, size: 5
-			this.parent.CommonTools.SetMousePositionAndIcon(0, 0, this.parent.Array_d4ce[7]);
-
-			if (this.parent.Var_6b32_SelectedGameType == 0)
-			{
-				// Instruction address 0x11a8:0x08a8, size: 5
-				this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "DIFFS.PIC", 1);
-
-				this.parent.StartGameMenu.F5_0000_0000_InitNewGameData();
-			}
-		
-			this.parent.StartGameMenu.F5_0000_1af6_LoadGovernmentImage();
+			this.parent.Tools.AddDefaultPaletteCycleSlots();
 		}
 	}
 }

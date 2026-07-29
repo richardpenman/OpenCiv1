@@ -460,12 +460,17 @@ namespace OpenCivOne
 
 						if (cell.TerrainType == TerrainTypeEnum.Plains)
 						{
-							int local_4 = Math.Abs(rng.Next(8) + j - yMedian) + (1 - this.iTemperature);
+							int climateValue = Math.Abs(rng.Next(8) + j - yMedian) + (1 - this.iTemperature);
 
-							if (((local_4 / 6) + 1) < 8)
+							if (((climateValue / 6) + 1) < 8)
 							{
-								switch ((local_4 / 6) + 1)
+								switch ((climateValue / 6) + 1)
 								{
+									case 0:
+									case 1:
+										cell.TerrainType = TerrainTypeEnum.Desert;
+										break;
+
 									case 2:
 									case 3:
 										cell.TerrainType = TerrainTypeEnum.Plains;
@@ -474,11 +479,6 @@ namespace OpenCivOne
 									case 4:
 									case 5:
 										cell.TerrainType = TerrainTypeEnum.Tundra;
-										break;
-
-									case 0:
-									case 1:
-										cell.TerrainType = TerrainTypeEnum.Desert;
 										break;
 
 									case 6:
@@ -675,7 +675,7 @@ namespace OpenCivOne
 
 				for (int i = 0, j = 0; i < 256 && j < iMax; i++)
 				{
-					int local_16 = 0;
+					int riverLength = 0;
 
 					// make a copy of the map
 					for (int y = 0; y < this.oSize.Height; y++)
@@ -695,9 +695,9 @@ namespace OpenCivOne
 
 					int xPos1 = xPos;
 					int yPos1 = yPos;
-					int local_18 = rng.Next(4) * 2;
-					TerrainTypeEnum local_2;
-					int local_4 = 0;
+					int riverDirectionIndex = rng.Next(4) * 2;
+					TerrainTypeEnum currentTerrainType;
+					bool riverReachedWaterCell = false;
 
 					do
 					{
@@ -709,32 +709,32 @@ namespace OpenCivOne
 
 							if (this.Cells[xPos + direction1.X, yPos + direction1.Y].TerrainType == TerrainTypeEnum.Water)
 							{
-								local_4 = 1;
+								riverReachedWaterCell = true;
 								break;
 							}
 						}
 
-						int local_10 = local_18;
-						local_18 = ((rng.Next(2) - (local_16 & 0x1)) * 2 + local_18) & 0x7;
+						int oldRiverDirectionIndex = riverDirectionIndex;
+						riverDirectionIndex = ((rng.Next(2) - (riverLength & 0x1)) * 2 + riverDirectionIndex) & 0x7;
 
-						if ((local_10 ^ 0x4) > local_18)
+						if ((oldRiverDirectionIndex ^ 0x4) > riverDirectionIndex)
 						{
 							// Instruction address 0x0000:0x077c, size: 5
 							this.Cells[xPos, yPos].Improvements = new([TerrainImprovementEnum.Flag80]);
 						}
 
 
-						GPoint direction = TerrainMap.MoveOffsets[local_18 + 1];
+						GPoint direction = TerrainMap.MoveOffsets[riverDirectionIndex + 1];
 
 						xPos += direction.X;
 						yPos += direction.Y;
 
-						local_2 = this.Cells[xPos, yPos].TerrainType;
-						local_16++;
+						currentTerrainType = this.Cells[xPos, yPos].TerrainType;
+						riverLength++;
 					}
-					while (local_4 == 0 && local_2 != TerrainTypeEnum.Water && local_2 != TerrainTypeEnum.River && local_2 != TerrainTypeEnum.Mountains);
+					while (!riverReachedWaterCell && currentTerrainType != TerrainTypeEnum.Water && currentTerrainType != TerrainTypeEnum.River && currentTerrainType != TerrainTypeEnum.Mountains);
 
-					if ((local_4 == 0 && local_2 != TerrainTypeEnum.River) || local_16 < 5)
+					if ((!riverReachedWaterCell && currentTerrainType != TerrainTypeEnum.River) || riverLength < 5)
 					{
 						// restore map copy
 						for (int y = 0; y < this.oSize.Height; y++)

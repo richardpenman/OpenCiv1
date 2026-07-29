@@ -265,7 +265,7 @@ namespace OpenCivOne
 				bool destinationReached = false; // remains false if we can't find a path to a destination
 				TerrainMapGroupTypeEnum group1; // The unit can move on this terrain type
 				TerrainMapGroupTypeEnum group2; // The unit can move on this terrain type
-				TerrainMapGroupTypeEnum group3; // The unit can move on this terrain type
+				TerrainMapGroupTypeEnum group3; // The unit can move on this terrain type only when a destination has been reached
 				UnitMovementTypeEnum unitMovementType = this.gameData.Units[(int)unit.UnitType].MovementType;
 				MapManagement map = this.parent.MapManagement;
 				GPoint[] moveDirections = this.parent.MoveDirections;
@@ -340,8 +340,8 @@ namespace OpenCivOne
 					this.parent.UnitManagement.F0_1866_1380_GetStackUnitCount(destinationPlayerID, destinationUnitID, UnitRoleTypeEnum.SeaTransport) > 0);
 				int goToDistance = map.GetDistance(unit.Position, unit.GoToDestination);
 
-				int startCityID = this.parent.Tools.F0_2dc4_00ba_GetCityByLocation(unit.Position.X, unit.Position.Y);
-				int destinationCityID = this.parent.Tools.F0_2dc4_00ba_GetCityByLocation(unit.GoToDestination.X, unit.GoToDestination.Y);
+				int startCityID = this.parent.Tools.GetCityByLocation(unit.Position.X, unit.Position.Y);
+				int destinationCityID = this.parent.Tools.GetCityByLocation(unit.GoToDestination.X, unit.GoToDestination.Y);
 
 				// Exception rules
 
@@ -712,7 +712,7 @@ namespace OpenCivOne
 				}
 
 				// Instruction address 0x2e31:0x01df, size: 3
-				if (F0_2e31_05e6(unit) || !local_e)
+				if (F0_2e31_05e6_ComputeGoToPath(unit) || !local_e)
 				{
 					// Instruction address 0x2e31:0x01fa, size: 3
 					int moveDirection = F0_2e31_0c1d_FindShortestPath(unit, 999);
@@ -839,14 +839,14 @@ namespace OpenCivOne
 		/// <param name="playerID"></param>
 		/// <param name="unitID"></param>
 		/// <returns></returns>
-		private bool F0_2e31_05e6(Unit unit)
+		private bool F0_2e31_05e6_ComputeGoToPath(Unit unit)
 		{
 			//this.oParent.GoToLog.EnterBlock($"F0_2e31_05e6({playerID}, {unitID})");
 			//OpenCivOneGame.LogUnit(this.oParent, this.oParent.GoToLog, playerID, unitID, this.oParent.GameData.HumanPlayerID);
 
 			// function body
 			bool waterUnit = this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Water;
-			int local_a = 0;
+			int pathCost = 0;
 			int unitX = unit.Position.X;
 			int unitY = unit.Position.Y;
 			this.Var_6590_DestinationX = unit.GoToDestination.X;
@@ -896,7 +896,7 @@ namespace OpenCivOne
 				{
 					int pathFlags;
 
-					local_a = this.Arr_d816[prevPathX, prevPathY];
+					pathCost = this.Arr_d816[prevPathX, prevPathY];
 
 					pathCount2++;
 					pathCount2 &= 0xff;
@@ -932,7 +932,7 @@ namespace OpenCivOne
 
 							if (this.Arr_d816[newX, newY] == 0)
 							{
-								this.Arr_d816[newX, newY] = local_a + 1;
+								this.Arr_d816[newX, newY] = pathCost + 1;
 								this.Arr_6594_PathX[pathCount1] = newX;
 								this.Arr_6694_PathY[pathCount1] = newY;
 
@@ -995,19 +995,19 @@ namespace OpenCivOne
 								newDirection = i;
 
 								// Instruction address 0x2e31:0x0976, size: 5
-								local_a = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(unit.GoToDestination.X, unit.GoToDestination.Y,
+								pathCost = this.parent.Tools.GetShortestDistance(unit.GoToDestination.X, unit.GoToDestination.Y,
 									newX * 4 + 1, newY * 4 + 1);
 							}
 							else if (local_6 == local_8)
 							{
 								// Instruction address 0x2e31:0x08b0, size: 5
-								int local_12 = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(unit.GoToDestination.X, unit.GoToDestination.Y,
+								int local_12 = this.parent.Tools.GetShortestDistance(unit.GoToDestination.X, unit.GoToDestination.Y,
 									newX * 4 + 1, newY * 4 + 1);
 
-								if (local_12 < local_a)
+								if (local_12 < pathCost)
 								{
 									newDirection = i;
-									local_a = local_12;
+									pathCost = local_12;
 								}
 							}
 						}
@@ -1086,7 +1086,7 @@ namespace OpenCivOne
 						(!waterUnit && this.Arr_db44_LandPath[newShortX, newShortY] != 0))
 					{
 						// Instruction address 0x2e31:0x0b43, size: 5
-						int distance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(x - (newShortX * 4) - 1, y - (newShortY * 4) - 1);
+						int distance = this.parent.Tools.GetShortestDistance(x - (newShortX * 4) - 1, y - (newShortY * 4) - 1);
 
 						if (distance < minDistance)
 						{
@@ -1336,7 +1336,7 @@ namespace OpenCivOne
 										}
 
 										// Instruction address 0x2e31:0x1063, size: 5
-										local_e += this.parent.Tools.F0_2dc4_0289_GetShortestDistance(this.Var_6590_DestinationX, this.Var_6592_DestinationY, newXAdjusted, newY);
+										local_e += this.parent.Tools.GetShortestDistance(this.Var_6590_DestinationX, this.Var_6592_DestinationY, newXAdjusted, newY);
 									}
 
 									if (local_6 == local_a)
@@ -1357,7 +1357,7 @@ namespace OpenCivOne
 										}
 
 										// Instruction address 0x2e31:0x10bd, size: 5
-										local_1a += this.parent.Tools.F0_2dc4_0289_GetShortestDistance(this.Var_6590_DestinationX, this.Var_6592_DestinationY, newXAdjusted, newY);
+										local_1a += this.parent.Tools.GetShortestDistance(this.Var_6590_DestinationX, this.Var_6592_DestinationY, newXAdjusted, newY);
 
 										if (local_1a < local_e)
 										{

@@ -382,7 +382,7 @@ namespace OpenCivOne
 			this.oCPU.BP.UInt16 = 0x0;
 
 			// Call our StartGame function
-			this.StartGame.F0_11a8_0008_StartGame();
+			this.StartGame.StartMainGame();
 
 			this.CAPI.exit(0);
 		}

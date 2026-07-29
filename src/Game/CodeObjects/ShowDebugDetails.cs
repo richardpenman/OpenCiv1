@@ -93,43 +93,43 @@ namespace OpenCivOne
 						break;
 
 					case UnitRoleTypeEnum.Settler:
-						this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow("S",
+						this.oParent.DrawTools.DrawStringWithShadow("S",
 							this.oParent.GameData.Players[selectedPlayerID].UnitPolicies[i].Position.X * 4,
 							this.oParent.GameData.Players[selectedPlayerID].UnitPolicies[i].Position.Y * 4, 13);
 						break;
 
 					case UnitRoleTypeEnum.LandAttack:
-						this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow("LA",
+						this.oParent.DrawTools.DrawStringWithShadow("LA",
 							this.oParent.GameData.Players[selectedPlayerID].UnitPolicies[i].Position.X * 4 - 2,
 							this.oParent.GameData.Players[selectedPlayerID].UnitPolicies[i].Position.Y * 4, 13);
 						break;
 
 					case UnitRoleTypeEnum.Defense:
-						this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow("D",
+						this.oParent.DrawTools.DrawStringWithShadow("D",
 							this.oParent.GameData.Players[selectedPlayerID].UnitPolicies[i].Position.X * 4,
 							this.oParent.GameData.Players[selectedPlayerID].UnitPolicies[i].Position.Y * 4, 13);
 						break;
 
 					case UnitRoleTypeEnum.SeaAttack:
-						this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow("SA",
+						this.oParent.DrawTools.DrawStringWithShadow("SA",
 							this.oParent.GameData.Players[selectedPlayerID].UnitPolicies[i].Position.X * 4 - 2,
 							this.oParent.GameData.Players[selectedPlayerID].UnitPolicies[i].Position.Y * 4, 13);
 						break;
 
 					case UnitRoleTypeEnum.AirAttack:
-						this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow("AA",
+						this.oParent.DrawTools.DrawStringWithShadow("AA",
 							this.oParent.GameData.Players[selectedPlayerID].UnitPolicies[i].Position.X * 4 - 2,
 							this.oParent.GameData.Players[selectedPlayerID].UnitPolicies[i].Position.Y * 4, 13);
 						break;
 
 					case UnitRoleTypeEnum.SeaTransport:
-						this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow("ST",
+						this.oParent.DrawTools.DrawStringWithShadow("ST",
 							this.oParent.GameData.Players[selectedPlayerID].UnitPolicies[i].Position.X * 4 - 2,
 							this.oParent.GameData.Players[selectedPlayerID].UnitPolicies[i].Position.Y * 4, 13);
 						break;
 
 					case UnitRoleTypeEnum.Neutral:
-						this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow("N",
+						this.oParent.DrawTools.DrawStringWithShadow("N",
 							this.oParent.GameData.Players[selectedPlayerID].UnitPolicies[i].Position.X * 4,
 							this.oParent.GameData.Players[selectedPlayerID].UnitPolicies[i].Position.Y * 4, 13);
 						break;
@@ -145,45 +145,45 @@ namespace OpenCivOne
 
 					case UnitRoleTypeEnum.Settler:
 						// Settle?
-						this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow("S",
+						this.oParent.DrawTools.DrawStringWithShadow("S",
 							this.oParent.GameData.Players[selectedPlayerID].ContinentPolicies[i].Position.X * 4,
 							this.oParent.GameData.Players[selectedPlayerID].ContinentPolicies[i].Position.Y * 4, 14);
 						break;
 
 					case UnitRoleTypeEnum.LandAttack:
 						// Attack?
-						this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow("LA",
+						this.oParent.DrawTools.DrawStringWithShadow("LA",
 							this.oParent.GameData.Players[selectedPlayerID].ContinentPolicies[i].Position.X * 4 - 2,
 							this.oParent.GameData.Players[selectedPlayerID].ContinentPolicies[i].Position.Y * 4, 14);
 						break;
 
 					case UnitRoleTypeEnum.Defense:
 						// Defend ?
-						this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow("D",
+						this.oParent.DrawTools.DrawStringWithShadow("D",
 							this.oParent.GameData.Players[selectedPlayerID].ContinentPolicies[i].Position.X * 4,
 							this.oParent.GameData.Players[selectedPlayerID].ContinentPolicies[i].Position.Y * 4, 14);
 						break;
 
 					case UnitRoleTypeEnum.SeaAttack:
-						this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow("SA",
+						this.oParent.DrawTools.DrawStringWithShadow("SA",
 							this.oParent.GameData.Players[selectedPlayerID].ContinentPolicies[i].Position.X * 4 - 2,
 							this.oParent.GameData.Players[selectedPlayerID].ContinentPolicies[i].Position.Y * 4, 14);
 						break;
 
 					case UnitRoleTypeEnum.AirAttack:
-						this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow("AA",
+						this.oParent.DrawTools.DrawStringWithShadow("AA",
 							this.oParent.GameData.Players[selectedPlayerID].ContinentPolicies[i].Position.X * 4 - 2,
 							this.oParent.GameData.Players[selectedPlayerID].ContinentPolicies[i].Position.Y * 4, 14);
 						break;
 
 					case UnitRoleTypeEnum.SeaTransport:
-						this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow("ST",
+						this.oParent.DrawTools.DrawStringWithShadow("ST",
 							this.oParent.GameData.Players[selectedPlayerID].ContinentPolicies[i].Position.X * 4 - 2,
 							this.oParent.GameData.Players[selectedPlayerID].ContinentPolicies[i].Position.Y * 4, 14);
 						break;
 
 					case UnitRoleTypeEnum.Neutral:
-						this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadow("N",
+						this.oParent.DrawTools.DrawStringWithShadow("N",
 							this.oParent.GameData.Players[selectedPlayerID].ContinentPolicies[i].Position.X * 4,
 							this.oParent.GameData.Players[selectedPlayerID].ContinentPolicies[i].Position.Y * 4, 14);
 						break;
@@ -224,7 +224,7 @@ namespace OpenCivOne
 					}
 
 					// Instruction address 0x0000:0x0447, size: 5
-					this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+					this.oParent.DrawTools.DrawStringToScreen0(
 						$"{i}/{strategyText} {this.oParent.GameData.Players[selectedPlayerID].Continents[i].Defense}/{this.oParent.GameData.Players[selectedPlayerID].Continents[i].Attack}",
 						2, yText, 7);
 
@@ -292,24 +292,24 @@ namespace OpenCivOne
 			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 1);
 
 			// Instruction address 0x0000:0x005d, size: 5
-			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(this.oParent.GameData.Players[playerID].Nationality, 128, 4, 15);
+			this.oParent.DrawTools.DrawStringToScreen0(this.oParent.GameData.Players[playerID].Nationality, 128, 4, 15);
 
 			// Instruction address 0x0000:0x0078, size: 5
 			this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle, 16, 4, this.oParent.Array_d4ce[64 + (playerID * 32)]);
 
 			// Instruction address 0x0000:0x00b6, size: 5
-			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Government: {this.oParent.Array_1966[this.oParent.GameData.Players[playerID].GovernmentType]}", 16, 24, 15);
+			this.oParent.DrawTools.DrawStringToScreen0($"Government: {this.oParent.Array_1966[this.oParent.GameData.Players[playerID].GovernmentType]}", 16, 24, 15);
 
 			// Instruction address 0x0000:0x00e9, size: 5
-			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(
-				$"Population: {this.oParent.Tools.F0_2dc4_0337_PopulationValueToString(this.oParent.Tools.F0_2dc4_02cd_GetPlayerTotalPopulationCount(playerID))}", 16, 32, 15);
+			this.oParent.DrawTools.DrawStringToScreen0(
+				$"Population: {this.oParent.Tools.PopulationValueToString(this.oParent.Tools.GetPlayerPopulationCount(playerID))}", 16, 32, 15);
 
 			// Instruction address 0x0000:0x0194, size: 5
-			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Treasury: {this.oParent.GameData.Players[playerID].Coins} coins, " +
+			this.oParent.DrawTools.DrawStringToScreen0($"Treasury: {this.oParent.GameData.Players[playerID].Coins} coins, " +
 				$"Taxes/Science: {this.oParent.GameData.Players[playerID].TaxRate}/{this.oParent.GameData.Players[playerID].ScienceTaxRate}", 16, 40, 15);
 
 			// Instruction address 0x0000:0x01ac, size: 5
-			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+			this.oParent.DrawTools.DrawStringToScreen0(
 				$"{this.oParent.GameData.Players[playerID].UnitCount} units / " +
 				$"{this.oParent.GameData.Players[playerID].CityCount} cities / " +
 				$"{this.oParent.GameData.Players[playerID].SettlerCount} settlers / " +
@@ -324,22 +324,22 @@ namespace OpenCivOne
 					switch (this.oParent.GameData.Players[playerID].Continents[i].Strategy)
 					{
 						case PlayerContinentStrategyEnum.Settle:
-							this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Settle/{i}", 256, yOffset, 7);
+							this.oParent.DrawTools.DrawStringToScreen0($"Settle/{i}", 256, yOffset, 7);
 							yOffset += 8;
 							break;
 
 						case PlayerContinentStrategyEnum.Attack:
-							this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Attack/{i}", 256, yOffset, 7);
+							this.oParent.DrawTools.DrawStringToScreen0($"Attack/{i}", 256, yOffset, 7);
 							yOffset += 8;
 							break;
 
 						case PlayerContinentStrategyEnum.Defend:
-							this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Defend/{i}", 256, yOffset, 7);
+							this.oParent.DrawTools.DrawStringToScreen0($"Defend/{i}", 256, yOffset, 7);
 							yOffset += 8;
 							break;
 
 						case PlayerContinentStrategyEnum.Transport:
-							this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"Transport/{i}", 256, yOffset, 7);
+							this.oParent.DrawTools.DrawStringToScreen0($"Transport/{i}", 256, yOffset, 7);
 							yOffset += 8;
 							break;
 
@@ -381,7 +381,7 @@ namespace OpenCivOne
 						diplomacyText.Append(": Vendetta");
 					}
 
-					this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(diplomacyText.ToString(), 192, yOffset, 7);
+					this.oParent.DrawTools.DrawStringToScreen0(diplomacyText.ToString(), 192, yOffset, 7);
 					yOffset += 8;
 				}
 			}
@@ -390,7 +390,7 @@ namespace OpenCivOne
 			int column = 0;
 
 			// Instruction address 0x0000:0x047e, size: 5
-			this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0("Technologies:", 16, yOffset, 15);
+			this.oParent.DrawTools.DrawStringToScreen0("Technologies:", 16, yOffset, 15);
 			yOffset += 8;
 
 			for (int i = 0; i < 72 && yOffset < 193; i++)
@@ -400,11 +400,11 @@ namespace OpenCivOne
 				{
 					if ((this.oParent.GameData.TechnologyFirstDiscoveredBy[i] & 0x7) != playerID)
 					{
-						this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(this.oParent.GameData.TechnologyAdvances[i].Name, 8 + ((column % 3) * 100), yOffset, 7);
+						this.oParent.DrawTools.DrawStringToScreen0(this.oParent.GameData.TechnologyAdvances[i].Name, 8 + ((column % 3) * 100), yOffset, 7);
 					}
 					else
 					{
-						this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(this.oParent.GameData.TechnologyAdvances[i].Name, 8 + ((column % 3) * 100), yOffset, 15);
+						this.oParent.DrawTools.DrawStringToScreen0(this.oParent.GameData.TechnologyAdvances[i].Name, 8 + ((column % 3) * 100), yOffset, 15);
 					}
 
 					column++;
@@ -459,7 +459,7 @@ namespace OpenCivOne
 
 					xOffset++;
 
-					this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(this.oParent.GameData.Units[i].Name, 36, yOffset, 15);
+					this.oParent.DrawTools.DrawStringToScreen0(this.oParent.GameData.Units[i].Name, 36, yOffset, 15);
 
 					yOffset += 8;
 				}
@@ -467,7 +467,7 @@ namespace OpenCivOne
 
 			for (int i = 0; i < 8; i++)
 			{
-				this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{this.oParent.GameData.Players[i].Ranking}", (i * 30) + 84, 1, 15);
+				this.oParent.DrawTools.DrawStringToScreen0($"{this.oParent.GameData.Players[i].Ranking}", (i * 30) + 84, 1, 15);
 
 				this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
 					(30 * i) + 90, 2, this.oParent.Array_d4ce[64 + (i * 32)]);
@@ -491,7 +491,7 @@ namespace OpenCivOne
 						if (this.oParent.GameData.Players[i].ActiveUnits[j] != 0 || this.oParent.GameData.Players[i].UnitsInProduction[j] != 0)
 						{
 							// Instruction address 0x0000:0x074c, size: 5
-							this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+							this.oParent.DrawTools.DrawStringToScreen0(
 								$"{this.oParent.GameData.Players[i].ActiveUnits[j]}/{this.oParent.GameData.Players[i].UnitsInProduction[j]}",
 								(i * 30) + 88, yOffset, 15);
 						}
@@ -508,12 +508,12 @@ namespace OpenCivOne
 
 			for (int i = 1; i < 8; i++)
 			{
-				this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0(
+				this.oParent.DrawTools.DrawStringWithShadowToScreen0(
 					this.oParent.GameData.Players[i].Nationality, i * 40, 8, this.oParent.Array_1946_PlayerColours[i]);
 
 				this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle, i * 40, 16, this.oParent.Array_d4ce[64 + (i * 32)]);
 
-				this.oParent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0(
+				this.oParent.DrawTools.DrawStringWithShadowToScreen0(
 					this.oParent.GameData.Players[i].Nationality, 4, i * 12 + 32, this.oParent.Array_1946_PlayerColours[i]);
 			}
 
@@ -526,7 +526,7 @@ namespace OpenCivOne
 						if (this.oParent.Var_d806_DebugFlag || i == this.oParent.GameData.HumanPlayerID || j == this.oParent.GameData.HumanPlayerID)
 						{
 							// Instruction address 0x0000:0x0976, size: 5
-							this.oParent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+							this.oParent.DrawTools.DrawStringToScreen0(
 								$"{this.oParent.GameData.Players[i].UnitsDestroyed[j]}/{this.oParent.GameData.Players[j].UnitsDestroyed[i]}",
 								i * 40, (j * 12) + 32, this.oParent.Array_1946_PlayerColours[i]);
 						}

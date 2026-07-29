@@ -65,7 +65,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x2459:0x0108, size: 5
-			int cityTreasury = this.parent.Tools.F0_2dc4_007c_CheckValueRange(F0_2459_0687_GetCityTreasury(cityID), 0, this.parent.GameData.Players[cityPlayerID].Coins);
+			int cityTreasury = this.parent.Tools.CheckValueRange(F0_2459_0687_GetCityTreasury(cityID), 0, this.parent.GameData.Players[cityPlayerID].Coins);
 
 			// Instruction address 0x2459:0x011f, size: 5
 			int unitID = this.parent.MapManagement.F0_2aea_1458_GetCellActiveUnitID(cityX, cityY);
@@ -183,8 +183,8 @@ namespace OpenCivOne
 					this.parent.GameData.Cities[cityID].VisibleSize = (sbyte)this.parent.GameData.Cities[cityID].ActualSize;
 				}
 			}
-			else if (this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Diplomacy[playerID].HasFlag(DiplomacyFlagsEnum.Unknown40) ||
-				this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Diplomacy[cityPlayerID].HasFlag(DiplomacyFlagsEnum.Unknown40))
+			else if (this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Diplomacy[playerID].HasFlag(DiplomacyFlagsEnum.EmbassyEstablished) ||
+				this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Diplomacy[cityPlayerID].HasFlag(DiplomacyFlagsEnum.EmbassyEstablished))
 			{
 				this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.SpiesReport;
 
@@ -457,7 +457,7 @@ namespace OpenCivOne
 			int homeCityID = this.parent.GameData.Players[playerID].Units[unitID].HomeCityID;
 
 			// Instruction address 0x2459:0x098e, size: 5
-			int caravanGoodsWorth = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(this.parent.GameData.Cities[cityID].Position, 
+			int caravanGoodsWorth = this.parent.Tools.GetShortestDistance(this.parent.GameData.Cities[cityID].Position, 
 				this.parent.GameData.Cities[homeCityID].Position) + 10;
 
 			caravanGoodsWorth *= this.parent.GameData.Cities[cityID].BaseTrade + this.parent.GameData.Cities[homeCityID].BaseTrade;

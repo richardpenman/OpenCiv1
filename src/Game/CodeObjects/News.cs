@@ -104,29 +104,29 @@ namespace OpenCivOne
 
 			if (titleWidth < 200)
 			{
-				this.parent.DrawTools.F0_1182_002a_DrawString(",-.", 8, 11, 0);
-				this.parent.DrawTools.F0_1182_002a_DrawString(",-.", 268, 11, 0);
+				this.parent.DrawTools.DrawString(",-.", 8, 11, 0);
+				this.parent.DrawTools.DrawString(",-.", 268, 11, 0);
 			}
 
-			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(newsTitle, 160, 11, 0);
+			this.parent.DrawTools.DrawCenteredStringToScreen0(newsTitle, 160, 11, 0);
 
 			string newsExtra = (this.parent.CAPI.RNG.Next(2) != 0) ? "EXTRA!" : "FLASH";
 
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 3;
 
-			this.parent.DrawTools.F0_1182_002a_DrawString(newsExtra, 6, 3, 0);
-			this.parent.DrawTools.F0_1182_002a_DrawString(newsExtra, 272, 3, 0);
+			this.parent.DrawTools.DrawString(newsExtra, 6, 3, 0);
+			this.parent.DrawTools.DrawString(newsExtra, 272, 3, 0);
 
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
-			this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("10 cents", 272, 28, 0);
-			this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"January 1, {this.parent.Segment_1238.YearToString(this.parent.GameData.Year)}", 8, 28, 0);
+			this.parent.DrawTools.DrawStringToScreen0("10 cents", 272, 28, 0);
+			this.parent.DrawTools.DrawStringToScreen0($"January 1, {this.parent.Segment_1238.YearToString(this.parent.GameData.Year)}", 8, 28, 0);
 
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 2;
 
 			string newsContent = this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey("KING", $"*NEWS{(char)('A' + this.parent.CAPI.RNG.Next(14))}");
 
-			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(newsContent, 160, 3, 0);
+			this.parent.DrawTools.DrawCenteredStringToScreen0(newsContent, 160, 3, 0);
 
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 

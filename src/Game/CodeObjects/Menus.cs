@@ -36,7 +36,7 @@ namespace OpenCivOne
 			if (menuIndex == -1)
 			{
 				// Instruction address 0x2c84:0x0026, size: 5
-				menuIndex = this.parent.Tools.F0_2dc4_007c_CheckValueRange(mouseEvent.Position.X / 60, 0, 4);
+				menuIndex = this.parent.Tools.CheckValueRange(mouseEvent.Position.X / 60, 0, 4);
 			}
 
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
@@ -497,7 +497,7 @@ namespace OpenCivOne
 			}
 			else
 			{
-				this.parent.Encyclopedia.F8_0000_0000_ShowEncyclopediaByTopic((EncyclopediaTopicEnum)selectedOption);
+				this.parent.Encyclopedia.ShowEncyclopediaByTopic((EncyclopediaTopicEnum)selectedOption);
 				this.Var_654a = -1;
 			}
 		}

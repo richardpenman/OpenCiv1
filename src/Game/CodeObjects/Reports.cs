@@ -101,7 +101,7 @@ namespace OpenCivOne
 						if (this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(j, i).HasFlag(TerrainImprovementFlagsEnum.City))
 						{
 							// Instruction address 0x0000:0x01c0, size: 5
-							int cityID = this.parent.Tools.F0_2dc4_00ba_GetCityByLocation(j, i);
+							int cityID = this.parent.Tools.GetCityByLocation(j, i);
 
 							if (this.parent.Var_d806_DebugFlag ||
 								this.parent.GameData.Cities[cityID].VisibleSize != 0 || 
@@ -165,7 +165,7 @@ namespace OpenCivOne
 			for (int i = 1; i < 8; i++)
 			{
 				// Instruction address 0x0000:0x03f9, size: 5
-				this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0(
+				this.parent.DrawTools.DrawStringWithShadowToScreen0(
 					this.parent.GameData.Players[i].Nationality, i * 40, 8, this.parent.Array_1946_PlayerColours[i]);
 
 				// Instruction address 0x0000:0x0411, size: 5
@@ -177,14 +177,14 @@ namespace OpenCivOne
 				int y = 24 + i * 8;
 
 				// Instruction address 0x0000:0x054e, size: 5
-				this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{this.parent.GameData.Continents[i].Size}", 8, y, 0);
+				this.parent.DrawTools.DrawStringToScreen0($"{this.parent.GameData.Continents[i].Size}", 8, y, 0);
 
 				for (int j = 1; j < 8; j++)
 				{
 					if (this.parent.GameData.Players[j].Continents[i].Attack != 0)
 					{
 						// Instruction address 0x0000:0x04f4, size: 5
-						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+						this.parent.DrawTools.DrawStringToScreen0(
 							$"{this.parent.GameData.Players[j].Continents[i].Defense}/{this.parent.GameData.Players[j].Continents[i].Attack}/" +
 								$"{this.parent.GameData.Players[j].Continents[i].CityCount}",
 							j * 40, y, this.parent.Array_1946_PlayerColours[j]);
@@ -224,7 +224,7 @@ namespace OpenCivOne
 				if ((i / 100) == 0)
 				{
 					// Instruction address 0x0000:0x0667, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+					this.parent.DrawTools.DrawStringToScreen0(
 						this.parent.Segment_1238.YearToString(this.parent.Segment_1238.TurnCountToYear(i)), i / 2, 194, 15);
 				}
 			}
@@ -238,7 +238,7 @@ namespace OpenCivOne
 				if ((this.parent.GameData.ActiveCivilizations & (0x1 << i)) != 0 || i <= this.parent.GameData.AIOpponentCount + 1)
 				{
 					// Instruction address 0x0000:0x070b, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+					this.parent.DrawTools.DrawStringToScreen0(
 						this.parent.GameData.Players[i].Nationality, 8, (i * 8) + 4, this.parent.Array_1946_PlayerColours[i]);
 
 					for (int j = 0; this.parent.GameData.TurnCount / 4 > j; j++)
@@ -252,7 +252,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x072b, size: 5
-			this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("CIVILIZATION POWERGraph", 100, 2, 15);
+			this.parent.DrawTools.DrawStringWithShadowToScreen0("CIVILIZATION POWERGraph", 100, 2, 15);
 
 			for (int i = 1; i < 8; i++)
 			{
@@ -313,7 +313,7 @@ namespace OpenCivOne
 						this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 3);
 
 						// Instruction address 0x0000:0x0956, size: 5
-						this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("The Wonders of the World", 100, 12, 15);
+						this.parent.DrawTools.DrawStringWithShadowToScreen0("The Wonders of the World", 100, 12, 15);
 
 						y = 32;
 					}
@@ -346,10 +346,10 @@ namespace OpenCivOne
 					this.parent.DrawTools.DrawRectangle(8, y, 303, 15, this.parent.Array_1946_PlayerColours[wonderPlayerID]);
 
 					// Instruction address 0x0000:0x08c8, size: 5
-					this.parent.CityWorker.F0_1d12_7045(i + 24, 16, y + 3);
+					this.parent.CityWorker.F0_1d12_7045_DrawWonderOrImprovement(i + 24, 16, y + 3);
 
 					// Instruction address 0x0000:0x08f3, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(this.parent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(wonderText, 270), 40, y + 5, 15);
+					this.parent.DrawTools.DrawStringToScreen0(this.parent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(wonderText, 270), 40, y + 5, 15);
 
 					y += 24;
 				}
@@ -382,10 +382,10 @@ namespace OpenCivOne
 			int reportType = this.parent.CAPI.RNG.Next(5);
 
 			// Instruction address 0x0000:0x0a5f, size: 5
-			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0($"{historicalNames[this.parent.CAPI.RNG.Next(4)]} completes his epic history on", 160, 4, 15);
+			this.parent.DrawTools.DrawCenteredStringToScreen0($"{historicalNames[this.parent.CAPI.RNG.Next(4)]} completes his epic history on", 160, 4, 15);
 
 			// Instruction address 0x0000:0x0aac, size: 5
-			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0($"'The {reportTypes[reportType]} Leaders in the World'.", 160, 12, 15);
+			this.parent.DrawTools.DrawCenteredStringToScreen0($"'The {reportTypes[reportType]} Leaders in the World'.", 160, 12, 15);
 
 			int[] playerGrades = new int[8];
 
@@ -403,7 +403,7 @@ namespace OpenCivOne
 
 					if (reportType == 3)
 					{
-						playerGrades[this.parent.GameData.Cities[i].PlayerID] += this.parent.GameData.Cities[i].ActualSize + this.parent.Var_70e2 - this.parent.Var_70e4;
+						playerGrades[this.parent.GameData.Cities[i].PlayerID] += this.parent.GameData.Cities[i].ActualSize + this.parent.Var_70e2_CityHappyCitizenCount - this.parent.Var_70e4_CityUnhappyCitizenCount;
 					}
 
 					if (reportType == 4)
@@ -464,7 +464,7 @@ namespace OpenCivOne
 					if (selectedPlayerID != -1)
 					{
 						if (this.parent.Var_d806_DebugFlag || this.parent.GameData.DifficultyLevel == 0 || selectedPlayerID == this.parent.GameData.HumanPlayerID ||
-							this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Diplomacy[selectedPlayerID].HasFlag(DiplomacyFlagsEnum.Unknown40))
+							this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Diplomacy[selectedPlayerID].HasFlag(DiplomacyFlagsEnum.EmbassyEstablished))
 						{
 							// Instruction address 0x0000:0x0ca5, size: 5
 							this.parent.CommonTools.WaitTimer(60);
@@ -478,7 +478,7 @@ namespace OpenCivOne
 							this.parent.DrawTools.DrawRectangle(8, y, 303, 15, this.parent.Array_1946_PlayerColours[selectedPlayerID]);
 
 							// Instruction address 0x0000:0x0d03, size: 5
-							this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+							this.parent.DrawTools.DrawStringToScreen0(
 								$"{(rank + 1)}. The {reportGrades[rank]} {this.parent.GameData.Players[selectedPlayerID].Name} " +
 									$"of the {this.parent.GameData.Players[selectedPlayerID].Nation}.", 40, y + 5, 15);
 
@@ -520,7 +520,7 @@ namespace OpenCivOne
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 1);
 
 			// Instruction address 0x0000:0x0dd1, size: 5
-			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0($"{this.parent.GameData.Players[playerID].Nationality} Demographics", 160, 4, 15);
+			this.parent.DrawTools.DrawCenteredStringToScreen0($"{this.parent.GameData.Players[playerID].Nationality} Demographics", 160, 4, 15);
 
 			int[] cityGrowthCounts = new int[8];
 			int[] happyValues = new int[8];
@@ -579,7 +579,7 @@ namespace OpenCivOne
 					int actualCitySize = city.ActualSize;
 
 					citySizes[cityPlayerID] += actualCitySize;
-					happyValues[cityPlayerID] += actualCitySize + this.parent.Var_70e2 - this.parent.Var_70e4;
+					happyValues[cityPlayerID] += actualCitySize + this.parent.Var_70e2_CityHappyCitizenCount - this.parent.Var_70e4_CityUnhappyCitizenCount;
 					incomeValues[cityPlayerID] += (this.parent.Var_70da_Arr[3] * 2) + this.parent.Var_e17a;
 					populationGrowthValues[cityPlayerID] += this.parent.Var_70da_Arr[0] - (actualCitySize * 2);
 					productivityValues[cityPlayerID] += this.parent.Var_70da_Arr[0] + this.parent.Var_70da_Arr[1] + this.parent.Var_70da_Arr[2];
@@ -617,7 +617,7 @@ namespace OpenCivOne
 			int yPosition = 24;
 
 			// Instruction address 0x0000:0x0fbb, size: 5
-			this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("Approval Rating:", 8, 24, 15);
+			this.parent.DrawTools.DrawStringWithShadowToScreen0("Approval Rating:", 8, 24, 15);
 
 			for (int i = 1; i < 8; i++)
 			{
@@ -626,7 +626,7 @@ namespace OpenCivOne
 				if (i == playerID)
 				{
 					// Instruction address 0x0000:0x102d, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{rankData[i]}%", 104, yPosition, 15);
+					this.parent.DrawTools.DrawStringToScreen0($"{rankData[i]}%", 104, yPosition, 15);
 				}
 			}
 
@@ -635,18 +635,18 @@ namespace OpenCivOne
 			yPosition += 12;
 
 			// Instruction address 0x0000:0x1064, size: 5
-			this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("Population:", 8, yPosition, 15);
+			this.parent.DrawTools.DrawStringWithShadowToScreen0("Population:", 8, yPosition, 15);
 
 			for (int i = 1; i < 8; i++)
 			{
-				int populationCount = this.parent.Tools.F0_2dc4_02cd_GetPlayerTotalPopulationCount(i);
+				int populationCount = this.parent.Tools.GetPlayerPopulationCount(i);
 
 				rankData[i] = populationCount;
 
 				if (i == playerID)
 				{
 					// Instruction address 0x0000:0x10a1, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{this.parent.Tools.F0_2dc4_0337_PopulationValueToString(populationCount)}", 104, yPosition, 15);
+					this.parent.DrawTools.DrawStringToScreen0($"{this.parent.Tools.PopulationValueToString(populationCount)}", 104, yPosition, 15);
 				}
 			}
 
@@ -656,7 +656,7 @@ namespace OpenCivOne
 
 			// !!! What does GNP mean, find the correct explanation and be descriptive
 			// Instruction address 0x0000:0x10d8, size: 5
-			this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("GNP:", 8, yPosition, 15);
+			this.parent.DrawTools.DrawStringWithShadowToScreen0("GNP:", 8, yPosition, 15);
 
 			for (int i = 1; i < 8; i++)
 			{
@@ -665,7 +665,7 @@ namespace OpenCivOne
 				if (i == playerID)
 				{
 					// Instruction address 0x0000:0x1145, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{rankData[i]} million $", 104, yPosition, 15);
+					this.parent.DrawTools.DrawStringToScreen0($"{rankData[i]} million $", 104, yPosition, 15);
 				}
 			}
 
@@ -674,7 +674,7 @@ namespace OpenCivOne
 			yPosition += 12;
 
 			// Instruction address 0x0000:0x117c, size: 5
-			this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("Mfg. Goods:", 8, yPosition, 15);
+			this.parent.DrawTools.DrawStringWithShadowToScreen0("Mfg. Goods:", 8, yPosition, 15);
 
 			for (int i = 1; i < 8; i++)
 			{
@@ -683,7 +683,7 @@ namespace OpenCivOne
 				if (i == playerID)
 				{
 					// Instruction address 0x0000:0x11e4, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{rankData[i]} Mtons", 104, yPosition, 15);
+					this.parent.DrawTools.DrawStringToScreen0($"{rankData[i]} Mtons", 104, yPosition, 15);
 				}
 			}
 
@@ -692,7 +692,7 @@ namespace OpenCivOne
 			yPosition += 12;
 
 			// Instruction address 0x0000:0x121b, size: 5
-			this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("Land Area:", 8, yPosition, 15);
+			this.parent.DrawTools.DrawStringWithShadowToScreen0("Land Area:", 8, yPosition, 15);
 
 			for (int i = 1; i < 8; i++)
 			{
@@ -701,7 +701,7 @@ namespace OpenCivOne
 				if (i == playerID)
 				{
 					// Instruction address 0x0000:0x1289, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{rankData[i]},000 sq.miles", 104, yPosition, 15);
+					this.parent.DrawTools.DrawStringToScreen0($"{rankData[i]},000 sq.miles", 104, yPosition, 15);
 				}
 			}
 
@@ -710,7 +710,7 @@ namespace OpenCivOne
 			yPosition += 12;
 
 			// Instruction address 0x0000:0x12c0, size: 5
-			this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("Literacy:", 8, yPosition, 15);
+			this.parent.DrawTools.DrawStringWithShadowToScreen0("Literacy:", 8, yPosition, 15);
 
 			for (int i = 1; i < 8; i++)
 			{
@@ -736,12 +736,12 @@ namespace OpenCivOne
 					rankData[i] *= 2;
 				}
 
-				rankData[i] = this.parent.Tools.F0_2dc4_007c_CheckValueRange(rankData[i], 0, 100);
+				rankData[i] = this.parent.Tools.CheckValueRange(rankData[i], 0, 100);
 
 				if (i == playerID)
 				{
 					// Instruction address 0x0000:0x13bd, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{rankData[i]}%", 104, yPosition, 15);
+					this.parent.DrawTools.DrawStringToScreen0($"{rankData[i]}%", 104, yPosition, 15);
 				}
 			}
 
@@ -750,7 +750,7 @@ namespace OpenCivOne
 			yPosition += 12;
 
 			// Instruction address 0x0000:0x13f7, size: 5
-			this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("Disease:", 8, yPosition, 15);
+			this.parent.DrawTools.DrawStringWithShadowToScreen0("Disease:", 8, yPosition, 15);
 
 			for (int i = 1; i < 8; i++)
 			{
@@ -766,7 +766,7 @@ namespace OpenCivOne
 				if (i == playerID)
 				{
 					// Instruction address 0x0000:0x14a5, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{rankData[i]}%", 104, yPosition, 15);
+					this.parent.DrawTools.DrawStringToScreen0($"{rankData[i]}%", 104, yPosition, 15);
 				}
 			}
 
@@ -775,7 +775,7 @@ namespace OpenCivOne
 			yPosition += 12;
 
 			// Instruction address 0x0000:0x14e2, size: 5
-			this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("Pollution:", 8, yPosition, 15);
+			this.parent.DrawTools.DrawStringWithShadowToScreen0("Pollution:", 8, yPosition, 15);
 
 			for (int i = 1; i < 8; i++)
 			{
@@ -785,7 +785,7 @@ namespace OpenCivOne
 				if (i == playerID)
 				{
 					// Instruction address 0x0000:0x155c, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{rankData[i]}0 tons/year", 104, yPosition, 15);
+					this.parent.DrawTools.DrawStringToScreen0($"{rankData[i]}0 tons/year", 104, yPosition, 15);
 				}
 			}
 
@@ -794,16 +794,16 @@ namespace OpenCivOne
 			yPosition += 12;
 
 			// Instruction address 0x0000:0x1596, size: 5
-			this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("Life Expectancy:", 8, yPosition, 15);
+			this.parent.DrawTools.DrawStringWithShadowToScreen0("Life Expectancy:", 8, yPosition, 15);
 
 			for (int i = 1; i < 8; i++)
 			{
-				rankData[i] = this.parent.Tools.F0_2dc4_007c_CheckValueRange(cityGrowthCounts[i], 20, 99);
+				rankData[i] = this.parent.Tools.CheckValueRange(cityGrowthCounts[i], 20, 99);
 
 				if (i == playerID)
 				{
 					// Instruction address 0x0000:0x160e, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{rankData[i]} years", 104, yPosition, 15);
+					this.parent.DrawTools.DrawStringToScreen0($"{rankData[i]} years", 104, yPosition, 15);
 				}
 			}
 
@@ -812,7 +812,7 @@ namespace OpenCivOne
 			yPosition += 12;
 
 			// Instruction address 0x0000:0x1645, size: 5
-			this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("Family Size:", 8, yPosition, 15);
+			this.parent.DrawTools.DrawStringWithShadowToScreen0("Family Size:", 8, yPosition, 15);
 
 			for (int i = 1; i < 8; i++)
 			{
@@ -821,7 +821,7 @@ namespace OpenCivOne
 				if (i == playerID)
 				{
 					// Instruction address 0x0000:0x16fc, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{rankData[i] / 10}.{rankData[i] % 10} children", 104, yPosition, 15);
+					this.parent.DrawTools.DrawStringToScreen0($"{rankData[i] / 10}.{rankData[i] % 10} children", 104, yPosition, 15);
 				}
 
 				rankData[i] /= 10;
@@ -832,7 +832,7 @@ namespace OpenCivOne
 			yPosition += 12;
 
 			// Instruction address 0x0000:0x1749, size: 5
-			this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("Military Service:", 8, yPosition, 15);
+			this.parent.DrawTools.DrawStringWithShadowToScreen0("Military Service:", 8, yPosition, 15);
 
 			for (int i = 1; i < 8; i++)
 			{
@@ -841,7 +841,7 @@ namespace OpenCivOne
 				if (i == playerID)
 				{
 					// Instruction address 0x0000:0x17ba, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{rankData[i]} years", 104, yPosition, 15);
+					this.parent.DrawTools.DrawStringToScreen0($"{rankData[i]} years", 104, yPosition, 15);
 				}
 			}
 
@@ -850,7 +850,7 @@ namespace OpenCivOne
 			yPosition += 12;
 
 			// Instruction address 0x0000:0x17f1, size: 5
-			this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("Annual Income:", 8, yPosition, 15);
+			this.parent.DrawTools.DrawStringWithShadowToScreen0("Annual Income:", 8, yPosition, 15);
 
 			for (int i = 1; i < 8; i++)
 			{
@@ -866,7 +866,7 @@ namespace OpenCivOne
 				if (i == playerID)
 				{
 					// Instruction address 0x0000:0x1869, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{rankData[i]}$ per capita", 104, yPosition, 15);
+					this.parent.DrawTools.DrawStringToScreen0($"{rankData[i]}$ per capita", 104, yPosition, 15);
 				}
 			}
 
@@ -875,7 +875,7 @@ namespace OpenCivOne
 			yPosition += 12;
 
 			// Instruction address 0x0000:0x18c9, size: 5
-			this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("Productivity:", 8, yPosition, 15);
+			this.parent.DrawTools.DrawStringWithShadowToScreen0("Productivity:", 8, yPosition, 15);
 
 			for (int i = 1; i < 8; i++)
 			{
@@ -884,7 +884,7 @@ namespace OpenCivOne
 				if (i == playerID)
 				{
 					// Instruction address 0x0000:0x192b, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{rankData[i]}", 104, yPosition, 15);
+					this.parent.DrawTools.DrawStringToScreen0($"{rankData[i]}", 104, yPosition, 15);
 				}
 			}
 
@@ -940,33 +940,33 @@ namespace OpenCivOne
 			{
 				case 1:
 					// Instruction address 0x0000:0x1a84, size: 5
-					this.parent.DrawTools.F0_1182_0086_DrawStringWithShadow($"{humanPlayerRank}st", 192, Math.Abs(y), 15);
+					this.parent.DrawTools.DrawStringWithShadow($"{humanPlayerRank}st", 192, Math.Abs(y), 15);
 					break;
 
 				case 2:
 					// Instruction address 0x0000:0x1a84, size: 5
-					this.parent.DrawTools.F0_1182_0086_DrawStringWithShadow($"{humanPlayerRank}nd", 192, Math.Abs(y), 15);
+					this.parent.DrawTools.DrawStringWithShadow($"{humanPlayerRank}nd", 192, Math.Abs(y), 15);
 					break;
 
 				case 3:
 					// Instruction address 0x0000:0x1a84, size: 5
-					this.parent.DrawTools.F0_1182_0086_DrawStringWithShadow($"{humanPlayerRank}rd", 192, Math.Abs(y), 15);
+					this.parent.DrawTools.DrawStringWithShadow($"{humanPlayerRank}rd", 192, Math.Abs(y), 15);
 					break;
 
 				default:
 					// Instruction address 0x0000:0x1a84, size: 5
-					this.parent.DrawTools.F0_1182_0086_DrawStringWithShadow($"{humanPlayerRank}th", 192, Math.Abs(y), 15);
+					this.parent.DrawTools.DrawStringWithShadow($"{humanPlayerRank}th", 192, Math.Abs(y), 15);
 					break;
 			}
 
 			if (selectedPlayerID != this.parent.GameData.HumanPlayerID)
 			{
-				if (this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Diplomacy[selectedPlayerID].HasFlag(DiplomacyFlagsEnum.Unknown40))
+				if (this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Diplomacy[selectedPlayerID].HasFlag(DiplomacyFlagsEnum.EmbassyEstablished))
 				{
 					string stats = $"({this.parent.GameData.Players[selectedPlayerID].Nation}: {Math.Abs(maximumValue)}{text})";
 
 					// Instruction address 0x0000:0x1b4a, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+					this.parent.DrawTools.DrawStringToScreen0(
 						stats, 318 - this.parent.DrawTools.GetStringWidth(stats), Math.Abs(y), this.parent.Array_1946_PlayerColours[selectedPlayerID]);
 				}
 			}
@@ -996,7 +996,7 @@ namespace OpenCivOne
 					// Instruction address 0x0000:0x0a29, size: 5
 					this.parent.CityWorker.F0_1d12_0045_ProcessCityState(i, -1);
 
-					int cityScore = this.parent.GameData.Cities[i].ActualSize + this.parent.Var_70e2 - this.parent.Var_70e4;
+					int cityScore = this.parent.GameData.Cities[i].ActualSize + this.parent.Var_70e2_CityHappyCitizenCount - this.parent.Var_70e4_CityUnhappyCitizenCount;
 
 					for (int j = 1; j < 22; j++)
 					{
@@ -1030,7 +1030,7 @@ namespace OpenCivOne
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 3);
 
 			// Instruction address 0x0000:0x0ac4, size: 5
-			this.parent.DrawTools.F0_1182_0086_DrawStringWithShadowToScreen0("The Top Five Cities in the World", 80, 12, 15);
+			this.parent.DrawTools.DrawStringWithShadowToScreen0("The Top Five Cities in the World", 80, 12, 15);
 
 			int y = 32;
 
@@ -1041,7 +1041,7 @@ namespace OpenCivOne
 					int cityID = cityIDs[i];
 
 					// Instruction address 0x0000:0x0b8e, size: 5
-					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(
+					this.parent.DrawTools.DrawCenteredStringToScreen0(
 						$"{i + 1}. {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} " +
 						$"({this.parent.GameData.Players[this.parent.GameData.Cities[cityID].PlayerID].Nationality})", 160, y + 3,
 						this.parent.Array_1946_PlayerColours[this.parent.GameData.Cities[cityID].PlayerID]);
@@ -1055,7 +1055,7 @@ namespace OpenCivOne
 					this.parent.CityWorker.F0_1d12_6ed4_DrawResources(cityID, 48, y + 10, this.parent.Var_e8b8, 160);
 
 					// Instruction address 0x0000:0x0bd9, size: 5
-					wonderX += this.parent.Tools.F0_2dc4_007c_CheckValueRange(this.parent.GameData.Cities[cityID].ActualSize * 8, 0, 160) + 8;
+					wonderX += this.parent.Tools.CheckValueRange(this.parent.GameData.Cities[cityID].ActualSize * 8, 0, 160) + 8;
 
 					for (int j = 1; j < 22; j++)
 					{
@@ -1064,7 +1064,7 @@ namespace OpenCivOne
 							if (wonderX < 293)
 							{
 								// Instruction address 0x0000:0x0c12, size: 5
-								this.parent.CityWorker.F0_1d12_7045(j + 24, wonderX, y + 12);
+								this.parent.CityWorker.F0_1d12_7045_DrawWonderOrImprovement(j + 24, wonderX, y + 12);
 							}
 
 							wonderX += 19;

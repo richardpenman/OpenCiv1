@@ -70,7 +70,7 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x4;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, this.oCPU.CX.LowUInt8);
 
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x26))].HasFlag(DiplomacyFlagsEnum.Unknown40))
+			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x26))].HasFlag(DiplomacyFlagsEnum.EmbassyEstablished))
 				goto L0090;
 
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x26)), 0x0);
@@ -173,7 +173,7 @@ namespace OpenCivOne
 			this.oCPU.CX.LowUInt8 = 0x4;
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, this.oCPU.CX.LowUInt8);
 
-			this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x26))] |= DiplomacyFlagsEnum.Unknown40;
+			this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x26))] |= DiplomacyFlagsEnum.EmbassyEstablished;
 
 			// Instruction address 0x0000:0x0164, size: 5
 			this.oParent.UnitManagement.F0_1866_0f10_DeleteUnit(playerID, unitID);
@@ -848,12 +848,12 @@ namespace OpenCivOne
 			yPos = (short)this.oCPU.AX.UInt16;
 
 			// Instruction address 0x0000:0x0a1c, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Tools.F0_2dc4_007c_CheckValueRange(xPos, 80, 276);
+			this.oCPU.AX.Int16 = (short)this.oParent.Tools.CheckValueRange(xPos, 80, 276);
 
 			xPos = this.oCPU.AX.Int16;
 
 			// Instruction address 0x0000:0x0a32, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Tools.F0_2dc4_007c_CheckValueRange(yPos, 8, 0x9c);
+			this.oCPU.AX.Int16 = (short)this.oParent.Tools.CheckValueRange(yPos, 8, 0x9c);
 
 			yPos = this.oCPU.AX.Int16;
 
@@ -894,7 +894,7 @@ namespace OpenCivOne
 
 		L0acf:
 			// Instruction address 0x0000:0x0ad2, size: 5
-			this.oParent.Tools.F0_2dc4_0523_FreeResource(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x38)), "");
+			this.oParent.Tools.FreeNativeResource(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x38)), "");
 
 			// Instruction address 0x0000:0x0aeb, size: 5
 			this.oParent.Segment_1238.F0_1238_1beb();
@@ -950,7 +950,7 @@ namespace OpenCivOne
 			this.oCPU.DI.UInt16 = this.oCPU.AX.UInt16;
 
 			// Instruction address 0x0000:0x0b67, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Tools.F0_2dc4_0289_GetShortestDistance(
+			this.oCPU.AX.Int16 = (short)this.oParent.Tools.GetShortestDistance(
 				this.oParent.GameData.Cities[cityID].Position.X,
 				this.oParent.GameData.Cities[cityID].Position.Y,
 				this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))].Position.X,
@@ -961,8 +961,8 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x0b79, size: 5
 			this.oParent.CityWorker.F0_1d12_0045_ProcessCityState(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), -1);
 
-			this.oCPU.AX.UInt16 = (ushort)((short)this.oParent.Var_70e2);
-			this.oCPU.AX.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.AX.UInt16, (ushort)((short)this.oParent.Var_70e4));
+			this.oCPU.AX.UInt16 = (ushort)((short)this.oParent.Var_70e2_CityHappyCitizenCount);
+			this.oCPU.AX.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.AX.UInt16, (ushort)((short)this.oParent.Var_70e4_CityUnhappyCitizenCount));
 			this.oCPU.CX.LowUInt8 = 0x5;
 			this.oCPU.AX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.AX.UInt16, this.oCPU.CX.LowUInt8);
 			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
@@ -1044,13 +1044,13 @@ namespace OpenCivOne
 			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].HasFlag(DiplomacyFlagsEnum.Unknown40))
+			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].HasFlag(DiplomacyFlagsEnum.EmbassyEstablished))
 				goto L0c77;
 
 			this.oCPU.BX.UInt16 = (ushort)((short)playerID);
 			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
 
-			if (!this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[playerID].HasFlag(DiplomacyFlagsEnum.Unknown40))
+			if (!this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[playerID].HasFlag(DiplomacyFlagsEnum.EmbassyEstablished))
 				goto L0d4d;
 
 		L0c77:
@@ -1117,7 +1117,7 @@ namespace OpenCivOne
 			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.AX.UInt16);
 
 			// Instruction address 0x0000:0x0d74, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Tools.F0_2dc4_0289_GetShortestDistance(
+			this.oCPU.AX.Int16 = (short)this.oParent.Tools.GetShortestDistance(
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)),
 				this.oParent.GameData.Players[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16))].Position.X,
@@ -1248,7 +1248,7 @@ namespace OpenCivOne
 			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
 
 			// Instruction address 0x0000:0x0ecd, size: 5
-			this.oParent.Tools.F0_2dc4_065f_StopPaletteCycleSlots();
+			this.oParent.Tools.StopPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x0ee4, size: 5
 			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "SETTLERS.PIC", 0);
@@ -1297,7 +1297,7 @@ namespace OpenCivOne
 			this.oParent.Var_aa_Screen0_Rectangle.FontID = 6;
 
 			// Instruction address 0x0000:0x0fc9, size: 5
-			this.oParent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(0xba06, 160, 4, 0);
+			this.oParent.DrawTools.DrawCenteredStringToScreen0(0xba06, 160, 4, 0);
 
 			this.oParent.Var_aa_Screen0_Rectangle.FontID = 1;
 
@@ -1366,7 +1366,7 @@ namespace OpenCivOne
 
 		L10cc:
 			// Instruction address 0x0000:0x10d3, size: 5
-			this.oParent.Tools.F0_2dc4_0523_FreeResource(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)), "Set");
+			this.oParent.Tools.FreeNativeResource(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)), "Set");
 
 			// Instruction address 0x0000:0x10fc, size: 5
 			this.oParent.CommonTools.TransformPaletteToColor(10, Color.FromRgb(0, 0, 0));

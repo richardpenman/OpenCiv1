@@ -1,5 +1,4 @@
 ﻿using OpenCivOne.Graphics;
-using System;
 
 namespace OpenCivOne
 {
@@ -8,14 +7,15 @@ namespace OpenCivOne
 		#region Global variables
 		public GSize ScreenSize = new GSize(320, 200);
 
-		public GPoint[] CityOffsets = new GPoint[] { 
+		public GPoint[] CityOffsets = { 
 			new GPoint(0, -1), new GPoint(1, 0), new GPoint(0, 1), new GPoint(-1, 0), 
 			new GPoint(1, -1), new GPoint(1, 1), new GPoint(-1, 1), new GPoint(-1, -1), 
 			new GPoint(0, -2), new GPoint(2, 0), new GPoint(0, 2), new GPoint(-2, 0), 
-			new GPoint(-1, -2), new GPoint(1, -2), new GPoint(2, -1), new GPoint(2, 1), new GPoint(1, 2), new GPoint(-1, 2), new GPoint(-2, 1), new GPoint(-2, -1), 
-			new GPoint(0, 0) };
+			new GPoint(-1, -2), new GPoint(1, -2), new GPoint(2, -1), new GPoint(2, 1),
+			new GPoint(1, 2), new GPoint(-1, 2), new GPoint(-2, 1), new GPoint(-2, -1), 
+			new GPoint(0, 0) }; // size is 21
 
-		public GPoint[] MoveDirections = new GPoint[] {
+		public GPoint[] MoveDirections = {
 			new GPoint(0, 0), new GPoint(0, -1), new GPoint(1, -1), // 1
 			new GPoint(1, 0), new GPoint(1, 1), new GPoint(0, 1), 
 			new GPoint(-1, 1), new GPoint(-1, 0), new GPoint(-1, -1), 
@@ -163,8 +163,8 @@ namespace OpenCivOne
 		
 		public bool Var_70d8 = false;
 		public int[] Var_70da_Arr = new int[4];
-		public int Var_70e2 = 0;
-		public int Var_70e4 = 0;
+		public int Var_70e2_CityHappyCitizenCount = 0;
+		public int Var_70e4_CityUnhappyCitizenCount = 0;
 		public int Var_70e6 = 0;
 		public int[] Array_7eec = new int[4];
 

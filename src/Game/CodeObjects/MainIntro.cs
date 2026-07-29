@@ -40,7 +40,7 @@ namespace OpenCivOne
 			this.parent.CommonTools.StartGameMainTimer();
 
 			// Instruction address 0x0000:0x01c8, size: 5
-			this.parent.Tools.F0_2dc4_0042_Randomize();
+			this.parent.Tools.RandomizeRNG();
 
 			// Instruction address 0x0000:0x01e0, size: 5
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
@@ -124,13 +124,13 @@ namespace OpenCivOne
 						int y = (200 - introTextSize.Height) / 2;
 
 						// Instruction address 0x0000:0x0362, size: 5
-						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(introText, x, y + 2, 252);
+						this.parent.DrawTools.DrawStringToScreen0(introText, x, y + 2, 252);
 
 						// Instruction address 0x0000:0x0386, size: 5
-						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(introText, x, y, 248);
+						this.parent.DrawTools.DrawStringToScreen0(introText, x, y, 248);
 
 						// Instruction address 0x0000:0x03aa, size: 5
-						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(introText, x, y + 1, 250);
+						this.parent.DrawTools.DrawStringToScreen0(introText, x, y + 1, 250);
 					}
 
 					while ((21 * i) / 4 > this.parent.CommonTools.SoundEngineTimer() && this.parent.CAPI.kbhit() == 0) ;
@@ -191,13 +191,13 @@ namespace OpenCivOne
 							int y = (200 - introTextSize.Height) / 2;
 
 							// Instruction address 0x0000:0x0362, size: 5
-							this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(introText, x, y + 2, 252);
+							this.parent.DrawTools.DrawStringToScreen0(introText, x, y + 2, 252);
 
 							// Instruction address 0x0000:0x0386, size: 5
-							this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(introText, x, y, 248);
+							this.parent.DrawTools.DrawStringToScreen0(introText, x, y, 248);
 
 							// Instruction address 0x0000:0x03aa, size: 5
-							this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(introText, x, y + 1, 250);
+							this.parent.DrawTools.DrawStringToScreen0(introText, x, y + 1, 250);
 						}
 
 						while ((21 * i) / 4 + 1680 > this.parent.CommonTools.SoundEngineTimer() && this.parent.CAPI.kbhit() == 0) ;
@@ -309,12 +309,12 @@ namespace OpenCivOne
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 
 			// Instruction address 0x0000:0x0bb6, size: 5
-			this.parent.CommonTools.F0_1000_0846(0);
+			this.parent.CommonTools.DrawScreenToMainScreenWithEffect(0);
 
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
 			// Instruction address 0x0000:0x0bca, size: 5
-			this.parent.Tools.F0_2dc4_0523_FreeResource(logoBitmapID, "ShowMainIntro");
+			this.parent.Tools.FreeNativeResource(logoBitmapID, "ShowMainIntro");
 		}
 
 		/// <summary>
@@ -336,7 +336,7 @@ namespace OpenCivOne
 				bitmaps[i] = this.parent.Graphics.F0_VGA_0b85_ScreenToBitmap(1, ((i % 6) * 50) + 1, ((i / 6) * 50) + 1, 49, 49);
 			}
 
-			this.parent.Tools.F0_2dc4_065f_StopPaletteCycleSlots();
+			this.parent.Tools.StopPaletteCycleSlots();
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 236);
 			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "PLANET1.PIC", 1);
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 24, 320, 176, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
@@ -360,10 +360,10 @@ namespace OpenCivOne
 
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 6;
 
-			// Animate starship travel to Alpha Centauri
+			// Animate star ship travel to Alpha Centauri
 			int contentIndex = 0;
 			int bitmapID = 0;
-			int local_242 = -10;
+			int xOffset = -10;
 
 			this.parent.CommonTools.PlayTune(3, 0);
 
@@ -391,8 +391,8 @@ namespace OpenCivOne
 
 				this.parent.Var_aa_Screen0_Rectangle.ScreenID = 1;
 
-				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(content[contentIndex], 160, 184, 56);
-				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(content[contentIndex], 160, 183, 60);
+				this.parent.DrawTools.DrawCenteredStringToScreen0(content[contentIndex], 160, 184, 56);
+				this.parent.DrawTools.DrawCenteredStringToScreen0(content[contentIndex], 160, 183, 60);
 
 				this.parent.Var_aa_Screen0_Rectangle.ScreenID = oldScreenID;
 
@@ -431,12 +431,12 @@ namespace OpenCivOne
 
 				if ((i & 0x1) != 0)
 				{
-					local_242++;
+					xOffset++;
 
-					this.parent.Graphics.F0_VGA_0550_SetPixel(this.parent.Var_aa_Screen0_Rectangle.ScreenID, local_242 - i, 92, 15);
+					this.parent.Graphics.F0_VGA_0550_SetPixel(this.parent.Var_aa_Screen0_Rectangle.ScreenID, xOffset - i, 92, 15);
 				}
 
-				local_242++;
+				xOffset++;
 
 				if (this.parent.Var_5c_TickCount > 12 && (i & 0x1) == 0)
 				{
@@ -453,13 +453,13 @@ namespace OpenCivOne
 
 			for (int i = 0; i < 24; i++)
 			{
-				this.parent.Tools.F0_2dc4_0523_FreeResource(bitmaps[i], "EndGame_SpaceVictory");
+				this.parent.Tools.FreeNativeResource(bitmaps[i], "EndGame_SpaceVictory");
 			}
 
 			// Show static narrative text animation
 			this.parent.Var_aa_Screen0_Rectangle.ScreenID = 0;
 
-			this.parent.CommonTools.F0_1000_0846(0);
+			this.parent.CommonTools.DrawScreenToMainScreenWithEffect(0);
 
 			if (playerID == this.parent.GameData.HumanPlayerID)
 			{
@@ -500,8 +500,8 @@ namespace OpenCivOne
 			{
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 32, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 
-				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(content[contentIndex], 160, 5, 11);
-				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(content[contentIndex], 160, 4, 15);
+				this.parent.DrawTools.DrawCenteredStringToScreen0(content[contentIndex], 160, 5, 11);
+				this.parent.DrawTools.DrawCenteredStringToScreen0(content[contentIndex], 160, 4, 15);
 
 				this.parent.Graphics.F0_VGA_0550_SetPixel(this.parent.Var_aa_Screen0_Rectangle.ScreenID, 280, 32, 15);
 
@@ -532,7 +532,7 @@ namespace OpenCivOne
 
 			this.parent.Segment_1238.F0_1238_1beb();
 
-			this.parent.Tools.F0_2dc4_05dd_AddPaletteCycleSlots();
+			this.parent.Tools.AddDefaultPaletteCycleSlots();
 		}
 
 		/// <summary>
@@ -544,7 +544,7 @@ namespace OpenCivOne
 
 			// function body
 			// Instruction address 0x0000:0x1530, size: 5
-			this.parent.Tools.F0_2dc4_065f_StopPaletteCycleSlots();
+			this.parent.Tools.StopPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x155a, size: 5
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
@@ -588,13 +588,13 @@ namespace OpenCivOne
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 6, 320, 20, this.parent.Var_aa_Screen0_Rectangle, 0, 6);
 
 				// Instruction address 0x0000:0x16e5, size: 5
-				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(textLine, 160, 7, 15);
+				this.parent.DrawTools.DrawCenteredStringToScreen0(textLine, 160, 7, 15);
 
 				// Instruction address 0x0000:0x1700, size: 5
-				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(textLine, 160, 9, 13);
+				this.parent.DrawTools.DrawCenteredStringToScreen0(textLine, 160, 9, 13);
 
 				// Instruction address 0x0000:0x173b, size: 5
-				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(textLine, 160, 8, 14);
+				this.parent.DrawTools.DrawCenteredStringToScreen0(textLine, 160, 8, 14);
 
 				if (this.parent.CAPI.kbhit() != 0)
 					break;

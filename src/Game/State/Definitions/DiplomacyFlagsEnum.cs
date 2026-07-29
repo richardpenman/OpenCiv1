@@ -8,11 +8,11 @@
 		Peace = 0x2,
 		Allied = 0x4,
 		Vendetta = 0x8,
-		Unknown10 = 0x10,
-		Unknown20 = 0x20,
-		Unknown40 = 0x40,
-		Unknown80 = 0x80,
-		Unknown100 = 0x100,
-		Unknown200 = 0x200
+		FormalContact = 0x10,
+		EverFought = 0x20,
+		EmbassyEstablished = 0x40,
+		TributeDemanded = 0x80,
+		PeaceTreaty = 0x100,
+		warDeclared = 0x200
 	}
 }

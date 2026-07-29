@@ -28,7 +28,7 @@ namespace OpenCivOne
 
 				this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 2);
 
-				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(topic, 160, 192, 0);
+				this.parent.DrawTools.DrawCenteredStringToScreen0(topic, 160, 192, 0);
 
 				this.parent.DrawTools.DrawTextBlock(32, 32, content, 256, 15);
 
@@ -86,9 +86,9 @@ namespace OpenCivOne
 				}
 				else
 				{
-					int nearestCityID = this.parent.Tools.F0_2dc4_0102_FindNearestCity(this.parent.GameData.Players[playerID].Units[unitID].Position.X, 
+					int nearestCityID = this.parent.Tools.FindNearestCity(this.parent.GameData.Players[playerID].Units[unitID].Position.X, 
 						this.parent.GameData.Players[playerID].Units[unitID].Position.Y);
-					int nearestCityDistance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(this.parent.GameData.Players[playerID].Units[unitID].Position,
+					int nearestCityDistance = this.parent.Tools.GetShortestDistance(this.parent.GameData.Players[playerID].Units[unitID].Position,
 						this.parent.GameData.Cities[nearestCityID].Position);
 
 					if (nearestCityID != -1 && this.parent.GameData.Cities[nearestCityID].PlayerID == playerID && nearestCityDistance == 1)
@@ -146,7 +146,7 @@ namespace OpenCivOne
 
 				this.parent.Var_aa_Screen0_Rectangle.FontID = 2;
 
-				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("--- Civilization Note ---", 160, 19, 0);
+				this.parent.DrawTools.DrawCenteredStringToScreen0("--- Civilization Note ---", 160, 19, 0);
 
 				this.parent.DrawTools.DrawTextBlock(64, 25, content, 256, 15);
 
@@ -181,7 +181,7 @@ namespace OpenCivOne
 
 				this.parent.Var_aa_Screen0_Rectangle.FontID = 2;
 
-				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("--- Civilization Note ---", 160, 19, 0);
+				this.parent.DrawTools.DrawCenteredStringToScreen0("--- Civilization Note ---", 160, 19, 0);
 
 				this.parent.DrawTools.DrawTextBlock(64, 25, content, 256, 15);
 

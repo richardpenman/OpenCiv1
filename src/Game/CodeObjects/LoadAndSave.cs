@@ -1,5 +1,4 @@
 using OpenCivOne.Graphics;
-using OpenCivOne.UI;
 using System.Text;
 
 namespace OpenCivOne
@@ -17,10 +16,10 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// Shows a load game dialog
 		/// </summary>
 		/// <returns></returns>
-		public int F11_0000_0000_LoadGameDialog()
+		public int ShowLoadGameDialog()
 		{
 			//this.oCPU.Log.EnterBlock($"F11_0000_0000({flag})");
 
@@ -46,7 +45,7 @@ namespace OpenCivOne
 			{
 				bool success;
 
-				loadGameList.Append(F11_0000_0103_ReadGameInfo($"CIVIL{i}.SVE", out success));
+				loadGameList.Append(ReadGameInfoFromFile($"CIVIL{i}.SVE", out success));
 
 				if (success)
 				{
@@ -62,7 +61,7 @@ namespace OpenCivOne
 				this.gameIndex = -1;
 			}
 
-			if (this.gameIndex != -1 && !F11_0000_0103_LoadGame($"CIVIL{gameIndex}.SVE", this.gameIndex))
+			if (this.gameIndex != -1 && !LoadGame($"CIVIL{gameIndex}.SVE", this.gameIndex))
 			{
 				this.gameIndex = -1;
 			}
@@ -76,7 +75,7 @@ namespace OpenCivOne
 		/// <param name="filename"></param>
 		/// <param name="success"></param>
 		/// <returns>True if command succeeded</returns>
-		public string F11_0000_0103_ReadGameInfo(string filename, out bool success)
+		public string ReadGameInfoFromFile(string filename, out bool success)
 		{
 			//this.oCPU.Log.EnterBlock($"F11_0000_0103_ReadGameData(0x{filename:x4}, {flag})");
 
@@ -120,12 +119,12 @@ namespace OpenCivOne
 		/// </summary>
 		/// <param name="filename"></param>
 		/// <returns>True if command succeeded</returns>
-		public bool F11_0000_0103_LoadGame(string filename, int gameIndex)
+		public bool LoadGame(string filename, int gameIndex)
 		{
 			//this.oCPU.Log.EnterBlock($"F11_0000_0103_LoadGame(0x{filename:x4}, {flag})");
 
 			// function body
-			bool result = F11_0000_083b_LoadGameData(filename);
+			bool result = LoadGameData(filename);
 
 			//this.oParent.GameInitAndIntro.F7_0000_1440_ConstructWaterPath();
 
@@ -145,10 +144,10 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// Show a save game dialog
 		/// </summary>
 		/// <param name="autoSave"></param>
-		public void F11_0000_036a_SaveGameDialog(bool autoSave)
+		public void ShowSaveGameDialog(bool autoSave)
 		{
 			//this.CPU.Log.EnterBlock($"F11_0000_036a({autoSave})");
 
@@ -158,7 +157,7 @@ namespace OpenCivOne
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 15);
 
 			// Instruction address 0x0000:0x03d3, size: 5
-			this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = this.parent.Tools.F0_2dc4_007c_CheckValueRange(this.gameIndex, 0, 3);
+			this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = this.parent.Tools.CheckValueRange(this.gameIndex, 0, 3);
 
 			if (!autoSave)
 			{
@@ -169,7 +168,7 @@ namespace OpenCivOne
 				for (int i = 0; i < 4; i++)
 				{
 					bool temp;
-					saveGameList.Append(F11_0000_0103_ReadGameInfo($"CIVIL{i}.SVE", out temp));
+					saveGameList.Append(ReadGameInfoFromFile($"CIVIL{i}.SVE", out temp));
 				}
 
 				// Instruction address 0x0000:0x03f5, size: 5
@@ -195,16 +194,16 @@ namespace OpenCivOne
 				// Instruction address 0x0000:0x05c3, size: 5
 				this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(saveGameText.ToString(), 64, 86, true, false, true);
 
-				if (F11_0000_08f6_SaveGameData($"CIVIL{this.gameIndex}.SVE"))
+				if (SaveGameData($"CIVIL{this.gameIndex}.SVE"))
 				{
-					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Game has been saved.", 125, 132, 0);
-					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Press key to continue.", 125, 142, 0);
+					this.parent.DrawTools.DrawCenteredStringToScreen0("Game has been saved.", 125, 132, 0);
+					this.parent.DrawTools.DrawCenteredStringToScreen0("Press key to continue.", 125, 142, 0);
 					this.parent.CAPI.getch();
 				}
 				else
 				{
-					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("The current game was NOT saved.", 125, 132, 0);
-					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Press key to continue.", 125, 142, 0);
+					this.parent.DrawTools.DrawCenteredStringToScreen0("The current game was NOT saved.", 125, 132, 0);
+					this.parent.DrawTools.DrawCenteredStringToScreen0("Press key to continue.", 125, 142, 0);
 					this.parent.CAPI.getch();
 				}
 			}
@@ -213,11 +212,11 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// Loads game data from a save game file
 		/// </summary>
 		/// <param name="filename"></param>
 		/// <returns></returns>
-		public bool F11_0000_083b_LoadGameData(string filename)
+		public bool LoadGameData(string filename)
 		{
 			filename = filename.ToUpper();
 
@@ -650,7 +649,7 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// Reads UInt8 value from a stream
 		/// </summary>
 		/// <param name="reader"></param>
 		/// <returns></returns>
@@ -667,7 +666,7 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Reads a UInt16 from a Stream
+		/// Reads UInt16 value from a Stream
 		/// </summary>
 		/// <param name="reader"></param>
 		/// <returns></returns>
@@ -685,7 +684,7 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// Reads Int16 value from a stream
 		/// </summary>
 		/// <param name="reader"></param>
 		/// <returns></returns>
@@ -703,7 +702,7 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Reads a UInt32 from a Stream
+		/// Reads UInt32 value from a Stream
 		/// </summary>
 		/// <param name="reader"></param>
 		/// <returns></returns>
@@ -758,11 +757,11 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// Saves the current game data to a file
 		/// </summary>
 		/// <param name="filename"></param>
 		/// <returns></returns>
-		public bool F11_0000_08f6_SaveGameData(string filename)
+		public bool SaveGameData(string filename)
 		{
 			filename = filename.ToUpper();
 
@@ -1187,7 +1186,7 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// Writes UInt16 value to a stream
 		/// </summary>
 		/// <param name="writer"></param>
 		/// <param name="value"></param>
@@ -1198,7 +1197,7 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Writes an Int16 to a Stream
+		/// Writes Int16 value to a stream
 		/// </summary>
 		/// <param name="writer"></param>
 		/// <param name="value"></param>
@@ -1209,7 +1208,7 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Writes an UInt32 to a Stream
+		/// Writes UInt32 value to a stream
 		/// </summary>
 		/// <param name="writer"></param>
 		/// <param name="value"></param>

@@ -35,7 +35,7 @@ namespace OpenCivOne
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <param name="frontColor"></param>
-		public void F0_1182_002a_DrawString(string text, int x, int y, byte frontColor)
+		public void DrawString(string text, int x, int y, byte frontColor)
 		{
 			this.parent.Var_aa_Screen0_Rectangle.FrontColor = frontColor;
 
@@ -55,11 +55,11 @@ namespace OpenCivOne
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <param name="frontColor"></param>
-		public void F0_1182_005c_DrawStringToScreen0(ushort stringPtr, int x, int y, byte frontColor)
+		public void DrawStringToScreen0(ushort stringPtr, int x, int y, byte frontColor)
 		{
 			string text = this.CPU.ReadString(VCPU.ToLinearAddress(this.CPU.DS.UInt16, stringPtr));
 
-			F0_1182_005c_DrawStringToScreen0(text, x, y, frontColor);
+			DrawStringToScreen0(text, x, y, frontColor);
 		}
 
 		/// <summary>
@@ -69,11 +69,11 @@ namespace OpenCivOne
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <param name="frontColor"></param>
-		public void F0_1182_005c_DrawStringToScreen0(string text, int x, int y, byte frontColor)
+		public void DrawStringToScreen0(string text, int x, int y, byte frontColor)
 		{
 			this.parent.Var_aa_Screen0_Rectangle.Flags = 0;
 
-			F0_1182_002a_DrawString(text, x, y, frontColor);
+			DrawString(text, x, y, frontColor);
 
 			this.parent.Var_aa_Screen0_Rectangle.Flags = 1;
 		}
@@ -85,9 +85,9 @@ namespace OpenCivOne
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <param name="frontColor"></param>
-		public void F0_1182_0086_DrawStringWithShadow(ushort stringPtr, int x, int y, byte frontColor)
+		public void DrawStringWithShadow(ushort stringPtr, int x, int y, byte frontColor)
 		{
-			this.F0_1182_0086_DrawStringWithShadow(this.CPU.ReadString(VCPU.ToLinearAddress(this.CPU.DS.UInt16, stringPtr)), x, y, frontColor);
+			this.DrawStringWithShadow(this.CPU.ReadString(VCPU.ToLinearAddress(this.CPU.DS.UInt16, stringPtr)), x, y, frontColor);
 		}
 
 		/// <summary>
@@ -97,10 +97,10 @@ namespace OpenCivOne
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <param name="frontColor"></param>
-		public void F0_1182_0086_DrawStringWithShadow(string text, int x, int y, byte frontColor)
+		public void DrawStringWithShadow(string text, int x, int y, byte frontColor)
 		{
-			F0_1182_005c_DrawStringToScreen0(text, x, y + 1, 0);
-			F0_1182_005c_DrawStringToScreen0(text, x, y, frontColor);
+			DrawStringToScreen0(text, x, y + 1, 0);
+			DrawStringToScreen0(text, x, y, frontColor);
 		}
 
 		/// <summary>
@@ -110,10 +110,10 @@ namespace OpenCivOne
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <param name="frontColor"></param>
-		public void F0_1182_0086_DrawStringWithShadowToScreen0(string text, int x, int y, byte frontColor)
+		public void DrawStringWithShadowToScreen0(string text, int x, int y, byte frontColor)
 		{
-			F0_1182_005c_DrawStringToScreen0(text, x, y + 1, 0);
-			F0_1182_005c_DrawStringToScreen0(text, x, y, frontColor);
+			DrawStringToScreen0(text, x, y + 1, 0);
+			DrawStringToScreen0(text, x, y, frontColor);
 		}
 
 		/// <summary>
@@ -123,11 +123,11 @@ namespace OpenCivOne
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <param name="frontColor"></param>
-		public void F0_1182_00b3_DrawCenteredStringToScreen0(ushort stringPtr, int x, int y, byte frontColor)
+		public void DrawCenteredStringToScreen0(ushort stringPtr, int x, int y, byte frontColor)
 		{
 			string text = this.CPU.ReadString(VCPU.ToLinearAddress(this.CPU.DS.UInt16, stringPtr));
 
-			F0_1182_00b3_DrawCenteredStringToScreen0(text, x, y, frontColor);
+			DrawCenteredStringToScreen0(text, x, y, frontColor);
 		}
 
 		/// <summary>
@@ -137,13 +137,13 @@ namespace OpenCivOne
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <param name="frontColor"></param>
-		public void F0_1182_00b3_DrawCenteredStringToScreen0(string text, int x, int y, byte frontColor)
+		public void DrawCenteredStringToScreen0(string text, int x, int y, byte frontColor)
 		{
 			x -= GetStringWidth(text) / 2;
 
 			this.parent.Var_aa_Screen0_Rectangle.Flags = 0;
 
-			F0_1182_002a_DrawString(text, x, y, frontColor);
+			DrawString(text, x, y, frontColor);
 
 			this.parent.Var_aa_Screen0_Rectangle.Flags = 1;
 		}
@@ -155,14 +155,14 @@ namespace OpenCivOne
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <param name="frontColor"></param>
-		public void F0_1182_00b3_DrawCenteredStringWithShadowToScreen0(string text, int x, int y, byte frontColor)
+		public void DrawCenteredStringWithShadowToScreen0(string text, int x, int y, byte frontColor)
 		{
 			x -= GetStringWidth(text) / 2;
 
 			this.parent.Var_aa_Screen0_Rectangle.Flags = 0;
 
-			F0_1182_002a_DrawString(text, x + 1, y + 1, 0);
-			F0_1182_002a_DrawString(text, x, y, frontColor);
+			DrawString(text, x + 1, y + 1, 0);
+			DrawString(text, x, y, frontColor);
 
 			this.parent.Var_aa_Screen0_Rectangle.Flags = 1;
 		}
@@ -202,7 +202,7 @@ namespace OpenCivOne
 				x1, y, x1, y1, (ushort)((mode < 0x8) ? 8 : (mode - 8)));
 
 			// Instruction address 0x1d12:0x72ae, size: 5
-			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(text,
+			this.parent.DrawTools.DrawCenteredStringToScreen0(text,
 				((x + x1) / 2) + 1, ((y + y1) / 2) - 2, (byte)(mode ^ 8));
 		}
 
@@ -255,7 +255,7 @@ namespace OpenCivOne
 						textPart = text.Substring(currentPosition, lastSeparatorPosition - currentPosition);
 
 						// Instruction address 0x2f4d:0x013b, size: 5
-						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(textPart, x, newY, frontColor);
+						this.parent.DrawTools.DrawStringToScreen0(textPart, x, newY, frontColor);
 
 						currentPosition = lastSeparatorPosition + 1;
 						lastSeparatorPosition = separatorPosition;
@@ -264,7 +264,7 @@ namespace OpenCivOne
 					else if (separatorChar == '\n')
 					{
 						// Instruction address 0x2f4d:0x013b, size: 5
-						this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(textPart, x, newY, frontColor);
+						this.parent.DrawTools.DrawStringToScreen0(textPart, x, newY, frontColor);
 
 						currentPosition = separatorPosition + 1;
 						lastSeparatorPosition = separatorPosition;
@@ -281,7 +281,7 @@ namespace OpenCivOne
 					GSize textPartSize = this.parent.Graphics.GetDrawStringSize(this.parent.Var_aa_Screen0_Rectangle.FontID, textPart);
 
 					// Instruction address 0x2f4d:0x013b, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(textPart, x, newY, frontColor);
+					this.parent.DrawTools.DrawStringToScreen0(textPart, x, newY, frontColor);
 
 					currentPosition = textLength;
 					lastSeparatorPosition = textLength;

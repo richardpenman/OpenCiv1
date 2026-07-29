@@ -35,7 +35,7 @@ namespace OpenCivOne
 				if (mouseEvent.Position.X < 135)
 				{
 					// Instruction address 0x0000:0x0090, size: 5
-					this.parent.GameData.DifficultyLevel = (short)this.parent.Tools.F0_2dc4_007c_CheckValueRange((mouseEvent.Position.Y - 12) / 35, 0, 4);
+					this.parent.GameData.DifficultyLevel = (short)this.parent.Tools.CheckValueRange((mouseEvent.Position.Y - 12) / 35, 0, 4);
 				}
 			}
 
@@ -80,7 +80,7 @@ namespace OpenCivOne
 			while (this.parent.GameData.AIOpponentCount == -1);
 
 			// Instruction address 0x0000:0x01a8, size: 5
-			this.parent.GameData.AIOpponentCount = (short)this.parent.Tools.F0_2dc4_007c_CheckValueRange(6 - this.parent.GameData.AIOpponentCount, 2, 6);
+			this.parent.GameData.AIOpponentCount = (short)this.parent.Tools.CheckValueRange(6 - this.parent.GameData.AIOpponentCount, 2, 6);
 			this.parent.GameData.ActiveCivilizations = (short)(0xff >> (6 - this.parent.GameData.AIOpponentCount));
 
 			for (int i = this.parent.GameData.AIOpponentCount; i >= 0; i--)
@@ -265,7 +265,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x0587, size: 5
-			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(
+			this.parent.DrawTools.DrawCenteredStringToScreen0(
 				this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Nation, 46, 92, 15);
 
 			for (int i = 0; i < 8; i++)
@@ -337,7 +337,7 @@ namespace OpenCivOne
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 15);
 
 			// Instruction address 0x0000:0x0761, size: 5
-			this.parent.UnitManagement.F0_1866_260e();
+			this.parent.UnitManagement.F0_1866_260e_DrawRandomFoodIcons();
 
 			if ((this.parent.GameData.DifficultyLevel & 0x1) != 0)
 			{
@@ -499,7 +499,7 @@ namespace OpenCivOne
 						this.parent.MapManagement.F0_2aea_1894_CellHasMinorTribeHut(xStart, yStart, this.parent.MapManagement.GetTerrainType(xStart, yStart))) goto L0a5e;
 
 					int distance;
-					int cityID = this.parent.Tools.F0_2dc4_0102_FindNearestCity(xStart, yStart);
+					int cityID = this.parent.Tools.FindNearestCity(xStart, yStart);
 
 					if (cityID == -1)
 					{
@@ -508,7 +508,7 @@ namespace OpenCivOne
 					else
 					{
 						// Instruction address 0x0000:0x0abf, size: 5
-						distance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(xStart, yStart,
+						distance = this.parent.Tools.GetShortestDistance(xStart, yStart,
 							this.parent.GameData.Cities[cityID].Position.X, this.parent.GameData.Cities[cityID].Position.Y);
 					}
 
@@ -517,7 +517,7 @@ namespace OpenCivOne
 						for (int j = 1; j < playerID; j++)
 						{
 							// Instruction address 0x0000:0x0af2, size: 5
-							int newDistance = this.parent.Tools.F0_2dc4_0289_GetShortestDistance(xStart, yStart,
+							int newDistance = this.parent.Tools.GetShortestDistance(xStart, yStart,
 								this.parent.GameData.Players[j].Units[0].Position.X, this.parent.GameData.Players[j].Units[0].Position.Y);
 
 							if (newDistance < distance)
@@ -595,7 +595,7 @@ namespace OpenCivOne
 					for (int i = 0; i < 128; i++)
 					{
 						if (this.parent.GameData.Players[0].Units[i].UnitType != UnitTypeEnum.None &&
-							this.parent.Tools.F0_2dc4_0289_GetShortestDistance(xStart, yStart,
+							this.parent.Tools.GetShortestDistance(xStart, yStart,
 								this.parent.GameData.Players[0].Units[i].Position.X, this.parent.GameData.Players[0].Units[i].Position.Y) < 9)
 						{
 							// Instruction address 0x0000:0x0e18, size: 5
@@ -644,7 +644,7 @@ namespace OpenCivOne
 
 				if (cityCount == 0)
 				{
-					if (this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Diplomacy[playerID].HasFlag(DiplomacyFlagsEnum.Unknown40))
+					if (this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Diplomacy[playerID].HasFlag(DiplomacyFlagsEnum.EmbassyEstablished))
 					{
 						this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.ForeignMinisterReport;
 					}
@@ -934,7 +934,7 @@ namespace OpenCivOne
 				this.parent.Var_aa_Screen0_Rectangle.FontID = 6;
 
 				// Instruction address 0x0000:0x1c58, size: 5
-				this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("New Cabinet:", 160, 102, 0);
+				this.parent.DrawTools.DrawCenteredStringToScreen0("New Cabinet:", 160, 102, 0);
 
 				this.parent.Var_aa_Screen0_Rectangle.FontID = 2;
 
@@ -945,7 +945,7 @@ namespace OpenCivOne
 						this.parent.Var_aa_Screen0_Rectangle, (80 * i) + 20, 118);
 
 					// Instruction address 0x0000:0x1c7c, size: 5
-					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(this.parent.Array_2fac[i].Substring(0, this.parent.Array_2fac[i].Length - 1), 
+					this.parent.DrawTools.DrawCenteredStringToScreen0(this.parent.Array_2fac[i].Substring(0, this.parent.Array_2fac[i].Length - 1), 
 						(80 * i) + 40, ((i & 1) != 0) ? 186 : 180, 0);
 				}
 

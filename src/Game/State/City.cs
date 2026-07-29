@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reflection.Metadata.Ecma335;
-using IRB.Collections.Generic;
+﻿using IRB.Collections.Generic;
 using OpenCivOne.Graphics;
 
 namespace OpenCivOne
@@ -24,21 +22,21 @@ namespace OpenCivOne
 		public ushort SpecialWorkerFlags = 0;
 		public byte NameID = 0;
 		public sbyte[] TradeCityIDs = new sbyte[3];
-		public sbyte[] Unknown = new sbyte[2];
+		public int[] FirstFortifiedCityUnits = new int[2];
 
 		public City(int id)
 		{
 			this.ID = id;
 
 			for (int i = 0; i < this.TradeCityIDs.Length; i++)
-				this.TradeCityIDs[i] = 0;
+				this.TradeCityIDs[i] = -1;
 
-			for (int i = 0; i < this.Unknown.Length; i++)
-				this.Unknown[i] = 0;
+			for (int i = 0; i < this.FirstFortifiedCityUnits.Length; i++)
+				this.FirstFortifiedCityUnits[i] = -1;
 		}
 
 		/// <summary>
-		/// Conversion for old type bitwise improvements
+		/// Conversion for old type bit-wise improvements
 		/// </summary>
 		/// <param name="bit"></param>
 		/// <returns></returns>
@@ -124,7 +122,7 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Conversion for old type bitwise improvements
+		/// Conversion for old type bit-wise improvements
 		/// </summary>
 		/// <param name="improvement"></param>
 		/// <returns></returns>
@@ -306,8 +304,8 @@ namespace OpenCivOne
 			for (int i = 0; i < city.TradeCityIDs.Length; i++)
 				city.TradeCityIDs[i] = (sbyte)LoadAndSave.ReadUInt8(stream);
 
-			for (int i = 0; i < city.Unknown.Length; i++)
-				city.Unknown[i] = (sbyte)LoadAndSave.ReadUInt8(stream);
+			for (int i = 0; i < city.FirstFortifiedCityUnits.Length; i++)
+				city.FirstFortifiedCityUnits[i] = (sbyte)LoadAndSave.ReadUInt8(stream);
 
 			return city;
 		}
@@ -332,8 +330,8 @@ namespace OpenCivOne
 			for (int i = 0; i < this.TradeCityIDs.Length; i++)
 				stream.WriteByte((byte)this.TradeCityIDs[i]);
 
-			for (int i = 0; i < this.Unknown.Length; i++)
-				stream.WriteByte((byte)this.Unknown[i]);
+			for (int i = 0; i < this.FirstFortifiedCityUnits.Length; i++)
+				stream.WriteByte((byte)this.FirstFortifiedCityUnits[i]);
 		}
 	}
 }

@@ -84,10 +84,10 @@ namespace OpenCivOne
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 15);
 
 			// Instruction address 0x0000:0x010a, size: 5
-			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("CIVILIZATION", 160, 16, 0);
+			this.parent.DrawTools.DrawCenteredStringToScreen0("CIVILIZATION", 160, 16, 0);
 
 			// Instruction address 0x0000:0x0121, size: 5
-			this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("HALL OF FAME", 160, 24, 0);
+			this.parent.DrawTools.DrawCenteredStringToScreen0("HALL OF FAME", 160, 24, 0);
 
 			// Instruction address 0x0000:0x013d, size: 5
 			this.parent.Graphics.F0_VGA_0599_DrawLine(this.parent.Var_aa_Screen0_Rectangle, 80, 32, 240, 32, 14);
@@ -103,26 +103,26 @@ namespace OpenCivOne
 				if (entry.TotalScore <= 0)
 				{
 					// Instruction address 0x0000:0x0211, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(" ---", 8, y, 0);
+					this.parent.DrawTools.DrawStringToScreen0(" ---", 8, y, 0);
 
 					y += 26;
 				}
 				else
 				{
 					// Instruction address 0x0000:0x037c, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0($"{i + 1}. {entry.PlayerName}, {this.parent.Array_33a2_GameDifficultyNames[entry.GameDifficulty]}" +
+					this.parent.DrawTools.DrawStringToScreen0($"{i + 1}. {entry.PlayerName}, {this.parent.Array_33a2_GameDifficultyNames[entry.GameDifficulty]}" +
 						$" of the {entry.NationName} to {this.parent.Segment_1238.YearToString(entry.FinalYear)}", x, y, 0);
 
 					y += 8;
 
 					// Instruction address 0x0000:0x0438, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
-						$"Population: {this.parent.Tools.F0_2dc4_0337_PopulationValueToString(entry.TotalPopulation)}, Score: {entry.TotalScore}", x + 12, y, 7);
+					this.parent.DrawTools.DrawStringToScreen0(
+						$"Population: {this.parent.Tools.PopulationValueToString(entry.TotalPopulation)}, Score: {entry.TotalScore}", x + 12, y, 7);
 
 					y += 8;
 
 					// Instruction address 0x0000:0x04ab, size: 5
-					this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0(
+					this.parent.DrawTools.DrawStringToScreen0(
 						$"    --- CIVILIZATION RATING: {(entry.TotalScore * (entry.GameDifficulty + 1)) / 50}% ---", x + 12, y, 12);
 
 					y += 10;
@@ -138,7 +138,7 @@ namespace OpenCivOne
 			if (playerIndex != -1)
 			{
 				// Instruction address 0x0000:0x0189, size: 5
-				this.parent.DrawTools.F0_1182_005c_DrawStringToScreen0("'C\x0083lear'", 252, 189, 0);
+				this.parent.DrawTools.DrawStringToScreen0("'C\x0083lear'", 252, 189, 0);
 
 				// Instruction address 0x0000:0x01a5, size: 5
 				this.parent.DrawTools.DrawRectangle(236, 187, 60, 10, 11);
@@ -169,7 +169,7 @@ namespace OpenCivOne
 				entry.FinalYear = this.parent.GameData.Year;
 				entry.AchievementsScore = humanPlayer.AchievementScore;
 				entry.TotalCitizenCount = humanPlayer.TotalCitizenCount;
-				entry.TotalPopulation = this.parent.Tools.F0_2dc4_02cd_GetPlayerTotalPopulationCount(this.parent.GameData.HumanPlayerID);
+				entry.TotalPopulation = this.parent.Tools.GetPlayerPopulationCount(this.parent.GameData.HumanPlayerID);
 				entry.PlayerName = humanPlayer.Name;
 				entry.NationName = humanPlayer.Nation;
 
@@ -245,7 +245,7 @@ namespace OpenCivOne
 				this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 15);
 
 				// Instruction address 0x0000:0x06ec, size: 5
-				this.parent.UnitManagement.F0_1866_260e();
+				this.parent.UnitManagement.F0_1866_260e_DrawRandomFoodIcons();
 
 				// Instruction address 0x0000:0x070e, size: 5
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19e8_Screen2_Rectangle, 200, 140, 40, 60, this.parent.Var_aa_Screen0_Rectangle, 10, 10);
@@ -264,26 +264,26 @@ namespace OpenCivOne
 				if (score == 0)
 				{
 					// Instruction address 0x0000:0x07b0, size: 5
-					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Sire, your fame now", 160, 6, 15);
+					this.parent.DrawTools.DrawCenteredStringToScreen0("Sire, your fame now", 160, 6, 15);
 
 					// Instruction address 0x0000:0x07e0, size: 5
-					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("exceeds even that of", 160, 14, 15);
+					this.parent.DrawTools.DrawCenteredStringToScreen0("exceeds even that of", 160, 14, 15);
 
 					// Instruction address 0x0000:0x08ea, size: 5
-					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0($"{famousPersons[personIndex]}!", 160, 22, 15);
+					this.parent.DrawTools.DrawCenteredStringToScreen0($"{famousPersons[personIndex]}!", 160, 22, 15);
 				}
 				else
 				{
 					int rating = (score * (this.parent.GameData.DifficultyLevel + 1)) / 50;
 
 					// Instruction address 0x0000:0x083c, size: 5
-					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0("Sire, your Civilization", 160, 6, 15);
+					this.parent.DrawTools.DrawCenteredStringToScreen0("Sire, your Civilization", 160, 6, 15);
 
 					// Instruction address 0x0000:0x089c, size: 5
-					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0($"Rating of {rating}% exceeds even", 160, 14, 15);
+					this.parent.DrawTools.DrawCenteredStringToScreen0($"Rating of {rating}% exceeds even", 160, 14, 15);
 
 					// Instruction address 0x0000:0x08ea, size: 5
-					this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0($"{famousPersons[personIndex]}!", 160, 22, 15);
+					this.parent.DrawTools.DrawCenteredStringToScreen0($"{famousPersons[personIndex]}!", 160, 22, 15);
 				}
 
 				for (int i = 0; i <= personIndex; i++)
@@ -291,12 +291,12 @@ namespace OpenCivOne
 					if (i != personIndex)
 					{
 						// Instruction address 0x0000:0x0912, size: 5
-						this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(famousPersons[i], 160, 184 - (i * 8), 7);
+						this.parent.DrawTools.DrawCenteredStringToScreen0(famousPersons[i], 160, 184 - (i * 8), 7);
 					}
 					else
 					{
 						// Instruction address 0x0000:0x0912, size: 5
-						this.parent.DrawTools.F0_1182_00b3_DrawCenteredStringToScreen0(famousPersons[i], 160, 184 - (i * 8), 0);
+						this.parent.DrawTools.DrawCenteredStringToScreen0(famousPersons[i], 160, 184 - (i * 8), 0);
 					}
 				}
 

@@ -17,7 +17,7 @@ namespace OpenCivOne
 		/// <summary>
 		/// Randomizes a default Random Number Generator
 		/// </summary>
-		public void F0_2dc4_0042_Randomize()
+		public void RandomizeRNG()
 		{
 			// function body
 			this.parent.GameData.RandomSeed = (ushort)(this.parent.CAPI.time(0) & 0x7fff);
@@ -32,15 +32,15 @@ namespace OpenCivOne
 		/// <param name="maxValue"></param>
 		/// <returns></returns>
 		/// <exception cref="Exception"></exception>
-		public int F0_2dc4_007c_CheckValueRange(int value, int minValue, int maxValue)
+		public int CheckValueRange(int value, int minValue, int maxValue)
 		{
 			// function body
 			if (minValue > maxValue)
 			{
 				// do nothing, just return minimum value
-				this.parent.Log.WriteLine($"CheckValueRange({value}, {minValue}, {maxValue}), Minimum value is greater than maximum value.");
-				return minValue;
-				//throw new Exception("Minimum value is greater than maximum value");
+				//this.parent.Log.WriteLine($"CheckValueRange({value}, {minValue}, {maxValue}), Minimum value is greater than maximum value.");
+				//return minValue;
+				throw new Exception("Minimum value is greater than maximum value");
 			}
 
 			return Math.Min(Math.Max(value, minValue), maxValue);
@@ -52,7 +52,7 @@ namespace OpenCivOne
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns>City ID, otherwise -1</returns>
-		public int F0_2dc4_00ba_GetCityByLocation(int x, int y)
+		public int GetCityByLocation(int x, int y)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_2dc4_00ba({x}, {y})");
 
@@ -75,9 +75,9 @@ namespace OpenCivOne
 		/// </summary>
 		/// <param name="pt"></param>
 		/// <returns></returns>
-		public int F0_2dc4_0102_FindNearestCity(GPoint pt)
+		public int FindNearestCity(GPoint pt)
 		{
-			return F0_2dc4_0102_FindNearestCity(pt.X, pt.Y);
+			return FindNearestCity(pt.X, pt.Y);
 		}
 
 		/// <summary>
@@ -86,7 +86,7 @@ namespace OpenCivOne
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
-		public int F0_2dc4_0102_FindNearestCity(int x, int y)
+		public int FindNearestCity(int x, int y)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_2dc4_0102({xPos}, {yPos})");
 
@@ -101,7 +101,7 @@ namespace OpenCivOne
 				if (city.StatusFlag != 0xff)
 				{
 					// Instruction address 0x2dc4:0x0142, size: 3
-					int distance = F0_2dc4_0289_GetShortestDistance(x, y, city.Position);
+					int distance = GetShortestDistance(x, y, city.Position);
 
 					if (distance < minDistance)
 					{
@@ -122,7 +122,7 @@ namespace OpenCivOne
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
-		public int F0_2dc4_0177_FindNearestPlayerUnit(int playerID, int currentUnitID, int x, int y)
+		public int FindNearestPlayerUnit(int playerID, int currentUnitID, int x, int y)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_2dc4_0177({playerID}, {unitID}, {x}, {y})");
 
@@ -135,7 +135,7 @@ namespace OpenCivOne
 				if (this.parent.GameData.Players[playerID].Units[i].UnitType != UnitTypeEnum.None && i != currentUnitID)
 				{
 					// Instruction address 0x2dc4:0x01b2, size: 3
-					int distance = F0_2dc4_0289_GetShortestDistance(x, y,
+					int distance = GetShortestDistance(x, y,
 						this.parent.GameData.Players[playerID].Units[i].Position.X, this.parent.GameData.Players[playerID].Units[i].Position.Y);
 
 					if (distance < minDistance)
@@ -155,10 +155,10 @@ namespace OpenCivOne
 		/// <param name="pt1"></param>
 		/// <param name="pt2"></param>
 		/// <returns></returns>
-		public int F0_2dc4_0289_GetShortestDistance(GPoint pt1, GPoint pt2)
+		public int GetShortestDistance(GPoint pt1, GPoint pt2)
 		{
 			// function body
-			return F0_2dc4_0289_GetShortestDistance(pt1.X - pt2.X, pt1.Y - pt2.Y);
+			return GetShortestDistance(pt1.X - pt2.X, pt1.Y - pt2.Y);
 		}
 
 		/// <summary>
@@ -168,10 +168,10 @@ namespace OpenCivOne
 		/// <param name="x1"></param>
 		/// <param name="y1"></param>
 		/// <returns></returns>
-		public int F0_2dc4_0289_GetShortestDistance(GPoint pt1, int x1, int y1)
+		public int GetShortestDistance(GPoint pt1, int x1, int y1)
 		{
 			// function body
-			return F0_2dc4_0289_GetShortestDistance(pt1.X - x1, pt1.Y - y1);
+			return GetShortestDistance(pt1.X - x1, pt1.Y - y1);
 		}
 
 		/// <summary>
@@ -181,10 +181,10 @@ namespace OpenCivOne
 		/// <param name="y"></param>
 		/// <param name="pt2"></param>
 		/// <returns></returns>
-		public int F0_2dc4_0289_GetShortestDistance(int x, int y, GPoint pt2)
+		public int GetShortestDistance(int x, int y, GPoint pt2)
 		{
 			// function body
-			return F0_2dc4_0289_GetShortestDistance(x - pt2.X, y - pt2.Y);
+			return GetShortestDistance(x - pt2.X, y - pt2.Y);
 		}
 
 		/// <summary>
@@ -195,10 +195,10 @@ namespace OpenCivOne
 		/// <param name="x1"></param>
 		/// <param name="y1"></param>
 		/// <returns></returns>
-		public int F0_2dc4_0289_GetShortestDistance(int x, int y, int x1, int y1)
+		public int GetShortestDistance(int x, int y, int x1, int y1)
 		{
 			// function body
-			return F0_2dc4_0289_GetShortestDistance(x - x1, y - y1);
+			return GetShortestDistance(x - x1, y - y1);
 		}
 
 		/// <summary>
@@ -207,7 +207,7 @@ namespace OpenCivOne
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <returns></returns>
-		public int F0_2dc4_0289_GetShortestDistance(int width, int height)
+		public int GetShortestDistance(int width, int height)
 		{
 			// function body			
 			width = Math.Abs(width);
@@ -234,7 +234,7 @@ namespace OpenCivOne
 		/// </summary>
 		/// <param name="playerID"></param>
 		/// <returns></returns>
-		public int F0_2dc4_02cd_GetPlayerTotalPopulationCount(int playerID)
+		public int GetPlayerPopulationCount(int playerID)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_2dc4_02cd({playerID})");
 
@@ -259,7 +259,7 @@ namespace OpenCivOne
 		/// Converts population value to string
 		/// </summary>
 		/// <param name="value"></param>
-		public string F0_2dc4_0337_PopulationValueToString(int value)
+		public string PopulationValueToString(int value)
 		{
 			// function body
 			return $"{(value * 1000):###,###,##0}";
@@ -269,7 +269,7 @@ namespace OpenCivOne
 		/// Reads the palette from file and applies it to screen 0
 		/// </summary>
 		/// <param name="filenamePtr"></param>
-		public void F0_2dc4_047d_ReadAndSetPalette(string filename)
+		public void ReadAndSetPalette(string filename)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_2dc4_047d_ReadAndSetPalette(0x{filename:x4})");
 
@@ -298,7 +298,7 @@ namespace OpenCivOne
 		/// </summary>
 		/// <param name="bitmapID"></param>
 		/// <param name="stringPtr"></param>
-		public void F0_2dc4_0523_FreeResource(int bitmapID, string text)
+		public void FreeNativeResource(int bitmapID, string text)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_2dc4_0523_FreeResource({bitmapID}, \"{text}\")");
 
@@ -329,7 +329,7 @@ namespace OpenCivOne
 		/// <summary>
 		/// Adds a default palette cycle slots
 		/// </summary>
-		public void F0_2dc4_05dd_AddPaletteCycleSlots()
+		public void AddDefaultPaletteCycleSlots()
 		{
 			//this.oCPU.Log.EnterBlock("F0_2dc4_05dd()");
 
@@ -347,7 +347,7 @@ namespace OpenCivOne
 		/// <summary>
 		/// Starts default palette cycle slots
 		/// </summary>
-		public void F0_2dc4_0626_StartPaletteCycleSlots()
+		public void StartPaletteCycleSlots()
 		{
 			// function body
 			if (!this.Var_2fec_PaletteCycleEnabled)
@@ -368,7 +368,7 @@ namespace OpenCivOne
 		/// <summary>
 		/// Stops default palette cycle slots
 		/// </summary>
-		public void F0_2dc4_065f_StopPaletteCycleSlots()
+		public void StopPaletteCycleSlots()
 		{
 			//this.oCPU.Log.EnterBlock("F0_2dc4_065f()");
 
