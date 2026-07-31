@@ -7,12 +7,12 @@ namespace OpenCivOne
 	{
 		public int ID = -1;
 
-		private uint improvementBitFlags = 0;
-		private BHashSet<ImprovementEnum> Improvements = new BHashSet<ImprovementEnum>();
 		public GPoint Position = new GPoint(0, 0);
-		public byte StatusFlag = 0;
+		public byte Status = 0;
 		public sbyte ActualSize = 0;
 		public sbyte VisibleSize = 0;
+		private uint improvementBitFlags = 0;
+		private BHashSet<ImprovementEnum> Improvements = new BHashSet<ImprovementEnum>();
 		public sbyte CurrentProductionID = 0;
 		public sbyte BaseTrade = 0;
 		public short PlayerID = 0;
@@ -289,7 +289,7 @@ namespace OpenCivOne
 
 			city.ImprovementFlags = LoadAndSave.ReadUInt32(stream);
 			city.Position = new((sbyte)LoadAndSave.ReadUInt8(stream), (sbyte)LoadAndSave.ReadUInt8(stream));
-			city.StatusFlag = LoadAndSave.ReadUInt8(stream);
+			city.Status = LoadAndSave.ReadUInt8(stream);
 			city.ActualSize = (sbyte)LoadAndSave.ReadUInt8(stream);
 			city.VisibleSize = (sbyte)LoadAndSave.ReadUInt8(stream);
 			city.CurrentProductionID = (sbyte)LoadAndSave.ReadUInt8(stream);
@@ -315,7 +315,7 @@ namespace OpenCivOne
 			LoadAndSave.WriteUInt32(stream, this.ImprovementFlags);
 			stream.WriteByte((byte)this.Position.X);
 			stream.WriteByte((byte)this.Position.Y);
-			stream.WriteByte(this.StatusFlag);
+			stream.WriteByte(this.Status);
 			stream.WriteByte((byte)this.ActualSize);
 			stream.WriteByte((byte)this.VisibleSize);
 			stream.WriteByte((byte)this.CurrentProductionID);

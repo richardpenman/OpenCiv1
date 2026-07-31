@@ -19,6 +19,7 @@ namespace OpenCivOne
 
 		#region Segment definitions
 		private StartGame startGame;
+		private Animations animations;
 		private CommonTools commonTools;
 		private Segment_1238 oSegment_1238;
 		private MenuBoxDialog menuBoxDialog;
@@ -44,13 +45,13 @@ namespace OpenCivOne
 		private LoadAndSave loadAndSave;
 		private HallOfFame hallOfFame;
 		private StartGameMenu startGameMenu;
-		private TextBoxDialogs textBoxDialogs;
+		private TextBoxDialogues textBoxDialogues;
 		private Overlay_14 oOverlay_14;
 		private Encyclopedia encyclopedia;
 		private News news;
 		private CityView cityView;
 		private Overlay_18 oOverlay_18;
-		private Overlay_22 oOverlay_22;
+		private DiplomatActions diplomatActions;
 		private Replay replay;
 		private Reports reports;
 		private Overlay_20 oOverlay_20;
@@ -140,6 +141,7 @@ namespace OpenCivOne
 			this.sound = new NSound(this);
 
 			this.startGame = new StartGame(this);
+			this.animations = new Animations(this);
 			this.commonTools = new CommonTools(this);
 			this.oSegment_1238 = new Segment_1238(this);
 			this.menuBoxDialog = new MenuBoxDialog(this);
@@ -165,13 +167,13 @@ namespace OpenCivOne
 			this.loadAndSave = new LoadAndSave(this);
 			this.hallOfFame = new HallOfFame(this);
 			this.startGameMenu = new StartGameMenu(this);
-			this.textBoxDialogs = new TextBoxDialogs(this);
+			this.textBoxDialogues = new TextBoxDialogues(this);
 			this.oOverlay_14 = new Overlay_14(this);
 			this.encyclopedia = new Encyclopedia(this);
 			this.news = new News(this);
 			this.cityView = new CityView(this);
 			this.oOverlay_18 = new Overlay_18(this);
-			this.oOverlay_22 = new Overlay_22(this);
+			this.diplomatActions = new DiplomatActions(this);
 			this.replay = new Replay(this);
 			this.reports = new Reports(this);
 			this.oOverlay_20 = new Overlay_20(this);
@@ -194,9 +196,9 @@ namespace OpenCivOne
 
 			for (int i = 0; i < colors.Count; i++)
 			{
-				Color color = colors[i].Value;
+				Color colour = colors[i].Value;
 
-				writer.WriteLine($"new Color(0, {color.R}, {color.G}, {color.B}),");
+				writer.WriteLine($"new Color(0, {colour.R}, {colour.G}, {colour.B}),");
 			}
 
 			writer.Close();*/
@@ -527,6 +529,8 @@ namespace OpenCivOne
 			get { return this.commonTools; }
 		}
 
+		public Animations Animations { get => this.animations; }
+
 		public Segment_1238 Segment_1238
 		{
 			get { return this.oSegment_1238; }
@@ -647,9 +651,9 @@ namespace OpenCivOne
 			get { return this.startGameMenu; }
 		}
 
-		public TextBoxDialogs TextBoxDialogs
+		public TextBoxDialogues TextBoxDialogues
 		{
-			get { return this.textBoxDialogs; }
+			get { return this.textBoxDialogues; }
 		}
 
 		public Overlay_14 Overlay_14
@@ -677,9 +681,9 @@ namespace OpenCivOne
 			get { return this.oOverlay_18; }
 		}
 
-		public Overlay_22 Overlay_22
+		public DiplomatActions DiplomatActions
 		{
-			get { return this.oOverlay_22; }
+			get { return this.diplomatActions; }
 		}
 
 		public Replay Replay

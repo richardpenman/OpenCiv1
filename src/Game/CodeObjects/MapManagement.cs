@@ -261,7 +261,7 @@ namespace OpenCivOne
 			{
 				City city = this.parent.GameData.Cities[i];
 
-				if (city.StatusFlag != 0xff && (city.VisibleSize != 0 || city.PlayerID == this.parent.GameData.HumanPlayerID))
+				if (city.Status != 0xff && (city.VisibleSize != 0 || city.PlayerID == this.parent.GameData.HumanPlayerID))
 				{
 					// Instruction address 0x2aea:0x031a, size: 5
 					int cellXPos = this.parent.MapManagement.AdjustXPosition(city.Position.X - mapXSrc);
@@ -620,7 +620,7 @@ namespace OpenCivOne
 							int citySize = (city.PlayerID == this.parent.GameData.HumanPlayerID || this.parent.Var_d806_DebugFlag) ?
 									city.ActualSize : city.VisibleSize;
 
-							if ((city.StatusFlag & 0x1) != 0)
+							if ((city.Status & 0x1) != 0)
 							{
 								// Draw city disorder
 
@@ -1300,7 +1300,7 @@ namespace OpenCivOne
 			{
 				City city = this.parent.GameData.Cities[i];
 
-				if (city.StatusFlag != 0xff && city.Position.X == x && city.Position.Y == y)
+				if (city.Status != 0xff && city.Position.X == x && city.Position.Y == y)
 				{
 					return i;
 				}

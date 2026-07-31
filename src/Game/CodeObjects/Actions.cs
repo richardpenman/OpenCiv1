@@ -80,7 +80,7 @@ namespace OpenCivOne
 			else
 			{
 				this.parent.GameData.Cities[cityID].ShieldsCount = 0;
-				this.parent.GameData.Cities[cityID].StatusFlag &= 0xae;
+				this.parent.GameData.Cities[cityID].Status &= 0xae;
 				this.parent.GameData.Cities[cityID].ImprovementFlags0 &= 0xfbb6;
 
 				if (!flag)
@@ -116,7 +116,7 @@ namespace OpenCivOne
 				// Instruction address 0x2459:0x0239, size: 5
 				this.parent.AIEngine.F0_25fb_3401_PlayerClearContinentPolicies(playerID, UnitRoleTypeEnum.Settler, cityX, cityY, 4);
 
-				this.parent.GameData.Cities[cityID].StatusFlag &= 0x9b;
+				this.parent.GameData.Cities[cityID].Status &= 0x9b;
 
 				for (int i = 0; i < 20; i++)
 				{
@@ -227,7 +227,7 @@ namespace OpenCivOne
 			
 			if (playerID == this.parent.GameData.HumanPlayerID && this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].GovernmentType < 4)
 			{
-				this.parent.GameData.Cities[cityID].StatusFlag |= 1;
+				this.parent.GameData.Cities[cityID].Status |= 1;
 			}
 
 			if (this.parent.GameData.Cities[cityID].ActualSize != 0)

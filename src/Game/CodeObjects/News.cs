@@ -24,7 +24,7 @@ namespace OpenCivOne
 			{
 				for (int i = 0; i < 128; i++)
 				{
-					if (this.parent.GameData.Cities[i].StatusFlag != 0xff &&
+					if (this.parent.GameData.Cities[i].Status != 0xff &&
 						this.parent.GameData.Cities[i].PlayerID == this.parent.GameData.HumanPlayerID)
 					{
 						if (cityID == -1 || this.parent.GameData.Cities[i].HasImprovement(ImprovementEnum.Palace))

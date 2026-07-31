@@ -104,7 +104,7 @@ namespace OpenCivOne
 
 			for (int i = 0; i < 128; i++)
 			{
-				if (this.parent.GameData.Cities[i].StatusFlag != 0xff)
+				if (this.parent.GameData.Cities[i].Status != 0xff)
 				{
 					if (playerID != this.parent.GameData.Cities[i].PlayerID)
 					{
@@ -566,7 +566,7 @@ namespace OpenCivOne
 
 							for (int i = 0; i < 128; i++)
 							{
-								if (this.parent.GameData.Cities[i].StatusFlag != 0xff)
+								if (this.parent.GameData.Cities[i].Status != 0xff)
 								{
 									if (this.parent.GameData.Cities[i].PlayerID == playerID)
 									{
@@ -626,7 +626,7 @@ namespace OpenCivOne
 					{
 						int attackScore = -1;
 
-						if (this.parent.GameData.Cities[i].StatusFlag != 0xff &&
+						if (this.parent.GameData.Cities[i].Status != 0xff &&
 							!this.parent.GameData.Cities[i].HasImprovement(ImprovementEnum.SDIDefense))
 						{
 							int militaryPower = this.parent.GameData.Players[playerID].MilitaryPower;
@@ -686,7 +686,7 @@ namespace OpenCivOne
 
 							for (int j = 0; j < 128; j++)
 							{
-								if (this.parent.GameData.Cities[j].StatusFlag != 0xff && this.parent.GameData.Cities[j].PlayerID == playerID ||
+								if (this.parent.GameData.Cities[j].Status != 0xff && this.parent.GameData.Cities[j].PlayerID == playerID ||
 									this.parent.MapManagement.GetDistance(this.parent.GameData.Cities[i].Position,
 										this.parent.GameData.Cities[j].Position) < 17)
 								{
@@ -972,8 +972,8 @@ namespace OpenCivOne
 
 						for (int i = 0; i < 128; i++)
 						{
-							if (this.parent.GameData.Cities[i].StatusFlag != 0xff && this.parent.GameData.Cities[i].PlayerID == playerID &&
-								(this.parent.GameData.Cities[i].StatusFlag & 0x2) != 0)
+							if (this.parent.GameData.Cities[i].Status != 0xff && this.parent.GameData.Cities[i].PlayerID == playerID &&
+								(this.parent.GameData.Cities[i].Status & 0x2) != 0)
 							{
 								// Instruction address 0x25fb:0x179d, size: 5
 								int distance = this.parent.MapManagement.GetDistance(unitX, unitY, this.parent.GameData.Cities[i].Position);
@@ -1137,7 +1137,7 @@ namespace OpenCivOne
 								{
 									int cityPlayerID = this.parent.GameData.Cities[i].PlayerID;
 
-									if (this.parent.GameData.Cities[i].StatusFlag != 0xff && cityPlayerID != playerID &&
+									if (this.parent.GameData.Cities[i].Status != 0xff && cityPlayerID != playerID &&
 										(this.parent.GameData.Players[playerID].Diplomacy[cityPlayerID] & (DiplomacyFlagsEnum.Peace | DiplomacyFlagsEnum.PeaceTreaty)) != DiplomacyFlagsEnum.Peace)
 									{
 										if (this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Ranking < 7 || cityPlayerID == this.parent.GameData.HumanPlayerID)
@@ -1167,7 +1167,7 @@ namespace OpenCivOne
 
 								for (int i = 0; i < 128; i++)
 								{
-									if (this.parent.GameData.Cities[i].StatusFlag != 0xff && this.parent.GameData.Cities[i].PlayerID == playerID)
+									if (this.parent.GameData.Cities[i].Status != 0xff && this.parent.GameData.Cities[i].PlayerID == playerID)
 									{
 										// Instruction address 0x25fb:0x1dcc, size: 5
 										int currentDistance = this.parent.MapManagement.GetDistance(unitX, unitY, this.parent.GameData.Cities[i].Position);
@@ -1670,7 +1670,7 @@ namespace OpenCivOne
 																{
 																	if ((this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY) & TerrainImprovementFlagsEnum.City) == TerrainImprovementFlagsEnum.None)
 																	{
-																		this.parent.Overlay_22.F22_0000_0639_DiplomatInteractionWithUnit(newCityPlayerID, selectedActiveUnitID, playerID);
+																		this.parent.DiplomatActions.F22_0000_0639_DiplomatInteractionWithUnit(playerID, unitID, newCityPlayerID, selectedActiveUnitID);
 																	}
 																}
 															}
@@ -1729,7 +1729,7 @@ namespace OpenCivOne
 																		{
 																			if ((this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY) & TerrainImprovementFlagsEnum.City) == TerrainImprovementFlagsEnum.None)
 																			{
-																				this.parent.Overlay_22.F22_0000_0639_DiplomatInteractionWithUnit(newCityPlayerID, selectedActiveUnitID, playerID);
+																				this.parent.DiplomatActions.F22_0000_0639_DiplomatInteractionWithUnit(playerID, unitID, newCityPlayerID, selectedActiveUnitID);
 																			}
 																		}
 																	}
@@ -2045,7 +2045,7 @@ namespace OpenCivOne
 			// function body
 			for (int i = 0; i < 128; i++)
 			{
-				if (this.parent.GameData.Cities[i].PlayerID == playerID && this.parent.GameData.Cities[i].StatusFlag != 0xff)
+				if (this.parent.GameData.Cities[i].PlayerID == playerID && this.parent.GameData.Cities[i].Status != 0xff)
 				{
 					if (groupID == -1 ||
 						this.parent.MapManagement.F0_2aea_1942_GetGroupID(this.parent.GameData.Cities[i].Position.X, this.parent.GameData.Cities[i].Position.Y) == groupID)
@@ -2236,7 +2236,7 @@ namespace OpenCivOne
 
 					for (int i = 0; i < 128; i++)
 					{
-						if (this.parent.GameData.Cities[i].StatusFlag != 0xff)
+						if (this.parent.GameData.Cities[i].Status != 0xff)
 						{
 							int currentCityProfit = (this.parent.Segment_2459.F0_2459_0687_GetCityTreasury(i) + 50) / 
 								(this.parent.MapManagement.GetDistance(unitX, unitY, this.parent.GameData.Cities[i].Position) + 1);

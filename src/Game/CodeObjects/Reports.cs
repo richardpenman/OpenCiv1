@@ -396,7 +396,7 @@ namespace OpenCivOne
 
 			for (int i = 0; i < 128; i++)
 			{
-				if (this.parent.GameData.Cities[i].PlayerID != -1 && this.parent.GameData.Cities[i].StatusFlag != 0xff)
+				if (this.parent.GameData.Cities[i].PlayerID != -1 && this.parent.GameData.Cities[i].Status != 0xff)
 				{
 					// Instruction address 0x0000:0x0aee, size: 5
 					this.parent.CityWorker.F0_1d12_0045_ProcessCityState(i, -1);
@@ -569,7 +569,7 @@ namespace OpenCivOne
 			{
 				City city = this.parent.GameData.Cities[i];
 
-				if (city.PlayerID != -1 && city.StatusFlag != 0xff)
+				if (city.PlayerID != -1 && city.Status != 0xff)
 				{
 					// !!! Variables Var_6c98, Var_b882, Var_70e2, Var_70e4 and Var_70da_Arr
 					// are processed by F0_1d12_0045_ProcessCityState, but we still don't know it's meaning
@@ -991,7 +991,7 @@ namespace OpenCivOne
 
 			for (int i = 0; i < 128; i++)
 			{
-				if (this.parent.GameData.Cities[i].StatusFlag != 0xff)
+				if (this.parent.GameData.Cities[i].Status != 0xff)
 				{
 					// Instruction address 0x0000:0x0a29, size: 5
 					this.parent.CityWorker.F0_1d12_0045_ProcessCityState(i, -1);

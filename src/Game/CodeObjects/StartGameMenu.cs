@@ -107,7 +107,7 @@ namespace OpenCivOne
 			for (int i = 0; i < 128; i++)
 			{
 				this.parent.GameData.Cities[i].NameID = 0xff;
-				this.parent.GameData.Cities[i].StatusFlag = 0xff;
+				this.parent.GameData.Cities[i].Status = 0xff;
 			}
 
 			for (int i = 0; i < 256; i++)
@@ -259,7 +259,7 @@ namespace OpenCivOne
 				this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Nationality =
 					this.parent.GameData.Nations[this.parent.GameData.HumanPlayerID].Nationality;
 
-				this.parent.TextBoxDialogs.F23_0000_0173_TribeNameDialog();
+				this.parent.TextBoxDialogues.F23_0000_0173_TribeNameDialog();
 
 				this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].NationalityID = this.parent.GameData.HumanPlayerID;
 			}
@@ -302,7 +302,7 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x0645, size: 5
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 150, 0, 170, 200, 0);
 
-			this.parent.TextBoxDialogs.F23_0000_00d6_PlayerNameDialog();
+			this.parent.TextBoxDialogues.F23_0000_00d6_PlayerNameDialog();
 
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
@@ -633,7 +633,7 @@ namespace OpenCivOne
 
 				for (int i = 0; i < 128; i++)
 				{
-					if (this.parent.GameData.Cities[i].StatusFlag != 0xff && this.parent.GameData.Cities[i].PlayerID == playerID)
+					if (this.parent.GameData.Cities[i].Status != 0xff && this.parent.GameData.Cities[i].PlayerID == playerID)
 					{
 						cityCount++;
 					}

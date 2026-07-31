@@ -1289,7 +1289,7 @@ namespace OpenCivOne
 				// Find city
 				case '/':
 				case '?':
-					this.parent.TextBoxDialogs.F23_0000_025b_FindCityDialog();
+					this.parent.TextBoxDialogues.F23_0000_025b_FindCityDialog();
 					break;
 
 				// Save game
@@ -1812,7 +1812,7 @@ namespace OpenCivOne
 										this.parent.UnitManagement.F0_1866_1d55_AnimateUnitMove(playerID, unitID, newMoveDirection);
 									}
 
-									this.parent.Overlay_22.F22_0000_0000_DiplomatActionOnACity(cityID, playerID, unitID);
+									this.parent.DiplomatActions.F22_0000_0000_DiplomatActionOnCity(playerID, unitID, cityID);
 
 									return;
 								}
@@ -1870,7 +1870,7 @@ namespace OpenCivOne
 							else if (unit.UnitType == UnitTypeEnum.Diplomat && newActiveUnitID != -1 && playerID != newActiveUnitPlayerID)
 							{
 								// Diplomat interaction with the unit
-								this.parent.Overlay_22.F22_0000_0639_DiplomatInteractionWithUnit(newActiveUnitPlayerID, newActiveUnitID, playerID);
+								this.parent.DiplomatActions.F22_0000_0639_DiplomatInteractionWithUnit(playerID, unitID, newActiveUnitPlayerID, newActiveUnitID);
 
 								unit.GoToDestination = OpenCivOneGame.InvalidPosition;
 							}
@@ -1986,7 +1986,7 @@ namespace OpenCivOne
 
 						if (this.parent.GameData.Cities[cityID].PlayerID != this.parent.GameData.HumanPlayerID)
 						{
-							this.parent.GameData.Cities[cityID].StatusFlag |= 0x10;
+							this.parent.GameData.Cities[cityID].Status |= 0x10;
 						}
 
 						if (unit.UnitType != UnitTypeEnum.None)

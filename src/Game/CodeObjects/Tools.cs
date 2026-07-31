@@ -61,7 +61,7 @@ namespace OpenCivOne
 			{
 				City city = this.parent.GameData.Cities[i];
 
-				if (city.StatusFlag != 0xff && city.Position.X == x && city.Position.Y == y)
+				if (city.Status != 0xff && city.Position.X == x && city.Position.Y == y)
 				{
 					return i;
 				}
@@ -98,7 +98,7 @@ namespace OpenCivOne
 			{
 				City city = this.parent.GameData.Cities[i];
 
-				if (city.StatusFlag != 0xff)
+				if (city.Status != 0xff)
 				{
 					// Instruction address 0x2dc4:0x0142, size: 3
 					int distance = this.parent.MapManagement.GetDistance(x, y, city.Position);
@@ -162,7 +162,7 @@ namespace OpenCivOne
 
 			for (int i = 0; i < 128; i++)
 			{
-				if (this.parent.GameData.Cities[i].PlayerID == playerID && this.parent.GameData.Cities[i].StatusFlag != 0xff)
+				if (this.parent.GameData.Cities[i].PlayerID == playerID && this.parent.GameData.Cities[i].Status != 0xff)
 				{
 					for (int j = 1; j <= this.parent.GameData.Cities[i].ActualSize; j++)
 					{

@@ -580,7 +580,7 @@ namespace OpenCivOne
 				this.oParent.Segment_1238.F0_1238_001e_ShowDialog($"{this.oParent.GameData.Players[playerID].Nation} use\nnuclear weapons!\n", 100, 80);
 			}
 
-			this.oParent.Overlay_22.F22_0000_0967(x, y);
+			this.oParent.Animations.F22_0000_0967_NukeAnimation(x, y);
 
 			for (int i = 8; i >= 0; i--)
 			{
