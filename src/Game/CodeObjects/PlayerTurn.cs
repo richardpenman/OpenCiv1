@@ -592,7 +592,7 @@ namespace OpenCivOne
 				case -2:
 					if (this.parent.Segment_1238.F0_1238_001e_ShowDialog(this.parent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*REV"), 64, 80) == 1)
 					{
-						this.parent.GameData.Players[playerID].GovernmentType = 0;
+						this.parent.GameData.Players[playerID].GovernmentType = GovernmentTypeEnum.Anarchy;
 
 						this.parent.News.F21_0000_0000_ShowNews(-1, $"The {this.parent.GameData.Players[playerID].Nation} are\nrevolting! Citizens\ndemand new government.\n");
 
@@ -1986,7 +1986,7 @@ namespace OpenCivOne
 
 						if (this.parent.GameData.Cities[cityID].PlayerID != this.parent.GameData.HumanPlayerID)
 						{
-							this.parent.GameData.Cities[cityID].Status |= 0x10;
+							this.parent.GameData.Cities[cityID].Status |= CityStatusEnum.Unknown10;
 						}
 
 						if (unit.UnitType != UnitTypeEnum.None)

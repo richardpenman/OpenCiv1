@@ -211,7 +211,7 @@ namespace OpenCivOne
 					// Instruction address 0x1238:0x02d3, size: 5
 					int cityID = this.oParent.CAPI.RNG.Next(128);
 
-					if (this.oParent.GameData.Cities[cityID].Status != 0xff &&
+					if (this.oParent.GameData.Cities[cityID].Status != CityStatusEnum.Invalid &&
 						this.oParent.GameData.Players[this.oParent.GameData.Cities[cityID].PlayerID].CityCount > 1)
 					{
 						if (this.oParent.GameData.Cities[cityID].ActualSize >= 5)
@@ -370,7 +370,7 @@ namespace OpenCivOne
 
 			for (int i = 0; i < 128; i++)
 			{
-				if (this.oParent.GameData.Cities[i].Status != 0xff &&
+				if (this.oParent.GameData.Cities[i].Status != CityStatusEnum.Invalid &&
 					this.oParent.GameData.Cities[i].PlayerID == this.oParent.GameData.HumanPlayerID &&
 					(this.oParent.GameData.Cities[i].ImprovementFlags0 & 0x1) != 0)
 				{
@@ -410,7 +410,7 @@ namespace OpenCivOne
 			if (this.oParent.GameData.Year >= 2080 - (20 * this.oParent.GameData.DifficultyLevel))
 			{
 				this.oParent.News.F21_0000_0000_ShowNews(-1,
-					$"{this.oParent.Array_19b2_GovernmentTypeNames[humanPlayer.GovernmentType]} {humanPlayer.Name}\nplans retirement\nin 20 years.\n");
+					$"{this.oParent.Array_19b2_GovernmentTypeNames[(int)humanPlayer.GovernmentType]} {humanPlayer.Name}\nplans retirement\nin 20 years.\n");
 			}
 
 			if (playerIDSpaceVictory != -1 || this.oParent.Var_b884 != 0 ||
@@ -623,8 +623,8 @@ namespace OpenCivOne
 			this.oCPU.AX.UInt16 = 0x1c;
 			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14)));
 			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.CMP_UInt8(this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14))].Status, 0xff);
-			if (this.oCPU.Flags.NE) goto L0ac7;
+			
+			if (this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14))].Status != CityStatusEnum.Invalid) goto L0ac7;
 			goto L0d9b;
 
 		L0ac7:
@@ -1838,7 +1838,7 @@ namespace OpenCivOne
 			goto L1b3e;
 
 		L1861:			
-			if (this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Status == 0xff ||
+			if (this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Status == CityStatusEnum.Invalid ||
 				this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].PlayerID != this.oParent.GameData.HumanPlayerID)
 				goto L1854;
 
@@ -1887,7 +1887,7 @@ namespace OpenCivOne
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x0);
 
 		L18ea:
-			if (this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Status == 0xff ||
+			if (this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Status == CityStatusEnum.Invalid ||
 				this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].PlayerID != this.oParent.GameData.HumanPlayerID)
 				goto L191a;
 
@@ -1914,8 +1914,8 @@ namespace OpenCivOne
 			this.oCPU.AX.UInt16 = 0x1c;
 			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
 			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.CMP_UInt8(this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Status, 0xff);
-			if (this.oCPU.Flags.NE) goto L1945;
+			
+			if (this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Status != CityStatusEnum.Invalid) goto L1945;
 			goto L189d;
 
 		L1945:

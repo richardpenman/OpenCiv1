@@ -310,15 +310,15 @@ namespace OpenCivOne
 
 			if ((playerID2 == this.oParent.GameData.HumanPlayerID &&
 				this.oParent.GameData.Players[playerID2].Diplomacy[playerID1].HasFlag(DiplomacyFlagsEnum.Peace)) ||
-				this.oParent.GameData.Players[playerID1].Diplomacy[playerID2].HasFlag(DiplomacyFlagsEnum.warDeclared))
+				this.oParent.GameData.Players[playerID1].Diplomacy[playerID2].HasFlag(DiplomacyFlagsEnum.WarDeclared))
 			{
 				this.oParent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DefenseMinisterReport;
 
 				// Instruction address 0x29f3:0x07c9, size: 5
 				this.oParent.Segment_1238.F0_1238_001e_ShowDialog($"Sneak attack by\n{this.oParent.GameData.Players[playerID1].Nationality} forces!\n", 100, 80);
 
-				this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] |= DiplomacyFlagsEnum.warDeclared;
-				this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] ^= DiplomacyFlagsEnum.warDeclared;
+				this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] |= DiplomacyFlagsEnum.WarDeclared;
+				this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] ^= DiplomacyFlagsEnum.WarDeclared;
 			}
 
 			if (this.oParent.GameData.Players[playerID2].Diplomacy[playerID1].HasFlag(DiplomacyFlagsEnum.Peace) ||
@@ -347,8 +347,8 @@ namespace OpenCivOne
 
 			if (playerID1 == this.oParent.GameData.HumanPlayerID)
 			{
-				this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] |= DiplomacyFlagsEnum.warDeclared;
-				this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] ^= DiplomacyFlagsEnum.warDeclared;
+				this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] |= DiplomacyFlagsEnum.WarDeclared;
+				this.oParent.GameData.Players[playerID2].Diplomacy[playerID1] ^= DiplomacyFlagsEnum.WarDeclared;
 			}
 
 			if (unit1Type == UnitTypeEnum.Nuclear)
@@ -545,7 +545,8 @@ namespace OpenCivOne
 					return -1;
 				}
 
-				if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType > 3)
+				if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType == GovernmentTypeEnum.Republic ||
+					this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType == GovernmentTypeEnum.Democracy)
 				{
 					this.oParent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 

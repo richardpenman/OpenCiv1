@@ -310,7 +310,7 @@ namespace OpenCivOne
 
 				for (int i = 0; i < this.parent.GameData.Players.Length; i++)
 				{
-					this.parent.GameData.Players[i].GovernmentType = ReadInt16(reader);
+					this.parent.GameData.Players[i].GovernmentType = (GovernmentTypeEnum)ReadInt16(reader);
 				}
 
 				for (int i = 0; i < this.parent.GameData.Players.Length; i++)
@@ -843,7 +843,7 @@ namespace OpenCivOne
 
 				for (int i = 0; i < this.parent.GameData.Players.Length; i++)
 				{
-					WriteInt16(writer, this.parent.GameData.Players[i].GovernmentType);
+					WriteInt16(writer, (short)this.parent.GameData.Players[i].GovernmentType);
 				}
 
 				for (int i = 0; i < this.parent.GameData.Players.Length; i++)

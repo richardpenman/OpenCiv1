@@ -7,6 +7,8 @@ namespace OpenCivOne
 		private OpenCivOneGame oParent;
 		private VCPU oCPU;
 
+		public int Var_d76c = 0;
+
 		public MeetWithKing(OpenCivOneGame parent)
 		{
 			this.oParent = parent;
@@ -600,8 +602,12 @@ namespace OpenCivOne
 			this.oCPU.SI.UInt16 = (ushort)playerID;
 			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
 
-			if (this.oParent.GameData.Players[(ushort)playerID].GovernmentType < 4)
+			if (this.oParent.GameData.Players[(ushort)playerID].GovernmentType == GovernmentTypeEnum.Anarchy ||
+				this.oParent.GameData.Players[(ushort)playerID].GovernmentType == GovernmentTypeEnum.Despotism ||
+				this.oParent.GameData.Players[(ushort)playerID].GovernmentType == GovernmentTypeEnum.Monarchy ||
+				this.oParent.GameData.Players[(ushort)playerID].GovernmentType == GovernmentTypeEnum.Communist)
 				goto L0606;
+
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x24)), 0x0);
 			if (this.oCPU.Flags.E) goto L0606;
 			
@@ -629,7 +635,7 @@ namespace OpenCivOne
 
 		L05f7:
 			// Instruction address 0x0000:0x05fe, size: 5
-			this.oParent.Segment_2517.F0_2517_04a1(playerID, 2);
+			this.oParent.Segment_2517.F0_2517_04a1(playerID, GovernmentTypeEnum.Monarchy);
 
 		L0606:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x28), 0x0);
@@ -788,7 +794,7 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x0787, size: 5
 			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*EXCHANGE"));
 
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
+			this.Var_d76c = 12;
 
 			this.oCPU.AX.Int16 = (short)F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
@@ -895,7 +901,8 @@ namespace OpenCivOne
 
 		L08e0:
 			this.oParent.Var_3936 = this.oCPU.AX.Int16;
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
+			this.Var_d76c = 12;
+
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x24)), 0x0);
 			if (this.oCPU.Flags.E) goto L08fb;
 
@@ -968,7 +975,7 @@ namespace OpenCivOne
 
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x6b8e, 0x0);
 			this.oParent.Var_3936 = 2;
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
+			this.Var_d76c = 12;
 
 			// Instruction address 0x0000:0x09e8, size: 5
 			this.oParent.CommonTools.PlayTune(33, 0);
@@ -1014,7 +1021,7 @@ namespace OpenCivOne
 
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x6b8e, 0x0);
 			this.oParent.Var_3936 = 2;
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
+			this.Var_d76c = 12;
 
 			// Instruction address 0x0000:0x0a94, size: 5
 			this.oParent.CommonTools.PlayTune(33, 0);
@@ -1066,7 +1073,7 @@ namespace OpenCivOne
 		L0b1a:
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x6b8e, 0x1);
 			this.oParent.Var_3936 = 2;
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
+			this.Var_d76c = 12;
 
 			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 
@@ -1177,7 +1184,7 @@ namespace OpenCivOne
 
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x6b8e, 0x0);
 			this.oParent.Var_3936 = 0;
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
+			this.Var_d76c = 12;
 
 			this.oCPU.AX.Int16 = (short)F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
@@ -1193,7 +1200,10 @@ namespace OpenCivOne
 			goto L1097;
 
 		L0cc6:
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType < 4) goto L0d03;
+			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType == GovernmentTypeEnum.Anarchy ||
+				this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType == GovernmentTypeEnum.Despotism ||
+				this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType == GovernmentTypeEnum.Monarchy ||
+				this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType == GovernmentTypeEnum.Communist) goto L0d03;
 
 			// Instruction address 0x0000:0x0cdb, size: 5
 			this.oParent.CAPI.strcpy(0xba06, "You are overruled by the Senate.\nTreaty signed.\n");
@@ -1246,7 +1256,7 @@ namespace OpenCivOne
 			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*GIVECIV"));
 
 			this.oParent.Var_3936 = 0;
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
+			this.Var_d76c = 12;
 
 			this.oCPU.AX.Int16 = (short)F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
@@ -1318,7 +1328,7 @@ namespace OpenCivOne
 			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*GIVECASH"));
 
 			this.oParent.Var_3936 = 0;
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
+			this.Var_d76c = 12;
 
 			this.oCPU.AX.Int16 = (short)F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
@@ -1367,7 +1377,7 @@ namespace OpenCivOne
 			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*GROVEL"));
 
 			this.oParent.Var_3936 = 0;
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
+			this.Var_d76c = 12;
 
 			this.oCPU.AX.Int16 = (short)F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
@@ -1449,7 +1459,7 @@ namespace OpenCivOne
 
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x6b8e, 0x1);
 			this.oParent.Var_3936 = 2;
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0x4);
+			this.Var_d76c = 4;
 
 			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 
@@ -1492,7 +1502,7 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.E) goto L112f;
 
 			this.oParent.Var_3936 = 1;
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0x4);
+			this.Var_d76c = 4;
 
 			// Instruction address 0x0000:0x1124, size: 5
 			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*ATTITUDE"));
@@ -1501,7 +1511,7 @@ namespace OpenCivOne
 
 		L112f:
 			this.oParent.Var_3936 = 0;
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
+			this.Var_d76c = 12;
 
 			// Instruction address 0x0000:0x1143, size: 5
 			this.oParent.CAPI.strcpy(0xba06, "We welcome the friendship of the\n");
@@ -1513,7 +1523,7 @@ namespace OpenCivOne
 			this.oParent.CAPI.strcat(0xba06, " people and their most\nwise and munificent leader:\n");
 
 			// Instruction address 0x0000:0x1185, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.Array_19b2_GovernmentTypeNames[this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType]);
+			this.oParent.CAPI.strcat(0xba06, this.oParent.Array_19b2_GovernmentTypeNames[(int)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType]);
 
 			// Instruction address 0x0000:0x1195, size: 5
 			this.oParent.CAPI.strcat(0xba06, " ");
@@ -1557,7 +1567,10 @@ namespace OpenCivOne
 			this.oCPU.AX.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.AX.UInt16, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x34)));
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x10);
 			if (this.oCPU.Flags.L) goto L1247;
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType < 4) goto L124d;
+			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType == GovernmentTypeEnum.Anarchy ||
+				this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType == GovernmentTypeEnum.Despotism ||
+				this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType == GovernmentTypeEnum.Monarchy ||
+				this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType == GovernmentTypeEnum.Communist) goto L124d;
 
 		L1247:
 			this.oParent.Var_b276_MenuBoxDisabledOptions = 4;
@@ -1609,7 +1622,7 @@ namespace OpenCivOne
 			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*GIVEMORE"));
 
 			this.oParent.Var_3936 = 0;
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
+			this.Var_d76c = 12;
 
 			this.oCPU.AX.Int16 = (short)F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
 			
@@ -1633,7 +1646,7 @@ namespace OpenCivOne
 			this.oParent.Segment_2517.F0_2517_0aa1_ClearDiplomacyFlags(this.oParent.GameData.HumanPlayerID, playerID, DiplomacyFlagsEnum.Peace);
 			
 			this.oParent.Var_3936 = 2;
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
+			this.Var_d76c = 12;
 			goto L1392;
 
 		L1376:
@@ -1641,7 +1654,7 @@ namespace OpenCivOne
 			this.oParent.CAPI.strcpy(0xba06, "We ignore your feeble threats.\n");
 
 			this.oParent.Var_3936 = 1;
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0x4);
+			this.Var_d76c = 4;
 
 		L1392:
 			F6_0000_251d_ShowInlineDialog(0xba06, 36, 139);
@@ -1713,7 +1726,7 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x1460, size: 5
 			this.oParent.Array_30b8[3] = this.oParent.GameData.Players[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20))].Nation;
 
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0x4);
+			this.Var_d76c = 4;
 
 			this.oCPU.BX.UInt16 = (ushort)playerID;
 			this.oCPU.CX.LowUInt8 = 0x4;
@@ -2013,7 +2026,7 @@ namespace OpenCivOne
 			this.oParent.Var_3936 = 1;
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x67e8, 0xffff);
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x7ef4, 0x0);
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
+			this.Var_d76c = 12;
 
 			F6_0000_1874(playerID);
 			
@@ -2090,7 +2103,7 @@ namespace OpenCivOne
 			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
 
 			// Instruction address 0x0000:0x18ef, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.Array_19b2_GovernmentTypeNames[this.oParent.GameData.Players[playerID].GovernmentType]);
+			this.oParent.CAPI.strcat(0xba06, this.oParent.Array_19b2_GovernmentTypeNames[(int)this.oParent.GameData.Players[playerID].GovernmentType]);
 
 			// Instruction address 0x0000:0x18ff, size: 5
 			this.oParent.CAPI.strcat(0xba06, ": ");
@@ -2114,7 +2127,7 @@ namespace OpenCivOne
 			this.oParent.CAPI.strcat(0xba06, ", ruler\nand ");
 
 			// Instruction address 0x0000:0x195d, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.Array_19b2_GovernmentTypeNames[this.oParent.GameData.Players[playerID].GovernmentType]);
+			this.oParent.CAPI.strcat(0xba06, this.oParent.Array_19b2_GovernmentTypeNames[(int)this.oParent.GameData.Players[playerID].GovernmentType]);
 
 			// Instruction address 0x0000:0x191f, size: 5
 			this.oParent.CAPI.strcat(0xba06, " ");
@@ -2129,7 +2142,7 @@ namespace OpenCivOne
 			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
 
 			// Instruction address 0x0000:0x198d, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.Array_19b2_GovernmentTypeNames[this.oParent.GameData.Players[playerID].GovernmentType]);
+			this.oParent.CAPI.strcat(0xba06, this.oParent.Array_19b2_GovernmentTypeNames[(int)this.oParent.GameData.Players[playerID].GovernmentType]);
 
 			// Instruction address 0x0000:0x199d, size: 5
 			this.oParent.CAPI.strcat(0xba06, ": ");
@@ -2199,7 +2212,7 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x1a65, size: 5
 			this.oParent.Array_30b8[0] = this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Nationality;
 
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, 0xc);
+			this.Var_d76c = 12;
 
 			// Instruction address 0x0000:0x1a7c, size: 5
 			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*TREATY"));
@@ -2289,8 +2302,9 @@ namespace OpenCivOne
 			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
 			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x6);
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x7ef4, 0xffff);
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xd76c), 0x0);
-			if (this.oCPU.Flags.E) goto L1b50;
+			
+			if (this.Var_d76c == 0) goto L1b50;
+
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x67f4), 0x0);
 			if (this.oCPU.Flags.NE) goto L1b50;
 			goto L1cc0;
@@ -2356,8 +2370,8 @@ namespace OpenCivOne
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 0x3);
 
 		L1bce:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xd76c), 0x0);
-			if (this.oCPU.Flags.E) goto L1be1;
+			if (this.Var_d76c == 0) goto L1be1;
+
 			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x67f4), 0x0);
 			if (this.oCPU.Flags.E) goto L1be1;
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 0x0);
@@ -2484,12 +2498,13 @@ namespace OpenCivOne
 
 		L1ce9:
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.AX.UInt16);
-			this.oCPU.TEST_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, 0xd76c), 0x3);
-			if (this.oCPU.Flags.NE) goto L1cf8;
+
+			if ((this.Var_d76c & 0x3) != 0) goto L1cf8;
+
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x8);
 
 		L1cf8:
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0xd76c, this.oCPU.DEC_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0xd76c)));
+			this.Var_d76c--;
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x67f6, 0x4);
 
 		L1d02:
@@ -2544,7 +2559,7 @@ namespace OpenCivOne
 			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Invention) ? 1 : 0);
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x67ee, this.oCPU.AX.UInt16);
 			
-			if (this.oParent.GameData.Players[playerID].GovernmentType != 3) goto L1e85;
+			if (this.oParent.GameData.Players[playerID].GovernmentType != GovernmentTypeEnum.Communist) goto L1e85;
 
 			this.oCPU.WriteUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 0x33);
 			goto L1e90;

@@ -215,7 +215,7 @@ namespace OpenCivOne
 				{
 					int cityNameID = this.parent.GameData.Cities[j].NameID;
 
-					if (this.parent.GameData.Cities[j].Status != 0xff && cityNameID >= 0 && cityNameID < 256 &&
+					if (this.parent.GameData.Cities[j].Status != CityStatusEnum.Invalid && cityNameID >= 0 && cityNameID < 256 &&
 						cityName.StartsWith(this.parent.GameData.CityNames[cityNameID], StringComparison.CurrentCultureIgnoreCase))
 					{
 						cityID = j;

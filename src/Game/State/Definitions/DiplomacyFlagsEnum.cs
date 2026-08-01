@@ -13,6 +13,6 @@
 		EmbassyEstablished = 0x40,
 		TributeDemanded = 0x80,
 		PeaceTreaty = 0x100,
-		warDeclared = 0x200
+		WarDeclared = 0x200
 	}
 }

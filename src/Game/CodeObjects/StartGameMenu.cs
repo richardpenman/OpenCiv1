@@ -107,7 +107,7 @@ namespace OpenCivOne
 			for (int i = 0; i < 128; i++)
 			{
 				this.parent.GameData.Cities[i].NameID = 0xff;
-				this.parent.GameData.Cities[i].Status = 0xff;
+				this.parent.GameData.Cities[i].Status = CityStatusEnum.Invalid;
 			}
 
 			for (int i = 0; i < 256; i++)
@@ -379,7 +379,7 @@ namespace OpenCivOne
 				this.parent.GameData.Players[playerID].DiscoveredTechnologyCount = 0;
 				this.parent.GameData.Players[playerID].ResearchProgress = 0;
 				this.parent.GameData.Players[playerID].Coins = 0;
-				this.parent.GameData.Players[playerID].GovernmentType = 1;
+				this.parent.GameData.Players[playerID].GovernmentType = GovernmentTypeEnum.Despotism;
 				this.parent.GameData.Players[playerID].TaxRate = 4;
 				this.parent.GameData.Players[playerID].ScienceTaxRate = 4;
 
@@ -633,7 +633,7 @@ namespace OpenCivOne
 
 				for (int i = 0; i < 128; i++)
 				{
-					if (this.parent.GameData.Cities[i].Status != 0xff && this.parent.GameData.Cities[i].PlayerID == playerID)
+					if (this.parent.GameData.Cities[i].Status != CityStatusEnum.Invalid && this.parent.GameData.Cities[i].PlayerID == playerID)
 					{
 						cityCount++;
 					}
@@ -885,12 +885,12 @@ namespace OpenCivOne
 
 			// function body
 			// Instruction address 0x0000:0x1b17, size: 5
-			int governmentTypeID = this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].GovernmentType / 2;
+			int governmentFileID = (int)this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].GovernmentType / 2;
 			bool ancientGovernment = true;
 
-			if (this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].GovernmentType == 3)
+			if (this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].GovernmentType == GovernmentTypeEnum.Communist)
 			{
-				governmentTypeID = 3;
+				governmentFileID = 3;
 			}
 			else
 			{
@@ -902,7 +902,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x1b60, size: 5
-			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, $"GOVT{governmentTypeID}{(ancientGovernment ? 'A' : 'M')}.PIC", 0);
+			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, $"GOVT{governmentFileID}{(ancientGovernment ? 'A' : 'M')}.PIC", 0);
 
 			// Instruction address 0x0000:0x1b84, size: 5
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 160, 60, this.parent.Var_19e8_Screen2_Rectangle, 160, 140);
@@ -916,14 +916,14 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock("F5_0000_1ba2()");
 
 			// function body
-			if (this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].GovernmentType != 0)
+			if (this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].GovernmentType != GovernmentTypeEnum.Anarchy)
 			{
 				// Instruction address 0x0000:0x1bb9, size: 5
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
 
 				this.parent.News.F21_0000_0000_ShowNews(-2,
 					$"{this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Nationality} government\nchanged to " +
-					$"{this.parent.Array_1966[this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].GovernmentType]}!\n");
+					$"{this.parent.Array_1966_GovernmentNames[(int)this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].GovernmentType]}!\n");
 
 				// Instruction address 0x0000:0x1c38, size: 5
 				this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 100, 320, 100, 15);

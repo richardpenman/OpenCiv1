@@ -10,7 +10,7 @@ namespace OpenCivOne
 		public string Nationality = "";
 
 		public short Coins = 0;
-		public short GovernmentType = 0;
+		public GovernmentTypeEnum GovernmentType = GovernmentTypeEnum.Anarchy;
 		public short TaxRate = 0;
 		public short MilitaryPower = 0;
 		public short ContactPlayerCountdown = 0;

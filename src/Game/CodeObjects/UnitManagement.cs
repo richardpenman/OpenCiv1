@@ -54,7 +54,7 @@ namespace OpenCivOne
 
 				this.Var_20f4 = false;
 
-				this.parent.GameData.Cities[cityID].Status |= 4;
+				this.parent.GameData.Cities[cityID].Status |= CityStatusEnum.Unknown4;
 			}
 		}
 
@@ -117,7 +117,7 @@ namespace OpenCivOne
 
 				this.Var_20f4 = false;
 				this.parent.Var_70d8 = oldValue;
-				this.parent.GameData.Cities[cityID].Status &= 0xfb;
+				this.parent.GameData.Cities[cityID].ClearStatusFlags(CityStatusEnum.Unknown4);
 			}		
 		}
 
@@ -1881,7 +1881,7 @@ namespace OpenCivOne
 
 			for (int i = 0; i < 128; i++)
 			{
-				if (this.parent.GameData.Cities[i].Status != 0xff && this.parent.GameData.Cities[i].PlayerID == playerID)
+				if (this.parent.GameData.Cities[i].Status != CityStatusEnum.Invalid && this.parent.GameData.Cities[i].PlayerID == playerID)
 				{
 					int xDistance = Math.Abs(this.parent.GameData.Players[playerID].Units[unitID].Position.X - this.parent.GameData.Cities[i].Position.X);
 

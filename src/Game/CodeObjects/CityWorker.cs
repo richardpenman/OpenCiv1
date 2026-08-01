@@ -56,7 +56,7 @@ namespace OpenCivOne
 			City city = this.parent.GameData.Cities[cityID];
 			bool[,] cityArea = new bool[5, 5];
 
-			if (city.Status != 0xff)
+			if (city.Status != CityStatusEnum.Invalid)
 			{
 				this.Var_2496 = 0;
 
@@ -89,7 +89,7 @@ namespace OpenCivOne
 
 				for (int i = 0; i < 128; i++)
 				{
-					if (this.parent.GameData.Cities[i].Status != 0xff && i != city.ID)
+					if (this.parent.GameData.Cities[i].Status != CityStatusEnum.Invalid && i != city.ID)
 					{
 						// Instruction address 0x1d12:0x01a2, size: 5
 						int intercityDistance = this.parent.MapManagement.GetDistance(city.Position, this.parent.GameData.Cities[i].Position);
@@ -126,7 +126,8 @@ namespace OpenCivOne
 
 				int productionRatio;
 
-				if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType <= 1)
+				if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Anarchy ||
+					this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Despotism)
 				{
 					productionRatio = 1;
 				}
@@ -181,7 +182,7 @@ namespace OpenCivOne
 
 					if (flag == 0)
 					{
-						if ((city.Status & 0x1) == 0)
+						if ((city.Status & CityStatusEnum.Unknown1) == CityStatusEnum.None)
 						{
 							this.parent.Var_e8b8 = 0;
 						}
@@ -263,7 +264,9 @@ namespace OpenCivOne
 
 				if (flag == 0)
 				{
-					city.Status &= 0x7f;
+					// !!! This is to prevent corruption, we should remove this
+					city.Status &= (CityStatusEnum.Unknown1 | CityStatusEnum.Unknown2 | CityStatusEnum.Unknown4 | CityStatusEnum.Unknown8 |
+						 CityStatusEnum.Unknown10 | CityStatusEnum.Unknown20 | CityStatusEnum.Unknown40);
 
 					if (city.FoodCount < 0)
 					{
@@ -381,7 +384,10 @@ namespace OpenCivOne
 
 							if (city.ActualSize >= this.parent.Var_deb8)
 							{
-								if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType > 1 && (this.parent.GameData.DebugFlags & 2) != 0)
+								if ((this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Monarchy ||
+									this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Communist ||
+									this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Republic ||
+									this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Democracy) && (this.parent.GameData.DebugFlags & 2) != 0)
 								{
 									this.parent.Var_d2f6++;
 								}
@@ -463,7 +469,7 @@ namespace OpenCivOne
 
 				if (((ushort)this.parent.GameData.PlayerFlags & (1 << this.Var_6548_PlayerID)) != 0 ||
 					((cityID + this.parent.GameData.TurnCount) & 0x3) != 0 ||
-					(city.Status & 0x1) != 0 || this.Var_70e8 != 0)
+					(city.Status & CityStatusEnum.Unknown1) != CityStatusEnum.None || this.Var_70e8 != 0)
 				{
 					for (int i = 0; i < this.Var_6540_CityOffsetCount; i++)
 					{
@@ -569,7 +575,7 @@ namespace OpenCivOne
 					currentWorkingCitizenCount--;
 				}
 
-				if (this.Var_6548_PlayerID != this.parent.GameData.HumanPlayerID && (city.Status & 0x1) != 0)
+				if (this.Var_6548_PlayerID != this.parent.GameData.HumanPlayerID && (city.Status & CityStatusEnum.Unknown1) != CityStatusEnum.None)
 				{
 					this.parent.Var_e8b8++;
 				}
@@ -714,7 +720,7 @@ namespace OpenCivOne
 					int newShields = this.parent.Var_70da_Arr[1];
 					newShields -= this.parent.Var_d2f6;
 
-					if ((city.Status & 0x1) != 0)
+					if ((city.Status & CityStatusEnum.Unknown1) != CityStatusEnum.None)
 					{
 						newShields = 0;
 					}
@@ -782,7 +788,7 @@ namespace OpenCivOne
 
 										for (int i = 0; i < 128; i++)
 										{
-											if (this.parent.GameData.Cities[i].PlayerID != this.Var_6548_PlayerID && this.parent.GameData.Cities[i].Status != 0xff &&
+											if (this.parent.GameData.Cities[i].PlayerID != this.Var_6548_PlayerID && this.parent.GameData.Cities[i].Status != CityStatusEnum.Invalid &&
 												this.parent.GameData.Cities[i].PlayerID != this.parent.GameData.HumanPlayerID && this.parent.GameData.Cities[i].BaseTrade > maximumBaseTrade)
 											{
 												maximumBaseTrade = this.parent.GameData.Cities[i].BaseTrade;
@@ -803,7 +809,7 @@ namespace OpenCivOne
 
 										for (int i = 0; i < 128; i++)
 										{
-											if (this.parent.GameData.Cities[i].PlayerID != this.parent.GameData.HumanPlayerID || this.parent.GameData.Cities[i].Status != 0xff)
+											if (this.parent.GameData.Cities[i].PlayerID != this.parent.GameData.HumanPlayerID || this.parent.GameData.Cities[i].Status != CityStatusEnum.Invalid)
 											{
 												// Instruction address 0x1d12:0x1898, size: 5
 												int nearestUnitID = this.parent.Tools.FindNearestPlayerUnit(this.Var_6548_PlayerID, newUnitID,
@@ -812,7 +818,7 @@ namespace OpenCivOne
 												int unitDistance = Math.Abs(this.parent.MapManagement.GetDistance(this.parent.GameData.Cities[i].Position, 
 													this.parent.GameData.Players[this.Var_6548_PlayerID].Units[nearestUnitID].Position) - 3);
 
-												if ((this.parent.GameData.Cities[i].Status & 0x20) != 0)
+												if ((this.parent.GameData.Cities[i].Status & CityStatusEnum.Unknown20) != CityStatusEnum.None)
 												{
 													unitDistance = 3;
 												}
@@ -952,7 +958,7 @@ namespace OpenCivOne
 									// Instruction address 0x1d12:0x1dbe, size: 5
 									if (this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID && 
 										this.parent.GameData.GameSettingFlags.Animations && 
-										(newShields <= 21 || newShields > 24) && (city.Status & 0x10) == 0 && newShields != 1)
+										(newShields <= 21 || newShields > 24) && (city.Status & CityStatusEnum.Unknown10) == CityStatusEnum.None && newShields != 1)
 									{
 										this.parent.CityView.F19_0000_0000_ShowCityLayout(cityID, newShields,
 											$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} builds\n{this.parent.GameData.GetImprovementType(newShields).Name}.\n");
@@ -1089,7 +1095,7 @@ namespace OpenCivOne
 								{
 									for (int i = 0; i < 128; i++)
 									{
-										if (this.parent.GameData.Cities[i].Status != 0xff && this.parent.GameData.Cities[i].PlayerID != this.Var_6548_PlayerID)
+										if (this.parent.GameData.Cities[i].Status != CityStatusEnum.Invalid && this.parent.GameData.Cities[i].PlayerID != this.Var_6548_PlayerID)
 										{
 											this.parent.GameData.Cities[i].VisibleSize = this.parent.GameData.Cities[i].ActualSize;
 
@@ -1106,7 +1112,7 @@ namespace OpenCivOne
 						}
 					}
 
-					if ((this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID && (city.Status & 0x10) != 0) &&
+					if ((this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID && (city.Status & CityStatusEnum.Unknown10) != CityStatusEnum.None) &&
 						(city.ShieldsCount == 0 || (city.CurrentProductionID < 0 && newShields == -1)))
 					{
 						// Instruction address 0x1d12:0x2262, size: 5
@@ -1116,7 +1122,7 @@ namespace OpenCivOne
 
 						if (newShields == 99)
 						{
-							city.Status &= 0xef;
+							city.ClearStatusFlags(CityStatusEnum.Unknown10);
 						}
 						else
 						{
@@ -1139,7 +1145,7 @@ namespace OpenCivOne
 				L2307:
 					if ((this.parent.GameData.PlayerFlags & (1 << this.Var_6548_PlayerID)) == 0)
 					{
-						if ((city.Status & 0x10) != 0)
+						if ((city.Status & CityStatusEnum.Unknown10) != CityStatusEnum.None)
 						{
 							// Instruction address 0x1d12:0x232e, size: 5
 							this.parent.AIEngine.F0_25fb_34b6_ChangeCityProduction(cityID);
@@ -1163,7 +1169,7 @@ namespace OpenCivOne
 							cityShieldIncome = this.parent.GameData.Players[this.Var_6548_PlayerID].Coins / 128;
 						}
 
-						if ((city.Status & 0x1) != 0 && city.CurrentProductionID < 0 && city.ShieldsCount != 0)
+						if ((city.Status & CityStatusEnum.Unknown1) != CityStatusEnum.None && city.CurrentProductionID < 0 && city.ShieldsCount != 0)
 						{
 							// Instruction address 0x1d12:0x24a7, size: 5
 							cityShieldIncome = this.parent.Tools.CheckValueRange(
@@ -1173,7 +1179,7 @@ namespace OpenCivOne
 
 						// Instruction address 0x1d12:0x24bb, size: 5
 						if ((this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(cityX, cityY) == -1 || 
-							(city.Status & 0x10) != 0) && city.CurrentProductionID >= 0 && city.ShieldsCount != 0)
+							(city.Status & CityStatusEnum.Unknown10) != CityStatusEnum.None) && city.CurrentProductionID >= 0 && city.ShieldsCount != 0)
 						{
 							// Instruction address 0x1d12:0x2530, size: 5
 							cityShieldIncome = this.parent.Tools.CheckValueRange(
@@ -1189,7 +1195,8 @@ namespace OpenCivOne
 								0, this.parent.GameData.Players[this.Var_6548_PlayerID].Coins / 3);
 						}
 
-						if (city.CurrentProductionID >= 0 && city.Status == 0x19 && this.parent.GameData.Players[this.Var_6548_PlayerID].ActiveUnits[(int)UnitTypeEnum.Nuclear] == 0 && city.ShieldsCount != 0)
+						if (city.CurrentProductionID >= 0 && city.Status == (CityStatusEnum.Unknown1 | CityStatusEnum.Unknown8 | CityStatusEnum.Unknown10) && 
+							this.parent.GameData.Players[this.Var_6548_PlayerID].ActiveUnits[(int)UnitTypeEnum.Nuclear] == 0 && city.ShieldsCount != 0)
 						{
 							// Instruction address 0x1d12:0x260d, size: 5
 							cityShieldIncome = this.parent.Tools.CheckValueRange(
@@ -1204,7 +1211,7 @@ namespace OpenCivOne
 
 						city.ShieldsCount += (short)cityShieldIncome;
 						this.parent.GameData.Players[this.Var_6548_PlayerID].Coins -= (short)(cityShieldIncome * 2);
-						city.Status &= 0xef;
+						city.ClearStatusFlags(CityStatusEnum.Unknown10);
 					}
 				}
 
@@ -1243,19 +1250,19 @@ namespace OpenCivOne
 
 				this.parent.Var_d2e0 = 0;
 
-				if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == 3)
+				if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Communist)
 				{
 					this.Var_6b30 = 10;
 				}
 
-				this.parent.Var_d2e0 = ((this.parent.Var_70da_Arr[2] * this.Var_6b30) * 3) / ((this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType * 20) + 80);
+				this.parent.Var_d2e0 = ((this.parent.Var_70da_Arr[2] * this.Var_6b30) * 3) / (((int)this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType * 20) + 80);
 
 				if (city.HasImprovement(ImprovementEnum.Courthouse) || city.HasImprovement(ImprovementEnum.Palace))
 				{
 					this.parent.Var_d2e0 /= 2;
 				}
 			
-				if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == 5)
+				if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Democracy)
 				{
 					this.parent.Var_d2e0 = 0;
 				}
@@ -1279,9 +1286,9 @@ namespace OpenCivOne
 					}
 				}
 
-				this.parent.Var_d2e0 = ((this.parent.Var_70da_Arr[2] * this.Var_6b30) * 3) / ((this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType * 20) + 80);
+				this.parent.Var_d2e0 = ((this.parent.Var_70da_Arr[2] * this.Var_6b30) * 3) / (((int)this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType * 20) + 80);
 
-				if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == 5)
+				if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Democracy)
 				{
 					this.parent.Var_d2e0 = 0;
 				}
@@ -1363,7 +1370,7 @@ namespace OpenCivOne
 				if (this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID)
 				{
 					unhappyCitizenRatio = 14 - (parent.GameData.DifficultyLevel * 2);
-					unhappyCitizenRatio = ((this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType / 2) + 2) * (unhappyCitizenRatio / 2);
+					unhappyCitizenRatio = (((int)this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType / 2) + 2) * (unhappyCitizenRatio / 2);
 					this.parent.Var_70e4_CityUnhappyCitizenCount = (((cityID % unhappyCitizenRatio) + this.parent.GameData.Players[this.Var_6548_PlayerID].CityCount - unhappyCitizenRatio) / unhappyCitizenRatio) +
 						city.ActualSize + this.parent.GameData.DifficultyLevel - 6;
 				}
@@ -1514,7 +1521,10 @@ namespace OpenCivOne
 
 				xPosition = 208;
 
-				if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType < 4)
+				if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Anarchy ||
+					this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Despotism ||
+					this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Monarchy ||
+					this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Communist)
 				{
 					int attackUnitCount = 0;
 					int activeUnitID = this.parent.MapManagement.F0_2aea_1458_GetCellActiveUnitID(cityX, cityY);
@@ -1569,7 +1579,7 @@ namespace OpenCivOne
 					// Instruction address 0x1d12:0x3090, size: 5
 					int wonderCount = F0_1d12_6c97_PlayerHasWonder(this.Var_6548_PlayerID, WonderEnum.WomensSuffrage) ? 1 : 0;
 
-					if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == 5)
+					if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Democracy)
 					{
 						wonderCount++;
 					}
@@ -1699,7 +1709,10 @@ namespace OpenCivOne
 
 							if (city.ActualSize >= this.parent.Var_deb8)
 							{
-								if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType > 1 && (this.parent.GameData.DebugFlags & 0x2) != 0)
+								if ((this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Monarchy ||
+									this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Communist ||
+									this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Republic ||
+									this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Democracy) && (this.parent.GameData.DebugFlags & 0x2) != 0)
 								{
 									this.parent.Var_d2f6++;
 								}
@@ -1713,9 +1726,10 @@ namespace OpenCivOne
 						if (flag == 0)
 						{
 							if (this.parent.Var_70da_Arr[1] < this.parent.Var_d2f6 ||
-								((city.Status & 0x1) != 0 && ((i + this.parent.GameData.TurnCount) & 0x7) == 0 &&
+								((city.Status & CityStatusEnum.Unknown1) != CityStatusEnum.None && ((i + this.parent.GameData.TurnCount) & 0x7) == 0 &&
 								this.Var_6548_PlayerID != this.parent.GameData.HumanPlayerID &&
-								this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType >= 4))
+								(this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Republic ||
+									this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Democracy)))
 							{
 								int selectedUnit = -1;
 								int maximumDistance = -1;
@@ -1753,7 +1767,7 @@ namespace OpenCivOne
 										// Instruction address 0x1d12:0x35c9, size: 5
 										this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(this.Var_6548_PlayerID, (short)selectedUnit);
 
-										city.Status &= 0xfe;
+										city.ClearStatusFlags(CityStatusEnum.Unknown1);
 									}
 								}
 								else
@@ -1793,7 +1807,10 @@ namespace OpenCivOne
 									this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
 										cityWindowX, cityWindowY + 12, this.parent.Array_d4ce[8]);
 
-									if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType >= 2)
+									if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Monarchy ||
+										this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Communist ||
+										this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Republic ||
+										this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Democracy)
 									{
 										// Instruction address 0x1d12:0x371f, size: 5
 										this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
@@ -1805,12 +1822,13 @@ namespace OpenCivOne
 									// Instruction address 0x1d12:0x3732, size: 5
 									int womensSuffrageEffectScore = F0_1d12_6c97_PlayerHasWonder(this.Var_6548_PlayerID, WonderEnum.WomensSuffrage) ? 1 : 0;
 
-									if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == 5)
+									if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Democracy)
 									{
 										womensSuffrageEffectScore++;
 									}
 
-									if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType >= 4)
+									if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Republic ||
+										this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Democracy)
 									{
 										if (this.parent.GameData.Units[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].UnitType].AttackStrength != 0 &&
 											womensSuffrageEffectScore != 0 &&
@@ -2011,7 +2029,7 @@ namespace OpenCivOne
 					if (this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID)
 					{
 						// Instruction address 0x1d12:0x3e31, size: 5
-						this.parent.DrawTools.DrawFilledRectangleWithCenteredText(231, 106, 263, 114, (string)(((city.Status & 0x10) != 0) ? "AUTO" : "CHANGE"), 9);
+						this.parent.DrawTools.DrawFilledRectangleWithCenteredText(231, 106, 263, 114, (string)(((city.Status & CityStatusEnum.Unknown10) != CityStatusEnum.None) ? "AUTO" : "CHANGE"), 9);
 
 						// Instruction address 0x1d12:0x3e51, size: 5
 						this.parent.DrawTools.DrawFilledRectangleWithCenteredText(294, 106, 311, 114, "BUY", 9);
@@ -2394,9 +2412,9 @@ namespace OpenCivOne
 							mouseEvent.Position.Y >= 106 && mouseEvent.Position.Y <= 116 && mouseEvent.Buttons == MouseButtonsEnum.Right) ||
 							pressedKey == 'A')
 						{
-							city.Status ^= 0x10;
+							city.Status ^= CityStatusEnum.Unknown10;
 
-							if ((city.Status & 0x10) != 0)
+							if ((city.Status & CityStatusEnum.Unknown10) != CityStatusEnum.None)
 							{
 								// Instruction address 0x1d12:0x4aef, size: 5
 								int newProductionID = (short)this.parent.Segment_1ade.F0_1ade_0421(this.Var_6548_PlayerID, cityID);
@@ -2473,7 +2491,7 @@ namespace OpenCivOne
 											this.parent.GameData.GetImprovementType(-city.CurrentProductionID).Name)} is {costToComplete} coins" +
 										$"\nOur treasury has {this.parent.GameData.Players[this.Var_6548_PlayerID].Coins} coins.\n";
 
-								if ((city.Status & 0x1) != 0)
+								if ((city.Status & CityStatusEnum.Unknown1) != CityStatusEnum.None)
 								{
 									completeProductionText += "CIVIL DISORDER\n";
 								}
@@ -2485,7 +2503,7 @@ namespace OpenCivOne
 								this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
 								// Instruction address 0x1d12:0x4e32, size: 5
-								if ((city.Status & 0x1) == 0 && this.parent.GameData.Players[this.Var_6548_PlayerID].Coins >= costToComplete &&
+								if ((city.Status & CityStatusEnum.Unknown1) == CityStatusEnum.None && this.parent.GameData.Players[this.Var_6548_PlayerID].Coins >= costToComplete &&
 									this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(completeProductionText, 100, 80, true, false, true) == 0)
 								{
 									city.ShieldsCount = (short)(itemShieldCost * 10);
@@ -2498,7 +2516,7 @@ namespace OpenCivOne
 
 							if (pressedKey != 0x1b && pressedKey != 0xd && ((mouseEvent.Position.X >= 230 && mouseEvent.Position.X < 270) || pressedKey == 'c'))
 							{
-								city.Status &= 0xef;
+								city.ClearStatusFlags(CityStatusEnum.Unknown10);
 
 								if (city.CurrentProductionID >= 0)
 								{
@@ -2703,7 +2721,7 @@ namespace OpenCivOne
 							goto L12c2;
 						}
 
-						if (pressedKey == 's' && (city.Status & 0x80) == 0)
+						if (pressedKey == 's' && (city.Status & CityStatusEnum.Unknown80) == CityStatusEnum.None)
 						{
 							improvementIndex = 0;
 
@@ -2946,7 +2964,7 @@ namespace OpenCivOne
 
 								if (improvementIndex == -1)
 								{
-									if ((city.Status & 0x80) == 0)
+									if ((city.Status & CityStatusEnum.Unknown80) == CityStatusEnum.None)
 									{
 										this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
@@ -2957,7 +2975,7 @@ namespace OpenCivOne
 										{
 											this.parent.GameData.Players[this.Var_6548_PlayerID].Coins += (short)(10 * this.parent.GameData.GetImprovementType(i + 1).Cost);
 											city.RemoveImprovement(City.BitToImprovementEnum(i));
-											city.Status |= 0x80;
+											city.Status |= CityStatusEnum.Unknown80;
 
 											if (i + 1 == 8)
 											{
@@ -3120,7 +3138,7 @@ namespace OpenCivOne
 								// Instruction address 0x1d12:0x5d3b, size: 5
 								this.parent.CommonTools.PlayTune(36, 0);
 
-								if (this.parent.GameData.GameSettingFlags.Animations && (city.Status & 0x1) == 0 && this.parent.Var_6b92 == 0)
+								if (this.parent.GameData.GameSettingFlags.Animations && (city.Status & CityStatusEnum.Unknown1) == CityStatusEnum.None && this.parent.Var_6b92 == 0)
 								{
 									this.parent.CityView.F19_0000_0000_ShowCityLayout(cityID, -2,
 										$"Civil Disorder in\n{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}! Mayor\nflees in panic.\n");
@@ -3143,7 +3161,7 @@ namespace OpenCivOne
 								// Instruction address 0x1d12:0x5dbd, size: 5
 								this.parent.CommonTools.PlayTune(1, 0);
 
-								if ((city.Status & 0x1) == 0)
+								if ((city.Status & CityStatusEnum.Unknown1) == CityStatusEnum.None)
 								{
 									this.parent.Var_b1e8 = 1;
 
@@ -3154,9 +3172,9 @@ namespace OpenCivOne
 								}
 							}
 
-							if ((city.Status & 0x1) == 0)
+							if ((city.Status & CityStatusEnum.Unknown1) == CityStatusEnum.None)
 							{
-								city.Status |= 1;
+								city.Status |= CityStatusEnum.Unknown1;
 
 								if ((this.parent.GameData.PlayerFlags & (1 << this.Var_6548_PlayerID)) == 0)
 								{
@@ -3179,7 +3197,7 @@ namespace OpenCivOne
 							}
 							else
 							{
-								if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == 5)
+								if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Democracy)
 								{
 									if (this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID)
 									{
@@ -3193,15 +3211,15 @@ namespace OpenCivOne
 										this.parent.CommonTools.PlayTune(1, 0);
 									}
 
-									this.parent.Segment_2517.F0_2517_04a1(this.Var_6548_PlayerID, 0);
+									this.parent.Segment_2517.F0_2517_04a1(this.Var_6548_PlayerID, GovernmentTypeEnum.Anarchy);
 								}
 							}
 						}
 						else
 						{
-							if (totalCityHappiness >= 0 && (city.Status & 0x1) != 0)
+							if (totalCityHappiness >= 0 && (city.Status & CityStatusEnum.Unknown1) != CityStatusEnum.None)
 							{
-								city.Status &= 0xfe;
+								city.ClearStatusFlags(CityStatusEnum.Unknown1);
 
 								if ((this.parent.GameData.PlayerFlags & (1 << this.Var_6548_PlayerID)) != 0)
 								{
@@ -3230,7 +3248,7 @@ namespace OpenCivOne
 								this.parent.PlayerTurn.F0_1403_3ed7_DrawVisibleCell(cityX, cityY);
 							}
 
-							if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType != 0)
+							if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType != GovernmentTypeEnum.Anarchy)
 							{
 								this.parent.GameData.Players[this.Var_6548_PlayerID].Coins += (short)this.parent.Var_e17a;
 							}
@@ -3238,13 +3256,13 @@ namespace OpenCivOne
 
 						if (this.parent.Var_70e4_CityUnhappyCitizenCount == 0 && city.ActualSize > 2 &&
 							((city.ActualSize + 1) / 2) <= this.parent.Var_70e2_CityHappyCitizenCount &&
-								this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType != 0)
+							this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType != GovernmentTypeEnum.Anarchy)
 						{
-							if ((city.Status & 0x40) == 0)
+							if ((city.Status & CityStatusEnum.Unknown40) == CityStatusEnum.None)
 							{
 								if ((this.parent.GameData.PlayerFlags & (1 << this.Var_6548_PlayerID)) != 0)
 								{
-									if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType != 0)
+									if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType != GovernmentTypeEnum.Anarchy)
 									{
 										// Instruction address 0x1d12:0x6143, size: 5
 										this.parent.CommonTools.PlayTune(34, 0);
@@ -3252,7 +3270,7 @@ namespace OpenCivOne
 										if (this.parent.GameData.GameSettingFlags.Animations)
 										{
 											this.parent.CityView.F19_0000_0000_ShowCityLayout(cityID, -2,
-												$"'We love the {this.parent.Array_19b2_GovernmentTypeNames[this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType]}'\n" +
+												$"'We love the {this.parent.Array_19b2_GovernmentTypeNames[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType]}'\n" +
 												$"day celebrated in\n{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}!\n");
 
 											this.parent.CityView.F19_0000_1ae1_LoveOurLeaderAnimation();
@@ -3263,7 +3281,7 @@ namespace OpenCivOne
 										else
 										{
 											this.parent.News.F21_0000_0000_ShowNews(cityID,
-												$"'We love the {this.parent.Array_19b2_GovernmentTypeNames[this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType]}'\n" +
+												$"'We love the {this.parent.Array_19b2_GovernmentTypeNames[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType]}'\n" +
 												$"day celebrated in\n{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}!\n");
 										}
 
@@ -3271,9 +3289,10 @@ namespace OpenCivOne
 										this.parent.CommonTools.PlayTune(1, 0);
 									}
 								}
-								city.Status |= 0x40;
+								city.Status |= CityStatusEnum.Unknown40;
 							}
-							else if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType >= 4)
+							else if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Republic ||
+								this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Democracy)
 							{
 								if (((city.ActualSize * 2) + (productionRatio * this.parent.Var_e3c6)) < this.parent.Var_70da_Arr[0])
 								{
@@ -3284,23 +3303,23 @@ namespace OpenCivOne
 								}
 							}
 						}
-						else if (totalCityHappiness >= 0 && (city.Status & 0x40) != 0)
+						else if (totalCityHappiness >= 0 && (city.Status & CityStatusEnum.Unknown40) != CityStatusEnum.None)
 						{
 							if ((this.parent.GameData.PlayerFlags & (1 << this.Var_6548_PlayerID)) != 0)
 							{
-								if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType != 0)
+								if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType != GovernmentTypeEnum.Anarchy)
 								{
 									this.parent.CommonTools.PlayTune(35, 0);
 
 									this.parent.News.F21_0000_0000_ShowNews(cityID,
-										$"'We love the {this.parent.Array_19b2_GovernmentTypeNames[this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType]}'\n" +
+										$"'We love the {this.parent.Array_19b2_GovernmentTypeNames[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType]}'\n" +
 										$"celebration canceled\nin {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n");
 
 									this.parent.CommonTools.PlayTune(1, 0);
 								}
 							}
 
-							city.Status &= 0xbf;
+							city.ClearStatusFlags(CityStatusEnum.Unknown40);
 						}
 					}
 				
@@ -3327,7 +3346,7 @@ namespace OpenCivOne
 						}
 					}
 
-					if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == 0)
+					if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Anarchy)
 					{
 						newResearchPoints = 0;
 					}
@@ -3421,7 +3440,7 @@ namespace OpenCivOne
 							}
 						}
 
-						if ((city.Status & 0x1) != 0 && city.HasImprovement(ImprovementEnum.NuclearPlant) &&
+						if ((city.Status & CityStatusEnum.Unknown1) != CityStatusEnum.None && city.HasImprovement(ImprovementEnum.NuclearPlant) &&
 							!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.FusionPower) && this.parent.CAPI.RNG.Next(3) == 0)
 						{
 							// Instruction address 0x1d12:0x66a5, size: 5
@@ -3444,7 +3463,7 @@ namespace OpenCivOne
 
 						for (int i = 1; i < 24; i++)
 						{
-							if (city.HasImprovement(City.BitToImprovementEnum(i)) && this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType != 0)
+							if (city.HasImprovement(City.BitToImprovementEnum(i)) && this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType != GovernmentTypeEnum.Anarchy)
 							{
 								this.parent.GameData.Players[this.Var_6548_PlayerID].Coins -= (short)this.parent.GameData.GetImprovementType(i + 1).MaintenanceCost;
 
@@ -3493,7 +3512,7 @@ namespace OpenCivOne
 				}
 			
 				// !!! this playerID reference needs to be checked!
-				if ((city.Status & 0x4) != 0 && !this.parent.UnitManagement.F0_1866_18d0_IsEnemyUnitNear(city.PlayerID, city.Position.X, city.Position.Y))
+				if ((city.Status & CityStatusEnum.Unknown4) != CityStatusEnum.None && !this.parent.UnitManagement.F0_1866_18d0_IsEnemyUnitNear(city.PlayerID, city.Position.X, city.Position.Y))
 				{
 					// Instruction address 0x1d12:0x6907, size: 5
 					this.parent.UnitManagement.F0_1866_00c6_StoreFortifiedCityUnits(cityID);
@@ -3718,9 +3737,10 @@ namespace OpenCivOne
 					resourceCount += resourceCount / 2;
 				}
 
-				if (resourceCount > 2 && (this.parent.GameData.Cities[cityID].Status & 0x40) == 0)
+				if (resourceCount > 2 && (this.parent.GameData.Cities[cityID].Status & CityStatusEnum.Unknown40) == CityStatusEnum.None)
 				{
-					if (this.parent.GameData.Players[playerID].GovernmentType <= 1)
+					if (this.parent.GameData.Players[playerID].GovernmentType == GovernmentTypeEnum.Anarchy ||
+						this.parent.GameData.Players[playerID].GovernmentType == GovernmentTypeEnum.Despotism)
 					{
 						resourceCount--;
 					}
@@ -3738,16 +3758,20 @@ namespace OpenCivOne
 						this.parent.Var_db42++;
 					}
 
-					if ((this.parent.GameData.Cities[cityID].Status & 0x40) != 0)
+					if ((this.parent.GameData.Cities[cityID].Status & CityStatusEnum.Unknown40) != CityStatusEnum.None)
 					{
-						if (this.parent.GameData.Players[playerID].GovernmentType >= 2)
+						if (this.parent.GameData.Players[playerID].GovernmentType == GovernmentTypeEnum.Monarchy ||
+							this.parent.GameData.Players[playerID].GovernmentType == GovernmentTypeEnum.Communist ||
+							this.parent.GameData.Players[playerID].GovernmentType == GovernmentTypeEnum.Republic ||
+							this.parent.GameData.Players[playerID].GovernmentType == GovernmentTypeEnum.Democracy)
 						{
 							resourceCount++;
 						}
 					}
 					else
 					{
-						if (this.parent.GameData.Players[playerID].GovernmentType >= 4)
+						if (this.parent.GameData.Players[playerID].GovernmentType == GovernmentTypeEnum.Republic ||
+							this.parent.GameData.Players[playerID].GovernmentType == GovernmentTypeEnum.Democracy)
 						{
 							resourceCount++;
 						}

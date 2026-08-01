@@ -112,8 +112,8 @@ namespace OpenCivOne
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 6;
 
 			// Instruction address 0x0000:0x0fc9, size: 5
-			this.parent.DrawTools.DrawCenteredStringToScreen0($"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} " +
-				$"founded in the year {this.parent.Segment_1238.YearToString(this.parent.GameData.Year)}.", 160, 4, 0);
+			this.parent.DrawTools.DrawCenteredStringToScreen0($"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} founded in", 160, 4, 0);
+			this.parent.DrawTools.DrawCenteredStringToScreen0($"the year {this.parent.Segment_1238.YearToString(this.parent.GameData.Year)}.", 160, 20, 0);
 
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 

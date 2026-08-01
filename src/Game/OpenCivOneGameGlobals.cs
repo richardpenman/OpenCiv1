@@ -65,7 +65,7 @@ namespace OpenCivOne
 
 		public byte[] Array_1946_PlayerColours = { 12, 15, 10, 9, 14, 11, 13, 7 };
 		public byte[] Array_1956 = { 4, 7, 2, 1, 10, 3, 4, 8 };
-		public string[] Array_1966 = { "Anarchy", "Despotism", "Monarchy", "Communist", "Republic", "Democratic" };
+		public string[] Array_1966_GovernmentNames = { "Anarchy", "Despotism", "Monarchy", "Communist", "Republic", "Democratic" };
 
 		public char Var_1a30_SoundDriverType = 'N';
 		public int Var_1a3e = 0;

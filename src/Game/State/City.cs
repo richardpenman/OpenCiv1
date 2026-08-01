@@ -8,7 +8,7 @@ namespace OpenCivOne
 		public int ID = -1;
 
 		public GPoint Position = new GPoint(0, 0);
-		public byte Status = 0;
+		public CityStatusEnum Status = CityStatusEnum.Invalid;
 		public sbyte ActualSize = 0;
 		public sbyte VisibleSize = 0;
 		private uint improvementBitFlags = 0;
@@ -33,6 +33,12 @@ namespace OpenCivOne
 
 			for (int i = 0; i < this.FirstFortifiedCityUnits.Length; i++)
 				this.FirstFortifiedCityUnits[i] = -1;
+		}
+
+		public void ClearStatusFlags(CityStatusEnum statusFlags)
+		{
+			this.Status |= statusFlags;
+			this.Status ^= statusFlags;
 		}
 
 		/// <summary>
@@ -289,7 +295,7 @@ namespace OpenCivOne
 
 			city.ImprovementFlags = LoadAndSave.ReadUInt32(stream);
 			city.Position = new((sbyte)LoadAndSave.ReadUInt8(stream), (sbyte)LoadAndSave.ReadUInt8(stream));
-			city.Status = LoadAndSave.ReadUInt8(stream);
+			city.Status = (CityStatusEnum)LoadAndSave.ReadUInt8(stream);
 			city.ActualSize = (sbyte)LoadAndSave.ReadUInt8(stream);
 			city.VisibleSize = (sbyte)LoadAndSave.ReadUInt8(stream);
 			city.CurrentProductionID = (sbyte)LoadAndSave.ReadUInt8(stream);
@@ -315,7 +321,7 @@ namespace OpenCivOne
 			LoadAndSave.WriteUInt32(stream, this.ImprovementFlags);
 			stream.WriteByte((byte)this.Position.X);
 			stream.WriteByte((byte)this.Position.Y);
-			stream.WriteByte(this.Status);
+			stream.WriteByte((byte)this.Status);
 			stream.WriteByte((byte)this.ActualSize);
 			stream.WriteByte((byte)this.VisibleSize);
 			stream.WriteByte((byte)this.CurrentProductionID);

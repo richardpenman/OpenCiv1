@@ -346,7 +346,7 @@ namespace OpenCivOne
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 12, 320, 176, 236);
 
 			// Load spaceship text narrative
-			this.parent.Array_30b8[0] = $"{this.parent.Array_19b2_GovernmentTypeNames[this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].GovernmentType]} " +
+			this.parent.Array_30b8[0] = $"{this.parent.Array_19b2_GovernmentTypeNames[(int)this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].GovernmentType]} " +
 				$"{this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Name}";
 			this.parent.Array_30b8[1] = this.parent.GameData.Players[playerID].Nationality;
 			this.parent.Array_30b8[2] = $"{this.parent.GameData.Players[playerID].SpaceshipPopulation}";

@@ -50,7 +50,7 @@ namespace OpenCivOne
 
 			for (int i = 0; i < 128; i++)
 			{
-				if (this.parent.GameData.Cities[i].Status != 0xff && this.parent.GameData.Cities[i].PlayerID == playerID)
+				if (this.parent.GameData.Cities[i].Status != CityStatusEnum.Invalid && this.parent.GameData.Cities[i].PlayerID == playerID)
 				{
 					// Instruction address 0x0000:0x0086, size: 5
 					int groupID = this.parent.MapManagement.F0_2aea_1942_GetGroupID(
@@ -186,7 +186,7 @@ namespace OpenCivOne
 			{
 				for (int i = 0; i < 128; i++)
 				{
-					if (this.parent.GameData.Cities[i].Status != 0xff && this.parent.GameData.Cities[i].PlayerID == playerID)
+					if (this.parent.GameData.Cities[i].Status != CityStatusEnum.Invalid && this.parent.GameData.Cities[i].PlayerID == playerID)
 					{
 						// Instruction address 0x0000:0x03ce, size: 5
 						int groupID = this.parent.MapManagement.F0_2aea_1942_GetGroupID(
@@ -209,7 +209,7 @@ namespace OpenCivOne
 
 					for (int j = 0; j < 128; j++)
 					{
-						if (this.parent.GameData.Cities[j].Status != 0xff && this.parent.GameData.Cities[j].PlayerID == playerID)
+						if (this.parent.GameData.Cities[j].Status != CityStatusEnum.Invalid && this.parent.GameData.Cities[j].PlayerID == playerID)
 						{
 							// Instruction address 0x0000:0x0431, size: 5
 							int distance = this.parent.MapManagement.GetDistance(this.parent.GameData.Cities[j].Position, oldMainCityX, oldMainCityY);
@@ -431,13 +431,13 @@ namespace OpenCivOne
 
 			for (int i = 0; i < 128; i++)
 			{
-				if (this.parent.GameData.Cities[i].PlayerID == playerID && this.parent.GameData.Cities[i].Status != 0xff)
+				if (this.parent.GameData.Cities[i].PlayerID == playerID && this.parent.GameData.Cities[i].Status != CityStatusEnum.Invalid)
 				{
 					int distanceSum = 0;
 
 					for (int j = 0; j < 128; j++)
 					{
-						if (this.parent.GameData.Cities[j].PlayerID == playerID && this.parent.GameData.Cities[j].Status != 0xff)
+						if (this.parent.GameData.Cities[j].PlayerID == playerID && this.parent.GameData.Cities[j].Status != CityStatusEnum.Invalid)
 						{
 							// Instruction address 0x0000:0x0905, size: 5
 							distanceSum += this.parent.MapManagement.GetDistance(this.parent.GameData.Cities[i].Position, this.parent.GameData.Cities[j].Position);

@@ -298,7 +298,7 @@ namespace OpenCivOne
 			this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle, 16, 4, this.oParent.Array_d4ce[64 + (playerID * 32)]);
 
 			// Instruction address 0x0000:0x00b6, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0($"Government: {this.oParent.Array_1966[this.oParent.GameData.Players[playerID].GovernmentType]}", 16, 24, 15);
+			this.oParent.DrawTools.DrawStringToScreen0($"Government: {this.oParent.Array_1966_GovernmentNames[(int)this.oParent.GameData.Players[playerID].GovernmentType]}", 16, 24, 15);
 
 			// Instruction address 0x0000:0x00e9, size: 5
 			this.oParent.DrawTools.DrawStringToScreen0(

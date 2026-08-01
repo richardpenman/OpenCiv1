@@ -483,7 +483,7 @@ namespace OpenCivOne
 			this.oParent.CAPI.strcat(0xba06, " form ");
 
 			// Instruction address 0x0000:0x0405, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.Array_1966[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc))]);
+			this.oParent.CAPI.strcat(0xba06, this.oParent.Array_1966_GovernmentNames[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc))]);
 			goto L040d;
 
 		L054f:
