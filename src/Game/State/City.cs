@@ -295,7 +295,14 @@ namespace OpenCivOne
 
 			city.ImprovementFlags = LoadAndSave.ReadUInt32(stream);
 			city.Position = new((sbyte)LoadAndSave.ReadUInt8(stream), (sbyte)LoadAndSave.ReadUInt8(stream));
-			city.Status = (CityStatusEnum)LoadAndSave.ReadUInt8(stream);
+
+			int tempValue = LoadAndSave.ReadUInt8(stream);
+			if (tempValue == 0xff)
+			{
+				tempValue = -1;
+			}
+			city.Status = (CityStatusEnum)tempValue;
+
 			city.ActualSize = (sbyte)LoadAndSave.ReadUInt8(stream);
 			city.VisibleSize = (sbyte)LoadAndSave.ReadUInt8(stream);
 			city.CurrentProductionID = (sbyte)LoadAndSave.ReadUInt8(stream);
@@ -321,7 +328,14 @@ namespace OpenCivOne
 			LoadAndSave.WriteUInt32(stream, this.ImprovementFlags);
 			stream.WriteByte((byte)this.Position.X);
 			stream.WriteByte((byte)this.Position.Y);
-			stream.WriteByte((byte)this.Status);
+
+			int tempValue = (int)this.Status;
+			if (tempValue == -1)
+			{
+				tempValue = 0xff;
+			}
+			stream.WriteByte((byte)tempValue);
+
 			stream.WriteByte((byte)this.ActualSize);
 			stream.WriteByte((byte)this.VisibleSize);
 			stream.WriteByte((byte)this.CurrentProductionID);

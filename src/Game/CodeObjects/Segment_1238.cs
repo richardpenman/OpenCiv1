@@ -136,7 +136,7 @@ namespace OpenCivOne
 					}
 
 					// Instruction address 0x1238:0x01ab, size: 5
-					this.oParent.Segment_2517.F0_2517_0004((short)i);
+					this.oParent.Diplomacy.F0_2517_0004_UpdatePlayerGovernmentAndDiplomacy(i);
 
 					// Instruction address 0x1238:0x01b6, size: 5
 					this.oParent.AIEngine.F0_25fb_0004_RecalculateStatsAndPolicies(i);

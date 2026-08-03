@@ -373,7 +373,7 @@ namespace OpenCivOne
 						}
 
 						// Instruction address 0x2459:0x0818, size: 5
-						this.parent.Segment_1ade.F0_1ade_1d2e(playerID1, (TechnologyAdvanceEnum)undiscoveredTechnologies[selectedTechnology], playerID2);
+						this.parent.Segment_1ade.F0_1ade_1d2e(playerID1, playerID2, (TechnologyAdvanceEnum)undiscoveredTechnologies[selectedTechnology]);
 					}
 					else
 					{
@@ -393,7 +393,7 @@ namespace OpenCivOne
 						}
 
 						// Instruction address 0x2459:0x08aa, size: 5
-						this.parent.Segment_1ade.F0_1ade_1d2e(playerID1, (TechnologyAdvanceEnum)latestTechnology, playerID2);
+						this.parent.Segment_1ade.F0_1ade_1d2e(playerID1, playerID2, (TechnologyAdvanceEnum)latestTechnology);
 
 						// Instruction address 0x2459:0x08b9, size: 5
 						this.parent.AIEngine.F0_25fb_3459_PlayerChangeCityProductionForSameContinent(playerID1, -1);

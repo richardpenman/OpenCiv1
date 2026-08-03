@@ -342,7 +342,7 @@ namespace OpenCivOne
 				}
 
 				// Instruction address 0x29f3:0x08a6, size: 5
-				this.oParent.Segment_2517.F0_2517_0aa1_ClearDiplomacyFlags(playerID1, playerID2, DiplomacyFlagsEnum.Peace);
+				this.oParent.Diplomacy.F0_2517_0aa1_ClearDiplomacyFlags(playerID1, playerID2, DiplomacyFlagsEnum.Peace);
 			}
 
 			if (playerID1 == this.oParent.GameData.HumanPlayerID)

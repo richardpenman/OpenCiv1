@@ -3211,7 +3211,7 @@ namespace OpenCivOne
 										this.parent.CommonTools.PlayTune(1, 0);
 									}
 
-									this.parent.Segment_2517.F0_2517_04a1(this.Var_6548_PlayerID, GovernmentTypeEnum.Anarchy);
+									this.parent.Diplomacy.F0_2517_04a1_ChangeCurrentGovernment(this.Var_6548_PlayerID, GovernmentTypeEnum.Anarchy);
 								}
 							}
 						}

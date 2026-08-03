@@ -256,7 +256,7 @@ namespace OpenCivOne
 						this.parent.GameData.Units[(int)this.parent.GameData.Players[activeUnitPlayerID].Units[activeUnitID].UnitType].MovementType != UnitMovementTypeEnum.Air)
 					{
 						// Instruction address 0x1866:0x0635, size: 5
-						this.parent.Segment_2517.F0_2517_0737(playerID, activeUnitPlayerID, x, y);
+						this.parent.Diplomacy.F0_2517_0737_UpdateDiplomacyStatus(playerID, activeUnitPlayerID, x, y);
 
 						if (!this.parent.GameData.Players[playerID].Diplomacy[activeUnitPlayerID].HasFlag(DiplomacyFlagsEnum.Peace))
 						{
@@ -1659,7 +1659,7 @@ namespace OpenCivOne
 			{
 				int index = this.parent.CAPI.RNG.Next(undiscoveredTech.Count);
 
-				this.parent.Segment_1ade.F0_1ade_1d2e(playerID, undiscoveredTech[index], 0);
+				this.parent.Segment_1ade.F0_1ade_1d2e(playerID, 0, undiscoveredTech[index]);
 			}
 			else
 			{

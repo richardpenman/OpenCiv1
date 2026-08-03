@@ -345,23 +345,23 @@ namespace OpenCivOne
 					if (this.parent.Var_e3c2 > 0)
 					{
 						// Instruction address 0x25fb:0x08b9, size: 5
-						this.parent.Segment_2517.F0_2517_04a1(playerID, GovernmentTypeEnum.Despotism);
+						this.parent.Diplomacy.F0_2517_04a1_ChangeCurrentGovernment(playerID, GovernmentTypeEnum.Despotism);
 					}
 					else if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.TheRepublic) && this.parent.Var_db42 >= 0)
 					{
 						// Instruction address 0x25fb:0x08b9, size: 5
-						this.parent.Segment_2517.F0_2517_04a1(playerID, GovernmentTypeEnum.Republic);
+						this.parent.Diplomacy.F0_2517_04a1_ChangeCurrentGovernment(playerID, GovernmentTypeEnum.Republic);
 					}
 					else if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Communism) && 
 						this.parent.GameData.Players[playerID].CityCount > 10)
 					{
 						// Instruction address 0x25fb:0x08b9, size: 5
-						this.parent.Segment_2517.F0_2517_04a1(playerID, GovernmentTypeEnum.Communist);
+						this.parent.Diplomacy.F0_2517_04a1_ChangeCurrentGovernment(playerID, GovernmentTypeEnum.Communist);
 					}
 					else if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Monarchy))
 					{
 						// Instruction address 0x25fb:0x08b9, size: 5
-						this.parent.Segment_2517.F0_2517_04a1(playerID, GovernmentTypeEnum.Monarchy);
+						this.parent.Diplomacy.F0_2517_04a1_ChangeCurrentGovernment(playerID, GovernmentTypeEnum.Monarchy);
 					}
 				}
 

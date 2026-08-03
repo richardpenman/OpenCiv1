@@ -667,7 +667,7 @@ namespace OpenCivOne
 								}
 
 								F0_1403_3ed7_DrawVisibleCell(unit.Position.X, unit.Position.Y);
-								this.parent.Segment_2517.F0_2517_0aa1_ClearDiplomacyFlags(this.parent.GameData.HumanPlayerID,
+								this.parent.Diplomacy.F0_2517_0aa1_ClearDiplomacyFlags(this.parent.GameData.HumanPlayerID,
 									this.parent.GameData.Cities[cityID].PlayerID, DiplomacyFlagsEnum.Peace);
 
 								int local_54 = this.parent.GameData.Cities[cityID].PlayerID;
@@ -2163,7 +2163,7 @@ namespace OpenCivOne
 										if ((short)this.parent.Segment_29f3.F0_29f3_0c9e_ConfirmAttackAction(ownerPlayerID) != -1)
 										{
 											// Instruction address 0x1403:0x2a87, size: 5
-											this.parent.Segment_2517.F0_2517_0aa1_ClearDiplomacyFlags(playerID, ownerPlayerID, DiplomacyFlagsEnum.Peace);
+											this.parent.Diplomacy.F0_2517_0aa1_ClearDiplomacyFlags(playerID, ownerPlayerID, DiplomacyFlagsEnum.Peace);
 										}
 										else
 										{

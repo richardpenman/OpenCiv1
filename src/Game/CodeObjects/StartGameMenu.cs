@@ -444,7 +444,7 @@ namespace OpenCivOne
 							this.parent.CAPI.RNG.Next(2) == 0)
 						{
 							// Instruction address 0x0000:0x09b2, size: 5
-							this.parent.Segment_1ade.F0_1ade_1d2e(playerID, (TechnologyAdvanceEnum)i, playerID);
+							this.parent.Segment_1ade.F0_1ade_1d2e(playerID, playerID, (TechnologyAdvanceEnum)i);
 						}
 					}
 				}

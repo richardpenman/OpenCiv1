@@ -36,7 +36,7 @@ namespace OpenCivOne
 		private Segment_1ade oSegment_1ade;
 		private CityWorker cityWorker;
 		private AttackActions oSegment_29f3;
-		private Segment_2517 oSegment_2517;
+		private Diplomacy diplomacy;
 		private Menus menus;
 		private MainIntro mainIntro;
 		private MeetWithKing meetWithKing;
@@ -158,7 +158,7 @@ namespace OpenCivOne
 			this.oSegment_1ade = new Segment_1ade(this);
 			this.cityWorker = new CityWorker(this);
 			this.oSegment_29f3 = new AttackActions(this);
-			this.oSegment_2517 = new Segment_2517(this);
+			this.diplomacy = new Diplomacy(this);
 			this.menus = new Menus(this);
 			this.mainIntro = new MainIntro(this);
 			this.meetWithKing = new MeetWithKing(this);
@@ -518,7 +518,7 @@ namespace OpenCivOne
 		}
 		#endregion
 
-		#region Public Segment getters
+		#region Public Segment objects
 		public StartGame StartGame
 		{
 			get { return this.startGame; }
@@ -606,9 +606,9 @@ namespace OpenCivOne
 			get { return this.oSegment_29f3; }
 		}
 
-		public Segment_2517 Segment_2517
+		public Diplomacy Diplomacy
 		{
-			get { return this.oSegment_2517; }
+			get { return this.diplomacy; }
 		}
 
 		public Menus Menus

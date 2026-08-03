@@ -100,7 +100,7 @@ namespace OpenCivOne
 							if (diplomatPlayerID != this.parent.GameData.HumanPlayerID || this.parent.Segment_29f3.F0_29f3_0c9e_ConfirmAttackAction(cityPlayerID) != -1)
 							{
 								// Instruction address 0x0000:0x01c6, size: 5
-								this.parent.Segment_2517.F0_2517_0aa1_ClearDiplomacyFlags(diplomatPlayerID, cityPlayerID, DiplomacyFlagsEnum.Peace);
+								this.parent.Diplomacy.F0_2517_0aa1_ClearDiplomacyFlags(diplomatPlayerID, cityPlayerID, DiplomacyFlagsEnum.Peace);
 
 								if (diplomatPlayerID != 0)
 								{
@@ -114,7 +114,7 @@ namespace OpenCivOne
 											!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(diplomatPlayerID, selectedTechnology))
 										{
 											// Instruction address 0x0000:0x0249, size: 5
-											this.parent.Segment_1ade.F0_1ade_1d2e(diplomatPlayerID, selectedTechnology, cityPlayerID);
+											this.parent.Segment_1ade.F0_1ade_1d2e(diplomatPlayerID, cityPlayerID, selectedTechnology);
 
 											this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.SpiesReport;
 
@@ -199,7 +199,7 @@ namespace OpenCivOne
 
 					case 4:
 						// Instruction address 0x0000:0x0459, size: 5
-						int local_c = (short)this.parent.Segment_2517.F0_2517_0d97(cityPlayerID, this.parent.GameData.Cities[destinationCityID].Position.X, this.parent.GameData.Cities[destinationCityID].Position.Y);
+						int local_c = this.parent.Diplomacy.F0_2517_0d97_GetMinimumDistanceFromPalace(cityPlayerID, this.parent.GameData.Cities[destinationCityID].Position.X, this.parent.GameData.Cities[destinationCityID].Position.Y);
 
 						if (local_c != 0)
 						{
@@ -240,7 +240,7 @@ namespace OpenCivOne
 									if (this.parent.GameData.Players[cityPlayerID].Diplomacy[diplomatPlayerID].HasFlag(DiplomacyFlagsEnum.Peace))
 									{
 										// Instruction address 0x0000:0x0593, size: 5
-										this.parent.Segment_2517.F0_2517_0aa1_ClearDiplomacyFlags(cityPlayerID, diplomatPlayerID, DiplomacyFlagsEnum.Peace);
+										this.parent.Diplomacy.F0_2517_0aa1_ClearDiplomacyFlags(cityPlayerID, diplomatPlayerID, DiplomacyFlagsEnum.Peace);
 
 										this.parent.GameData.Players[cityPlayerID].Diplomacy[diplomatPlayerID] |= DiplomacyFlagsEnum.Vendetta;
 									}
@@ -294,7 +294,7 @@ namespace OpenCivOne
 			if (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(destinationPlayerID, destinationUnitID, UnitStackValueTypeEnum.UnitCount) <= 1)
 			{
 				// Instruction address 0x0000:0x067a, size: 5
-				int local_8 = (short)this.parent.Segment_2517.F0_2517_0d97(destinationPlayerID,
+				int local_8 = this.parent.Diplomacy.F0_2517_0d97_GetMinimumDistanceFromPalace(destinationPlayerID,
 					this.parent.GameData.Players[destinationPlayerID].Units[destinationUnitID].Position.X, this.parent.GameData.Players[destinationPlayerID].Units[destinationUnitID].Position.Y);
 
 				int actionCost = ((this.parent.GameData.Players[destinationPlayerID].Coins + 750) / (local_8 + 2)) *
