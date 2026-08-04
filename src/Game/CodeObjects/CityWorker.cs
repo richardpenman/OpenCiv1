@@ -182,7 +182,7 @@ namespace OpenCivOne
 
 					if (flag == 0)
 					{
-						if ((city.Status & CityStatusEnum.Unknown1) == CityStatusEnum.None)
+						if ((city.Status & CityStatusEnum.CivilDisorder) == CityStatusEnum.None)
 						{
 							this.parent.Var_e8b8 = 0;
 						}
@@ -265,8 +265,8 @@ namespace OpenCivOne
 				if (flag == 0)
 				{
 					// !!! This is to prevent corruption, we should remove this
-					city.Status &= (CityStatusEnum.Unknown1 | CityStatusEnum.Unknown2 | CityStatusEnum.Unknown4 | CityStatusEnum.Unknown8 |
-						 CityStatusEnum.Unknown10 | CityStatusEnum.Unknown20 | CityStatusEnum.Unknown40);
+					city.Status &= (CityStatusEnum.CivilDisorder | CityStatusEnum.OceanAccess | CityStatusEnum.FortifiedUnitsRestored | CityStatusEnum.NearRiverOrMountains |
+						 CityStatusEnum.AutoProduction | CityStatusEnum.TechnologyStolen | CityStatusEnum.Celebrating);
 
 					if (city.FoodCount < 0)
 					{
@@ -469,7 +469,7 @@ namespace OpenCivOne
 
 				if (((ushort)this.parent.GameData.PlayerFlags & (1 << this.Var_6548_PlayerID)) != 0 ||
 					((cityID + this.parent.GameData.TurnCount) & 0x3) != 0 ||
-					(city.Status & CityStatusEnum.Unknown1) != CityStatusEnum.None || this.Var_70e8 != 0)
+					(city.Status & CityStatusEnum.CivilDisorder) != CityStatusEnum.None || this.Var_70e8 != 0)
 				{
 					for (int i = 0; i < this.Var_6540_CityOffsetCount; i++)
 					{
@@ -575,7 +575,7 @@ namespace OpenCivOne
 					currentWorkingCitizenCount--;
 				}
 
-				if (this.Var_6548_PlayerID != this.parent.GameData.HumanPlayerID && (city.Status & CityStatusEnum.Unknown1) != CityStatusEnum.None)
+				if (this.Var_6548_PlayerID != this.parent.GameData.HumanPlayerID && (city.Status & CityStatusEnum.CivilDisorder) != CityStatusEnum.None)
 				{
 					this.parent.Var_e8b8++;
 				}
@@ -720,7 +720,7 @@ namespace OpenCivOne
 					int newShields = this.parent.Var_70da_Arr[1];
 					newShields -= this.parent.Var_d2f6;
 
-					if ((city.Status & CityStatusEnum.Unknown1) != CityStatusEnum.None)
+					if ((city.Status & CityStatusEnum.CivilDisorder) != CityStatusEnum.None)
 					{
 						newShields = 0;
 					}
@@ -818,7 +818,7 @@ namespace OpenCivOne
 												int unitDistance = Math.Abs(this.parent.MapManagement.GetDistance(this.parent.GameData.Cities[i].Position, 
 													this.parent.GameData.Players[this.Var_6548_PlayerID].Units[nearestUnitID].Position) - 3);
 
-												if ((this.parent.GameData.Cities[i].Status & CityStatusEnum.Unknown20) != CityStatusEnum.None)
+												if ((this.parent.GameData.Cities[i].Status & CityStatusEnum.TechnologyStolen) != CityStatusEnum.None)
 												{
 													unitDistance = 3;
 												}
@@ -958,7 +958,7 @@ namespace OpenCivOne
 									// Instruction address 0x1d12:0x1dbe, size: 5
 									if (this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID && 
 										this.parent.GameData.GameSettingFlags.Animations && 
-										(newShields <= 21 || newShields > 24) && (city.Status & CityStatusEnum.Unknown10) == CityStatusEnum.None && newShields != 1)
+										(newShields <= 21 || newShields > 24) && (city.Status & CityStatusEnum.AutoProduction) == CityStatusEnum.None && newShields != 1)
 									{
 										this.parent.CityView.F19_0000_0000_ShowCityLayout(cityID, newShields,
 											$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} builds\n{this.parent.GameData.GetImprovementType(newShields).Name}.\n");
@@ -1112,7 +1112,7 @@ namespace OpenCivOne
 						}
 					}
 
-					if ((this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID && (city.Status & CityStatusEnum.Unknown10) != CityStatusEnum.None) &&
+					if ((this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID && (city.Status & CityStatusEnum.AutoProduction) != CityStatusEnum.None) &&
 						(city.ShieldsCount == 0 || (city.CurrentProductionID < 0 && newShields == -1)))
 					{
 						// Instruction address 0x1d12:0x2262, size: 5
@@ -1122,7 +1122,7 @@ namespace OpenCivOne
 
 						if (newShields == 99)
 						{
-							city.ClearStatusFlags(CityStatusEnum.Unknown10);
+							city.ClearStatusFlags(CityStatusEnum.AutoProduction);
 						}
 						else
 						{
@@ -1145,7 +1145,7 @@ namespace OpenCivOne
 				L2307:
 					if ((this.parent.GameData.PlayerFlags & (1 << this.Var_6548_PlayerID)) == 0)
 					{
-						if ((city.Status & CityStatusEnum.Unknown10) != CityStatusEnum.None)
+						if ((city.Status & CityStatusEnum.AutoProduction) != CityStatusEnum.None)
 						{
 							// Instruction address 0x1d12:0x232e, size: 5
 							this.parent.AIEngine.F0_25fb_34b6_ChangeCityProduction(cityID);
@@ -1169,7 +1169,7 @@ namespace OpenCivOne
 							cityShieldIncome = this.parent.GameData.Players[this.Var_6548_PlayerID].Coins / 128;
 						}
 
-						if ((city.Status & CityStatusEnum.Unknown1) != CityStatusEnum.None && city.CurrentProductionID < 0 && city.ShieldsCount != 0)
+						if ((city.Status & CityStatusEnum.CivilDisorder) != CityStatusEnum.None && city.CurrentProductionID < 0 && city.ShieldsCount != 0)
 						{
 							// Instruction address 0x1d12:0x24a7, size: 5
 							cityShieldIncome = this.parent.Tools.CheckValueRange(
@@ -1179,7 +1179,7 @@ namespace OpenCivOne
 
 						// Instruction address 0x1d12:0x24bb, size: 5
 						if ((this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(cityX, cityY) == -1 || 
-							(city.Status & CityStatusEnum.Unknown10) != CityStatusEnum.None) && city.CurrentProductionID >= 0 && city.ShieldsCount != 0)
+							(city.Status & CityStatusEnum.AutoProduction) != CityStatusEnum.None) && city.CurrentProductionID >= 0 && city.ShieldsCount != 0)
 						{
 							// Instruction address 0x1d12:0x2530, size: 5
 							cityShieldIncome = this.parent.Tools.CheckValueRange(
@@ -1195,7 +1195,7 @@ namespace OpenCivOne
 								0, this.parent.GameData.Players[this.Var_6548_PlayerID].Coins / 3);
 						}
 
-						if (city.CurrentProductionID >= 0 && city.Status == (CityStatusEnum.Unknown1 | CityStatusEnum.Unknown8 | CityStatusEnum.Unknown10) && 
+						if (city.CurrentProductionID >= 0 && city.Status == (CityStatusEnum.CivilDisorder | CityStatusEnum.NearRiverOrMountains | CityStatusEnum.AutoProduction) && 
 							this.parent.GameData.Players[this.Var_6548_PlayerID].ActiveUnits[(int)UnitTypeEnum.Nuclear] == 0 && city.ShieldsCount != 0)
 						{
 							// Instruction address 0x1d12:0x260d, size: 5
@@ -1211,7 +1211,7 @@ namespace OpenCivOne
 
 						city.ShieldsCount += (short)cityShieldIncome;
 						this.parent.GameData.Players[this.Var_6548_PlayerID].Coins -= (short)(cityShieldIncome * 2);
-						city.ClearStatusFlags(CityStatusEnum.Unknown10);
+						city.ClearStatusFlags(CityStatusEnum.AutoProduction);
 					}
 				}
 
@@ -1726,7 +1726,7 @@ namespace OpenCivOne
 						if (flag == 0)
 						{
 							if (this.parent.Var_70da_Arr[1] < this.parent.Var_d2f6 ||
-								((city.Status & CityStatusEnum.Unknown1) != CityStatusEnum.None && ((i + this.parent.GameData.TurnCount) & 0x7) == 0 &&
+								((city.Status & CityStatusEnum.CivilDisorder) != CityStatusEnum.None && ((i + this.parent.GameData.TurnCount) & 0x7) == 0 &&
 								this.Var_6548_PlayerID != this.parent.GameData.HumanPlayerID &&
 								(this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Republic ||
 									this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Democracy)))
@@ -1767,7 +1767,7 @@ namespace OpenCivOne
 										// Instruction address 0x1d12:0x35c9, size: 5
 										this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(this.Var_6548_PlayerID, (short)selectedUnit);
 
-										city.ClearStatusFlags(CityStatusEnum.Unknown1);
+										city.ClearStatusFlags(CityStatusEnum.CivilDisorder);
 									}
 								}
 								else
@@ -2029,7 +2029,7 @@ namespace OpenCivOne
 					if (this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID)
 					{
 						// Instruction address 0x1d12:0x3e31, size: 5
-						this.parent.DrawTools.DrawFilledRectangleWithCenteredText(231, 106, 263, 114, (string)(((city.Status & CityStatusEnum.Unknown10) != CityStatusEnum.None) ? "AUTO" : "CHANGE"), 9);
+						this.parent.DrawTools.DrawFilledRectangleWithCenteredText(231, 106, 263, 114, (string)(((city.Status & CityStatusEnum.AutoProduction) != CityStatusEnum.None) ? "AUTO" : "CHANGE"), 9);
 
 						// Instruction address 0x1d12:0x3e51, size: 5
 						this.parent.DrawTools.DrawFilledRectangleWithCenteredText(294, 106, 311, 114, "BUY", 9);
@@ -2412,9 +2412,9 @@ namespace OpenCivOne
 							mouseEvent.Position.Y >= 106 && mouseEvent.Position.Y <= 116 && mouseEvent.Buttons == MouseButtonsEnum.Right) ||
 							pressedKey == 'A')
 						{
-							city.Status ^= CityStatusEnum.Unknown10;
+							city.Status ^= CityStatusEnum.AutoProduction;
 
-							if ((city.Status & CityStatusEnum.Unknown10) != CityStatusEnum.None)
+							if ((city.Status & CityStatusEnum.AutoProduction) != CityStatusEnum.None)
 							{
 								// Instruction address 0x1d12:0x4aef, size: 5
 								int newProductionID = (short)this.parent.Segment_1ade.F0_1ade_0421(this.Var_6548_PlayerID, cityID);
@@ -2491,7 +2491,7 @@ namespace OpenCivOne
 											this.parent.GameData.GetImprovementType(-city.CurrentProductionID).Name)} is {costToComplete} coins" +
 										$"\nOur treasury has {this.parent.GameData.Players[this.Var_6548_PlayerID].Coins} coins.\n";
 
-								if ((city.Status & CityStatusEnum.Unknown1) != CityStatusEnum.None)
+								if ((city.Status & CityStatusEnum.CivilDisorder) != CityStatusEnum.None)
 								{
 									completeProductionText += "CIVIL DISORDER\n";
 								}
@@ -2503,7 +2503,7 @@ namespace OpenCivOne
 								this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
 								// Instruction address 0x1d12:0x4e32, size: 5
-								if ((city.Status & CityStatusEnum.Unknown1) == CityStatusEnum.None && this.parent.GameData.Players[this.Var_6548_PlayerID].Coins >= costToComplete &&
+								if ((city.Status & CityStatusEnum.CivilDisorder) == CityStatusEnum.None && this.parent.GameData.Players[this.Var_6548_PlayerID].Coins >= costToComplete &&
 									this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(completeProductionText, 100, 80, true, false, true) == 0)
 								{
 									city.ShieldsCount = (short)(itemShieldCost * 10);
@@ -2516,7 +2516,7 @@ namespace OpenCivOne
 
 							if (pressedKey != 0x1b && pressedKey != 0xd && ((mouseEvent.Position.X >= 230 && mouseEvent.Position.X < 270) || pressedKey == 'c'))
 							{
-								city.ClearStatusFlags(CityStatusEnum.Unknown10);
+								city.ClearStatusFlags(CityStatusEnum.AutoProduction);
 
 								if (city.CurrentProductionID >= 0)
 								{
@@ -2721,7 +2721,7 @@ namespace OpenCivOne
 							goto L12c2;
 						}
 
-						if (pressedKey == 's' && (city.Status & CityStatusEnum.Unknown80) == CityStatusEnum.None)
+						if (pressedKey == 's' && (city.Status & CityStatusEnum.ImprovementSoldThisTurn) == CityStatusEnum.None)
 						{
 							improvementIndex = 0;
 
@@ -2964,7 +2964,7 @@ namespace OpenCivOne
 
 								if (improvementIndex == -1)
 								{
-									if ((city.Status & CityStatusEnum.Unknown80) == CityStatusEnum.None)
+									if ((city.Status & CityStatusEnum.ImprovementSoldThisTurn) == CityStatusEnum.None)
 									{
 										this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
@@ -2975,7 +2975,7 @@ namespace OpenCivOne
 										{
 											this.parent.GameData.Players[this.Var_6548_PlayerID].Coins += (short)(10 * this.parent.GameData.GetImprovementType(i + 1).Cost);
 											city.RemoveImprovement(City.BitToImprovementEnum(i));
-											city.Status |= CityStatusEnum.Unknown80;
+											city.Status |= CityStatusEnum.ImprovementSoldThisTurn;
 
 											if (i + 1 == 8)
 											{
@@ -3138,7 +3138,7 @@ namespace OpenCivOne
 								// Instruction address 0x1d12:0x5d3b, size: 5
 								this.parent.CommonTools.PlayTune(36, 0);
 
-								if (this.parent.GameData.GameSettingFlags.Animations && (city.Status & CityStatusEnum.Unknown1) == CityStatusEnum.None && this.parent.Var_6b92 == 0)
+								if (this.parent.GameData.GameSettingFlags.Animations && (city.Status & CityStatusEnum.CivilDisorder) == CityStatusEnum.None && this.parent.Var_6b92 == 0)
 								{
 									this.parent.CityView.F19_0000_0000_ShowCityLayout(cityID, -2,
 										$"Civil Disorder in\n{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}! Mayor\nflees in panic.\n");
@@ -3161,7 +3161,7 @@ namespace OpenCivOne
 								// Instruction address 0x1d12:0x5dbd, size: 5
 								this.parent.CommonTools.PlayTune(1, 0);
 
-								if ((city.Status & CityStatusEnum.Unknown1) == CityStatusEnum.None)
+								if ((city.Status & CityStatusEnum.CivilDisorder) == CityStatusEnum.None)
 								{
 									this.parent.Var_b1e8 = 1;
 
@@ -3172,9 +3172,9 @@ namespace OpenCivOne
 								}
 							}
 
-							if ((city.Status & CityStatusEnum.Unknown1) == CityStatusEnum.None)
+							if ((city.Status & CityStatusEnum.CivilDisorder) == CityStatusEnum.None)
 							{
-								city.Status |= CityStatusEnum.Unknown1;
+								city.Status |= CityStatusEnum.CivilDisorder;
 
 								if ((this.parent.GameData.PlayerFlags & (1 << this.Var_6548_PlayerID)) == 0)
 								{
@@ -3217,9 +3217,9 @@ namespace OpenCivOne
 						}
 						else
 						{
-							if (totalCityHappiness >= 0 && (city.Status & CityStatusEnum.Unknown1) != CityStatusEnum.None)
+							if (totalCityHappiness >= 0 && (city.Status & CityStatusEnum.CivilDisorder) != CityStatusEnum.None)
 							{
-								city.ClearStatusFlags(CityStatusEnum.Unknown1);
+								city.ClearStatusFlags(CityStatusEnum.CivilDisorder);
 
 								if ((this.parent.GameData.PlayerFlags & (1 << this.Var_6548_PlayerID)) != 0)
 								{
@@ -3258,7 +3258,7 @@ namespace OpenCivOne
 							((city.ActualSize + 1) / 2) <= this.parent.Var_70e2_CityHappyCitizenCount &&
 							this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType != GovernmentTypeEnum.Anarchy)
 						{
-							if ((city.Status & CityStatusEnum.Unknown40) == CityStatusEnum.None)
+							if ((city.Status & CityStatusEnum.Celebrating) == CityStatusEnum.None)
 							{
 								if ((this.parent.GameData.PlayerFlags & (1 << this.Var_6548_PlayerID)) != 0)
 								{
@@ -3289,7 +3289,7 @@ namespace OpenCivOne
 										this.parent.CommonTools.PlayTune(1, 0);
 									}
 								}
-								city.Status |= CityStatusEnum.Unknown40;
+								city.Status |= CityStatusEnum.Celebrating;
 							}
 							else if (this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Republic ||
 								this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType == GovernmentTypeEnum.Democracy)
@@ -3303,7 +3303,7 @@ namespace OpenCivOne
 								}
 							}
 						}
-						else if (totalCityHappiness >= 0 && (city.Status & CityStatusEnum.Unknown40) != CityStatusEnum.None)
+						else if (totalCityHappiness >= 0 && (city.Status & CityStatusEnum.Celebrating) != CityStatusEnum.None)
 						{
 							if ((this.parent.GameData.PlayerFlags & (1 << this.Var_6548_PlayerID)) != 0)
 							{
@@ -3319,7 +3319,7 @@ namespace OpenCivOne
 								}
 							}
 
-							city.ClearStatusFlags(CityStatusEnum.Unknown40);
+							city.ClearStatusFlags(CityStatusEnum.Celebrating);
 						}
 					}
 				
@@ -3440,7 +3440,7 @@ namespace OpenCivOne
 							}
 						}
 
-						if ((city.Status & CityStatusEnum.Unknown1) != CityStatusEnum.None && city.HasImprovement(ImprovementEnum.NuclearPlant) &&
+						if ((city.Status & CityStatusEnum.CivilDisorder) != CityStatusEnum.None && city.HasImprovement(ImprovementEnum.NuclearPlant) &&
 							!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.FusionPower) && this.parent.CAPI.RNG.Next(3) == 0)
 						{
 							// Instruction address 0x1d12:0x66a5, size: 5
@@ -3512,7 +3512,7 @@ namespace OpenCivOne
 				}
 			
 				// !!! this playerID reference needs to be checked!
-				if ((city.Status & CityStatusEnum.Unknown4) != CityStatusEnum.None && !this.parent.UnitManagement.F0_1866_18d0_IsEnemyUnitNear(city.PlayerID, city.Position.X, city.Position.Y))
+				if ((city.Status & CityStatusEnum.FortifiedUnitsRestored) != CityStatusEnum.None && !this.parent.UnitManagement.F0_1866_18d0_IsEnemyUnitNear(city.PlayerID, city.Position.X, city.Position.Y))
 				{
 					// Instruction address 0x1d12:0x6907, size: 5
 					this.parent.UnitManagement.F0_1866_00c6_StoreFortifiedCityUnits(cityID);
@@ -3737,7 +3737,7 @@ namespace OpenCivOne
 					resourceCount += resourceCount / 2;
 				}
 
-				if (resourceCount > 2 && (this.parent.GameData.Cities[cityID].Status & CityStatusEnum.Unknown40) == CityStatusEnum.None)
+				if (resourceCount > 2 && (this.parent.GameData.Cities[cityID].Status & CityStatusEnum.Celebrating) == CityStatusEnum.None)
 				{
 					if (this.parent.GameData.Players[playerID].GovernmentType == GovernmentTypeEnum.Anarchy ||
 						this.parent.GameData.Players[playerID].GovernmentType == GovernmentTypeEnum.Despotism)
@@ -3758,7 +3758,7 @@ namespace OpenCivOne
 						this.parent.Var_db42++;
 					}
 
-					if ((this.parent.GameData.Cities[cityID].Status & CityStatusEnum.Unknown40) != CityStatusEnum.None)
+					if ((this.parent.GameData.Cities[cityID].Status & CityStatusEnum.Celebrating) != CityStatusEnum.None)
 					{
 						if (this.parent.GameData.Players[playerID].GovernmentType == GovernmentTypeEnum.Monarchy ||
 							this.parent.GameData.Players[playerID].GovernmentType == GovernmentTypeEnum.Communist ||

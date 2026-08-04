@@ -620,7 +620,7 @@ namespace OpenCivOne
 							int citySize = (city.PlayerID == this.parent.GameData.HumanPlayerID || this.parent.Var_d806_DebugFlag) ?
 									city.ActualSize : city.VisibleSize;
 
-							if ((city.Status & CityStatusEnum.Unknown1) != CityStatusEnum.None)
+							if ((city.Status & CityStatusEnum.CivilDisorder) != CityStatusEnum.None)
 							{
 								// Draw city disorder
 

@@ -39,7 +39,7 @@ namespace OpenCivOne
 						this.parent.Var_b276_MenuBoxDisabledOptions = 0x1;
 					}
 
-					if (barbariansInvolved || (this.parent.GameData.Cities[destinationCityID].Status & CityStatusEnum.Unknown20) != CityStatusEnum.None)
+					if (barbariansInvolved || (this.parent.GameData.Cities[destinationCityID].Status & CityStatusEnum.TechnologyStolen) != CityStatusEnum.None)
 					{
 						this.parent.Var_b276_MenuBoxDisabledOptions |= 0x4;
 					}
@@ -95,7 +95,7 @@ namespace OpenCivOne
 						return;
 
 					case 2:
-						if (!barbariansInvolved && (this.parent.GameData.Cities[destinationCityID].Status & CityStatusEnum.Unknown20) == CityStatusEnum.None)
+						if (!barbariansInvolved && (this.parent.GameData.Cities[destinationCityID].Status & CityStatusEnum.TechnologyStolen) == CityStatusEnum.None)
 						{
 							if (diplomatPlayerID != this.parent.GameData.HumanPlayerID || this.parent.Segment_29f3.F0_29f3_0c9e_ConfirmAttackAction(cityPlayerID) != -1)
 							{
@@ -124,7 +124,7 @@ namespace OpenCivOne
 												$"{this.parent.GameData.TechnologyAdvances[(int)selectedTechnology].Name}.\n", 80, 80);
 
 											// !!! why are we creating a free City Wall in a destination city?
-											this.parent.GameData.Cities[destinationCityID].Status |= CityStatusEnum.Unknown20;
+											this.parent.GameData.Cities[destinationCityID].Status |= CityStatusEnum.TechnologyStolen;
 
 											// Instruction address 0x0000:0x0141, size: 5
 											this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(diplomatPlayerID, diplomatUnitID);
@@ -205,7 +205,7 @@ namespace OpenCivOne
 						{
 							int actionCost = ((this.parent.GameData.Players[cityPlayerID].Coins + 1000) / (local_c + 3)) * this.parent.GameData.Cities[destinationCityID].ActualSize;
 
-							if ((this.parent.GameData.Cities[destinationCityID].Status & CityStatusEnum.Unknown1) != CityStatusEnum.None)
+							if ((this.parent.GameData.Cities[destinationCityID].Status & CityStatusEnum.CivilDisorder) != CityStatusEnum.None)
 							{
 								actionCost /= 2;
 							}

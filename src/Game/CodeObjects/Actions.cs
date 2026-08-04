@@ -80,7 +80,7 @@ namespace OpenCivOne
 			else
 			{
 				this.parent.GameData.Cities[cityID].ShieldsCount = 0;
-				this.parent.GameData.Cities[cityID].ClearStatusFlags(CityStatusEnum.Unknown1 | CityStatusEnum.Unknown10 | CityStatusEnum.Unknown40);
+				this.parent.GameData.Cities[cityID].ClearStatusFlags(CityStatusEnum.CivilDisorder | CityStatusEnum.AutoProduction | CityStatusEnum.Celebrating);
 				this.parent.GameData.Cities[cityID].ImprovementFlags0 &= 0xfbb6;
 
 				if (!flag)
@@ -116,7 +116,7 @@ namespace OpenCivOne
 				// Instruction address 0x2459:0x0239, size: 5
 				this.parent.AIEngine.F0_25fb_3401_PlayerClearContinentPolicies(playerID, UnitRoleTypeEnum.Settler, cityX, cityY, 4);
 
-				this.parent.GameData.Cities[cityID].ClearStatusFlags(CityStatusEnum.Unknown4 | CityStatusEnum.Unknown20 | CityStatusEnum.Unknown40);
+				this.parent.GameData.Cities[cityID].ClearStatusFlags(CityStatusEnum.FortifiedUnitsRestored | CityStatusEnum.TechnologyStolen | CityStatusEnum.Celebrating);
 
 				for (int i = 0; i < 20; i++)
 				{
@@ -231,7 +231,7 @@ namespace OpenCivOne
 				this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].GovernmentType == GovernmentTypeEnum.Monarchy ||
 				this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].GovernmentType == GovernmentTypeEnum.Communist))
 			{
-				this.parent.GameData.Cities[cityID].Status |= CityStatusEnum.Unknown1;
+				this.parent.GameData.Cities[cityID].Status |= CityStatusEnum.CivilDisorder;
 			}
 
 			if (this.parent.GameData.Cities[cityID].ActualSize != 0)

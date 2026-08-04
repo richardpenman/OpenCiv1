@@ -54,7 +54,7 @@ namespace OpenCivOne
 
 				this.Var_20f4 = false;
 
-				this.parent.GameData.Cities[cityID].Status |= CityStatusEnum.Unknown4;
+				this.parent.GameData.Cities[cityID].Status |= CityStatusEnum.FortifiedUnitsRestored;
 			}
 		}
 
@@ -117,7 +117,7 @@ namespace OpenCivOne
 
 				this.Var_20f4 = false;
 				this.parent.Var_70d8 = oldValue;
-				this.parent.GameData.Cities[cityID].ClearStatusFlags(CityStatusEnum.Unknown4);
+				this.parent.GameData.Cities[cityID].ClearStatusFlags(CityStatusEnum.FortifiedUnitsRestored);
 			}		
 		}
 

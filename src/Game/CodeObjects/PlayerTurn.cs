@@ -1986,7 +1986,7 @@ namespace OpenCivOne
 
 						if (this.parent.GameData.Cities[cityID].PlayerID != this.parent.GameData.HumanPlayerID)
 						{
-							this.parent.GameData.Cities[cityID].Status |= CityStatusEnum.Unknown10;
+							this.parent.GameData.Cities[cityID].Status |= CityStatusEnum.AutoProduction;
 						}
 
 						if (unit.UnitType != UnitTypeEnum.None)

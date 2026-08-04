@@ -680,7 +680,7 @@ namespace OpenCivOne
 			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x38)));
 			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
 
-			if ((this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x38))].Status & CityStatusEnum.Unknown1) != CityStatusEnum.None)
+			if ((this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x38))].Status & CityStatusEnum.CivilDisorder) != CityStatusEnum.None)
 				goto L0a7a;
 			goto L08aa;
 

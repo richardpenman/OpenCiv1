@@ -974,7 +974,7 @@ namespace OpenCivOne
 						for (int i = 0; i < 128; i++)
 						{
 							if (this.parent.GameData.Cities[i].Status != CityStatusEnum.Invalid && this.parent.GameData.Cities[i].PlayerID == playerID &&
-								(this.parent.GameData.Cities[i].Status & CityStatusEnum.Unknown2) != CityStatusEnum.None)
+								(this.parent.GameData.Cities[i].Status & CityStatusEnum.OceanAccess) != CityStatusEnum.None)
 							{
 								// Instruction address 0x25fb:0x179d, size: 5
 								int distance = this.parent.MapManagement.GetDistance(unitX, unitY, this.parent.GameData.Cities[i].Position);
