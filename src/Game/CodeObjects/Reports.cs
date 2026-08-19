@@ -1010,7 +1010,7 @@ namespace OpenCivOne
 					{
 						if (cityScore > cityScores[j])
 						{
-							for (int k = 3; k > j; k--)
+							for (int k = 3; k >= j; k--)
 							{
 								cityScores[k + 1] = cityScores[k];
 								cityIDs[k + 1] = cityIDs[k];
