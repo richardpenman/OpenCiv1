@@ -40,7 +40,7 @@ namespace OpenCivOne
 			ShowLogoAndMainGameMenu();
 
 			// Start Game menu, level, tribe, name
-			if (this.parent.Var_6b32_SelectedGameType == 0)
+			if (this.parent.Var_6b32_SelectedGameType == 0 || this.parent.Var_6b32_SelectedGameType == 2 || this.parent.Var_6b32_SelectedGameType == 3)
 			{
 				// Instruction address 0x11a8:0x08a8, size: 5
 				this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "DIFFS.PIC", 1);
