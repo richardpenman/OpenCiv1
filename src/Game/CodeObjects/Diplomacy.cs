@@ -470,11 +470,12 @@ namespace OpenCivOne
 
 			if (flags == DiplomacyFlagsEnum.Peace)
 			{
-				this.parent.GameData.Players[playerID1].Diplomacy[playerID2] |= DiplomacyFlagsEnum.Peace;
-				this.parent.GameData.Players[playerID1].Diplomacy[playerID2] ^= DiplomacyFlagsEnum.Peace;
+				// Making peace wipes the record of the two players having fought each other
+				this.parent.GameData.Players[playerID1].Diplomacy[playerID2] |= DiplomacyFlagsEnum.EverFought;
+				this.parent.GameData.Players[playerID1].Diplomacy[playerID2] ^= DiplomacyFlagsEnum.EverFought;
 
-				this.parent.GameData.Players[playerID2].Diplomacy[playerID1] |= DiplomacyFlagsEnum.Peace;
-				this.parent.GameData.Players[playerID2].Diplomacy[playerID1] ^= DiplomacyFlagsEnum.Peace;
+				this.parent.GameData.Players[playerID2].Diplomacy[playerID1] |= DiplomacyFlagsEnum.EverFought;
+				this.parent.GameData.Players[playerID2].Diplomacy[playerID1] ^= DiplomacyFlagsEnum.EverFought;
 			}
 		}
 
