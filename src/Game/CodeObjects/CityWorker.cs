@@ -563,7 +563,7 @@ namespace OpenCivOne
 						}
 					}
 
-					if (bestCityCellIndex != -1)
+					if (bestCityCellIndex == -1)
 						break;
 
 					cityFreeArea[bestCityCellIndex] = 1;

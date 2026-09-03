@@ -738,7 +738,7 @@ namespace OpenCivOne
 					// Delete land units aboard the ship
 
 					// Instruction address 0x1866:0x0f94, size: 3
-					F0_1866_1643_DeleteLandUnitsInStack(playerID, unitID);
+					F0_1866_1610_DeleteLandUnitsInStack(playerID, unitID);
 				}
 	
 				if (unit.UnitType == UnitTypeEnum.Carrier && unit.NextUnitID != -1 && 
@@ -1225,11 +1225,38 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Deletes all land units in a stack
+		/// Deletes all land units in a stack, leaving the transport carrying them
 		/// </summary>
 		/// <param name="playerID"></param>
 		/// <param name="unitID"></param>
-		public void F0_1866_1643_DeleteLandUnitsInStack(int playerID, int unitID)
+		public void F0_1866_1610_DeleteLandUnitsInStack(int playerID, int unitID)
+		{
+			int oldUnitID = unitID;
+
+			for (int i = 0; i < 10 && oldUnitID != -1; i++)
+			{
+				int newUnitID = this.parent.GameData.Players[playerID].Units[oldUnitID].NextUnitID;
+
+				if (this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType != UnitTypeEnum.None &&
+					this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType].MovementType == UnitMovementTypeEnum.Land)
+				{
+					// Instruction address 0x1866:0x163a, size: 3
+					F0_1866_0f10_DeleteUnit(playerID, oldUnitID);
+				}
+
+				oldUnitID = newUnitID;
+
+				if (oldUnitID == unitID)
+					break;
+			}
+		}
+
+		/// <summary>
+		/// Deletes all units in a stack that do not move on land
+		/// </summary>
+		/// <param name="playerID"></param>
+		/// <param name="unitID"></param>
+		public void F0_1866_1643_DeleteNonLandUnitsInStack(int playerID, int unitID)
 		{
 			int oldUnitID = unitID;
 

@@ -321,7 +321,7 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.E) goto L0317;
 
 			// Instruction address 0x1ade:0x030f, size: 5
-			this.oParent.UnitManagement.F0_1866_1643_DeleteLandUnitsInStack(this.oParent.GameData.Cities[cityID].PlayerID, 
+			this.oParent.UnitManagement.F0_1866_1643_DeleteNonLandUnitsInStack(this.oParent.GameData.Cities[cityID].PlayerID,
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
 
 		L0317:
