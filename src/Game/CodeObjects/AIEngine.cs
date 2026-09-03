@@ -28,9 +28,9 @@ namespace OpenCivOne
 
 			for (int i = 0; i < 16; i++)
 			{
-				this.parent.GameData.Players[playerID].Continents[0].CityCount = 0;
-				this.parent.GameData.Players[playerID].Continents[0].Defense = 0;
-				this.parent.GameData.Players[playerID].Continents[0].Attack = 0;
+				this.parent.GameData.Players[playerID].Continents[i].CityCount = 0;
+				this.parent.GameData.Players[playerID].Continents[i].Defense = 0;
+				this.parent.GameData.Players[playerID].Continents[i].Attack = 0;
 			}
 
 			for (int i = 0; i < 20; i++)
@@ -1269,9 +1269,11 @@ namespace OpenCivOne
 										// Instruction address 0x25fb:0x2088, size: 5
 										TerrainImprovementFlagsEnum terrainImprovements = this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(unitX, unitY);
 
-										if ((terrainImprovements & (TerrainImprovementFlagsEnum.Irrigation | TerrainImprovementFlagsEnum.Mines)) != TerrainImprovementFlagsEnum.None ||
-											(terrainImprovements & TerrainImprovementFlagsEnum.Road) != TerrainImprovementFlagsEnum.Road &&
-											(terrainType == TerrainTypeEnum.Invalid || terrainType == TerrainTypeEnum.Desert ||
+										// Build a road on a cell that does not have one yet, when the cell is
+										// either already improved or is terrain that is cheap to build on
+										if ((terrainImprovements & TerrainImprovementFlagsEnum.Road) != TerrainImprovementFlagsEnum.Road &&
+											((terrainImprovements & (TerrainImprovementFlagsEnum.Irrigation | TerrainImprovementFlagsEnum.Mines)) != TerrainImprovementFlagsEnum.None ||
+											terrainType == TerrainTypeEnum.Invalid || terrainType == TerrainTypeEnum.Desert ||
 												terrainType == TerrainTypeEnum.Plains || terrainType == TerrainTypeEnum.Grassland))
 										{
 											unit.GoToDestination = OpenCivOneGame.InvalidPosition;
@@ -1636,6 +1638,9 @@ namespace OpenCivOne
 
 									if (selectedActiveUnitID == -1)
 									{
+										// An empty cell is always a candidate for the movement test below
+										checkMovementFlag = true;
+
 										if ((this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY) & TerrainImprovementFlagsEnum.City) != TerrainImprovementFlagsEnum.None &&
 											newCityPlayerID != playerID)
 										{
