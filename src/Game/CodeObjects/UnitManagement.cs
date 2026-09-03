@@ -659,7 +659,7 @@ namespace OpenCivOne
 
 				if (!this.Var_20f4)
 				{
-					if (!this.parent.Var_d806_DebugFlag || playerID == this.parent.GameData.HumanPlayerID ||
+					if (this.parent.Var_d806_DebugFlag || playerID == this.parent.GameData.HumanPlayerID ||
 						(unit.VisibleByPlayer & (1 << this.parent.GameData.HumanPlayerID)) != 0)
 					{
 						// Instruction address 0x1866:0x0e5c, size: 5
