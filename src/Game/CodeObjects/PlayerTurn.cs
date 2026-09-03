@@ -1271,16 +1271,16 @@ namespace OpenCivOne
 
 					for (int i = 0; 10 - this.parent.GameData.Players[playerID].TaxRate >= i; i++)
 					{
-						luxuryOptions.Append($"{i * 10}% Luxuries, ({(10 - i + this.parent.GameData.Players[playerID].TaxRate) * 10}% Science)\n ");
+						luxuryOptions.Append($"{i * 10}% Luxuries, ({(10 - this.parent.GameData.Players[playerID].TaxRate - i) * 10}% Science)\n ");
 					}
 
-					this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = (10 - this.parent.GameData.Players[playerID].TaxRate + this.parent.GameData.Players[playerID].ScienceTaxRate);
+					this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = (10 - this.parent.GameData.Players[playerID].TaxRate - this.parent.GameData.Players[playerID].ScienceTaxRate);
 
 					int newLuxuryRate = this.parent.Segment_1238.F0_1238_001e_ShowDialog(luxuryOptions.ToString(), 100, 80);
 
 					if (newLuxuryRate != -1)
 					{
-						this.parent.GameData.Players[playerID].ScienceTaxRate = (short)(10 - this.parent.GameData.Players[playerID].TaxRate + newLuxuryRate);
+						this.parent.GameData.Players[playerID].ScienceTaxRate = (short)(10 - this.parent.GameData.Players[playerID].TaxRate - newLuxuryRate);
 						// Instruction address 0x1403:0x37a3, size: 5
 						this.parent.Segment_1238.F0_1238_107e();
 					}
