@@ -335,7 +335,7 @@ namespace OpenCivOne
 				int maximumTechnologyGrade = -1;
 				int j = 0;
 
-				for (int i = 71; i >= 0; i--, j++)
+				for (int i = 71; i >= 0; i--)
 				{
 					if (!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID1, (TechnologyAdvanceEnum)i) &&
 						this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID2, (TechnologyAdvanceEnum)i))
@@ -343,7 +343,10 @@ namespace OpenCivOne
 						// Instruction address 0x2459:0x0762, size: 5
 						menuText.Append($"{this.parent.GameData.TechnologyAdvances[i].Name}\n ");
 
+						// Only technologies added to the menu are counted, so that this index
+						// matches the option index returned by the selection dialog
 						undiscoveredTechnologies[j] = i;
+						j++;
 
 						if (this.parent.Segment_1ade.F0_1ade_2317_GradeTechnology(playerID1, (TechnologyAdvanceEnum)i) > maximumTechnologyGrade)
 						{
