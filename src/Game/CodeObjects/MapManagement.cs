@@ -709,6 +709,13 @@ namespace OpenCivOne
 			// function body
 			// Instruction address 0x2aea:0x0ecd, size: 5
 			Unit unit = this.parent.GameData.Players[playerID].Units[unitID];
+
+			// An empty slot in the stack chain has UnitType None (-1); Units[-1] throws in C#
+			if (unit.UnitType == UnitTypeEnum.None)
+			{
+				return false;
+			}
+
 			int x = this.parent.MapManagement.AdjustXPosition(unit.Position.X - this.parent.Var_d4cc_MapViewX) * 16 + 80;
 			int y = (unit.Position.Y - this.parent.Var_d75e_MapViewY) * 16 + 8;
 
@@ -865,7 +872,9 @@ namespace OpenCivOne
 			// Instruction address 0x2aea:0x127f, size: 3
 			Unit unit = this.parent.GameData.Players[playerID].Units[unitID];
 
-			if (unit.NextUnitID != -1 && GetTerrainType(unit.Position.X, unit.Position.Y) == TerrainTypeEnum.Water &&
+			// An empty slot in the stack chain has UnitType None (-1); Units[-1] throws in C#
+			if (unit.NextUnitID != -1 && unit.UnitType != UnitTypeEnum.None &&
+				GetTerrainType(unit.Position.X, unit.Position.Y) == TerrainTypeEnum.Water &&
 				this.parent.GameData.Units[(int)unit.UnitType].MovementType != UnitMovementTypeEnum.Water)
 			{
 				int currentUnitID = unitID;

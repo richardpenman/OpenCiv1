@@ -2747,7 +2747,9 @@ namespace OpenCivOne
 
 				for (int i = 0; i < 16; i++)
 				{
-					if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].MovementType != UnitMovementTypeEnum.Air)
+					// An empty slot in the stack chain has UnitType None (-1); Units[-1] throws in C#
+					if (this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType != UnitTypeEnum.None &&
+						this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].MovementType != UnitMovementTypeEnum.Air)
 					{
 						int idRange;
 
