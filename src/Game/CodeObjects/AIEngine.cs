@@ -941,7 +941,9 @@ namespace OpenCivOne
 
 					int nextUnitID = unit.NextUnitID;
 
-					while (nextUnitID != -1 && nextUnitID != unitID)
+					// A damaged stack chain can be cyclic without passing back through unitID, which
+					// would spin here forever. Cap the walk like the other stack helpers do.
+					for (int stackStep = 0; stackStep < 10 && nextUnitID != -1 && nextUnitID != unitID; stackStep++)
 					{
 						if ((this.parent.GameData.Players[playerID].Units[nextUnitID].Status & UnitStatusEnum.Fortified) == UnitStatusEnum.None)
 						{
@@ -1529,12 +1531,16 @@ namespace OpenCivOne
 							if (selectedActiveUnitID != -1 && this.parent.GameData.Players[selectedActivePlayerID].Units[selectedActiveUnitID].UnitType == UnitTypeEnum.Diplomat)
 							{
 								int activeUnitID = selectedActiveUnitID;
+								int diplomatStep = 0;
 
+								// A damaged stack chain can be cyclic without passing back through the
+								// starting unit, which would spin here forever; cap the walk.
 								do
 								{
 									activeUnitID = this.parent.GameData.Players[selectedActivePlayerID].Units[activeUnitID].NextUnitID;
+									diplomatStep++;
 								}
-								while ((activeUnitID != -1 && activeUnitID != selectedActiveUnitID) && this.parent.GameData.Players[selectedActivePlayerID].Units[activeUnitID].UnitType == UnitTypeEnum.Diplomat);
+								while (diplomatStep < 10 && (activeUnitID != -1 && activeUnitID != selectedActiveUnitID) && this.parent.GameData.Players[selectedActivePlayerID].Units[activeUnitID].UnitType == UnitTypeEnum.Diplomat);
 
 								if (activeUnitID != -1)
 								{

@@ -878,12 +878,23 @@ namespace OpenCivOne
 				this.parent.GameData.Units[(int)unit.UnitType].MovementType != UnitMovementTypeEnum.Water)
 			{
 				int currentUnitID = unitID;
+				int stackStep = 0;
 
+				// A damaged stack chain can be cyclic without passing back through unitID, which
+				// would spin here forever; cap the walk like the other stack helpers do.
 				do
 				{
 					currentUnitID = this.parent.GameData.Players[playerID].Units[currentUnitID].NextUnitID;
+					stackStep++;
 
-					if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[currentUnitID].UnitType].MovementType == UnitMovementTypeEnum.Water)
+					if (currentUnitID == -1)
+					{
+						break;
+					}
+
+					// An empty slot in the stack chain has UnitType None (-1); Units[-1] throws in C#
+					if (this.parent.GameData.Players[playerID].Units[currentUnitID].UnitType != UnitTypeEnum.None &&
+						this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[currentUnitID].UnitType].MovementType == UnitMovementTypeEnum.Water)
 					{
 						// Instruction address 0x2aea:0x12e2, size: 3
 						F0_2aea_0e29_DrawUnit(playerID, currentUnitID);
@@ -891,7 +902,7 @@ namespace OpenCivOne
 						currentUnitID = -1;
 					}
 				}
-				while (currentUnitID != -1 && currentUnitID != unitID);
+				while (stackStep < 10 && currentUnitID != -1 && currentUnitID != unitID);
 
 				if (currentUnitID == unitID)
 				{
