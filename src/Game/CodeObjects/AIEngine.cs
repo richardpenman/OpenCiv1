@@ -945,11 +945,17 @@ namespace OpenCivOne
 					{
 						if ((this.parent.GameData.Players[playerID].Units[nextUnitID].Status & UnitStatusEnum.Fortified) == UnitStatusEnum.None)
 						{
-							unitRoleBits |= (0x1 << (int)this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].UnitRoleType);
-
-							if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].MovementType == UnitMovementTypeEnum.Land)
+							// An empty slot in the stack chain has UnitType None (-1). The DOS original
+							// indexed the unit table with the raw byte type and read harmless garbage,
+							// but Units[-1] throws an IndexOutOfRangeException in C#.
+							if (this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType != UnitTypeEnum.None)
 							{
-								unitCount++;
+								unitRoleBits |= (0x1 << (int)this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].UnitRoleType);
+
+								if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].MovementType == UnitMovementTypeEnum.Land)
+								{
+									unitCount++;
+								}
 							}
 						}
 						else
