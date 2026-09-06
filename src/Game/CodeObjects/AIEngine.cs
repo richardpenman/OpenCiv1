@@ -2204,7 +2204,10 @@ namespace OpenCivOne
 
 				// Instruction address 0x25fb:0x36df, size: 5
 				nearestCityID = this.parent.MapManagement.FindNearestCity(unitX, unitY);
-				nearestCityDistance = this.parent.MapManagement.GetDistance(unit.Position, this.parent.GameData.Cities[nearestCityID].Position);
+				// FindNearestCity returns -1 when the player has no cities; Cities[-1] throws in C#.
+				// 999 matches the sentinel FindNearestCity itself uses for "nothing found".
+				nearestCityDistance = (nearestCityID != -1) ?
+					this.parent.MapManagement.GetDistance(unit.Position, this.parent.GameData.Cities[nearestCityID].Position) : 999;
 
 				for (int i = 1; i < 9; i++)
 				{
@@ -2282,7 +2285,10 @@ namespace OpenCivOne
 			}
 
 			nearestCityID = this.parent.MapManagement.FindNearestCity(unitX, unitY);
-			nearestCityDistance = this.parent.MapManagement.GetDistance(unit.Position, this.parent.GameData.Cities[nearestCityID].Position);
+			// FindNearestCity returns -1 when the player has no cities; Cities[-1] throws in C#.
+			// 999 matches the sentinel FindNearestCity itself uses for "nothing found".
+			nearestCityDistance = (nearestCityID != -1) ?
+				this.parent.MapManagement.GetDistance(unit.Position, this.parent.GameData.Cities[nearestCityID].Position) : 999;
 			// The algorithm for distance has been contained within FindNearestCity and FindNearestPlayerUnit, so there was a confusion
 			// Perhaps we don't need this at all
 			int nearestDistance = nearestCityDistance;
