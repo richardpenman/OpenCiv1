@@ -1470,6 +1470,12 @@ namespace OpenCivOne
 						int newY = y + j;
 						int cityID;
 
+						// The map only wraps horizontally, so unlike newX the vertical coordinate
+						// can fall outside the map when searching near the poles. There is nothing
+						// above the north or below the south edge, so skip those cells.
+						if (newY < 0 || newY >= this.parent.GameData.MapVisibility.GetLength(1))
+							continue;
+
 						if ((this.parent.GameData.MapVisibility[newX, newY] & playerBitmask) != 0 &&
 							mapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY).HasFlag(TerrainImprovementFlagsEnum.City) &&
 							(cityID = this.parent.MapManagement.GetCityByLocation(newX, newY)) != -1 &&
