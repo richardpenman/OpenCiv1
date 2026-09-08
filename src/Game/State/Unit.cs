@@ -18,8 +18,8 @@ namespace OpenCivOne
 		public ushort VisibleByPlayer = 0;
 
 		private GPoint goToDestination = new GPoint(-1);
-		public short GoToNextDirection = 0;
-		public Stack<GPoint> GoToPath = new Stack<GPoint>();
+		private short goToNextDirection = 0;
+		private Stack<GPoint> goToPath = new Stack<GPoint>();
 
 		public void ClearStatusFlags(UnitStatusEnum status)
 		{
@@ -43,7 +43,7 @@ namespace OpenCivOne
 			unit.RemainingMoves = (sbyte)LoadAndSave.ReadUInt8(stream);
 			unit.SpecialMoves = (sbyte)LoadAndSave.ReadUInt8(stream);
 			unit.goToDestination = new((sbyte)LoadAndSave.ReadUInt8(stream), (sbyte)LoadAndSave.ReadUInt8(stream));
-			unit.GoToNextDirection = (sbyte)LoadAndSave.ReadUInt8(stream);
+			unit.goToNextDirection = (sbyte)LoadAndSave.ReadUInt8(stream);
 			unit.VisibleByPlayer = LoadAndSave.ReadUInt8(stream);
 			unit.NextUnitID = (sbyte)LoadAndSave.ReadUInt8(stream);
 			unit.HomeCityID = (sbyte)LoadAndSave.ReadUInt8(stream);
@@ -61,7 +61,7 @@ namespace OpenCivOne
 			stream.WriteByte((byte)((sbyte)this.SpecialMoves));
 			stream.WriteByte((byte)((sbyte)this.goToDestination.X));
 			stream.WriteByte((byte)((sbyte)this.goToDestination.Y));
-			stream.WriteByte((byte)((sbyte)this.GoToNextDirection));
+			stream.WriteByte((byte)((sbyte)this.goToNextDirection));
 			stream.WriteByte((byte)(this.VisibleByPlayer & 0xff));
 			stream.WriteByte((byte)((sbyte)this.NextUnitID));
 			stream.WriteByte((byte)((sbyte)this.HomeCityID));
@@ -74,10 +74,30 @@ namespace OpenCivOne
 			{
 				if (value != this.goToDestination)
 				{
-					this.GoToPath.Clear();
+					this.goToPath.Clear();
 				}
 
 				this.goToDestination = value;
+			}
+		}
+
+		public Stack<GPoint> GoToPath { get => this.goToPath; }
+
+		public short GoToNextDirection
+		{
+			get => this.goToNextDirection;
+			set 
+			{
+				if (this.goToNextDirection != value)
+				{
+					if (value == -1)
+					{
+						// Clear established go to path, and find a new path to a destination
+						this.goToPath.Clear();
+					}
+
+					this.goToNextDirection = value;
+				}
 			}
 		}
 	}

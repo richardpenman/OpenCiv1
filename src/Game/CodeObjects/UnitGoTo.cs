@@ -11,6 +11,7 @@ namespace OpenCivOne
 		private OpenCivOneGame parent;
 		private GameData gameData;
 
+		#region Old unfixable GoTo algorithm
 		private int Var_6590_DestinationX = -1;
 		private int Var_6592_DestinationY = -1;
 		public int[] Arr_6594_PathX = new int[256];
@@ -22,12 +23,14 @@ namespace OpenCivOne
 		public int[,] Arr_d816 = new int[20, 13]; // Divided by 4
 		public int[,] Arr_db44_LandPath = new int[20, 13]; // Divided by 4
 		public int[,] Arr_7f38_WaterPath = new int[20, 13]; // Divided by 4
+		#endregion
 
 		public UnitGoTo(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 			this.gameData = parent.GameData;
 
+			#region Old unfixable GoTo algorithm
 			// Ensure that all arrays contain zero value initially
 
 			for (int i = 0; i < this.Arr_6594_PathX.Length; i++)
@@ -71,6 +74,7 @@ namespace OpenCivOne
 					this.Arr_d816[i, j] = 0;
 				}
 			}
+			#endregion
 		}
 
 		/// <summary>
@@ -101,36 +105,44 @@ namespace OpenCivOne
 		{
 			int direction = -1;
 
-			unit.GoToNextDirection = -1;
-
 			if (this.parent.MapManagement.ValidateMapCoordinates(unit.GoToDestination) && unit.Position != unit.GoToDestination)
 			{
-				if (unit.GoToPath.Count == 0)
+				GPoint? newPos = (unit.GoToPath.Count == 0) ? null : unit.GoToPath.Pop();
+
+				if (newPos == null && unit.GoToDestination != OpenCivOneGame.InvalidPosition)
 				{
+					// We have changed unit destination, recompute unit path
 					this.FindGoToPath(unit, testVisibility);
+
+					newPos = (unit.GoToPath.Count == 0) ? null : unit.GoToPath.Pop();
 				}
 
-				if (unit.GoToPath.Count == 0)
+				if (newPos == null)
 				{
 					// We couldn't find a path for a destination
 					unit.GoToDestination = OpenCivOneGame.InvalidPosition;
-					unit.GoToPath.Clear();
-					unit.GoToNextDirection = -1;
 				}
 				else
 				{
-					GPoint newPos = unit.GoToPath.Pop();
-
-					direction = this.parent.MapManagement.GetMoveOffset(newPos - unit.Position);
+					// !!! Possible improvement, recompute unit path if, for example, a road or railroad was encountered
+					direction = this.parent.MapManagement.GetMoveDirection(this.parent.MapManagement.GetDistanceOffset(unit.Position, newPos!.Value));
 
 					if (direction > 8)
 					{
+						// A stored path goes stale when the unit did not move along it, for example when its
+						// move was blocked or it ran out of moves!
+						// !!! Note: This should never happen because code erases current path with Unit.GoToNextDirection = -1 so the path should never go beyond ring 1
 						throw new Exception("Error in GoTo algorithm!");
 					}
-
-					unit.GoToNextDirection = (short)direction;
 				}
 			}
+			else
+			{
+				// When the destination is not valid or the position equals go to position
+				unit.GoToDestination = OpenCivOneGame.InvalidPosition;
+			}
+
+			unit.GoToNextDirection = (short)direction;
 
 			return direction;
 		}

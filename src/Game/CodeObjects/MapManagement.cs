@@ -1521,7 +1521,7 @@ namespace OpenCivOne
 		/// <returns>The shortest distance (number of moves in a two dimensional space)</returns>
 		public int GetDistance(GPoint pt1, GPoint pt2)
 		{
-			return GetDistance(new GSize(pt2 - pt1));
+			return GetDistance(new GSize(GetDistanceOffset(pt1, pt2)));
 		}
 
 		/// <summary>
@@ -1546,7 +1546,8 @@ namespace OpenCivOne
 		{
 			size = GSize.Abs(size);
 
-			if (size.Width >= MapManagement.XMedian)
+			// Fix the Equator Line if required
+			if (size.Width > MapManagement.XMedian)
 			{
 				size.Width = MapManagement.MapSize.Width - size.Width;
 			}
@@ -1554,9 +1555,62 @@ namespace OpenCivOne
 			return Math.Max(size.Width, size.Height);
 		}
 
-		public int GetMoveOffset(GPoint offset)
+		public GPoint GetDistanceOffset(GPoint start, GPoint end)
 		{
-			int offsetIndex = -1;
+			// Here we assume Y to be in the range 0..MapSize.Height, anything else is illegal
+			// Y = start.Y, Y1 = end.Y
+			// Y = 10, Y1 = 11 -> Y1 - Y = 11 - 10 = 1, OK
+			// Y = 11, Y1 = 10 -> Y1 - Y = 10 - 11 = -1, OK, etc.
+
+			// The X coordinate wraps itself around the Equator Line
+			// case where start.X = 0 and destination.X = MapSize.Width - 1,
+			// case where start.X = MapSize.Width - 1 and destination.X = 0, etc.
+			// XMedian = 40, MapSize.Width = 80
+			// X = start.X, X1 = end.X
+
+			// Ensure also that difference is greater than XMedian so we get the smaller distance value
+			if (start.X < end.X && (end.X - start.X) > XMedian)
+			{
+				// Here we normalize the start	
+				// X = 0, X1 = 79, (X1 - X) = 79 > 40 -> X1 - (X + 80) = 79 - 80 = -1, OK
+				// X = 10, X1 = 70, (X1 - X) = 60 > 40 -> X1 - (X + 80) = 70 - 90 = -20, OK
+				// X = 19, X1 = 60, (X1 - X) = 41 > 40 -> X1 - (X + 80) = 60 - 99 = -39, OK
+				// X = 9, X1 = 50, (X1 - X) = 41 > 40 -> X1 - (X + 80) = 50 - 89 = -39, OK
+				return new GPoint(end.X - (start.X + MapSize.Width), end.Y - start.Y);
+			}
+			else if (start.X > end.X && (start.X - end.X) > XMedian)
+			{
+				// Here we normalize the end
+				// X = 79, X1 = 0, (X - X1) = 79 > 40 -> (X1 + 80) - X = 80 - 79 = 1, OK
+				// X = 70, X1 = 10, (X - X1) = 60 > 40 -> (X1 + 80) - X = 90 - 70 = 20, OK
+				// X = 60, X1 = 19, (X - X1) = 41 > 40 -> (X1 + 80) - X = 99 - 60 = 39, OK
+				// X = 50, X1 = 9, (X - X1) = 41 > 40 -> (X1 + 80) - X = 89 - 50 = 39, OK
+				return new GPoint((end.X + MapSize.Width) - start.X, end.Y - start.Y);
+			}
+
+			// Both start and end X positions are in the same median area (difference is smaller than XMedian)
+			// X = 10, X1 = 10 -> X1 - X = 10 - 10 = 0, OK
+			// X = 10, X1 = 20 -> X1 - X = 20 - 10 = 10, OK
+			// X = 20, X1 = 10 -> X1 - X = 10 - 20 = -10, OK
+			// X = 10, X1 = 11 -> X1 - X = 11 - 10 = 1, OK
+			// X = 11, X1 = 10 -> X1 - X = 10 - 11 = -1, OK
+			// X = 40, X1 = 41 -> X1 - X = 41 - 40 = 1, OK
+			// X = 41, X1 = 40 -> X1 - X = 40 - 41 = -1, OK
+			// X = 20, X1 = 60 -> X1 - X = 60 - 20 = 40, OK
+			// X = 60, X1 = 20 -> X1 - X = 20 - 60 = -40, OK
+			// X = 70, X1 = 72 -> X1 - X = 72 - 70 = 2, OK
+			// X = 72, X1 = 70 -> X1 - X = 70 - 72 = -2, OK
+			return new GPoint(end.X - start.X, end.Y - start.Y);
+		}
+
+		public int GetMoveDirection(GPoint offset)
+		{
+			int directionIndex = -1;
+
+			// Adjust for the horizontal map wrap. MoveDirections is expressed in signed offsets,
+			// so reduce to the [-XMedian, XMedian> range rather than AdjustXPosition's [0, XSize>;
+			// offsets already in range are unchanged.
+			offset = new GPoint(AdjustXPosition(offset.X + XMedian) - XMedian, offset.Y);
 
 			GPoint[] moveDirections = this.parent.MoveDirections;
 
@@ -1564,12 +1618,12 @@ namespace OpenCivOne
 			{
 				if (moveDirections[i] == offset)
 				{
-					offsetIndex = i;
+					directionIndex = i;
 					break;
 				}
 			}
 
-			return offsetIndex;
+			return directionIndex;
 		}
 		#endregion
 
