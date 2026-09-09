@@ -599,12 +599,12 @@ namespace OpenCivOne
 
 				for (int i = 0; i < 12; i++)
 				{
-					this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].PalaceData1[i + 2] = ReadInt16(reader);
+					this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].PalaceLevels[i] = ReadInt16(reader);
 				}
 
 				for (int i = 0; i < 12; i++)
 				{
-					this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].PalaceData2[i] = ReadInt16(reader);
+					this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].PalaceTypes[i] = ReadInt16(reader);
 				}
 
 				for (int i = 0; i < this.parent.GameData.CityPositions.Length; i++)
@@ -617,7 +617,7 @@ namespace OpenCivOne
 					this.parent.GameData.CityPositions[i] = new(this.parent.GameData.CityPositions[i].X, (sbyte)ReadUInt8(reader));
 				}
 
-				this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].PalaceLevel = ReadInt16(reader);
+				this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].PalaceBuildCount = ReadInt16(reader);
 				this.parent.GameData.PeaceTurnCount = ReadInt16(reader);
 				this.parent.GameData.AIOpponentCount = ReadInt16(reader);
 
@@ -1138,12 +1138,12 @@ namespace OpenCivOne
 
 				for (int i = 0; i < 12; i++)
 				{
-					WriteInt16(writer, (short)this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].PalaceData1[i + 2]);
+					WriteInt16(writer, (short)this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].PalaceLevels[i]);
 				}
 
 				for (int i = 0; i < 12; i++)
 				{
-					WriteInt16(writer, (short)this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].PalaceData2[i]);
+					WriteInt16(writer, (short)this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].PalaceTypes[i]);
 				}
 
 				for (int i = 0; i < 256; i++)
@@ -1155,7 +1155,7 @@ namespace OpenCivOne
 					writer.WriteByte((byte)((sbyte)this.parent.GameData.CityPositions[i].Y));
 				}
 
-				WriteInt16(writer, this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].PalaceLevel);
+				WriteInt16(writer, this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].PalaceBuildCount);
 				WriteInt16(writer, this.parent.GameData.PeaceTurnCount);
 				WriteInt16(writer, this.parent.GameData.AIOpponentCount);
 

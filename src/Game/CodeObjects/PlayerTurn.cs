@@ -369,7 +369,7 @@ namespace OpenCivOne
 				}
 				else if (mouseEvent.Position.Y < 72)
 				{
-					this.parent.Palace.F17_0000_07ec(0);
+					this.parent.Palace.F17_0000_07ec_DrawPalace(this.parent.GameData.HumanPlayerID, false);
 
 					this.parent.Var_aa_Screen0_Rectangle.ScreenID = 0;
 
@@ -1464,13 +1464,13 @@ namespace OpenCivOne
 					if (this.parent.Var_d806_DebugFlag)
 					{
 						// Instruction address 0x1403:0x33ae, size: 5
-						this.parent.CommonTools.DrawScreenToMainScreenWithEffect(2);
+						this.parent.Graphics.F0_VGA_06b7_DrawScreenToScreen0WithEffect(2);
 
 						// Instruction address 0x1403:0x33b6, size: 5
 						this.parent.CAPI.getch();
 
 						// Instruction address 0x1403:0x33bf, size: 5
-						this.parent.CommonTools.DrawScreenToMainScreenWithEffect(0);
+						this.parent.Graphics.F0_VGA_06b7_DrawScreenToScreen0WithEffect(0);
 					}
 					else
 					{

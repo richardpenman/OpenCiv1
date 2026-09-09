@@ -442,19 +442,6 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Draws the referenced screen to main screen (0) with appearing pixels effect
-		/// </summary>
-		/// <param name="screenID"></param>
-		public void DrawScreenToMainScreenWithEffect(int screenID)
-		{
-			//this.oCPU.Log.EnterBlock($"F0_1000_0846({screenID})");
-
-			// function body
-			//this.oParent.Graphics.F0_VGA_063c(screenID);
-			this.parent.Graphics.F0_VGA_06b7_DrawScreenToMainScreenWithEffect(screenID);
-		}
-
-		/// <summary>
 		/// Init sound engine
 		/// </summary>
 		public void InitSoundEngine()

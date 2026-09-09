@@ -1,7 +1,6 @@
 using Avalonia.Media;
 using IRB.VirtualCPU;
 using OpenCivOne.Graphics;
-using System;
 
 namespace OpenCivOne
 {
@@ -21,7 +20,7 @@ namespace OpenCivOne
 		/// Text can be formatted to show a list of options for the player to choose from.
 		/// Each option should take a single line and start with one or multiple spaces.
 		/// Option lines shouldn't be mixed with non-option lines in order for selection to render properly.
-		/// Value at address 0xb276 (ushort) can be used as a bitmask indicating disabled options.
+		/// Value at address 0xb276 (ushort) can be used as a bit mask indicating disabled options.
 		/// </summary>
 		/// <param name="stringPtr">Address of a message string</param>
 		/// <param name="x"></param>
@@ -39,7 +38,7 @@ namespace OpenCivOne
 		/// Text can be formatted to show a list of options for the player to choose from.
 		/// Each option should take a single line and start with one or multiple spaces.
 		/// Option lines shouldn't be mixed with non-option lines in order for selection to render properly.
-		/// Value at address 0xb276 (ushort) can be used as a bitmask indicating disabled options.
+		/// Value at address 0xb276 (ushort) can be used as a bit mask indicating disabled options.
 		/// </summary>
 		/// <param name="stringPtr">Address of a message string</param>
 		/// <param name="x"></param>
@@ -368,6 +367,23 @@ namespace OpenCivOne
 				}
 			}
 
+			#region For debugging, grow palace
+			/*humanPlayer.PalaceBuildCount = 0;
+
+			for (int i = 0; i < 12; i++)
+			{
+				humanPlayer.PalaceLevels[i] = (short)(((i > 2 && i < 6) || i > 8) ? 0 : -1);
+				humanPlayer.PalaceTypes[i] = 0;
+			}
+
+			while (humanPlayer.PalaceBuildCount < 38)
+			{
+				this.oParent.Palace.F17_0000_0000_UpgradePalace(this.oParent.GameData.HumanPlayerID);
+
+				humanPlayer.PalaceBuildCount++;
+			}*/
+			#endregion
+
 			for (int i = 0; i < 128; i++)
 			{
 				if (this.oParent.GameData.Cities[i].Status != CityStatusEnum.Invalid &&
@@ -375,14 +391,14 @@ namespace OpenCivOne
 					(this.oParent.GameData.Cities[i].ImprovementFlags0 & 0x1) != 0)
 				{
 					if (this.oParent.GameData.GameSettingFlags.BuildPalace && (this.oParent.GameData.SpaceshipFlags & 0x100) == 0 &&
-						(short)this.oParent.Overlay_20.F20_0000_0ca9_ShowCivilizationScorePopup(this.oParent.GameData.HumanPlayerID, false) >= (short)F0_1238_16e7((short)(humanPlayer.PalaceLevel + 1)))
+						(short)this.oParent.Overlay_20.F20_0000_0ca9_ShowCivilizationScorePopup(this.oParent.GameData.HumanPlayerID, false) >= (short)F0_1238_16e7((short)(humanPlayer.PalaceBuildCount + 1)))
 					{
-						humanPlayer.PalaceLevel++;
+						humanPlayer.PalaceBuildCount++;
 
-						if (humanPlayer.PalaceLevel <= 37)
+						if (humanPlayer.PalaceBuildCount < 38)
 						{
 							// build palace user dialog
-							this.oParent.Palace.F17_0000_0000();
+							this.oParent.Palace.F17_0000_0000_UpgradePalace(this.oParent.GameData.HumanPlayerID);
 						}
 					}
 					// No need to check any further
@@ -486,7 +502,7 @@ namespace OpenCivOne
 
 			if ((this.oParent.GameData.SpaceshipFlags & 0x100) == 0)
 			{
-				this.oParent.HallOfFame.F3_0000_065d_ShowFamousPersonsWindow((this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceLevel / 2) - 1,
+				this.oParent.HallOfFame.F3_0000_065d_ShowFamousPersonsWindow((this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceBuildCount / 2) - 1,
 					(short)this.oParent.Overlay_20.F20_0000_0ca9_ShowCivilizationScorePopup(this.oParent.GameData.HumanPlayerID, true));
 
 				this.oParent.HallOfFame.F3_0000_002b_ReadHallOfFameFromFile();
@@ -1198,7 +1214,7 @@ namespace OpenCivOne
 
 		L10fb:
 			// Instruction address 0x1238:0x110c, size: 3
-			F0_1238_14a3(this.oParent.GameData.HumanPlayerID, this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceLevel, 8, 58);
+			F0_1238_14a3(this.oParent.GameData.HumanPlayerID, this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceBuildCount, 8, 58);
 
 			if (this.oParent.Var_d806_DebugFlag)
 			{
@@ -1476,10 +1492,10 @@ namespace OpenCivOne
 			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
 
 			this.oCPU.WriteInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 + this.oCPU.SI.UInt16 - 0x32),
-				(short)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)) + 2]);
+				(short)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceLevels[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8))]);
 
 			this.oCPU.WriteInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 + this.oCPU.SI.UInt16 - 0x20),
-				(short)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData2[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8))]);
+				(short)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceTypes[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8))]);
 
 			goto L1548;
 

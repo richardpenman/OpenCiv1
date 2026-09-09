@@ -15,10 +15,10 @@ Anyone can contribute to this repository in accordance with these rules:
 
 <ul>
 <li>AI generated code (<b>AI Slop</b>) is generally not allowed, althrough, some well written AI generated code can be allowed and accepted (The project leaders reserve the right to automatically reject AI written PRs),</li>
-<li>Some code has Hungarian Notation variable names, these should be renamed according to the new naming rules,</li>
-<li>Global variables should be Pascal case,</li>
-<li>Local variables should be Camel case,</li>
-<li>Function names should be a Pascal case (sometimes combined with an underscore),</li>
+<li>Some code has Hungarian Notation variable names (iTotal, bIsReady, sUserName, ...), these should be renamed according to the new naming rules,</li>
+<li>Global variables should be Pascal case (example: UserAge, PlayerID, ...),</li>
+<li>Local variables should be Camel case (example: userAge, playerID, ...),</li>
+<li>Function names should be a Pascal case (sometimes combined with an underscore) (example: DrawRectangle, GenerateMap_Phase1, ...),</li>
 <li>Loop variables are generally i, j, k... (it is also allowed to use ii, jj, kk...),</li>
 <li>GoTo statements should generally be removed and not used at all if possible.</li>
 </ul>

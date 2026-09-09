@@ -1,1569 +1,850 @@
 using Avalonia.Media;
 using IRB.VirtualCPU;
+using OpenCivOne.Graphics;
 
 namespace OpenCivOne
 {
 	public class Palace
 	{
-		private OpenCivOneGame oParent;
-		private VCPU oCPU;
+		private OpenCivOneGame parent;
+
+		private GRectangle[,,] bitmapRectangles = {
+			// Level 0
+			{ { new(1, 66, 50, 34), new(53, 69, 17, 31), new(85, 69, 17, 31), new(), new() }, 
+				{ new(), new(), new(), new(), new() }, 
+				{ new(), new(), new(), new(), new() } },
+			// Level 1
+			{ { new(0, 57, 52, 43), new(53, 64, 24, 36), new(78, 64, 24, 36), new(113, 47, 16, 53), new(134, 47, 16, 53) },
+				{ new(160, 56, 52, 44), new(213, 66, 24, 34), new(238, 66, 24, 34), new(164, 161, 31, 39), new(196, 161, 31, 39) },
+				{ new(2, 151, 48, 49), new(53, 166, 24, 34), new(78, 166, 24, 34), new(113, 149, 18, 51), new(132, 149, 18, 51) } },
+			// Level 2
+			{ { new(0, 36, 52, 64), new(53, 59, 24, 41), new(78, 59, 24, 41), new(109, 47, 20, 53), new(134, 47, 20, 53) },
+				{ new(160, 51, 52, 49), new(213, 61, 24, 39), new(238, 61, 24, 39), new(163, 155, 32, 45), new(196, 155, 32, 45) },
+				{ new(2, 126, 48, 74), new(53, 153, 24, 47), new(78, 153, 24, 47), new(113, 131, 18, 69), new(132, 131, 18, 69) } },
+			// Level 3
+			{ { new(0, 34, 52, 66), new(53, 52, 24, 48), new(78, 52, 24, 48), new(105, 26, 24, 74), new(134, 26, 24, 74) }, 
+				{ new(160, 40, 52, 60), new(213, 58, 24, 42), new(238, 58, 24, 42), new(161, 151, 34, 49), new(196, 151, 34, 49) }, 
+				{ new(2, 115, 48, 85), new(53, 139, 24, 61), new(78, 139, 24, 61), new(113, 119, 18, 81), new(132, 119, 18, 81) } },
+			// Level 4
+			{ { new(0, 18, 52, 82), new(53, 41, 24, 59), new(78, 41, 24, 59), new(105, 22, 24, 78), new(134, 22, 24, 78) }, 
+				{ new(160, 32, 52, 68), new(213, 55, 24, 45), new(238, 55, 24, 45), new(160, 150, 35, 50), new(196, 150, 35, 50) }, 
+				{ new(2, 105, 48, 95), new(53, 139, 24, 61), new(78, 139, 24, 61), new(113, 111, 18, 89), new(132, 111, 18, 89) } }};
+
+		private GRectangle[,,] bitmapOffsets = {
+			// Level 0
+			{ { new(), new(), new(), new(), new() },
+				{ new(), new(), new(), new(), new() },
+				{ new(), new(), new(), new(), new() } },
+			// Level 1
+			{ { new(2, 0, -4, 0), new(), new(), new(0, 1, 0, 0), new(0, 1, 0, 0) },
+				{ new(4, 0, -8, 0), new(), new(), new(0, 0, -2, 0), new(-2, 0, 0, 0) },
+				{ new(), new(), new(), new(0, 1, -2, 0), new(-2, 1, 0, 0) } },
+			// Level 2
+			{ { new(2, 0, -4, 0), new(), new(), new(0, 1, 0, 0), new(0, 1, 0, 0) },
+				{ new(2, 0, -4, 0), new(), new(), new(0, 0, -2, 0), new(-2, 0, 0, 0) },
+				{ new(), new(), new(), new(0, 1, -2, 0), new(-2, 1, 0, 0) } },
+			// Level 3
+			{ { new(2, 0, -4, 0), new(0, 3, 0, 0), new(0, 3, 0, 0), new(0, 1, 0, 0), new(0, 1, 0, 0) },
+				{ new(2, 0, -4, 0), new(), new(), new(0, 0, -3, 0), new(-3, 0, 0, 0) },
+				{ new(), new(), new(), new(0, 1, -2, 0), new(-2, 1, 0, 0) }, },
+			// Level 4
+			{ { new(2, 0, -4, 0), new(0, 3, 0, 0), new(0, 3, 0, 0), new(0, 1, 0, 0), new(0, 1, 0, 0) },
+				{ new(2, 0, -4, 0), new(), new(), new(0, 0, -3, 0), new(-4, 0, 0, 0) },
+				{ new(), new(), new(), new(0, 1, -2, 0), new(-2, 1, 0, 0) } }};
+
+		private int[,,] bitmaps = new int[5, 3, 5];
 
 		public Palace(OpenCivOneGame parent)
 		{
-			this.oParent = parent;
-			this.oCPU = parent.CPU;
+			this.parent = parent;
+
+			// Bitmaps aren't loaded
+			for (int i = 0; i < 5; i++)
+			{
+				for (int j = 0; j < 3; j++)
+				{
+					for (int k = 0; k < 5; k++)
+					{
+						bitmaps[i, j, k] = -1;
+					}
+				}
+			}
 		}
 
 		/// <summary>
-		/// ?
+		/// Draw and upgrade chosen castle segment
 		/// </summary>
-		public void F17_0000_0000()
+		public void F17_0000_0000_UpgradePalace(int playerID)
 		{
-			this.oCPU.Log.EnterBlock("F17_0000_0000()");
+			//this.oCPU.Log.EnterBlock("F17_0000_0000()");
 
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x110);
-			this.oCPU.PUSH_UInt16(this.oCPU.DI.UInt16);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
+			Player player = this.parent.GameData.Players[playerID];
 
-			// Instruction address 0x0000:0x0017, size: 5
-			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*PALACE"));
-
-			// Instruction address 0x0000:0x0028, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x100), 0xba06);
-
-			this.oParent.Var_aa_Screen0_Rectangle.ScreenID = 1;
-
-			F17_0000_07ec(0);
-
-			this.oParent.Var_aa_Screen0_Rectangle.ScreenID = 0;
+			F17_0000_07ec_DrawPalace(player, false);
 
 			// Instruction address 0x0000:0x006d, size: 5
-			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
+			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
 			// Instruction address 0x0000:0x0075, size: 5
-			this.oParent.Tools.StopPaletteCycleSlots();
+			this.parent.Tools.StopPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x0091, size: 5
-			this.oParent.CommonTools.PlayTune(
-				this.oParent.GameData.Nations[this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].NationalityID].LongTune, 3);
+			this.parent.CommonTools.PlayTune(this.parent.GameData.Nations[player.NationalityID].LongTune, 3);
 
 			// Instruction address 0x0000:0x009d, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "CBACK.PIC", 1);
+			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "CBACK.PIC", 1);
 
 			// Instruction address 0x0000:0x00bd, size: 5
-			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
+			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 
 			// Instruction address 0x0000:0x00d2, size: 5
-			this.oParent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox((ushort)(this.oCPU.BP.UInt16 - 0x100), 20, 16, true, false, true);
+			this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(this.parent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*PALACE"), 20, 16, true, false, true);
 
 			// Instruction address 0x0000:0x00fa, size: 5
-			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
+			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 
 			// Instruction address 0x0000:0x011a, size: 5
-			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
+			//this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
 
-			this.oParent.Var_db38 = 1;
+			this.parent.Var_db38 = 1;
 
 			// Instruction address 0x0000:0x0134, size: 5
-			this.oParent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(0x4af0, 40, 16, true, false, true);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x102), 0x0);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108), 0x1);
-
-		L0148:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)) + 2] >= 4)
-				goto L01bc;
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)) + 1] > 0 ||
-				this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)) + 3] > 0)
-				goto L016a;
+			this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox("Which section shall we improve?", 50, 16, true, false, true);
+
+			bool canUpgradePalace = false;
+
+			for (int i = 1; i < 8; i++)
+			{
+				if (player.PalaceLevels[i] < 4 && (player.PalaceLevels[i - 1] > 0 || player.PalaceLevels[i] >= 0 || player.PalaceLevels[i + 1] > 0))
+				{
+					// Instruction address 0x0000:0x01ae, size: 5
+					this.parent.DrawTools.DrawStringWithShadow($"{i}", i * 48 - 36, 144, 14);
+
+					canUpgradePalace = true;
+				}
+			}
+
+			for (int i = 0; i < 3; i++)
+			{
+				if (player.PalaceLevels[9 + i] < 3)
+				{
+					// Instruction address 0x0000:0x0209, size: 5
+					this.parent.DrawTools.DrawStringWithShadow($"{(char)('A' + i)}", i * 120 + 40, 160, 14);
+
+					canUpgradePalace = true;
+				}
+			}
+
+			if (canUpgradePalace)
+			{
+				int selectedPalaceSection;
+
+				while (true)
+				{
+					MouseEvent mouseEvent = this.parent.GetMouseEvent();
+
+					if (mouseEvent.Buttons == MouseButtonsEnum.None && this.parent.CAPI.kbhit() == 0) continue;
+
+					if (this.parent.CAPI.kbhit() != 0)
+					{
+						// Instruction address 0x0000:0x02a0, size: 5
+						selectedPalaceSection = this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
+
+						#region For debugging, clear and redraw palace
+						/*if (selectedPalaceSection == 'c' || selectedPalaceSection == 'C')
+						{
+							player.PalaceBuildCount = 0;
+
+							for (int i = 0; i < 12; i++)
+							{
+								player.PalaceLevels[i] = (short)(((i > 2 && i < 6) || i > 8) ? 0 : -1);
+								player.PalaceTypes[i] = 0;
+							}
+
+							F17_0000_07ec_DrawPalace(player, false);
+							
+							this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
+
+							for (int i = 1; i < 8; i++)
+							{
+								if (player.PalaceLevels[i] < 4 && (player.PalaceLevels[i - 1] > 0 || player.PalaceLevels[i] >= 0 || player.PalaceLevels[i + 1] > 0))
+								{
+									// Instruction address 0x0000:0x01ae, size: 5
+									this.parent.DrawTools.DrawStringWithShadow($"{i}", i * 48 - 36, 144, 14);
+								}
+							}
+
+							for (int i = 0; i < 3; i++)
+							{
+								if (player.PalaceLevels[9 + i] < 3)
+								{
+									// Instruction address 0x0000:0x0209, size: 5
+									this.parent.DrawTools.DrawStringWithShadow($"{(char)('A' + i)}", i * 120 + 40, 160, 14);
+								}
+							}
+
+							continue;
+						}
+
+						if (selectedPalaceSection == 'd' || selectedPalaceSection == 'D')
+						{
+							F17_0000_07ec_DrawPalace(player, false);
+
+							this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
+
+							for (int i = 1; i < 8; i++)
+							{
+								if (player.PalaceLevels[i] < 4 && (player.PalaceLevels[i - 1] > 0 || player.PalaceLevels[i] >= 0 || player.PalaceLevels[i + 1] > 0))
+								{
+									// Instruction address 0x0000:0x01ae, size: 5
+									this.parent.DrawTools.DrawStringWithShadow($"{i}", i * 48 - 36, 144, 14);
+								}
+							}
+
+							for (int i = 0; i < 3; i++)
+							{
+								if (player.PalaceLevels[9 + i] < 3)
+								{
+									// Instruction address 0x0000:0x0209, size: 5
+									this.parent.DrawTools.DrawStringWithShadow($"{(char)('A' + i)}", i * 120 + 40, 160, 14);
+								}
+							}
+
+							continue;
+						}*/
+						#endregion
+
+						if (selectedPalaceSection < '8')
+						{
+							selectedPalaceSection -= '0';
+						}
+						else
+						{
+							selectedPalaceSection -= 'X';
+						}
+
+						if (selectedPalaceSection < 1 || selectedPalaceSection > 11) continue;
+					}
+					else
+					{
+						if (mouseEvent.Position.Y >= 154)
+						{
+							selectedPalaceSection = mouseEvent.Position.X / 107 + 9;
+						}
+						else
+						{
+							selectedPalaceSection = (mouseEvent.Position.X + 12) / 48 + 1;
+						}
+					}
+
+					if (player.PalaceLevels[selectedPalaceSection] > 3 || (selectedPalaceSection > 8 && player.PalaceLevels[selectedPalaceSection] > 2))
+						continue;
+
+					break;
+				}
+
+				if (selectedPalaceSection < 9)
+				{
+					for (; selectedPalaceSection < 4; selectedPalaceSection++)
+					{
+						if (player.PalaceLevels[selectedPalaceSection + 1] > 0 || player.PalaceLevels[selectedPalaceSection] != -1)
+						{
+							break;
+						}
+					}
+
+					for (; selectedPalaceSection > 4; selectedPalaceSection--)
+					{
+						if (player.PalaceLevels[selectedPalaceSection - 1] > 0 || player.PalaceLevels[selectedPalaceSection] != -1)
+						{
+							break;
+						}
+					}
+				}
+
+				// Instruction address 0x0000:0x032b, size: 5
+				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
+
+				// Instruction address 0x0000:0x0347, size: 5
+				int newPalaceLevel = this.parent.Tools.CheckValueRange(player.PalaceLevels[selectedPalaceSection] + 1, 1, 4);
+				int newPalaceSectionType = -1;
+
+				if (selectedPalaceSection < 9)
+				{
+					// Determine first and last palace piece
+					int minimumIndex = 0;
+					int maximumIndex = 8;
+
+					while (player.PalaceLevels[minimumIndex] == -1)
+					{
+						minimumIndex++;
+					}
+
+					while (player.PalaceLevels[maximumIndex] == -1)
+					{
+						maximumIndex--;
+					}
+
+					// Readjust minimum and maximum based on a selectedPalaceSection
+					if (selectedPalaceSection < minimumIndex)
+					{
+						minimumIndex = selectedPalaceSection;
+					}
+
+					if (selectedPalaceSection > maximumIndex)
+					{
+						maximumIndex = selectedPalaceSection;
+					}
+
+					LoadPalaceBitmaps();
+
+					// Instruction address 0x0000:0x03fd, size: 5
+					this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 16, 2, 288, 112, 9);
+
+					// Instruction address 0x0000:0x0415, size: 5
+					this.parent.DrawTools.DrawCenteredStringToScreen0("Select section type", 160, 3, 15);
+
+					int yMedian = 110;
+
+					// Draw three distinct styles to upgrade palace section to
+					for (int i = 0; i < 3; i++)
+					{
+						int xPosition = 20 + i * 100;
+
+						// Instruction address 0x0000:0x043e, size: 5
+						this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, xPosition, 10, 80, 102, 1);
+
+						xPosition += 40;
+
+						if (selectedPalaceSection < 4)
+						{
+							if (selectedPalaceSection == minimumIndex)
+							{
+								if (minimumIndex > 1)
+								{
+									// grab tower piece
+									int bitmapID = this.bitmaps[newPalaceLevel, i, 3];
+									GBitmap bitmap = this.parent.Graphics.Bitmaps.GetValueByKey(bitmapID);
+									GRectangle rect = bitmapOffsets[newPalaceLevel, i, 3];
+
+									// grab inner piece
+									int bitmapID1 = this.bitmaps[newPalaceLevel, i, 1];
+									GBitmap bitmap1 = this.parent.Graphics.Bitmaps.GetValueByKey(bitmapID1);
+									GRectangle rect1 = bitmapOffsets[newPalaceLevel, i, 1];
+
+									xPosition -= ((bitmap.Width + rect.Right) + (bitmap1.Width + rect1.Left)) / 2;
+
+									this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, 
+										xPosition, yMedian - bitmap.Height + rect.Bottom, bitmapID);
+
+									xPosition += bitmap.Width + rect.Right + rect1.Left;
+
+									this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+										xPosition, yMedian - bitmap1.Height + rect1.Bottom, bitmapID1);
+								}
+								else
+								{
+									// grab tower piece
+									int bitmapID = this.bitmaps[newPalaceLevel, i, 3];
+									GBitmap bitmap = this.parent.Graphics.Bitmaps.GetValueByKey(bitmapID);
+									GRectangle rect = bitmapOffsets[newPalaceLevel, i, 3];
+
+									this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+										xPosition - bitmap.Width / 2,
+										yMedian - bitmap.Height + rect.Bottom, bitmapID);
+								}
+							}
+							else
+							{
+								// We can have shadow here, but we don't have to worry about that in selection menu
+								if (minimumIndex > 1)
+								{
+									// grab inner piece
+									int bitmapID = this.bitmaps[newPalaceLevel, i, 2];
+									GBitmap bitmap = this.parent.Graphics.Bitmaps.GetValueByKey(bitmapID);
+									GRectangle rect = bitmapOffsets[newPalaceLevel, i, 2];
+
+									this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+										xPosition - bitmap.Width / 2,
+										yMedian - bitmap.Height + rect.Bottom, bitmapID);
+								}
+								else
+								{
+									// grab inner piece
+									int bitmapID = this.bitmaps[newPalaceLevel, i, 2];
+									GBitmap bitmap = this.parent.Graphics.Bitmaps.GetValueByKey(bitmapID);
+									GRectangle rect = bitmapOffsets[newPalaceLevel, i, 2];
+
+									xPosition -= bitmap.Width + rect.Width;
+
+									this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+										xPosition,
+										yMedian - bitmap.Height + rect.Bottom, bitmapID);
+
+									xPosition += bitmap.Width + rect.Right + rect.Left;
+
+									this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+										xPosition,
+										yMedian - bitmap.Height + rect.Bottom, bitmapID);
+								}
+							}
+						}
+						else if (selectedPalaceSection > 4)
+						{
+							if (selectedPalaceSection == maximumIndex)
+							{
+								if (maximumIndex < 7)
+								{
+									// grab inner piece
+									int bitmapID = this.bitmaps[newPalaceLevel, i, 2];
+									GBitmap bitmap = this.parent.Graphics.Bitmaps.GetValueByKey(bitmapID);
+									GRectangle rect = bitmapOffsets[newPalaceLevel, i, 2];
+
+									// grab tower piece
+									int bitmapID1 = this.bitmaps[newPalaceLevel, i, 4];
+									GBitmap bitmap1 = this.parent.Graphics.Bitmaps.GetValueByKey(bitmapID1);
+									GRectangle rect1 = bitmapOffsets[newPalaceLevel, i, 4];
+
+									xPosition -= ((bitmap.Width + rect.Right) + (bitmap1.Width + rect1.Left)) / 2;
+
+									this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+										xPosition, yMedian - bitmap.Height + rect.Bottom, bitmapID);
+
+									xPosition += bitmap.Width + rect.Right + rect1.Left;
+
+									this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+										xPosition, yMedian - bitmap1.Height + rect1.Bottom, bitmapID1);
+								}
+								else
+								{
+									// grab tower piece
+									int bitmapID = this.bitmaps[newPalaceLevel, i, 4];
+									GBitmap bitmap = this.parent.Graphics.Bitmaps.GetValueByKey(bitmapID);
+									GRectangle rect = bitmapOffsets[newPalaceLevel, i, 4];
+
+									this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+										xPosition - bitmap.Width / 2,
+										yMedian - bitmap.Height + rect.Bottom, bitmapID);
+								}
+							}
+							else
+							{
+								// We can have shadow here, but we don't have to worry about that in selection menu
+								if (maximumIndex < 7)
+								{
+									// grab inner piece
+									int bitmapID = this.bitmaps[newPalaceLevel, i, 2];
+									GBitmap bitmap = this.parent.Graphics.Bitmaps.GetValueByKey(bitmapID);
+									GRectangle rect = bitmapOffsets[newPalaceLevel, i, 2];
+
+									this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+										xPosition - bitmap.Width / 2,
+										yMedian - bitmap.Height + rect.Bottom, bitmapID);
+								}
+								else
+								{
+									// grab inner piece
+									int bitmapID = this.bitmaps[newPalaceLevel, i, 2];
+									GBitmap bitmap = this.parent.Graphics.Bitmaps.GetValueByKey(bitmapID);
+									GRectangle rect = bitmapOffsets[newPalaceLevel, i, 2];
+
+									xPosition -= bitmap.Width + rect.Width;
+
+									this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+										xPosition,
+										yMedian - bitmap.Height + rect.Bottom, bitmapID);
+
+									xPosition += bitmap.Width + rect.Right + rect.Left;
+
+									this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+										xPosition,
+										yMedian - bitmap.Height + rect.Bottom, bitmapID);
+								}
+							}
+						}
+						else
+						{
+							int centerBitmapID = this.bitmaps[newPalaceLevel, i, 0];
+							GBitmap centerBitmap = this.parent.Graphics.Bitmaps.GetValueByKey(centerBitmapID);
+							GRectangle centerRect = bitmapOffsets[newPalaceLevel, i, 0];
+
+							this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, 
+								xPosition - ((centerBitmap.Width + centerRect.Width) / 2 + centerRect.Left),
+								yMedian - centerBitmap.Height + centerRect.Bottom, centerBitmapID);
+						}
+
+						// Instruction address 0x0000:0x057b, size: 5
+						this.parent.DrawTools.DrawStringWithShadow($"{i + 1}", 56 + i * 100, 12, 15);
+					}
+
+					// Instruction address 0x0000:0x06be, size: 5
+					this.parent.CommonTools.ClearKeyboardAndMouseEvents();
+
+					while (true)
+					{
+						MouseEvent mouseEvent = this.parent.GetMouseEvent();
+
+						if (mouseEvent.Buttons == MouseButtonsEnum.None && this.parent.CAPI.kbhit() == 0) continue;
+
+						if (this.parent.CAPI.kbhit() != 0)
+						{
+							// Instruction address 0x0000:0x06f5, size: 5
+							newPalaceSectionType = this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey() - '1';
+
+							if (newPalaceSectionType < 0 || newPalaceSectionType > 2) continue;
+						}
+						else
+						{
+							newPalaceSectionType = mouseEvent.Position.X / 107;
+						}
+
+						break;
+					}
+
+					FreePalaceBitmaps();
+
+					F17_0000_07ec_DrawPalace(player, false);
+
+					// Instruction address 0x0000:0x073f, size: 5
+					this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
+				}
+
+				player.PalaceLevels[selectedPalaceSection] = (short)newPalaceLevel;
+				player.PalaceTypes[selectedPalaceSection] = (short)newPalaceSectionType;
+
+				F17_0000_07ec_DrawPalace(player, false);
+
+				// Instruction address 0x0000:0x0788, size: 5
+				this.parent.CommonTools.ClearKeyboardAndMouseEvents();
+
+				// Instruction address 0x0000:0x0780, size: 5
+				this.parent.Graphics.F0_VGA_06b7_DrawScreenToScreen0WithEffect(1);
+
+				// Instruction address 0x0000:0x078d, size: 5
+				this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+			}
 
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)) + 2] < 0)
-				goto L01bc;
-
-		L016a:
-			this.oCPU.AX.UInt16 = 0x30;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)));
-			this.oCPU.AX.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.AX.UInt16, 0x24);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
-			// Instruction address 0x0000:0x0196, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)), 10));
-
-			// Instruction address 0x0000:0x01ae, size: 5
-			this.oParent.DrawTools.DrawStringWithShadow(0xba06,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104)),
-				144,
-				14);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x102), 0x1);
-
-		L01bc:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)), 0x8);
-			if (this.oCPU.Flags.L) goto L0148;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108), 0x0);
-
-		L01cd:
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[10 + this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)) + 1] >= 3)
-				goto L0217;
-
-			// Instruction address 0x0000:0x01e2, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "A");
-
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108));
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 
-				this.oCPU.ADD_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, 0xba06), this.oCPU.AX.LowUInt8));
-
-			// Instruction address 0x0000:0x0209, size: 5
-			this.oParent.DrawTools.DrawStringWithShadow(0xba06,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)) * 120 + 40,
-				160,
-				14);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x102), 0x1);
-
-		L0217:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)), 0x3);
-			if (this.oCPU.Flags.L) goto L01cd;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x102)), 0x0);
-			if (this.oCPU.Flags.NE) goto L0231;
-			goto L0792;
-
-		L0231:
-			MouseEvent mouseEvent = this.oParent.GetMouseEvent();
-
-			if (mouseEvent.Buttons != MouseButtonsEnum.None) goto L0246;
-
-			// Instruction address 0x0000:0x023d, size: 5
-			this.oParent.CAPI.kbhit();
-
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L0231;
-
-		L0246:
-			// Instruction address 0x0000:0x0246, size: 5
-			this.oParent.CAPI.kbhit();
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.NE) goto L02a0;
-
-			if (mouseEvent.Position.Y >= 154) goto L0292;
-
-			this.oCPU.AX.Int16 = (short)mouseEvent.Position.X;
-			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, 0xc);
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.CX.UInt16 = 0x30;
-			this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.INC_UInt16(this.oCPU.AX.UInt16);
-
-		L0264:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e), this.oCPU.AX.UInt16);
-
-		L0268:
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)) + 2] >= 4)
-				goto L0231;
-
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)), 0x9);
-			if (this.oCPU.Flags.L) goto L0289;
-
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)) + 2] >= 3)
-				goto L0231;
-
-		L0289:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)), 0x9);
-			if (this.oCPU.Flags.GE) goto L030e;
-			goto L02e6;
-
-		L0292:
-			this.oCPU.AX.Int16 = (short)mouseEvent.Position.X;
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.CX.UInt16 = 0x6b;
-			this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, 0x9);
-			goto L0264;
-
-		L02a0:
-			// Instruction address 0x0000:0x02a0, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e), this.oCPU.AX.UInt16);
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x38);
-			if (this.oCPU.Flags.GE) goto L02b5;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e), this.oCPU.SUB_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)), 0x30));
-			goto L02ba;
-
-		L02b5:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e), this.oCPU.SUB_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)), 0x58));
-
-		L02ba:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)), 0x1);
-			if (this.oCPU.Flags.GE) goto L02c4;
-			goto L0231;
-
-		L02c4:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)), 0xb);
-			if (this.oCPU.Flags.LE) goto L0268;
-			goto L0231;
-
-		L02ce:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)) + 3] > 0)
-				goto L0307;
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)) + 2] != -1)
-				goto L0307;
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e))));
-
-		L02e6:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)), 0x4);
-			if (this.oCPU.Flags.L) goto L02ce;
-			goto L0307;
-
-		L02ef:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)) + 1] > 0 ||
-				this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)) + 2] != -1)
-				goto L030e;
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e), this.oCPU.DEC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e))));
-
-		L0307:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)), 0x4);
-			if (this.oCPU.Flags.G) goto L02ef;
-
-		L030e:
-			// Instruction address 0x0000:0x032b, size: 5
-			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
-
-			// Instruction address 0x0000:0x0347, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Tools.CheckValueRange(
-				this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)) + 2] + 1,
-				1, 4);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110), this.oCPU.AX.UInt16);
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)), 0x9);
-			if (this.oCPU.Flags.L) goto L035d;
-			goto L0747;
-
-		L035d:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108), 0x1);
-
-		L0363:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			this.oCPU.AX.LowUInt8 = 0xff;
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xb25f), this.oCPU.AX.LowUInt8);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xb25e), this.oCPU.AX.LowUInt8);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)), 0x8);
-			if (this.oCPU.Flags.L) goto L0363;
-
-			F17_0000_0cfe(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)), 0);
-			
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108), 0x1);
-
-		L0393:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			this.oCPU.DI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108));
-			this.oCPU.DI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.DI.UInt16, 0x1);
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xb25e));
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.DI.UInt16 + 0xb25e), this.oCPU.AX.LowUInt8);
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xb25f));
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.DI.UInt16 + 0xb25f), this.oCPU.AX.LowUInt8);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)), 0x3);
-			if (this.oCPU.Flags.LE) goto L0393;
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x6828, 0xffff);
-
-			F17_0000_0e95(
-				(ushort)(1 << this.oCPU.ReadUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110))),
-				0);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x106), 0x5c);
-
-			// Instruction address 0x0000:0x03fd, size: 5
-			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 16, 2, 288, 102, 9);
-
-			// Instruction address 0x0000:0x0415, size: 5
-			this.oParent.DrawTools.DrawCenteredStringToScreen0("Select new section.", 160, 3, 15);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108), 0x1);
-			goto L0587;
-
-		L0426:
-			// Instruction address 0x0000:0x043e, size: 5
-			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104)), 10,
-				80, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x106)), 1);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104)), 0x10));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10a), 0x2);
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)), 0x4);
-			if (this.oCPU.Flags.GE) goto L0478;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10a), 0x1);
-
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)) + 1] == -1)
-				goto L0472;
-
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)), 0x1);
-			if (this.oCPU.Flags.NE) goto L0478;
-
-		L0472:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10a), 0x0);
-
-		L0478:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)), 0x4);
-			if (this.oCPU.Flags.LE) goto L049f;
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10a), 0x1);
-
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)) + 3] == -1)
-				goto L0499;
-
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)), 0x7);
-			if (this.oCPU.Flags.NE) goto L049f;
-
-		L0499:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10a), 0x3);
-
-		L049f:
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10a));
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L04c1;
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
-			if (this.oCPU.Flags.NE) goto L04af;
-			goto L05af;
-
-		L04af:
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x2);
-			if (this.oCPU.Flags.NE) goto L04b7;
-			goto L0609;
-
-		L04b7:
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x3);
-			if (this.oCPU.Flags.NE) goto L04bf;
-			goto L062d;
-
-		L04bf:
-			goto L053e;
-
-		L04c1:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)), 0x1);
-			if (this.oCPU.Flags.E) goto L0502;
-
-			// Instruction address 0x0000:0x04fa, size: 5
-			this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104)) + this.oCPU.ReadInt16(this.oCPU.DS.UInt16, 0x4b32),
-				this.oCPU.ReadInt8(this.oCPU.DS.UInt16,
-					(ushort)((0xf * this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110))) +
-					(5 * this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108))) + 0x4b32)) + 1,
-				this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, (ushort)((this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, 
-					(ushort)(this.oCPU.BP.UInt16 - 0x108)) << 2) + 0xb23e)));
-
-		L0502:
-			// Instruction address 0x0000:0x052f, size: 5
-			this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104)),
-				this.oCPU.ReadInt8(this.oCPU.DS.UInt16,
-				(ushort)((0xf * this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110))) +
-					(0x5 * this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108))) + 0x4b34)) + 1,
-				this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, (ushort)((this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, 
-					(ushort)(this.oCPU.BP.UInt16 - 0x108)) << 2) + 0xb23c)));
-
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x4b32);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104)), this.oCPU.AX.UInt16));
-
-		L053e:
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
-			// Instruction address 0x0000:0x055c, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)), 10));
-
-			// Instruction address 0x0000:0x057b, size: 5
-			this.oParent.DrawTools.DrawStringWithShadow(0xba06,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)) * 100 - 44,
-				12,
-				15);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108))));
-
-		L0587:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)), 0x3);
-			if (this.oCPU.Flags.LE) goto L0591;
-			goto L06ae;
-
-		L0591:
-			this.oCPU.AX.UInt16 = 0x64;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)));
-			this.oCPU.AX.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.AX.UInt16, 0x50);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104), this.oCPU.AX.UInt16);
-
-			goto L0426;
-
-		L05af:
-			// Instruction address 0x0000:0x05dc, size: 5
-			this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104)),
-				this.oCPU.ReadInt8(this.oCPU.DS.UInt16,
-					(ushort)(((0x5 * this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108))) +
-					(0xf * this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110)))) + 0x4b32)) + 1,
-				this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, (ushort)((this.oCPU.ReadUInt16(this.oCPU.SS.UInt16,
-					(ushort)(this.oCPU.BP.UInt16 - 0x108)) << 2) + 0xb23c)));
-
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x4b2e);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104)), this.oCPU.AX.UInt16));
-			this.oCPU.PUSH_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.DI.UInt16 + 0xb23e)));
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0x4b33));
-
-		L05f3:
-			this.oCPU.CBW(this.oCPU.AX);
-			this.oCPU.AX.UInt16 = this.oCPU.INC_UInt16(this.oCPU.AX.UInt16);
-			this.oCPU.PUSH_UInt16(this.oCPU.AX.UInt16);
-			this.oCPU.PUSH_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104)));
-
-		L05fa:
-			// Instruction address 0x0000:0x05fe, size: 5
-			this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
-				(short)this.oCPU.POP_UInt16(), (short)this.oCPU.POP_UInt16(), this.oCPU.POP_UInt16());
-			goto L053e;
-
-		L0609:
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-			this.oCPU.PUSH_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xb23c)));
-			this.oCPU.AX.UInt16 = 0xf;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110)));
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.AX.UInt16 = 0x5;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + this.oCPU.SI.UInt16 + 0x4b31));
-			goto L05f3;
-
-		L062d:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)), 0x7);
-			if (this.oCPU.Flags.E) goto L0670;
-
-			// Instruction address 0x0000:0x0661, size: 5
-			this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104)),
-				this.oCPU.ReadInt8(this.oCPU.DS.UInt16,
-					(ushort)((0xf * this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110))) +
-					(0x5 * this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108))) + 0x4b32)) + 1,
-				this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, (ushort)((this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, 
-					(ushort)(this.oCPU.BP.UInt16 - 0x108)) << 2) + 0xb23c)));
-
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x4b2e);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104)), this.oCPU.AX.UInt16));
-
-		L0670:
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-			this.oCPU.PUSH_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xb23e)));
-			this.oCPU.AX.UInt16 = 0xf;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110)));
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.AX.UInt16 = 0x5;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + this.oCPU.SI.UInt16 + 0x4b35));
-			this.oCPU.CBW(this.oCPU.AX);
-			this.oCPU.AX.UInt16 = this.oCPU.INC_UInt16(this.oCPU.AX.UInt16);
-			this.oCPU.PUSH_UInt16(this.oCPU.AX.UInt16);
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x108)), 0x2);
-			if (this.oCPU.Flags.NE) goto L06a1;
-			this.oCPU.AX.UInt16 = 0x3;
-			goto L06a4;
-
-		L06a1:
-			this.oCPU.AX.UInt16 = 0x2;
-
-		L06a4:
-			this.oCPU.CX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x104));
-			this.oCPU.CX.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.CX.UInt16, this.oCPU.AX.UInt16);
-			this.oCPU.PUSH_UInt16(this.oCPU.CX.UInt16);
-			goto L05fa;
-
-		L06ae:
-			// Instruction address 0x0000:0x06b6, size: 5
-			this.oParent.Tools.FreeNativeResource(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x6828), "Palace");
-
-			// Instruction address 0x0000:0x06be, size: 5
-			this.oParent.CommonTools.ClearKeyboardAndMouseEvents();
-
-		L06c8:
-			mouseEvent = this.oParent.GetMouseEvent();
-
-			if (mouseEvent.Buttons != MouseButtonsEnum.None) goto L06dd;
-
-			// Instruction address 0x0000:0x06d4, size: 5
-			this.oParent.CAPI.kbhit();
-
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L06c8;
-
-		L06dd:
-			// Instruction address 0x0000:0x06dd, size: 5
-			this.oParent.CAPI.kbhit();
-
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.NE) goto L06f5;
-
-			this.oCPU.AX.Int16 = (short)mouseEvent.Position.X;
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.CX.UInt16 = 0x6b;
-			this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10a), this.oCPU.AX.UInt16);
-			goto L070a;
-
-		L06f5:
-			// Instruction address 0x0000:0x06f5, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
-
-			this.oCPU.AX.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.AX.UInt16, 0x31);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10a), this.oCPU.AX.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.L) goto L06c8;
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x2);
-			if (this.oCPU.Flags.G) goto L06c8;
-
-		L070a:
-			this.oParent.Var_aa_Screen0_Rectangle.ScreenID = 1;
-
-			F17_0000_07ec(0);
-			
-			this.oParent.Var_aa_Screen0_Rectangle.ScreenID = 0;
-
-			// Instruction address 0x0000:0x073f, size: 5
-			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
-
-		L0747:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-
-			this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e)) + 2] =
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x110));
-
-			this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData2[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10e))] =
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10a));
-
-			this.oParent.Var_aa_Screen0_Rectangle.ScreenID = 1;
-
-			F17_0000_07ec(0);
-
-			this.oParent.Var_aa_Screen0_Rectangle.ScreenID = 0;
-
-			// Instruction address 0x0000:0x0780, size: 5
-			this.oParent.Graphics.F0_VGA_06b7_DrawScreenToMainScreenWithEffect(1);
-
-			// Instruction address 0x0000:0x0788, size: 5
-			this.oParent.CommonTools.ClearKeyboardAndMouseEvents();
-
-			// Instruction address 0x0000:0x078d, size: 5
-			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
-
-		L0792:
-			// Instruction address 0x0000:0x0795, size: 5
-			this.oParent.CommonTools.DrawScreenToMainScreenWithEffect(0);
-			
 			// Instruction address 0x0000:0x07a1, size: 5
-			this.oParent.CommonTools.PlayTune(1, 0);
+			this.parent.CommonTools.PlayTune(1, 0);
 
 			// Instruction address 0x0000:0x07dc, size: 5
-			this.oParent.Segment_1238.F0_1238_1b44();
-
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.DI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F17_0000_0000");
+			this.parent.Segment_1238.F0_1238_1b44();
 		}
 
 		/// <summary>
-		/// ?
+		/// Draw castle
 		/// </summary>
 		/// <param name="flag"></param>
-		public void F17_0000_07ec(ushort flag)
+		public void F17_0000_07ec_DrawPalace(int playerID, bool flag)
 		{
-			this.oCPU.Log.EnterBlock($"F17_0000_07ec({flag})");
+			F17_0000_07ec_DrawPalace(this.parent.GameData.Players[playerID], flag);
+		}
+
+		/// <summary>
+		/// Draw castle
+		/// </summary>
+		/// <param name="flag"></param>
+		public void F17_0000_07ec_DrawPalace(Player player, bool flag)
+		{
+			//this.oCPU.Log.EnterBlock($"F17_0000_07ec({flag})");
 
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x2e);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
+			this.parent.Var_aa_Screen0_Rectangle.ScreenID = 1;
 
-			this.oParent.Var_aa_Screen0_Rectangle.ScreenID = 1;
-
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x6828, 0xffff);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14), 0x0);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22), 0x0);
-
-		L081d:
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-
-			this.oCPU.SI.UInt16 = (ushort)((short)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)) + 2]);
-			this.oCPU.CMP_UInt16(this.oCPU.SI.UInt16, 0xffff);
-			if (this.oCPU.Flags.NE)
+			if (flag)
 			{
-				this.oCPU.AX.UInt16 = 0x1;
-				this.oCPU.CX.UInt16 = this.oCPU.SI.UInt16;
-				this.oCPU.AX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.AX.UInt16, this.oCPU.CX.LowUInt8);
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14),
-					this.oCPU.OR_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14)), this.oCPU.AX.UInt16));
-			}
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)), 0x9);
-			if (this.oCPU.Flags.L) goto L081d;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22), 0x1);
-
-		L0843:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xb25f), 0xff);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xb25e), 0xff);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)) + 2] != -1)
-			{
-				F17_0000_0cfe(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)), 1);
-			}
-		
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)), 0x8);
-			if (this.oCPU.Flags.L) goto L0843;
-
-			F17_0000_0e95(
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14)),
-				1);
-
-			this.oCPU.CMP_UInt16(flag, 0x0);
-			if (this.oCPU.Flags.E) goto L0897;
-			
-			// Instruction address 0x0000:0x089f, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "SAD.PIC", 0);
-
-			goto L089a;
-
-		L0897:
-			// Instruction address 0x0000:0x089f, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "CBACK.PIC", 0);
-
-		L089a:
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[12] > 0)
-			{
-				// Instruction address 0x0000:0x08b6, size: 5
-				this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "CBACKS0.PIC");
-
-				this.oCPU.AX.LowUInt8 = (byte)((sbyte)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[12]);
-				this.oCPU.AX.LowUInt8 = this.oCPU.ADD_UInt8(this.oCPU.AX.LowUInt8, 0x30);
-				this.oCPU.WriteUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa), this.oCPU.AX.LowUInt8);
-
-				// Instruction address 0x0000:0x08d8, size: 5
-				this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 135, (ushort)(this.oCPU.BP.UInt16 - 0x10), 0);
-			}
-		
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c), 0x10);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[4] == -1)
-			{
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c),
-					this.oCPU.SUB_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)), 0x18));
-			}
-		
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData2[4] == 1)
-			{
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c), 
-					this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c))));
-			}
-		
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20), 0x24);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22), 0x8);
-			goto L090c;
-
-		L0906:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22),
-				this.oCPU.DEC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22))));
-			
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x18),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)));
-
-		L090c:
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)) + 2] == -1)
-				goto L0906;
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22), 0x1);
-
-			goto L0b05;
-
-		L0923:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)), 0x3);
-			if (this.oCPU.Flags.NE) goto L0945;
-
-			F17_0000_0e2f(
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)),
-				(short)(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)) + this.oCPU.ReadInt16(this.oCPU.DS.UInt16, 0x4b32)),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20)),
-				1);
-
-		L0945:
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData2[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22))] != 1)
-				goto L0957;
-
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)), 0x3);
-			if (this.oCPU.Flags.NE) goto L096d;
-
-		L0957:
-			F17_0000_0e2f(
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)),
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20)),
-				0);
-
-		L096d:
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x4b32);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)), this.oCPU.AX.UInt16));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)), 0x3);
-			if (this.oCPU.Flags.NE) goto L097f;
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x4b2e);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)), this.oCPU.AX.UInt16));
-
-		L097f:
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12), this.oCPU.AX.UInt16);
-			goto L0b02;
-
-		L0988:
-			if (this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)) + 1 == this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)))
-			{
-				this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22));
-				this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-
-				this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12));
-				this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-
-				if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData2[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22))] ==
-					this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData2[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))])
-				{
-					F17_0000_0e2f(
-						this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)),
-						this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)),
-						(short)(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)) +
-							this.oCPU.ReadInt16(this.oCPU.DS.UInt16, 0x4b2e) - 17),
-						(ushort)(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20)) - 2),
-						0);
-				}
-			}
-
-			if (this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x18)) - 1 == this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)))
-			{
-				this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22));
-				this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-
-				this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x18));
-				this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-
-				if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData2[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22))] ==
-					this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData2[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x18))])
-				{
-					F17_0000_0e2f(
-						this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)),
-						this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x18)),
-						(short)(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)) +
-							this.oCPU.ReadInt16(this.oCPU.DS.UInt16, 0x4b2e) - 17),
-						(ushort)(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20)) - 2),
-						1);
-				}
-			}
-		
-			F17_0000_0e2f(
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)),
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20)),
-				0);
-			
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x4b2e);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)), this.oCPU.AX.UInt16));
-
-			F17_0000_0e2f(
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)),
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20)),
-				1);
-			
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x4b2e);
-			goto L0af9;
-
-		L0a3e:
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData2[4] == 1)
-			{
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c),
-					this.oCPU.DEC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c))));
-			}
-		
-			F17_0000_0e2f(
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)),
-				(short)(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)) - 2),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20)),
-				0);
-			
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x4b2c);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)), this.oCPU.AX.UInt16));
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData2[4] == 1)
-			{
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c), 
-					this.oCPU.DEC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c))));
-			}
-
-			goto L0b02;
-
-		L0a77:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)), 0x5);
-			if (this.oCPU.Flags.NE) goto L0a99;
-
-			F17_0000_0e2f(
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)),
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20)),
-				0);
-			
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x4b2e);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)), this.oCPU.AX.UInt16));
-
-		L0a99:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData2[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22))] != 1)
-				goto L0ac9;
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)) + 1] <=
-				this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)) + 2])
-				goto L0ac9;
-
-			F17_0000_0e2f(
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)),
-				(short)(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)) - 3),
-				(ushort)((short)(this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)) + 1] -
-					this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)) + 2] +
-					this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20)) + 1)),
-				1);
-
-			goto L0ae9;
-
-		L0ac9:
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);			
-
-			F17_0000_0e2f(
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)),
-				(short)(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)) -
-					((this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData2[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22))] == 1) ? 3 : 2)),
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20)),
-				1);
-
-		L0ae9:			
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x4b34);
-
-		L0af9:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)), this.oCPU.AX.UInt16));
-			goto L0b02;
-
-		L0afe:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)), 0x30));
-
-		L0b02:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22))));
-
-		L0b05:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)), 0x8);
-			if (this.oCPU.Flags.GE) goto L0b87;
-
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)) + 2] == -1)
-				goto L0afe;
-
-			this.oCPU.WriteInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e),
-				(short)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)) + 2]);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x26), 0x2);
-
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)), 0x4);
-			if (this.oCPU.Flags.GE) goto L0b40;
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x26), 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)) + 1] == -1)
-				goto L0b3b;
-
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)), 0x1);
-			if (this.oCPU.Flags.NE) goto L0b40;
-
-		L0b3b:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x26), 0x0);
-
-		L0b40:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)), 0x4);
-			if (this.oCPU.Flags.LE) goto L0b62;
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x26), 0x1);
-
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)) + 3] == -1)
-				goto L0b5d;
-
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22)), 0x7);
-			if (this.oCPU.Flags.NE) goto L0b62;
-
-		L0b5d:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x26), 0x3);
-
-		L0b62:
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x26));
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.NE) goto L0b6c;
-			goto L0923;
-
-		L0b6c:
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
-			if (this.oCPU.Flags.NE) goto L0b74;
-			goto L0988;
-
-		L0b74:
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x2);
-			if (this.oCPU.Flags.NE) goto L0b7c;
-			goto L0a3e;
-
-		L0b7c:
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x3);
-			if (this.oCPU.Flags.NE) goto L0b84;
-			goto L0a77;
-
-		L0b84:
-			goto L0b02;
-
-		L0b87:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData2[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))] == 1)
-			{
-				if (this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)) != 3)
-				{
-					F17_0000_0e2f(
-						(ushort)((short)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)) + 2]),
-						this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)),
-						(short)((this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)) * 48) - 36),
-						(ushort)((short)(this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)) + 3] -
-							this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)) + 2] +
-							this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x20)))),
-						0);
-				}
-			}
-
-			// Instruction address 0x0000:0x0bc8, size: 5
-			this.oParent.Tools.FreeNativeResource(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x6828), "Palace2");
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[11] == 0  &&
-				this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[13] == 0)
-				goto L0c94;
-
-			// Instruction address 0x0000:0x0bee, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "CBRUSH0.PIC");
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[11] != 0)
-			{
-				this.oCPU.AX.LowUInt8 = (byte)((sbyte)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[11]);
-				this.oCPU.AX.LowUInt8 = this.oCPU.SHL_UInt8(this.oCPU.AX.LowUInt8, 0x1);
-				this.oCPU.AX.LowUInt8 = this.oCPU.ADD_UInt8(this.oCPU.AX.LowUInt8, 0x2e);
-				this.oCPU.WriteUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa), this.oCPU.AX.LowUInt8);
-
-				// Instruction address 0x0000:0x0c0b, size: 5
-				this.oCPU.AX.Int16 = (short)this.oParent.ImageTools.F0_2fa1_044c_LoadIcon((ushort)(this.oCPU.BP.UInt16 - 0x10));
-
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2a), this.oCPU.AX.UInt16);
-
-				// Instruction address 0x0000:0x0c2e, size: 5
-				this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
-					0,
-					((this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[11] <= 1) ? 105 : 94),
-					this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2a)));
-			}
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[13] != 0)
-			{
-				this.oCPU.AX.LowUInt8 = (byte)((sbyte)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[13]);
-				this.oCPU.AX.LowUInt8 = this.oCPU.SHL_UInt8(this.oCPU.AX.LowUInt8, 0x1);
-				this.oCPU.AX.LowUInt8 = this.oCPU.ADD_UInt8(this.oCPU.AX.LowUInt8, 0x2f);
-				this.oCPU.WriteUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa), this.oCPU.AX.LowUInt8);
-
-				// Instruction address 0x0000:0x0c4b, size: 5
-				this.oCPU.AX.Int16 = (short)this.oParent.ImageTools.F0_2fa1_044c_LoadIcon((ushort)(this.oCPU.BP.UInt16 - 0x10));
-
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2c), this.oCPU.AX.UInt16);
-
-				// Instruction address 0x0000:0x0c6f, size: 5
-				this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
-					184, ((this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[13] <= 1) ? 105 : 94),
-					this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2c)));
-			}
-		
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[11] != 0)
-			{
-				this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2a));
+				// Instruction address 0x0000:0x089f, size: 5
+				this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "SAD.PIC", 0);
 			}
 			else
 			{
-				this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2c));
+				// Instruction address 0x0000:0x089f, size: 5
+				this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "CBACK.PIC", 0);
 			}
 
-			// Instruction address 0x0000:0x0c8c, size: 5
-			this.oParent.Tools.FreeNativeResource(this.oCPU.AX.UInt16, "");
+			// Draw earth, gravel, stone or marble path
+			if (player.PalaceLevels[10] > 0)
+			{
+				// Instruction address 0x0000:0x08d8, size: 5
+				this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 135, $"CBACKS{(char)('0' + player.PalaceLevels[10])}.PIC", 0);
+			}
 
-		L0c94:
-			this.oCPU.CMP_UInt16(flag, 0x0);
-			if (this.oCPU.Flags.E) goto L0cf9;
+			int xPosition;
 
-			this.oParent.Var_aa_Screen0_Rectangle.ScreenID = 0;
+			LoadPalaceBitmaps();
 
-			if (this.oParent.Var_deba <= 7) goto L0cc1;
+			// Determine first and last palace piece
+			int minimumIndex = 0;
+			int maximumIndex = 8;
 
-			// Instruction address 0x0000:0x0cb9, size: 5
-			this.oParent.CommonTools.TransformPaletteToColor(5, Color.FromRgb(0, 0, 0));
+			while (player.PalaceLevels[minimumIndex] == -1)
+			{
+				minimumIndex++;
+			}
 
-		L0cc1:
-			// Instruction address 0x0000:0x0cd4, size: 5
-			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
+			while (player.PalaceLevels[maximumIndex] == -1)
+			{
+				maximumIndex--;
+			}
 
-			// Instruction address 0x0000:0x0ce0, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SAD.PIC", 1);
+			int centerBitmapID = this.bitmaps[player.PalaceLevels[4], player.PalaceTypes[4], 0];
+			GBitmap centerBitmap = this.parent.Graphics.Bitmaps.GetValueByKey(centerBitmapID);
+			GRectangle centerRect = bitmapOffsets[player.PalaceLevels[4], player.PalaceTypes[4], 0];
 
-		L0cf9:
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F17_0000_07ec");
+			int xMedian = 160;
+			int yMedian = 135; // 136;
+
+			// Left section, deduce center piece center width
+			xPosition = xMedian - (centerBitmap.Width + centerRect.Width) / 2;
+
+			// Draw Left section
+			bool leftTowerPerspective = false;
+
+			for (int i = 3; i > 0; i--)
+			{
+				if (i >= minimumIndex)
+				{
+					bool leftmostPiece = i == minimumIndex;
+					bool shadow = (leftmostPiece || (player.PalaceLevels[i - 1] > player.PalaceLevels[i])) && (minimumIndex != 3 || player.PalaceLevels[i] > 0);
+
+					// special case for latest element where only tower is upgraded
+					if (i != 1)
+					{
+						// grab inner piece
+						int bitmapID = this.bitmaps[player.PalaceLevels[i], player.PalaceTypes[i], (leftmostPiece && shadow) ? 1 : 2];
+						GBitmap bitmap = this.parent.Graphics.Bitmaps.GetValueByKey(bitmapID);
+						GRectangle rect = bitmapOffsets[player.PalaceLevels[i], player.PalaceTypes[i], (leftmostPiece && shadow) ? 1 : 2];
+
+						// special case for side tower
+						if ((!leftTowerPerspective && minimumIndex == 2 && i == 3) || (!leftTowerPerspective && minimumIndex == 1 && i == 2))
+						{
+							// grab tower piece
+							int bitmapID1 = this.bitmaps[player.PalaceLevels[minimumIndex], player.PalaceTypes[minimumIndex], 3];
+							GBitmap bitmap1 = this.parent.Graphics.Bitmaps.GetValueByKey(bitmapID1);
+							GRectangle rect1 = bitmapOffsets[player.PalaceLevels[minimumIndex], player.PalaceTypes[minimumIndex], 3];
+
+							int xLocation1 = xPosition - (bitmap.Width - rect.Width) - bitmap1.Width / 2;
+
+							// with y offset of -2 we want to make a distinction and an appearance of perspective
+							this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, xLocation1,
+								yMedian - bitmap1.Height - 2, bitmapID1);
+
+							leftTowerPerspective = true;
+						}
+
+						this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, xPosition - bitmap.Width - rect.Right,
+							yMedian - bitmap.Height + rect.Bottom, bitmapID);
+
+						xPosition -= bitmap.Width - rect.Width;
+					}
+
+					if (i != minimumIndex)
+					{
+						if (minimumIndex == 1)
+						{
+							// we are not the latest element
+							// grab inner piece
+							int bitmapID = this.bitmaps[player.PalaceLevels[i], player.PalaceTypes[i], (shadow || i == 2) ? 1 : 2];
+							GBitmap bitmap = this.parent.Graphics.Bitmaps.GetValueByKey(bitmapID);
+							GRectangle rect = bitmapOffsets[player.PalaceLevels[i], player.PalaceTypes[i], (shadow || i == 2) ? 1 : 2];
+
+							this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, xPosition - bitmap.Width - rect.Right,
+								yMedian - bitmap.Height + rect.Bottom, bitmapID);
+
+							xPosition -= bitmap.Width - rect.Width;
+						}
+					}
+					else
+					{
+						// grab tower piece
+						int bitmapID = this.bitmaps[player.PalaceLevels[i], player.PalaceTypes[i], 3];
+						GBitmap bitmap = this.parent.Graphics.Bitmaps.GetValueByKey(bitmapID);
+						GRectangle rect = bitmapOffsets[player.PalaceLevels[i], player.PalaceTypes[i], 3];
+
+						this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, xPosition - bitmap.Width - rect.Right,
+							yMedian - bitmap.Height + rect.Bottom, bitmapID);
+
+						xPosition -= bitmap.Width - rect.Width;
+					}
+				}
+			}
+
+			xPosition = xMedian - (centerBitmap.Width + centerRect.Width) / 2 + centerBitmap.Width + centerRect.Width;
+
+			// Draw Right section
+			bool rightTowerPerspective = false;
+
+			for (int i = 5; i < 8; i++)
+			{
+				if (i <= maximumIndex)
+				{
+					bool leftmostPiece = i == 5;
+					bool shadow = leftmostPiece || player.PalaceLevels[i - 1] > player.PalaceLevels[i];
+
+					// special case for latest element where only tower is upgraded
+					if (i != 7)
+					{
+						// grab inner piece
+						int bitmapID = this.bitmaps[player.PalaceLevels[i], player.PalaceTypes[i], shadow ? 1 : 2];
+						GBitmap bitmap = this.parent.Graphics.Bitmaps.GetValueByKey(bitmapID);
+						GRectangle rect = bitmapOffsets[player.PalaceLevels[i], player.PalaceTypes[i], shadow ? 1 : 2];
+
+						// special case for side tower
+						if ((!rightTowerPerspective && maximumIndex == 6 && i == 5) || (!rightTowerPerspective && maximumIndex == 7 && i == 6))
+						{
+							// grab tower piece
+							int bitmapID1 = this.bitmaps[player.PalaceLevels[maximumIndex], player.PalaceTypes[maximumIndex], 4];
+							GBitmap bitmap1 = this.parent.Graphics.Bitmaps.GetValueByKey(bitmapID1);
+							GRectangle rect1 = bitmapOffsets[player.PalaceLevels[maximumIndex], player.PalaceTypes[maximumIndex], 4];
+
+							int xLocation1 = xPosition + (bitmap.Width + rect.Width) - bitmap1.Width / 2;
+
+							// with y offset of -2 we want to make a distinction and an appearance of perspective
+							this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, xLocation1,
+								yMedian - bitmap1.Height - 2, bitmapID1);
+
+							rightTowerPerspective = true;
+						}
+
+						this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, xPosition + rect.Right,
+							yMedian - bitmap.Height + rect.Bottom, bitmapID);
+
+						xPosition += bitmap.Width + rect.Width;
+					}
+
+					if (i != maximumIndex)
+					{
+						// we are the inner element
+						if (maximumIndex == 7)
+						{
+							// grab inner piece
+							int bitmapID = this.bitmaps[player.PalaceLevels[i], player.PalaceTypes[i], 2];
+							GBitmap bitmap = this.parent.Graphics.Bitmaps.GetValueByKey(bitmapID);
+							GRectangle rect = bitmapOffsets[player.PalaceLevels[i], player.PalaceTypes[i], 2];
+
+							this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, xPosition + rect.Right,
+								yMedian - bitmap.Height + rect.Bottom, bitmapID);
+
+							xPosition += bitmap.Width + rect.Width;
+						}
+					}
+					else
+					{
+						// grab tower piece
+						int bitmapID = this.bitmaps[player.PalaceLevels[i], player.PalaceTypes[i], 4];
+						GBitmap bitmap = this.parent.Graphics.Bitmaps.GetValueByKey(bitmapID);
+						GRectangle rect = bitmapOffsets[player.PalaceLevels[i], player.PalaceTypes[i], 4];
+
+						this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, xPosition + rect.Right,
+							yMedian - bitmap.Height + rect.Bottom, bitmapID);
+
+						xPosition += bitmap.Width + rect.Width;
+					}
+				}
+			}
+
+			// Draw Center section
+			xPosition = xMedian - (centerBitmap.Width + centerRect.Width) / 2 - centerRect.Left;
+
+			this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, xPosition,
+				yMedian - centerBitmap.Height + centerRect.Bottom + player.PalaceLevels[4], centerBitmapID);
+
+			FreePalaceBitmaps();
+
+			// Draw grass, hedge, trees or statues
+			if (player.PalaceLevels[9] != 0 || player.PalaceLevels[11] != 0)
+			{
+				if (player.PalaceLevels[9] != 0)
+				{
+					// Instruction address 0x0000:0x0c0b, size: 5
+					int bitmapID = this.parent.ImageTools.F0_2fa1_044c_LoadIcon($"CBRUSH{(char)('.' + (player.PalaceLevels[9] * 2))}.PIC");
+
+					// Instruction address 0x0000:0x0c2e, size: 5
+					this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+						0, ((player.PalaceLevels[9] <= 1) ? 105 : 94), bitmapID);
+
+					this.parent.Tools.FreeNativeResource(bitmapID, "DrawPalace 3");
+				}
+
+				if (player.PalaceLevels[11] != 0)
+				{
+					// Instruction address 0x0000:0x0c4b, size: 5
+					int bitmapID = this.parent.ImageTools.F0_2fa1_044c_LoadIcon($"CBRUSH{(char)('/' + (player.PalaceLevels[11] * 2))}.PIC");
+
+					// Instruction address 0x0000:0x0c6f, size: 5
+					this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+						184, ((player.PalaceLevels[11] <= 1) ? 105 : 94), bitmapID);
+
+					this.parent.Tools.FreeNativeResource(bitmapID, "DrawPalace 3");
+				}
+			}
+
+			this.parent.Var_aa_Screen0_Rectangle.ScreenID = 0;
+
+			if (flag)
+			{
+				if (this.parent.Var_deba > 7)
+				{
+					// Instruction address 0x0000:0x0cb9, size: 5
+					this.parent.CommonTools.TransformPaletteToColor(5, Color.FromRgb(0, 0, 0));
+				}
+
+				// Instruction address 0x0000:0x0cd4, size: 5
+				this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
+
+				// Instruction address 0x0000:0x0ce0, size: 5
+				this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SAD.PIC", 1);
+			}
 		}
 
 		/// <summary>
-		/// ?
+		/// Load Palace bitmaps
 		/// </summary>
-		/// <param name="param1"></param>
-		/// <param name="flag"></param>
-		public void F17_0000_0cfe(ushort param1, ushort flag)
+		private void LoadPalaceBitmaps()
 		{
-			this.oCPU.Log.EnterBlock($"F17_0000_0cfe({param1}, {flag})");
+			//this.oCPU.Log.EnterBlock($"F17_0000_0e95({param1}, {param2})");
 
 			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x4);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
+			for (int i = 0; i < 5; i++)
+			{
+				GBitmap? palace = GBitmap.FromPICFile(this.parent.ResourcePath + CAPI.GetDOSFileName($"CASTLE{(char)('0' + i)}.PIC"), true);
 
-			this.oCPU.SI.UInt16 = param1;
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
+				if (palace != null)
+				{
+					for (int j = 0; j < 3; j++)
+					{
+						for (int k = 0; k < 5; k++)
+						{
+							GRectangle rect = this.bitmapRectangles[i, j, k];
 
-			this.oCPU.WriteInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4),
-				(short)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[param1 + 2]);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x2);
-
-			this.oCPU.CMP_UInt16(param1, 0x4);
-			if (this.oCPU.Flags.GE) goto L0d33;
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[param1 + 1] == -1)
-				goto L0d2e;
-
-			if (param1 != 1)
-				goto L0d33;
-
-		L0d2e:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x0);
-
-		L0d33:
-			this.oCPU.CMP_UInt16(param1, 0x4);
-			if (this.oCPU.Flags.LE) goto L0d55;
-			
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x1);
-			
-			this.oCPU.BX.UInt16 = param1;
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[param1 + 3] == -1)
-				goto L0d50;
-
-			this.oCPU.CMP_UInt16(param1, 0x7);
-			if (this.oCPU.Flags.NE) goto L0d55;
-
-		L0d50:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x3);
-
-		L0d55:
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L0d6e;
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
-			if (this.oCPU.Flags.E) goto L0d9f;
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x2);
-			if (this.oCPU.Flags.E) goto L0ddd;
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x3);
-			if (this.oCPU.Flags.E) goto L0de9;
-			goto L0e2a;
-
-		L0d6e:
-			this.oCPU.BX.UInt16 = param1;
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xb25e), 0x3);
-			this.oCPU.CMP_UInt16(param1, 0x3);
-			if (this.oCPU.Flags.E) goto L0d87;
-			this.oCPU.CMP_UInt16(flag, 0x0);
-			if (this.oCPU.Flags.E) goto L0d87;
-			goto L0e2a;
-
-		L0d87:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x0);
-			if (this.oCPU.Flags.E) goto L0d91;
-			this.oCPU.AX.LowUInt8 = 0x1;
-			goto L0d93;
-
-		L0d91:
-			this.oCPU.AX.LowUInt8 = 0x2;
-
-		L0d93:
-			this.oCPU.BX.UInt16 = param1;
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xb25f), this.oCPU.AX.LowUInt8);
-			goto L0e2a;
-
-		L0d9f:
-			this.oCPU.SI.UInt16 = param1;
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[param1 + 1] >
-				this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[param1 + 2] ||
-				param1 == 5)
-				goto L0dbb;
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[param1] != -1)
-				goto L0dc7;
-
-		L0dbb:
-			this.oCPU.BX.UInt16 = param1;
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xb25e), 0x1);
-			goto L0dd1;
-
-		L0dc7:
-			this.oCPU.BX.UInt16 = param1;
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xb25e), 0x2);
-
-		L0dd1:
-			this.oCPU.BX.UInt16 = param1;
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xb25f), 0x2);
-			goto L0e2a;
-
-		L0ddd:
-			this.oCPU.BX.UInt16 = param1;
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xb25e), 0x0);
-			goto L0e2a;
-
-		L0de9:
-			this.oCPU.CMP_UInt16(param1, 0x5);
-			if (this.oCPU.Flags.E) goto L0df5;
-			this.oCPU.CMP_UInt16(flag, 0x0);
-			if (this.oCPU.Flags.NE) goto L0e20;
-
-		L0df5:
-			this.oCPU.SI.UInt16 = param1;
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[param1 + 1] >
-				this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[param1 + 2])
-				goto L0e0a;
-
-			this.oCPU.CMP_UInt16(param1, 0x5);
-			if (this.oCPU.Flags.NE) goto L0e16;
-
-		L0e0a:
-			this.oCPU.BX.UInt16 = param1;
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xb25e), 0x1);
-			goto L0e20;
-
-		L0e16:
-			this.oCPU.BX.UInt16 = param1;
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xb25e), 0x2);
-
-		L0e20:
-			this.oCPU.BX.UInt16 = param1;
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xb25f), 0x4);
-
-		L0e2a:
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F17_0000_0cfe");
+							this.bitmaps[i, j, k] = this.parent.Graphics.BitmapToBitmap(palace, rect.X, rect.Y, rect.Width, rect.Height);
+						}
+					}
+				}
+			}
 		}
 
 		/// <summary>
-		/// ?
+		/// Frees Palace bitmaps and releases memory
 		/// </summary>
-		/// <param name="param1"></param>
-		/// <param name="param2"></param>
-		/// <param name="xPos"></param>
-		/// <param name="param4"></param>
-		/// <param name="flag"></param>
-		public void F17_0000_0e2f(ushort param1, ushort param2, short xPos, ushort param4, ushort flag)
+		private void FreePalaceBitmaps()
 		{
-			this.oCPU.Log.EnterBlock($"F17_0000_0e2f({param1}, {param2}, {xPos}, {param4}, {flag})");
+			for (int i = 0; i < 5; i++)
+			{
+				for (int j = 0; j < 3; j++)
+				{
+					for (int k = 0; k < 5; k++)
+					{
+						if (this.bitmaps[i, j, k] != -1)
+						{
+							this.parent.Tools.FreeNativeResource(this.bitmaps[i, j, k], "FreeCastleBitmaps()");
 
-			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x4);
-			this.oCPU.PUSH_UInt16(this.oCPU.DI.UInt16);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
-			
-			this.oCPU.SI.UInt16 = param2;
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-
-			this.oCPU.WriteInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2),
-				(short)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[param2 + 2]);
-
-			this.oCPU.WriteInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4),
-				(short)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData2[param2]);
-
-			this.oCPU.BX.UInt16 = flag;
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + this.oCPU.SI.UInt16 + 0xb25e));
-			this.oCPU.CBW(this.oCPU.AX);
-			this.oCPU.DI.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.AX.UInt16 = 0x5;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-			this.oCPU.DI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.DI.UInt16, this.oCPU.AX.UInt16);
-			this.oCPU.AX.UInt16 = 0xf;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, param1);
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + this.oCPU.DI.UInt16 + 0x4b36));
-			this.oCPU.CBW(this.oCPU.AX);
-			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, param4);
-			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, param1);
-			// Instruction address 0x0000:0x0e87, size: 5
-			this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
-				xPos, (short)this.oCPU.AX.UInt16,
-				this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, (ushort)((flag << 1) + (param2 << 2) + 0xb23c)));
-
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.DI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F17_0000_0e2f");
-		}
-
-		/// <summary>
-		/// ?
-		/// </summary>
-		/// <param name="param1"></param>
-		/// <param name="param2"></param>
-		public void F17_0000_0e95(ushort param1, ushort param2)
-		{
-			this.oCPU.Log.EnterBlock($"F17_0000_0e95({param1}, {param2})");
-
-			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x1a);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a), 0x0);
-			goto L104e;
-
-		L0ea4:
-			// Instruction address 0x0000:0x0eb8, size: 5
-			this.oParent.Graphics.F0_VGA_0b85_ScreenToBitmap(1,
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16)),
-				(ushort)(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x18)) + 1),
-				0x34, 0x63);
-
-		L0eb4:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + this.oCPU.SI.UInt16 + 0xb23c), this.oCPU.AX.UInt16);
-
-		L0ed0:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14));
-			this.oCPU.CMP_UInt8(this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + this.oCPU.SI.UInt16 + 0xb25e)), 0xff);
-			if (this.oCPU.Flags.E) goto L0ef6;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, 0x6828), 0xffff);
-			if (this.oCPU.Flags.NE) goto L0ef6;
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + this.oCPU.SI.UInt16 + 0xb23c));
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x6828, this.oCPU.AX.UInt16);
-
-		L0ef6:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14))));
-
-		L0ef9:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14)), 0x2);
-			if (this.oCPU.Flags.L) goto L0f02;
-			goto L0fdf;
-
-		L0f02:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14));
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + this.oCPU.SI.UInt16 + 0xb25e));
-			this.oCPU.CBW(this.oCPU.AX);
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L0ea4;
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
-			if (this.oCPU.Flags.E) goto L0f29;
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x2);
-			if (this.oCPU.Flags.E) goto L0f40;
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x3);
-			if (this.oCPU.Flags.E) goto L0f55;
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x4);
-			if (this.oCPU.Flags.E) goto L0f99;
-			goto L0ed0;
-
-		L0f29:
-			// Instruction address 0x0000:0x0eb8, size: 5
-			this.oParent.Graphics.F0_VGA_0b85_ScreenToBitmap(1,
-				(ushort)(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16)) + 0x35),
-				(ushort)(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x18)) + 1),
-				0x18, 0x63);
-
-		L0f3c:
-			goto L0eb4;
-
-		L0f40:
-			// Instruction address 0x0000:0x0eb8, size: 5
-			this.oParent.Graphics.F0_VGA_0b85_ScreenToBitmap(1,
-				(ushort)(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16)) + 0x4e),
-				(ushort)(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x18)) + 1),
-				0x18, 0x63);
-			goto L0f3c;
-
-		L0f55:
-			this.oCPU.CMP_UInt16(param2, 0x0);
-			if (this.oCPU.Flags.E) goto L0f67;
-			
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData2[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))] != 1)
-				goto L0f73;
-
-		L0f67:
-			this.oCPU.CMP_UInt16(param2, 0x0);
-			if (this.oCPU.Flags.NE) goto L0f88;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)), 0x2);
-			if (this.oCPU.Flags.E) goto L0f88;
-
-		L0f73:
-			// Instruction address 0x0000:0x0eb8, size: 5
-			this.oParent.Graphics.F0_VGA_0b85_ScreenToBitmap(1,
-				(ushort)(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16)) + 0x67),
-				(ushort)(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x18)) + 1),
-				0x1c, 0x63);
-			goto L0f3c;
-
-		L0f88:
-			// Instruction address 0x0000:0x0eb8, size: 5
-			this.oParent.Graphics.F0_VGA_0b85_ScreenToBitmap(1, 0xa0, 0x65, 0x23, 0x63);
-			goto L0f3c;
-
-		L0f99:
-			this.oCPU.CMP_UInt16(param2, 0x0);
-			if (this.oCPU.Flags.E) goto L0fab;
-			
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData2[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))] != 1)
-				goto L0fb7;
-
-		L0fab:
-			this.oCPU.CMP_UInt16(param2, 0x0);
-			if (this.oCPU.Flags.NE) goto L0fcd;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)), 0x2);
-			if (this.oCPU.Flags.E) goto L0fcd;
-
-		L0fb7:
-			// Instruction address 0x0000:0x0eb8, size: 5
-			this.oParent.Graphics.F0_VGA_0b85_ScreenToBitmap(1,
-				(ushort)(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16)) + 0x84),
-				(ushort)(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x18)) + 1),
-				0x1b, 0x63);
-			goto L0f3c;
-
-		L0fcd:
-			// Instruction address 0x0000:0x0eb8, size: 5
-			this.oParent.Graphics.F0_VGA_0b85_ScreenToBitmap(1, 0xc4, 0x65, 0x23, 0x63);
-			goto L0f3c;
-
-		L0fdf:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))));
-
-		L0fe2:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)), 0x8);
-			if (this.oCPU.Flags.GE) goto L104b;
-			
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData1[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)) + 2] ==
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a)))
-				goto L0ffc;
-
-			this.oCPU.CMP_UInt16(param2, 0x0);
-			if (this.oCPU.Flags.NE) goto L0fdf;
-
-		L0ffc:
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-
-			this.oCPU.SI.UInt16 = 
-				(ushort)((short)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].PalaceData2[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12))]);
-			this.oCPU.AX.UInt16 = this.oCPU.SI.UInt16;
-
-			this.oCPU.AX.UInt16 = this.oCPU.AND_UInt16(this.oCPU.AX.UInt16, 0x1);
-			this.oCPU.CX.UInt16 = 0xa0;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16), this.oCPU.AX.UInt16);
-
-			this.oCPU.AX.UInt16 = this.oCPU.SI.UInt16;
-			this.oCPU.AX.UInt16 = this.oCPU.AND_UInt16(this.oCPU.AX.UInt16, 0x2);
-			this.oCPU.CX.UInt16 = 0x32;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x18), this.oCPU.AX.UInt16);
-
-			this.oCPU.CMP_UInt16(param2, 0x0);
-			if (this.oCPU.Flags.NE) goto L1043;
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12));
-			this.oCPU.SI.UInt16 = this.oCPU.DEC_UInt16(this.oCPU.SI.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.SI.UInt16;
-			this.oCPU.AX.UInt16 = this.oCPU.AND_UInt16(this.oCPU.AX.UInt16, 0x1);
-			this.oCPU.CX.UInt16 = 0xa0;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16), this.oCPU.AX.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.SI.UInt16;
-			this.oCPU.AX.UInt16 = this.oCPU.AND_UInt16(this.oCPU.AX.UInt16, 0x2);
-			this.oCPU.CX.UInt16 = 0x32;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x18), this.oCPU.AX.UInt16);
-
-		L1043:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x14), 0x0);
-			goto L0ef9;
-
-		L104b:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a))));
-
-		L104e:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a)), 0x5);
-			if (this.oCPU.Flags.GE) goto L1091;
-			this.oCPU.AX.UInt16 = 0x1;
-			this.oCPU.CX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a));
-			this.oCPU.AX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.AX.UInt16, this.oCPU.CX.LowUInt8);
-			this.oCPU.TEST_UInt16(this.oCPU.AX.UInt16, param1);
-			if (this.oCPU.Flags.E) goto L104b;
-
-			// Instruction address 0x0000:0x1069, size: 5
-			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x10), "CASTLE0.PIC");
-
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a));
-			this.oCPU.AX.LowUInt8 = this.oCPU.ADD_UInt8(this.oCPU.AX.LowUInt8, 0x30);
-			this.oCPU.WriteUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa), this.oCPU.AX.LowUInt8);
-
-			// Instruction address 0x0000:0x1081, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, (ushort)(this.oCPU.BP.UInt16 - 0x10), 0);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12), 0x1);
-			goto L0fe2;
-
-		L1091:
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F17_0000_0e95");
+							this.bitmaps[i, j, k] = -1;
+						}
+					}
+				}
+			}
 		}
 	}
 }

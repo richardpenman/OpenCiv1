@@ -1626,14 +1626,14 @@ namespace OpenCivOne
 				this.oParent.GameData.Nations[this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].NationalityID].LongTune, 3);
 
 			// Instruction address 0x0000:0x1518, size: 5
-			this.oParent.Graphics.F0_VGA_06b7_DrawScreenToMainScreenWithEffect(1);
+			this.oParent.Graphics.F0_VGA_06b7_DrawScreenToScreen0WithEffect(1);
 
 			// Instruction address 0x0000:0x1538, size: 5
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
 
 			// Instruction address 0x0000:0x1543, size: 5
-			this.oParent.CommonTools.DrawScreenToMainScreenWithEffect(0);
-			
+			this.oParent.Graphics.F0_VGA_06b7_DrawScreenToScreen0WithEffect(0);
+
 			// Instruction address 0x0000:0x154f, size: 5
 			this.oParent.CommonTools.PlayTune(1, 0);
 

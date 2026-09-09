@@ -501,7 +501,7 @@ namespace OpenCivOne
 					this.parent.CommonTools.PlayTune(44, 0);
 
 					// Instruction address 0x0000:0x0e3c, size: 5
-					this.parent.Graphics.F0_VGA_06b7_DrawScreenToMainScreenWithEffect(1);
+					this.parent.Graphics.F0_VGA_06b7_DrawScreenToScreen0WithEffect(1);
 				}
 				else
 				{

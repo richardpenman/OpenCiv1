@@ -126,11 +126,11 @@ namespace OpenCivOne.UI
 
 			if (!this.closing)
 			{
-				if (this.game.Graphics.CPU.Pause && !this.gamePaused.IsVisible)
+				if (this.game.CPU.Pause && !this.gamePaused.IsVisible)
 				{
 					this.gamePaused.IsVisible = true;
 				}
-				else if (!this.game.Graphics.CPU.Pause && this.gamePaused.IsVisible)
+				else if (!this.game.CPU.Pause && this.gamePaused.IsVisible)
 				{
 					this.gamePaused.IsVisible = false;
 				}

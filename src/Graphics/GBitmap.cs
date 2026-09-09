@@ -161,6 +161,10 @@ namespace OpenCivOne.Graphics
 			this.bModified = true;
 		}
 
+		/// <summary>
+		/// Copies the palette of this bitmap to the referenced bitmap
+		/// </summary>
+		/// <param name="bitmap">referenced bitmap</param>
 		public void CopyPalette(GBitmap bitmap)
 		{
 			for (int i = 0; i < this.oPalette.Length; i++)

@@ -1,4 +1,3 @@
-using Avalonia.Media.TextFormatting.Unicode;
 using IRB.VirtualCPU;
 using System.Text;
 

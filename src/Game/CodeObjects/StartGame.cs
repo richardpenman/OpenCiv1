@@ -1,5 +1,4 @@
 using Avalonia.Media;
-using IRB.VirtualCPU;
 using System.Diagnostics;
 
 namespace OpenCivOne
@@ -125,7 +124,7 @@ namespace OpenCivOne
 						this.parent.Var_aa_Screen0_Rectangle.ScreenID = 0;
 
 						// Instruction address 0x11a8:0x053e, size: 5
-						this.parent.CommonTools.DrawScreenToMainScreenWithEffect(0);
+						this.parent.Graphics.F0_VGA_06b7_DrawScreenToScreen0WithEffect(0);
 
 						// Instruction address 0x11a8:0x054e, size: 5
 						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "SP299.PIC", 0);
@@ -154,7 +153,7 @@ namespace OpenCivOne
 						this.parent.Var_aa_Screen0_Rectangle.ScreenID = 0;
 
 						// Instruction address 0x11a8:0x07af, size: 5
-						this.parent.CommonTools.DrawScreenToMainScreenWithEffect(0);
+						this.parent.Graphics.F0_VGA_06b7_DrawScreenToScreen0WithEffect(0);
 
 						// Instruction address 0x11a8:0x054e, size: 5
 						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "SP299.PIC", 0);
@@ -251,7 +250,7 @@ namespace OpenCivOne
 						this.parent.Var_aa_Screen0_Rectangle.ScreenID = 0;
 
 						// Instruction address 0x11a8:0x053e, size: 5
-						this.parent.CommonTools.DrawScreenToMainScreenWithEffect(0);
+						this.parent.Graphics.F0_VGA_06b7_DrawScreenToScreen0WithEffect(0);
 
 						// Instruction address 0x11a8:0x054e, size: 5
 						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "SP299.PIC", 0);

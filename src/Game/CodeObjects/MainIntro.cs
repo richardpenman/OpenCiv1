@@ -309,7 +309,7 @@ namespace OpenCivOne
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 
 			// Instruction address 0x0000:0x0bb6, size: 5
-			this.parent.CommonTools.DrawScreenToMainScreenWithEffect(0);
+			this.parent.Graphics.F0_VGA_06b7_DrawScreenToScreen0WithEffect(0);
 
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
@@ -459,7 +459,7 @@ namespace OpenCivOne
 			// Show static narrative text animation
 			this.parent.Var_aa_Screen0_Rectangle.ScreenID = 0;
 
-			this.parent.CommonTools.DrawScreenToMainScreenWithEffect(0);
+			this.parent.Graphics.F0_VGA_06b7_DrawScreenToScreen0WithEffect(0);
 
 			if (playerID == this.parent.GameData.HumanPlayerID)
 			{
@@ -491,7 +491,7 @@ namespace OpenCivOne
 			}
 			else
 			{
-				this.parent.Palace.F17_0000_07ec(1);
+				this.parent.Palace.F17_0000_07ec_DrawPalace(this.parent.GameData.HumanPlayerID, true);
 
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 			}

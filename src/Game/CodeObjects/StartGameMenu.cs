@@ -201,14 +201,8 @@ namespace OpenCivOne
 
 			for (int i = 0; i < 12; i++)
 			{
-				this.parent.GameData.Players[this.parent.GameData.HumanPlayerID & 7].PalaceData1[i + 2] = -1;
-				this.parent.GameData.Players[this.parent.GameData.HumanPlayerID & 7].PalaceData2[i] = 0;
-			}
-
-			for (int i = 3; i < 6; i++)
-			{
-				this.parent.GameData.Players[this.parent.GameData.HumanPlayerID & 7].PalaceData1[i + 2] = 0;
-				this.parent.GameData.Players[this.parent.GameData.HumanPlayerID & 7].PalaceData1[i + 8] = 0;
+				this.parent.GameData.Players[this.parent.GameData.HumanPlayerID & 7].PalaceLevels[i] = (short)(((i > 2 && i < 6) || i > 8) ? 0 : -1);
+				this.parent.GameData.Players[this.parent.GameData.HumanPlayerID & 7].PalaceTypes[i] = 0;
 			}
 
 			this.parent.GameData.Players[this.parent.GameData.HumanPlayerID & 7].Nationality = "";

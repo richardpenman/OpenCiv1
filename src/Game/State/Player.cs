@@ -61,9 +61,9 @@ namespace OpenCivOne
 		public short SpaceshipSuccessRate = 0;
 
 		// Palace
-		public short PalaceLevel = 0;
-		public short[] PalaceData1 = new short[15];
-		public short[] PalaceData2 = new short[13];
+		public short PalaceBuildCount = 0;
+		public short[] PalaceLevels = new short[12];
+		public short[] PalaceTypes = new short[12];
 
 		public Player()
 		{
@@ -128,14 +128,14 @@ namespace OpenCivOne
 				this.SpaceshipData[i] = -1;
 			}
 
-			for (int i = 0; i < this.PalaceData1.Length; i++)
+			for (int i = 0; i < this.PalaceLevels.Length; i++)
 			{
-				this.PalaceData1[i] = 0;
+				this.PalaceLevels[i] = 0;
 			}
 
-			for (int i = 0; i < this.PalaceData2.Length; i++)
+			for (int i = 0; i < this.PalaceTypes.Length; i++)
 			{
-				this.PalaceData2[i] = 0;
+				this.PalaceTypes[i] = 0;
 			}
 		}
 	}
