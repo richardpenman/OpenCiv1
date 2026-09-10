@@ -143,9 +143,12 @@ namespace OpenCivOne
 			this.parent.Var_d4cc_MapViewX = this.parent.MapManagement.AdjustXPosition(x);
 			this.parent.Var_d75e_MapViewY = this.parent.CommonTools.CheckValueRange(y, 0, 38);
 
-			// Another error, the code modified first parameter (playerID) to a
-			// Visibility Mask and that conflicts with other code which expects playerID.
-			int mapPlayerVisibilityMask = (0x1 << playerID);
+			// The on-screen tactical map always shows the human player's view, so the fog
+			// mask must be the human's. Using the passed playerID draws the map through the
+			// current player's fog, which during an AI turn renders the world from that AI's
+			// point of view: its territory appears and everything it cannot see is blacked
+			// out. Most callers already pass HumanPlayerID for exactly this reason.
+			int mapPlayerVisibilityMask = (0x1 << this.parent.GameData.HumanPlayerID);
 
 			this.VisibleCities.Clear();
 
