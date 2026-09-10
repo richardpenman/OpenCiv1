@@ -131,7 +131,7 @@ namespace OpenCivOne
 			this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.ForeignMinisterReport;
 
 			// Instruction address 0x0000:0x0281, size: 5
-			this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+			this.parent.MenuBoxDialog.ShowDialog(
 				this.parent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection(((playerID == this.parent.GameData.HumanPlayerID) ? "*SCHISM" : "*ESCHISM")), 80, 80);
 
 			int newTreasury = this.parent.GameData.Players[playerID].Coins / 2;

@@ -612,7 +612,7 @@ namespace OpenCivOne
 					this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DefenseMinisterReport;
 
 					// Instruction address 0x1866:0x0efa, size: 5
-					this.parent.Segment_1238.F0_1238_001e_ShowDialog(this.parent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*UMAX"), 80, 64);
+					this.parent.MenuBoxDialog.ShowDialog(this.parent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*UMAX"), 80, 64);
 
 					// Show message to the human player only once per turn
 					this.parent.Var_d760_HumanPlayerMessageFlag = true;
@@ -1614,7 +1614,7 @@ namespace OpenCivOne
 			if (playerID == this.parent.GameData.HumanPlayerID)
 			{
 				// Instruction address 0x1866:0x1ab2, size: 5
-				this.parent.Segment_1238.F0_1238_001e_ShowDialog("You have discovered\nvaluable metal deposits\nworth 50 coins\n", 100, 80);
+				this.parent.MenuBoxDialog.ShowDialog("You have discovered\nvaluable metal deposits\nworth 50 coins\n", 100, 80);
 			}
 
 			this.parent.GameData.Players[playerID].Coins += 50;
@@ -1625,7 +1625,7 @@ namespace OpenCivOne
 			if (playerID == this.parent.GameData.HumanPlayerID)
 			{
 				// Instruction address 0x1866:0x1a49, size: 5
-				this.parent.Segment_1238.F0_1238_001e_ShowDialog("You have discovered\nan advanced tribe.\n", 100, 80);
+				this.parent.MenuBoxDialog.ShowDialog("You have discovered\nan advanced tribe.\n", 100, 80);
 			}
 
 			this.parent.Overlay_20.F20_0000_0000(playerID,
@@ -1644,7 +1644,7 @@ namespace OpenCivOne
 			if (playerID == this.parent.GameData.HumanPlayerID)
 			{
 				// Instruction address 0x1866:0x1bbe, size: 5
-				this.parent.Segment_1238.F0_1238_001e_ShowDialog("You have discovered\na friendly tribe of\nskilled mercenaries.\n", 100, 80);
+				this.parent.MenuBoxDialog.ShowDialog("You have discovered\na friendly tribe of\nskilled mercenaries.\n", 100, 80);
 			}
 
 			// Instruction address 0x1866:0x1d2d, size: 3
@@ -1665,7 +1665,7 @@ namespace OpenCivOne
 			if (playerID == this.parent.GameData.HumanPlayerID)
 			{
 				// Instruction address 0x1866:0x1aeb, size: 5
-				this.parent.Segment_1238.F0_1238_001e_ShowDialog("You have discovered\nscrolls of ancient wisdom.\n", 100, 80);
+				this.parent.MenuBoxDialog.ShowDialog("You have discovered\nscrolls of ancient wisdom.\n", 100, 80);
 			}
 
 			// Compile a list of yet undiscovered technologies that have all of the prerequisites
@@ -1699,7 +1699,7 @@ namespace OpenCivOne
 			if (playerID == this.parent.GameData.HumanPlayerID)
 			{
 				// Instruction address 0x1866:0x1c23, size: 5
-				this.parent.Segment_1238.F0_1238_001e_ShowDialog("You have unleashed\na horde of barbarians!\n", 100, 80);
+				this.parent.MenuBoxDialog.ShowDialog("You have unleashed\na horde of barbarians!\n", 100, 80);
 			}
 
 			for (int i = 1; i < 9;)

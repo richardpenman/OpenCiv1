@@ -17,6 +17,28 @@ namespace OpenCivOne
 			this.CPU = parent.CPU;
 		}
 
+		/// <summary>
+		/// Shows message box. Size of message box is determined by its text contents.
+		/// Text can be formatted to show a list of options for the player to choose from.
+		/// Each option should take a single line and start with one or multiple spaces.
+		/// Option lines shouldn't be mixed with non-option lines in order for selection to render properly.
+		/// Value at address 0xb276 (ushort) can be used as a bit mask indicating disabled options.
+		/// </summary>
+		/// <param name="text">Text message</param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns>Index of selected option or -1 if no options provided</returns>
+		public int ShowDialog(string text, int x, int y)
+		{
+			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
+
+			int dialogResult = this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(text, x, y, true, false, true);
+
+			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
+
+			return dialogResult;
+		}
+
 		public int F0_2d05_0031_ShowMenuBox(ushort stringPtr, int x, int y, bool windowFrame, bool helpOption, bool emptyKeyboardAndMouse)
 		{
 			return F0_2d05_0031_ShowMenuBox(this.CPU.ReadString(this.CPU.DS.UInt16, stringPtr), x, y, windowFrame, helpOption, emptyKeyboardAndMouse);
@@ -366,7 +388,7 @@ namespace OpenCivOne
 					if (this.parent.CAPI.kbhit() != 0)
 					{
 						// Instruction address 0x2d05:0x01e5, size: 3
-						int pressedKey = F0_2d05_0ac9_GetNavigationKey();
+						int pressedKey = this.parent.CommonTools.GetNavigationKey();
 
 						switch (pressedKey)
 						{
@@ -506,19 +528,6 @@ namespace OpenCivOne
 			this.parent.Var_db38 = 0;
 
 			return -1;
-		}
-
-		/// <summary>
-		/// Get navigation key
-		/// </summary>
-		/// <returns></returns>
-		public int F0_2d05_0ac9_GetNavigationKey()
-		{
-			//this.oCPU.Log.EnterBlock("F0_2d05_0ac9_GetNavigationKey()");
-
-			// function body
-			// Instruction address 0x2d05:0x0acf, size: 5
-			return this.parent.CAPI.getch();
 		}
 	}
 }

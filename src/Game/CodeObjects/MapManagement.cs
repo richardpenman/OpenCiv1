@@ -1,4 +1,5 @@
 using OpenCivOne.Graphics;
+using OpenCivOne.UI;
 
 namespace OpenCivOne
 {
@@ -1307,7 +1308,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x2aea:0x17bf, size: 5
-			this.parent.Segment_1238.F0_1238_001e_ShowDialog(0x2bc6, 100, 80);
+			MessageBox.Show("Can't find the city at given coordinates", "Error", MessageBoxIcon.Error, MessageBoxButtons.OK);
 
 			return -1;
 		}

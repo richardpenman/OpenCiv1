@@ -315,7 +315,7 @@ namespace OpenCivOne
 				this.oParent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DefenseMinisterReport;
 
 				// Instruction address 0x29f3:0x07c9, size: 5
-				this.oParent.Segment_1238.F0_1238_001e_ShowDialog($"Sneak attack by\n{this.oParent.GameData.Players[playerID1].Nationality} forces!\n", 100, 80);
+				this.oParent.MenuBoxDialog.ShowDialog($"Sneak attack by\n{this.oParent.GameData.Players[playerID1].Nationality} forces!\n", 100, 80);
 
 				this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] |= DiplomacyFlagsEnum.WarDeclared;
 				this.oParent.GameData.Players[playerID1].Diplomacy[playerID2] ^= DiplomacyFlagsEnum.WarDeclared;
@@ -329,7 +329,7 @@ namespace OpenCivOne
 					this.oParent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.ForeignMinisterReport;
 
 					// Instruction address 0x29f3:0x0872, size: 5
-					this.oParent.Segment_1238.F0_1238_001e_ShowDialog(
+					this.oParent.MenuBoxDialog.ShowDialog(
 						$"{this.oParent.GameData.Players[playerID2].Nation} cancel\npeace treaty\nwith {this.oParent.GameData.Players[playerID1].Nation}.\n", 100, 80);
 				}
 
@@ -371,7 +371,7 @@ namespace OpenCivOne
 						if (playerID1 == this.oParent.GameData.HumanPlayerID)
 						{
 							// Instruction address 0x29f3:0x094b, size: 5
-							this.oParent.Segment_1238.F0_1238_001e_ShowDialog(this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*LEADER"), 80, 80);
+							this.oParent.MenuBoxDialog.ShowDialog(this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*LEADER"), 80, 80);
 						}
 					}
 				}
@@ -393,7 +393,7 @@ namespace OpenCivOne
 							if (playerID1 == this.oParent.GameData.HumanPlayerID || playerID2 == this.oParent.GameData.HumanPlayerID)
 							{
 								// Instruction address 0x29f3:0x0a19, size: 5
-								this.oParent.Segment_1238.F0_1238_001e_ShowDialog($"{stackUnitCount} units destroyed.\n", 80, 80);
+								this.oParent.MenuBoxDialog.ShowDialog($"{stackUnitCount} units destroyed.\n", 80, 80);
 							}
 						}
 					}
@@ -539,7 +539,7 @@ namespace OpenCivOne
 			{
 				this.oParent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.ForeignMinisterReport;
 
-				if (this.oParent.Segment_1238.F0_1238_001e_ShowDialog(
+				if (this.oParent.MenuBoxDialog.ShowDialog(
 					$"We have signed a\npeace treaty with\nthe {this.oParent.GameData.Players[playerID].Nation}!\n Cancel action.\n Break treaty.\n", 80, 80) != 1)
 				{
 					return -1;
@@ -551,7 +551,7 @@ namespace OpenCivOne
 					this.oParent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 
 					// Instruction address 0x29f3:0x0d39, size: 5
-					this.oParent.Segment_1238.F0_1238_001e_ShowDialog("Overruled by\nthe Senate.\nAction canceled.\n", 100, 80);
+					this.oParent.MenuBoxDialog.ShowDialog("Overruled by\nthe Senate.\nAction canceled.\n", 100, 80);
 
 					return -1;
 				}
@@ -578,7 +578,7 @@ namespace OpenCivOne
 				this.oParent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DefenseMinisterReport;
 
 				// Instruction address 0x29f3:0x0d93, size: 5
-				this.oParent.Segment_1238.F0_1238_001e_ShowDialog($"{this.oParent.GameData.Players[playerID].Nation} use\nnuclear weapons!\n", 100, 80);
+				this.oParent.MenuBoxDialog.ShowDialog($"{this.oParent.GameData.Players[playerID].Nation} use\nnuclear weapons!\n", 100, 80);
 			}
 
 			this.oParent.Animations.F22_0000_0967_NukeAnimation(x, y);
@@ -604,7 +604,7 @@ namespace OpenCivOne
 						if (this.oParent.GameData.Cities[cityID].HasImprovement(ImprovementEnum.SDIDefense))
 						{
 							// Instruction address 0x29f3:0x0e40, size: 5
-							this.oParent.Segment_1238.F0_1238_001e_ShowDialog($"SDI protects {this.oParent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 80, 100);
+							this.oParent.MenuBoxDialog.ShowDialog($"SDI protects {this.oParent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 80, 100);
 
 							activeUnitID = -1;
 						}

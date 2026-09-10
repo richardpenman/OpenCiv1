@@ -2717,7 +2717,7 @@ namespace OpenCivOne
 			this.oParent.CAPI.strcat(0xba06, "\n");
 
 			// Instruction address 0x1ade:0x1d18, size: 5
-			this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+			this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 100, 80);
 
 			this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].ResearchTechnologyID = 71;
 
@@ -2918,7 +2918,7 @@ namespace OpenCivOne
 
 		L1f30:
 			// Instruction address 0x1ade:0x1f3c, size: 5
-			this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+			this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 100, 80);
 
 			goto L2013;
 
@@ -3039,7 +3039,7 @@ namespace OpenCivOne
 			this.oParent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DiplomatsReport;
 
 			// Instruction address 0x1ade:0x20cc, size: 5
-			this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 80, 100);
+			this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 80, 100);
 
 			this.oParent.Overlay_14.F14_0000_0d43_IntelligenceReport();
 
@@ -3073,7 +3073,7 @@ namespace OpenCivOne
 			this.oParent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DefenseMinisterReport;
 
 			// Instruction address 0x1ade:0x216c, size: 5
-			this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 80, 100);
+			this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 80, 100);
 
 		L2174:
 			this.oCPU.TEST_UInt8((byte)this.oParent.GameData.TechnologyFirstDiscoveredBy[(int)technology], 0x7);

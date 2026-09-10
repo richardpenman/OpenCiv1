@@ -651,7 +651,7 @@ namespace OpenCivOne
 					}
 
 					// Instruction address 0x0000:0x0f32, size: 5
-					this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+					this.parent.MenuBoxDialog.ShowDialog(
 						 $"{this.parent.GameData.Players[playerID].Nationality}\ncivilization\ndestroyed\nby {this.parent.GameData.Players[playerID1].Nation}!\n", 100, 80);
 
 					// Instruction address 0x0000:0x0f3d, size: 5

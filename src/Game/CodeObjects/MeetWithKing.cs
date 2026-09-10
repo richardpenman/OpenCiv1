@@ -1145,7 +1145,7 @@ namespace OpenCivOne
 
 		L0bed:
 			// Instruction address 0x0000:0x0c0e, size: 5
-			this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 40, 100);
+			this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 40, 100);
 
 		L0c13:
 			// Instruction address 0x0000:0x0c21, size: 5
@@ -1987,7 +1987,7 @@ namespace OpenCivOne
 			this.oParent.CommonTools.PlayTune(this.oParent.GameData.Nations[this.oParent.GameData.Players[playerID].NationalityID].ShortTune, 3);
 
 			// Instruction address 0x0000:0x17a0, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+			this.oCPU.AX.Int16 = (short)this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 100, 80);
 
 			this.oCPU.AX.UInt16 = this.oCPU.NEG_UInt16(this.oCPU.AX.UInt16);
 			this.oParent.Var_3934 = this.oCPU.AX.Int16;

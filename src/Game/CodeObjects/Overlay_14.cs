@@ -1135,7 +1135,7 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.E) goto L10b8;
 
 			// Instruction address 0x0000:0x10a1, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
+			this.oCPU.AX.Int16 = (short)this.oParent.CommonTools.GetNavigationKey();
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22), this.oCPU.AX.UInt16);
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x31);

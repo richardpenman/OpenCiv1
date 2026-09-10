@@ -640,7 +640,7 @@ namespace OpenCivOne
 			catch (Exception ex)
 			{
 				// Instruction address 0x0000:0x08a3, size: 5
-				this.parent.Segment_1238.F0_1238_001e_ShowDialog(ex.Message, 100, 80);
+				this.parent.MenuBoxDialog.ShowDialog(ex.Message, 100, 80);
 
 				bSuccess = false;
 			}

@@ -28,7 +28,7 @@ namespace OpenCivOne
 				playerList.Append($"{this.oParent.GameData.Players[i].Nationality}\n ");
 			}
 
-			int selectedPlayerID = this.oParent.Segment_1238.F0_1238_001e_ShowDialog(playerList.ToString(), 100, 80) + 1;
+			int selectedPlayerID = this.oParent.MenuBoxDialog.ShowDialog(playerList.ToString(), 100, 80) + 1;
 
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
 
@@ -273,7 +273,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x0699, size: 5
-			this.oParent.Segment_1238.F0_1238_001e_ShowDialog(unitStatus.ToString(), 10, 10);
+			this.oParent.MenuBoxDialog.ShowDialog(unitStatus.ToString(), 10, 10);
 		}
 
 		/// <summary>

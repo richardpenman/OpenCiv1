@@ -471,7 +471,7 @@ namespace OpenCivOne
 
 							// Instruction address 0x0000:0x0ccd, size: 5
 							this.parent.Segment_1238.F0_1238_14a3(selectedPlayerID,
-								this.parent.Segment_1238.F0_1238_1c98_GetPalaceLevel(this.parent.GameData.Players[selectedPlayerID].Score),
+								this.parent.Segment_1238.F0_1238_1c98_GetPalaceLevelFromScore(this.parent.GameData.Players[selectedPlayerID].Score),
 								128, y - 13);
 
 							// Instruction address 0x0000:0x0ce8, size: 5

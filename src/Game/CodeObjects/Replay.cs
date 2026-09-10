@@ -33,7 +33,7 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.NE) goto L0027;
 
 			// Instruction address 0x0000:0x001a, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0x3fb0, 100, 80);
+			this.oCPU.AX.Int16 = (short)this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0x3fb0), 100, 80);
 
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x680a, this.oCPU.AX.UInt16);
 			goto L002d;
@@ -61,7 +61,7 @@ namespace OpenCivOne
 			this.oParent.CAPI.strcpy(0xba06, "File Error\n");
 
 			// Instruction address 0x0000:0x0076, size: 5
-			this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+			this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 100, 80);
 
 			goto L089e;
 

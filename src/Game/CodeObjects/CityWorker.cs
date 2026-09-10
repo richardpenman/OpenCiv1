@@ -342,7 +342,7 @@ namespace OpenCivOne
 								this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 
 								// Instruction address 0x1d12:0x094d, size: 5
-								this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+								this.parent.MenuBoxDialog.ShowDialog(
 									$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} requires an AQUEDUCT\nfor further growth.\n", 100, 80);
 							}
 						}
@@ -505,7 +505,7 @@ namespace OpenCivOne
 							this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 
 							// Instruction address 0x1d12:0x0e5b, size: 5
-							this.parent.Segment_1238.F0_1238_001e_ShowDialog($"Population decrease\nin {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 100, 80);
+							this.parent.MenuBoxDialog.ShowDialog($"Population decrease\nin {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 100, 80);
 
 							this.parent.Var_b1e8 = 1;
 						}
@@ -893,7 +893,7 @@ namespace OpenCivOne
 										this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DefenseMinisterReport;
 
 										// Instruction address 0x1d12:0x1b58, size: 5
-										this.parent.Segment_1238.F0_1238_001e_ShowDialog($"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} builds " +
+										this.parent.MenuBoxDialog.ShowDialog($"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} builds " +
 											$"{this.parent.GameData.Units[city.CurrentProductionID].Name}.\n", 80, 80);
 									}
 								}
@@ -1063,7 +1063,7 @@ namespace OpenCivOne
 											this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DiplomatsReport;
 
 											// Instruction address 0x1d12:0x20f8, size: 5
-											this.parent.Segment_1238.F0_1238_001e_ShowDialog($"Diplomats report:\n" +
+											this.parent.MenuBoxDialog.ShowDialog($"Diplomats report:\n" +
 												$"{this.parent.GameData.Players[this.Var_6548_PlayerID].Nationality} capital\nmoved to " +
 												$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 80, 80);
 										}
@@ -1072,7 +1072,7 @@ namespace OpenCivOne
 											this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.ForeignMinisterReport;
 
 											// Instruction address 0x1d12:0x20f8, size: 5
-											this.parent.Segment_1238.F0_1238_001e_ShowDialog($"{this.parent.GameData.Players[this.Var_6548_PlayerID].Nationality}" +
+											this.parent.MenuBoxDialog.ShowDialog($"{this.parent.GameData.Players[this.Var_6548_PlayerID].Nationality}" +
 												$" capital\nmoved to {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 80, 80);
 										}
 
@@ -1777,7 +1777,7 @@ namespace OpenCivOne
 										this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DefenseMinisterReport;
 
 										// Instruction address 0x1d12:0x3657, size: 5
-										this.parent.Segment_1238.F0_1238_001e_ShowDialog($"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}" +
+										this.parent.MenuBoxDialog.ShowDialog($"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}" +
 											$" can't support\n{this.parent.GameData.Units[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].Units[selectedUnit].UnitType].Name}" +
 											".\n Unit Disbanded.\n", 100, 80);
 									}
@@ -2397,7 +2397,7 @@ namespace OpenCivOne
 						else
 						{
 							// Instruction address 0x1d12:0x4a61, size: 5
-							pressedKey = this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
+							pressedKey = this.parent.CommonTools.GetNavigationKey();
 
 							// The CityWorker is not processing key presses from mouse events separately
 							// We don't want to mix mouse location code when pressing a key
@@ -2667,7 +2667,7 @@ namespace OpenCivOne
 								while (this.parent.CAPI.kbhit() == 0);
 
 								// Instruction address 0x1d12:0x50d2, size: 5
-								int pressedKey1 = this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
+								int pressedKey1 = this.parent.CommonTools.GetNavigationKey();
 
 								switch (pressedKey1)
 								{
@@ -2746,7 +2746,7 @@ namespace OpenCivOne
 								while (this.parent.CAPI.kbhit() == 0);
 
 								// Instruction address 0x1d12:0x52b5, size: 5
-								cityWindowY = this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
+								cityWindowY = this.parent.CommonTools.GetNavigationKey();
 
 								switch (cityWindowY)
 								{
@@ -2843,7 +2843,7 @@ namespace OpenCivOne
 								cityWindowY = newCityWindowUnitY;
 
 								// Instruction address 0x1d12:0x54c4, size: 5
-								keyPressed1 = this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
+								keyPressed1 = this.parent.CommonTools.GetNavigationKey();
 
 								switch (keyPressed1)
 								{
@@ -3155,7 +3155,7 @@ namespace OpenCivOne
 									this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 
 									// Instruction address 0x1d12:0x5db1, size: 5
-									this.parent.Segment_1238.F0_1238_001e_ShowDialog($"Civil Disorder in\n{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}! Mayor\nflees in panic.\n", 100, 80);
+									this.parent.MenuBoxDialog.ShowDialog($"Civil Disorder in\n{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}! Mayor\nflees in panic.\n", 100, 80);
 								}
 
 								// Instruction address 0x1d12:0x5dbd, size: 5
@@ -3226,7 +3226,7 @@ namespace OpenCivOne
 									this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 
 									// Instruction address 0x1d12:0x5fb7, size: 5
-									this.parent.Segment_1238.F0_1238_001e_ShowDialog($"Order restored\nin {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 100, 80);
+									this.parent.MenuBoxDialog.ShowDialog($"Order restored\nin {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 100, 80);
 								}
 								else
 								{
@@ -3436,7 +3436,7 @@ namespace OpenCivOne
 								this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.ScienceAdvisorReport;
 
 								// Instruction address 0x1d12:0x6638, size: 5
-								this.parent.Segment_1238.F0_1238_001e_ShowDialog($"Pollution near {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 80, 64);
+								this.parent.MenuBoxDialog.ShowDialog($"Pollution near {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 80, 64);
 							}
 						}
 
@@ -3501,7 +3501,7 @@ namespace OpenCivOne
 									this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 
 									// Instruction address 0x1d12:0x68a7, size: 5
-									this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+									this.parent.MenuBoxDialog.ShowDialog(
 										$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}\ncan't maintain\n{this.parent.GameData.GetImprovementType(i + 1).Name}.\n", 100, 80);
 
 									this.parent.GameData.Players[this.Var_6548_PlayerID].Coins += (short)(10 * this.parent.GameData.GetImprovementType(i + 1).Cost);

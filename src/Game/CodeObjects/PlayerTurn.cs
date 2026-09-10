@@ -1,5 +1,6 @@
 using IRB.VirtualCPU;
 using OpenCivOne.Graphics;
+using OpenCivOne.UI;
 using System.Diagnostics;
 using System.Text;
 
@@ -324,7 +325,7 @@ namespace OpenCivOne
 			if (mouseEvent.Buttons == MouseButtonsEnum.None && this.parent.CAPI.kbhit() != 0)
 			{
 				// Instruction address 0x1403:0x0676, size: 5
-				command = this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
+				command = this.parent.CommonTools.GetNavigationKey();
 
 				goto Label151;
 			}
@@ -590,7 +591,7 @@ namespace OpenCivOne
 			{
 				// Change government
 				case -2:
-					if (this.parent.Segment_1238.F0_1238_001e_ShowDialog(this.parent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*REV"), 64, 80) == 1)
+					if (this.parent.MenuBoxDialog.ShowDialog(this.parent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*REV"), 64, 80) == 1)
 					{
 						this.parent.GameData.Players[playerID].GovernmentType = GovernmentTypeEnum.Anarchy;
 
@@ -1249,7 +1250,7 @@ namespace OpenCivOne
 					this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = this.parent.GameData.Players[playerID].TaxRate;
 
 					// Instruction address 0x1403:0x368b, size: 5
-					int selectedTaxRate = this.parent.Segment_1238.F0_1238_001e_ShowDialog(taxOptions.ToString(), 100, 80);
+					int selectedTaxRate = this.parent.MenuBoxDialog.ShowDialog(taxOptions.ToString(), 100, 80);
 
 					if (selectedTaxRate != -1)
 					{
@@ -1276,7 +1277,7 @@ namespace OpenCivOne
 
 					this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = (10 - this.parent.GameData.Players[playerID].TaxRate - this.parent.GameData.Players[playerID].ScienceTaxRate);
 
-					int newLuxuryRate = this.parent.Segment_1238.F0_1238_001e_ShowDialog(luxuryOptions.ToString(), 100, 80);
+					int newLuxuryRate = this.parent.MenuBoxDialog.ShowDialog(luxuryOptions.ToString(), 100, 80);
 
 					if (newLuxuryRate != -1)
 					{
@@ -1321,7 +1322,7 @@ namespace OpenCivOne
 
 				// Alt + Q - Quit game
 				case 0x1000:
-					if (this.parent.Segment_1238.F0_1238_001e_ShowDialog("Are you sure you\nwant to Quit?\n Keep Playing\n Yes, Quit\n", 100, 80) != 1)
+					if (this.parent.MenuBoxDialog.ShowDialog("Are you sure you\nwant to Quit?\n Keep Playing\n Yes, Quit\n", 100, 80) != 1)
 					{
 						this.parent.Var_dc48_GameEndType = 0;
 					}
@@ -1362,7 +1363,7 @@ namespace OpenCivOne
 					}
 
 					// Instruction address 0x1403:0x3843, size: 5
-					this.parent.Segment_1238.F0_1238_001e_ShowDialog(0x2003, 100, 80);
+					MessageBox.Show("Leaders randomized", "Game", MessageBoxIcon.Information, MessageBoxButtons.OK);
 					break;
 
 				// Alt + O - Show Order menu
@@ -1432,7 +1433,7 @@ namespace OpenCivOne
 					this.parent.GameData.GameSettingFlags.Sound ^= true;
 
 					// Instruction address 0x1403:0x3890, size: 5
-					this.parent.Segment_1238.F0_1238_001e_ShowDialog($"Sounds {((this.parent.GameData.GameSettingFlags.Sound) ? "ON\n" : "OFF\n")}", 100, 80);
+					this.parent.MenuBoxDialog.ShowDialog($"Sounds {((this.parent.GameData.GameSettingFlags.Sound) ? "ON\n" : "OFF\n")}", 100, 80);
 					break;
 
 				// F1 - City status
@@ -1845,7 +1846,7 @@ namespace OpenCivOne
 												}
 											}
 
-											selectedCaravanOption = this.parent.Segment_1238.F0_1238_001e_ShowDialog(caravanOptions.ToString(), 100, 80);
+											selectedCaravanOption = this.parent.MenuBoxDialog.ShowDialog(caravanOptions.ToString(), 100, 80);
 										}
 
 										if (selectedCaravanOption == 1)
@@ -1932,7 +1933,7 @@ namespace OpenCivOne
 						{
 							if (playerID == this.parent.GameData.HumanPlayerID)
 							{
-								if (this.parent.Segment_1238.F0_1238_001e_ShowDialog($"Attack at\n{unit.RemainingMoves}/3 strength?\n Cancel\n Attack\n", 100, 16) != 1)
+								if (this.parent.MenuBoxDialog.ShowDialog($"Attack at\n{unit.RemainingMoves}/3 strength?\n Cancel\n Attack\n", 100, 16) != 1)
 								{
 									unit.GoToDestination = OpenCivOneGame.InvalidPosition;
 

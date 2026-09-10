@@ -55,7 +55,7 @@ namespace OpenCivOne
 					}
 
 					// Instruction address 0x0000:0x00d2, size: 5
-					selectedAction = this.parent.Segment_1238.F0_1238_001e_ShowDialog($"{this.parent.GameData.Players[diplomatPlayerID].Nationality} diplomat arrives\nin " +
+					selectedAction = this.parent.MenuBoxDialog.ShowDialog($"{this.parent.GameData.Players[diplomatPlayerID].Nationality} diplomat arrives\nin " +
 						$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(destinationCityID)}, what would you like to do?\n Establish Embassy\n" +
 						$" Investigate City\n Steal Technology\n Industrial Sabotage\n Incite a Revolt\n Meet with King\n", 80, 80);
 				}
@@ -119,7 +119,7 @@ namespace OpenCivOne
 											this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.SpiesReport;
 
 											// Instruction address 0x0000:0x02ab, size: 5
-											this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+											this.parent.MenuBoxDialog.ShowDialog(
 												$"{this.parent.GameData.Players[diplomatPlayerID].Nation} steal\n" +
 												$"{this.parent.GameData.TechnologyAdvances[(int)selectedTechnology].Name}.\n", 80, 80);
 
@@ -139,7 +139,7 @@ namespace OpenCivOne
 								if (diplomatPlayerID == this.parent.GameData.HumanPlayerID)
 								{
 									// Instruction address 0x0000:0x0393, size: 5
-									this.parent.Segment_1238.F0_1238_001e_ShowDialog("No new technology found.", 80, 80);
+									this.parent.MenuBoxDialog.ShowDialog("No new technology found.", 80, 80);
 								}
 							}
 						}
@@ -159,7 +159,7 @@ namespace OpenCivOne
 									this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.SpiesReport;
 
 									// Instruction address 0x0000:0x0437, size: 5
-									this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+									this.parent.MenuBoxDialog.ShowDialog(
 										$"{this.parent.GameData.GetImprovementType(improvementBit + 1).Name} destroyed\n" +
 										$"in {this.parent.Segment_2459.F0_2459_08c6_GetCityName(destinationCityID)}.\n", 80, 80);
 
@@ -178,7 +178,7 @@ namespace OpenCivOne
 							this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.SpiesReport;
 
 							// Instruction address 0x0000:0x0437, size: 5
-							this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+							this.parent.MenuBoxDialog.ShowDialog(
 								$"{this.parent.GameData.Units[this.parent.GameData.Cities[destinationCityID].CurrentProductionID].Name} production sabotaged\n" +
 								$"in {this.parent.Segment_2459.F0_2459_08c6_GetCityName(destinationCityID)}.\n", 80, 80);
 						}
@@ -187,7 +187,7 @@ namespace OpenCivOne
 							this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.SpiesReport;
 
 							// Instruction address 0x0000:0x0437, size: 5
-							this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+							this.parent.MenuBoxDialog.ShowDialog(
 								$"{this.parent.GameData.GetImprovementType(-this.parent.GameData.Cities[destinationCityID].CurrentProductionID).Name} production sabotaged\n" +
 								$"in {this.parent.Segment_2459.F0_2459_08c6_GetCityName(destinationCityID)}.\n", 80, 80);
 						}
@@ -231,7 +231,7 @@ namespace OpenCivOne
 							this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.SpiesReport;
 
 							// Instruction address 0x0000:0x055d, size: 5
-							selectedAction = this.parent.Segment_1238.F0_1238_001e_ShowDialog(menuText.ToString(), 100, 80);
+							selectedAction = this.parent.MenuBoxDialog.ShowDialog(menuText.ToString(), 100, 80);
 
 							if (selectedAction >= 1)
 							{
@@ -309,18 +309,10 @@ namespace OpenCivOne
 				{
 					if (diplomatPlayerID == this.parent.GameData.HumanPlayerID)
 					{
-						// Instruction address 0x0000:0x06e3, size: 5
-						this.parent.CAPI.strcpy(0xba06, $"{this.parent.GameData.Players[destinationPlayerID].Nationality} " +
+						if (this.parent.MenuBoxDialog.ShowDialog($"{this.parent.GameData.Players[destinationPlayerID].Nationality} " +
 							$"{this.parent.GameData.Units[(int)this.parent.GameData.Players[destinationPlayerID].Units[destinationUnitID].UnitType].Name}\n" +
-							$"will desert for {actionCost} coins.\nOur treasury currently contains {this.parent.GameData.Players[diplomatPlayerID].Coins} coins.\n");
-
-						if (this.parent.GameData.Players[diplomatPlayerID].Coins >= actionCost)
-						{
-							// Instruction address 0x0000:0x07a8, size: 5
-							this.parent.CAPI.strcat(0xba06, " Cancel action\n Bribe unit\n");
-						}
-
-						if (this.parent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80) != 1)
+							$"will desert for {actionCost} coins.\nOur treasury currently contains {this.parent.GameData.Players[diplomatPlayerID].Coins} coins.\n" +
+							$"{((this.parent.GameData.Players[diplomatPlayerID].Coins >= actionCost) ? " Cancel action\n Bribe unit\n" : "")}", 100, 80) != 1)
 							return;
 					}
 
@@ -333,7 +325,7 @@ namespace OpenCivOne
 						this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.SpiesReport;
 
 						// Instruction address 0x0000:0x0890, size: 5
-						this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+						this.parent.MenuBoxDialog.ShowDialog(
 							$"{this.parent.GameData.Players[destinationPlayerID].Nationality} " +
 							$"{this.parent.GameData.Units[(int)this.parent.GameData.Players[destinationPlayerID].Units[destinationUnitID].UnitType].Name} unit\nbribed by " +
 							$"{this.parent.GameData.Players[diplomatPlayerID].Nation}!\n", 80, 40);
@@ -447,14 +439,14 @@ namespace OpenCivOne
 					if (actionPlayerID == 0)
 					{
 						// Instruction address 0x0000:0x0d45, size: 5
-						this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+						this.parent.MenuBoxDialog.ShowDialog(
 							$"{this.parent.GameData.Players[cityPlayerID].Nation} declare\nindependence in\n" +
 							$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(destinationCityID)}\n", 100, 32);
 					}
 					else
 					{
 						// Instruction address 0x0000:0x0d45, size: 5
-						this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+						this.parent.MenuBoxDialog.ShowDialog(
 							$"{this.parent.GameData.Players[cityPlayerID].Nation} rebel!\nCivil War in\n" +
 							$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(destinationCityID)}.\n" +
 							$"{this.parent.GameData.Players[actionPlayerID].Nationality} influence\nsuspected.\n", 100, 32);

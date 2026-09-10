@@ -2218,7 +2218,7 @@ namespace OpenCivOne
 							this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DefenseMinisterReport;
 
 							// Instruction address 0x25fb:0x3867, size: 5
-							this.parent.Segment_1238.F0_1238_001e_ShowDialog("Barbarian raiding party\nlands near " +
+							this.parent.MenuBoxDialog.ShowDialog("Barbarian raiding party\nlands near " +
 								$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(this.parent.Tools.FindNearestCity(newX, newY))}!\nCitizens are alarmed.\n", 100, 32);
 						}
 

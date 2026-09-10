@@ -16,49 +16,6 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Shows message box. Size of message box is determined by its text contents.
-		/// Text can be formatted to show a list of options for the player to choose from.
-		/// Each option should take a single line and start with one or multiple spaces.
-		/// Option lines shouldn't be mixed with non-option lines in order for selection to render properly.
-		/// Value at address 0xb276 (ushort) can be used as a bit mask indicating disabled options.
-		/// </summary>
-		/// <param name="stringPtr">Address of a message string</param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <returns>Index of selected option or -1 if no options provided</returns>
-		public int F0_1238_001e_ShowDialog(ushort stringPtr, int x, int y)
-		{
-			//this.oCPU.Log.EnterBlock($"F0_1238_001e_ShowDialog(0x{stringPtr:x4}, {x}, {y})");
-
-			return F0_1238_001e_ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, stringPtr), x, y);
-		}
-
-		/// <summary>
-		/// Shows message box. Size of message box is determined by its text contents.
-		/// Text can be formatted to show a list of options for the player to choose from.
-		/// Each option should take a single line and start with one or multiple spaces.
-		/// Option lines shouldn't be mixed with non-option lines in order for selection to render properly.
-		/// Value at address 0xb276 (ushort) can be used as a bit mask indicating disabled options.
-		/// </summary>
-		/// <param name="stringPtr">Address of a message string</param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <returns>Index of selected option or -1 if no options provided</returns>
-		public int F0_1238_001e_ShowDialog(string text, int x, int y)
-		{
-			//this.oCPU.Log.EnterBlock($"F0_1238_001e_ShowDialog(0x{stringPtr:x4}, {x}, {y})");
-
-			// function body
-			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
-
-			int dialogResult = this.oParent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(text, x, y, true, false, true);
-
-			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
-
-			return dialogResult;
-		}
-
-		/// <summary>
 		/// Handles a single game turn.
 		/// Performs active player's turns, checks for disasters, victory and loss conditions.
 		/// </summary>
@@ -185,7 +142,7 @@ namespace OpenCivOne
 							// Show power graph, civilization score and hall of fame
 
 							// Instruction address 0x1238:0x0261, size: 3
-							F0_1238_08a0();
+							F0_1238_08a0_EndGame();
 
 							// Instruction address 0x1238:0x0897, size: 3
 							//F0_1238_090a_ShowAdvertisementsPopup();
@@ -237,7 +194,7 @@ namespace OpenCivOne
 				this.oParent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 
 				// Instruction address 0x1238:0x0367, size: 3
-				F0_1238_001e_ShowDialog(0xba06, 80, 80);
+				this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 80, 80);
 			}
 
 			this.oParent.GameData.TurnCount++;
@@ -467,7 +424,7 @@ namespace OpenCivOne
 				if ((this.oParent.GameData.SpaceshipFlags & 0x100) == 0)
 				{
 					// Show power graph, civilization score and hall of fame
-					F0_1238_08a0();
+					F0_1238_08a0_EndGame();
 				}
 
 				// Instruction address 0x1238:0x084f, size: 3
@@ -476,7 +433,7 @@ namespace OpenCivOne
 				if (this.oParent.Var_b884 == 0)
 				{
 					// Do you want to keep playing ?
-					this.oParent.Var_dc48_GameEndType = 1 - F0_1238_001e_ShowDialog(this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*FAME"), 80, 80);
+					this.oParent.Var_dc48_GameEndType = 1 - this.oParent.MenuBoxDialog.ShowDialog(this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*FAME"), 80, 80);
 				}
 				else
 				{
@@ -486,9 +443,9 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// End game
 		/// </summary>
-		public void F0_1238_08a0()
+		public void F0_1238_08a0_EndGame()
 		{
 			//this.oCPU.Log.EnterBlock("F0_1238_08a0()");
 
@@ -818,7 +775,7 @@ namespace OpenCivOne
 			this.oParent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.TravelersReport;
 
 			// Instruction address 0x1238:0x0cbf, size: 3
-			F0_1238_001e_ShowDialog(0xba06, 100, 32);
+			this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 100, 32);
 
 		L0cc5:
 			// Instruction address 0x1238:0x0ce9, size: 5
@@ -1405,7 +1362,7 @@ namespace OpenCivOne
 				this.oParent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 
 				// Instruction address 0x1238:0x1498, size: 3
-				F0_1238_001e_ShowDialog(0xba06, 100, 80);
+				this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 100, 80);
 			}
 
 		L149e:
@@ -1821,7 +1778,7 @@ namespace OpenCivOne
 
 		L17f2:
 			// Instruction address 0x1238:0x1802, size: 3
-			F0_1238_001e_ShowDialog(0xba06, 100, 80);
+			this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 100, 80);
 
 			this.oParent.Encyclopedia.DisplayEncyclopediaTopic(EncyclopediaTopicEnum.CityImprovement, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)) + 24);
 			
@@ -2099,7 +2056,7 @@ namespace OpenCivOne
 		/// </summary>
 		public void F0_1238_1b44()
 		{
-			this.oCPU.Log.EnterBlock("F0_1238_1b44()");
+			//this.oCPU.Log.EnterBlock("F0_1238_1b44()");
 
 			// function body
 			// Instruction address 0x1238:0x1b48, size: 5
@@ -2123,9 +2080,6 @@ namespace OpenCivOne
 
 			// Instruction address 0x1238:0x1bac, size: 5
 			this.oParent.Tools.StartPaletteCycleSlots();
-
-			// Far return
-			this.oCPU.Log.ExitBlock("F0_1238_1b44");
 		}
 
 		/// <summary>
@@ -2209,10 +2163,10 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Calculates the approximate palace level to be built
+		/// Calculates the approximate palace level to be built from score
 		/// </summary>
 		/// <param name="score"></param>
-		public int F0_1238_1c98_GetPalaceLevel(int score)
+		public int F0_1238_1c98_GetPalaceLevelFromScore(int score)
 		{
 			// function body
 			int level = 0;

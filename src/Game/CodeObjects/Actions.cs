@@ -191,14 +191,14 @@ namespace OpenCivOne
 				if (this.parent.GameData.Cities[cityID].ActualSize != 0)
 				{
 					// Instruction address 0x2459:0x04b4, size: 5
-					this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+					this.parent.MenuBoxDialog.ShowDialog(
 						$"Spies report:\n{this.parent.GameData.Players[playerID].Nation} capture\nthe " +
 						$"{this.parent.GameData.Players[cityPlayerID].Nationality} city\nof {F0_2459_08c6_GetCityName(cityID)}.\n", 100, 80);
 				}
 				else
 				{
 					// Instruction address 0x2459:0x04b4, size: 5
-					this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+					this.parent.MenuBoxDialog.ShowDialog(
 						$"Spies report:\n{this.parent.GameData.Players[playerID].Nation} destroy\nthe " +
 						$"{this.parent.GameData.Players[cityPlayerID].Nationality} city\nof {F0_2459_08c6_GetCityName(cityID)}.\n", 100, 80);
 				}
@@ -280,12 +280,12 @@ namespace OpenCivOne
 				if ((this.parent.GameData.SpaceshipFlags & (0x1 << playerID)) != 0)
 				{
 					// Instruction address 0x2459:0x0656, size: 5
-					this.parent.Segment_1238.F0_1238_001e_ShowDialog($"{this.parent.GameData.Players[playerID].Nationality} spaceship\nreturns to Earth.\n", 100, 80);
+					this.parent.MenuBoxDialog.ShowDialog($"{this.parent.GameData.Players[playerID].Nationality} spaceship\nreturns to Earth.\n", 100, 80);
 				}
 				else
 				{
 					// Instruction address 0x2459:0x0656, size: 5
-					this.parent.Segment_1238.F0_1238_001e_ShowDialog($"{this.parent.GameData.Players[playerID].Nationality} spaceship\nconstruction cancelled.\n", 100, 80);
+					this.parent.MenuBoxDialog.ShowDialog($"{this.parent.GameData.Players[playerID].Nationality} spaceship\nconstruction cancelled.\n", 100, 80);
 				}
 			}
 
@@ -367,7 +367,7 @@ namespace OpenCivOne
 							if (this.parent.Var_3934 == -1)
 							{
 								// Instruction address 0x2459:0x07e6, size: 5
-								selectedTechnology = this.parent.Segment_1238.F0_1238_001e_ShowDialog(menuText.ToString(), 80, 32);
+								selectedTechnology = this.parent.MenuBoxDialog.ShowDialog(menuText.ToString(), 80, 32);
 							}
 							else
 							{
@@ -385,7 +385,7 @@ namespace OpenCivOne
 							if (this.parent.Var_3934 == -1)
 							{
 								// Instruction address 0x2459:0x0886, size: 5
-								this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+								this.parent.MenuBoxDialog.ShowDialog(
 									$"{this.parent.GameData.Players[playerID1].Nation} take\n{this.parent.GameData.TechnologyAdvances[latestTechnology].Name}.\n", 80, 80);
 							}
 							else
@@ -504,7 +504,7 @@ namespace OpenCivOne
 			if (playerID == this.parent.GameData.HumanPlayerID)
 			{
 				// Instruction address 0x2459:0x0b16, size: 5
-				this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+				this.parent.MenuBoxDialog.ShowDialog(
 					$"{caravanGoodsNames[unitID & 0x7]} caravan from {F0_2459_08c6_GetCityName(homeCityID)}\narrives in {F0_2459_08c6_GetCityName(cityID)}\n" +
 					$"Trade route established\nThe goods sold for {caravanGoodsWorth} coins.\n", 80, 80);
 

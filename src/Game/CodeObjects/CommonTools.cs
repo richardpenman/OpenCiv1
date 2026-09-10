@@ -569,7 +569,7 @@ namespace OpenCivOne
 
 			while (this.parent.CAPI.kbhit() != 0)
 			{
-				this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
+				this.parent.CommonTools.GetNavigationKey();
 			}
 
 			this.parent.ClearMouseEventsAndEnsureNoMouseButtonIsPressed();
@@ -584,10 +584,23 @@ namespace OpenCivOne
 
 			while (this.parent.CAPI.kbhit() != 0)
 			{
-				this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
+				this.parent.CommonTools.GetNavigationKey();
 			}
 
 			while (this.parent.GetMouseEvent().Buttons != MouseButtonsEnum.None) { Thread.Sleep(1); }
+		}
+
+		/// <summary>
+		/// Get navigation key
+		/// </summary>
+		/// <returns></returns>
+		public int GetNavigationKey()
+		{
+			//this.oCPU.Log.EnterBlock("F0_2d05_0ac9_GetNavigationKey()");
+
+			// function body
+			// Instruction address 0x2d05:0x0acf, size: 5
+			return this.parent.CAPI.getch();
 		}
 	}
 }

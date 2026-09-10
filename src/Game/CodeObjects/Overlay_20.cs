@@ -428,7 +428,7 @@ namespace OpenCivOne
 			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*PMAX"));
 
 			// Instruction address 0x0000:0x0530, size: 5
-			this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 64, 80);
+			this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 64, 80);
 
 			goto L00f8;
 
@@ -942,7 +942,7 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.E) goto L0a14;
 
 			// Instruction address 0x0000:0x09f3, size: 5
-			this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+			this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 100, 80);
 
 			// Instruction address 0x0000:0x0a07, size: 5
 			this.oParent.PlayerTurn.F0_1403_3ed7_DrawVisibleCell(this.oParent.GameData.Cities[cityID].Position.X, this.oParent.GameData.Cities[cityID].Position.Y);
@@ -1064,7 +1064,7 @@ namespace OpenCivOne
 			this.oParent.CAPI.strcat(0xba06, ".\n");
 
 			// Instruction address 0x0000:0x0b8a, size: 5
-			this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 80, 80);
+			this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 80, 80);
 
 		L0b92:
 			this.oParent.DiplomatActions.F22_0000_0af5_InciteCityRevolt(cityID, 
@@ -1090,7 +1090,7 @@ namespace OpenCivOne
 			this.oParent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 
 			// Instruction address 0x0000:0x0bf9, size: 5
-			this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+			this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 100, 80);
 
 			// Instruction address 0x0000:0x0c0d, size: 5
 			this.oParent.PlayerTurn.F0_1403_3ed7_DrawVisibleCell(this.oParent.GameData.Cities[cityID].Position.X, this.oParent.GameData.Cities[cityID].Position.Y);
@@ -1117,7 +1117,7 @@ namespace OpenCivOne
 			this.oParent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.TravelersReport;
 
 			// Instruction address 0x0000:0x0c73, size: 5
-			this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 64);
+			this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 100, 64);
 
 			// Instruction address 0x0000:0x0c9b, size: 5
 			this.oParent.MapManagement.F0_2aea_0008_DrawVisibleMap(oParent.GameData.HumanPlayerID,

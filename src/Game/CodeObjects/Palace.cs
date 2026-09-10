@@ -149,7 +149,7 @@ namespace OpenCivOne
 					if (this.parent.CAPI.kbhit() != 0)
 					{
 						// Instruction address 0x0000:0x02a0, size: 5
-						selectedPalaceSection = this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
+						selectedPalaceSection = this.parent.CommonTools.GetNavigationKey();
 
 						#region For debugging, clear and redraw palace
 						/*if (selectedPalaceSection == 'c' || selectedPalaceSection == 'C')
@@ -490,7 +490,7 @@ namespace OpenCivOne
 						if (this.parent.CAPI.kbhit() != 0)
 						{
 							// Instruction address 0x0000:0x06f5, size: 5
-							newPalaceSectionType = this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey() - '1';
+							newPalaceSectionType = this.parent.CommonTools.GetNavigationKey() - '1';
 
 							if (newPalaceSectionType < 0 || newPalaceSectionType > 2) continue;
 						}

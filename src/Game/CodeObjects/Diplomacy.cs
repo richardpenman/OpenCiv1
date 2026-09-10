@@ -84,7 +84,7 @@ namespace OpenCivOne
 									this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DiplomatsReport;
 
 									// Instruction address 0x2517:0x01ba, size: 5
-									this.parent.Segment_1238.F0_1238_001e_ShowDialog($"The war between\nthe {this.parent.GameData.Players[playerID].Nation} and the\n" +
+									this.parent.MenuBoxDialog.ShowDialog($"The war between\nthe {this.parent.GameData.Players[playerID].Nation} and the\n" +
 										$"{this.parent.GameData.Players[i].Nation} has ended.\n", 100, 80);
 								}
 							}
@@ -276,7 +276,7 @@ namespace OpenCivOne
 						}
 
 						// Instruction address 0x2517:0x05ab, size: 5
-						local_14 = this.parent.Segment_1238.F0_1238_001e_ShowDialog(governmentMenu.ToString(), 100, 64);
+						local_14 = this.parent.MenuBoxDialog.ShowDialog(governmentMenu.ToString(), 100, 64);
 					}
 					while (local_14 < 0);
 
@@ -304,7 +304,7 @@ namespace OpenCivOne
 						this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DiplomatsReport;
 
 						// Instruction address 0x2517:0x06ce, size: 5
-						this.parent.Segment_1238.F0_1238_001e_ShowDialog($"The {this.parent.GameData.Players[playerID].Nationality} government\nchanged " +
+						this.parent.MenuBoxDialog.ShowDialog($"The {this.parent.GameData.Players[playerID].Nationality} government\nchanged " +
 							$"to {this.parent.Array_1966_GovernmentNames[(int)newGovernmentType]}!\n", 80, 64);
 					}
 					else
@@ -314,7 +314,7 @@ namespace OpenCivOne
 						this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DiplomatsReport;
 
 						// Instruction address 0x2517:0x06ce, size: 5
-						this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+						this.parent.MenuBoxDialog.ShowDialog(
 							$"The {this.parent.GameData.Players[playerID].Nationality} government\nhas been overthrown!\n", 80, 64);
 					}
 				}
@@ -401,7 +401,7 @@ namespace OpenCivOne
 											this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DiplomatsReport;
 
 											// Instruction address 0x2517:0x094d, size: 5
-											this.parent.Segment_1238.F0_1238_001e_ShowDialog($"{this.parent.GameData.Players[playerID1].Nation} " +
+											this.parent.MenuBoxDialog.ShowDialog($"{this.parent.GameData.Players[playerID1].Nation} " +
 												$"and\n{this.parent.GameData.Players[playerID2].Nation} sign\na peace treaty.\n", 100, 80);
 										}
 
@@ -424,7 +424,7 @@ namespace OpenCivOne
 										this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DiplomatsReport;
 
 										// Instruction address 0x2517:0x0a11, size: 5
-										this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+										this.parent.MenuBoxDialog.ShowDialog(
 											$"{this.parent.GameData.Players[playerID1].Nation} and\n{this.parent.GameData.Players[playerID2].Nation} cancel\npeace treaty.\n", 100, 80);
 									}
 									else
@@ -432,7 +432,7 @@ namespace OpenCivOne
 										this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DiplomatsReport;
 
 										// Instruction address 0x2517:0x0a11, size: 5
-										this.parent.Segment_1238.F0_1238_001e_ShowDialog(
+										this.parent.MenuBoxDialog.ShowDialog(
 											$"{this.parent.GameData.Players[playerID1].Nation} and\n{this.parent.GameData.Players[playerID2].Nation} declare\nwar on each other.\n", 100, 80);
 									}
 								}

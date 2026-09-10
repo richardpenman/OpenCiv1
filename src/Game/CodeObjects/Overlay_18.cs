@@ -835,7 +835,7 @@ namespace OpenCivOne
 			if (mouseEvent.Buttons != MouseButtonsEnum.None) goto L0b4f;
 
 			// Instruction address 0x0000:0x0b47, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey();
+			this.oCPU.AX.Int16 = (short)this.oParent.CommonTools.GetNavigationKey();
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16), this.oCPU.AX.UInt16);
 
@@ -882,7 +882,7 @@ namespace OpenCivOne
 			this.oParent.CAPI.strcat(0xba06, "% chance of success)\n No Launch\n Launch CONFIRMED!\n");
 
 			// Instruction address 0x0000:0x0be4, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 80, 100);
+			this.oCPU.AX.Int16 = (short)this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 80, 100);
 
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
 			if (this.oCPU.Flags.NE) goto L0bfc;
@@ -1290,7 +1290,7 @@ namespace OpenCivOne
 
 		L0fde:
 			// Instruction address 0x0000:0x0fea, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0x4df9, 100, 80);
+			this.oCPU.AX.Int16 = (short)this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0x4df9), 100, 80);
 
 			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, 0x3);
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16), this.oCPU.AX.UInt16);
@@ -1311,7 +1311,7 @@ namespace OpenCivOne
 
 		L1014:
 			// Instruction address 0x0000:0x1020, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0x4e12, 100, 80);
+			this.oCPU.AX.Int16 = (short)this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0x4e12), 100, 80);
 
 			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, 0x6);
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16), this.oCPU.AX.UInt16);
@@ -1501,7 +1501,7 @@ namespace OpenCivOne
 			this.oParent.CAPI.strcat(0xba06, " required.\n");
 
 			// Instruction address 0x0000:0x126d, size: 5
-			this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 120, 80);
+			this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 120, 80);
 
 			goto L0fc0;
 
@@ -1589,7 +1589,7 @@ namespace OpenCivOne
 			this.oParent.Var_b276_MenuBoxDisabledOptions = this.oCPU.AX.Int16;
 
 			// Instruction address 0x0000:0x1593, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Segment_1238.F0_1238_001e_ShowDialog(0xba06, 100, 80);
+			this.oCPU.AX.Int16 = (short)this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 100, 80);
 
 			this.oCPU.AX.UInt16 = this.oCPU.INC_UInt16(this.oCPU.AX.UInt16);
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.AX.UInt16);

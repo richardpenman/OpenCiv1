@@ -221,7 +221,7 @@ namespace OpenCivOne
 				if (this.parent.CAPI.kbhit() != 0)
 				{
 					// Instruction address 0x0000:0x09ec, size: 5
-					switch (this.parent.MenuBoxDialog.F0_2d05_0ac9_GetNavigationKey())
+					switch (this.parent.CommonTools.GetNavigationKey())
 					{
 						case 'N':
 						case 'n':
