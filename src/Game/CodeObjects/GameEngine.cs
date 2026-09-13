@@ -7,7 +7,6 @@ namespace OpenCivOne
 	public class GameEngine
 	{
 		private OpenCivOneGame parent;
-		private VCPU CPU;
 
 		private bool populationHighRange = false;
 		private int nextPopulationThreshold = 1;
@@ -15,7 +14,6 @@ namespace OpenCivOne
 		public GameEngine(OpenCivOneGame parent)
 		{
 			this.parent = parent;
-			this.CPU = parent.CPU;
 		}
 
 		/// <summary>
@@ -187,14 +185,10 @@ namespace OpenCivOne
 				(this.parent.GameData.PlayerFlags & (0x1 << this.parent.GameData.HumanPlayerID)) != 0)
 			{
 				// Warning: Funds are running low...
-
-				// Instruction address 0x1238:0x034f, size: 5
-				this.parent.CAPI.strcpy(0xba06, this.parent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*TAXES"));
-
 				this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 
 				// Instruction address 0x1238:0x0367, size: 3
-				this.parent.MenuBoxDialog.ShowDialog(this.CPU.ReadString(this.CPU.DS.UInt16, 0xba06), 80, 80);
+				this.parent.MenuBoxDialog.ShowDialog(this.parent.LanguageTools.F0_2f4d_044f_GetTextFromKingSection("*TAXES"), 80, 80);
 			}
 
 			this.parent.GameData.TurnCount++;
