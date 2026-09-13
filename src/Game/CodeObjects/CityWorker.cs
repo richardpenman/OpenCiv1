@@ -219,7 +219,7 @@ namespace OpenCivOne
 
 					// Instruction address 0x1d12:0x056f, size: 5
 					this.parent.DrawTools.DrawCenteredStringToScreen0($"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} " +
-						$"(Pop:{this.parent.Tools.PopulationValueToString(cityPopulation)})", 104, 2, 15);
+						$"(Population:{this.parent.Tools.PopulationValueToString(cityPopulation)})", 104, 2, 15);
 
 					// Instruction address 0x1d12:0x0587, size: 5
 					this.parent.DrawTools.DrawRectangleAndFillWithPattern(127, 23, 208, 104, 208, 100, 16, 16);
@@ -3146,7 +3146,7 @@ namespace OpenCivOne
 									this.parent.CityView.F19_0000_18c1_CivilDisorderAnimation();
 
 									// Instruction address 0x1d12:0x5d91, size: 5
-									this.parent.Segment_1238.F0_1238_1b44();
+									this.parent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 
 									this.parent.Var_6b92 = 1;
 								}
@@ -3276,7 +3276,7 @@ namespace OpenCivOne
 											this.parent.CityView.F19_0000_1ae1_LoveOurLeaderAnimation();
 
 											// Instruction address 0x1d12:0x617d, size: 5
-											this.parent.Segment_1238.F0_1238_1b44();
+											this.parent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 										}
 										else
 										{

@@ -162,7 +162,7 @@ namespace OpenCivOne
 					this.parent.CityView.F19_0000_167b_InvadersAnimation(playerID);
 
 					// Instruction address 0x2459:0x03b0, size: 5
-					this.parent.Segment_1238.F0_1238_1b44();
+					this.parent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 				}
 				else
 				{
@@ -247,7 +247,7 @@ namespace OpenCivOne
 					this.parent.CityWorker.F0_1d12_0045_ProcessCityState(cityID, 1);
 
 					// Instruction address 0x2459:0x059f, size: 5
-					this.parent.Segment_1238.F0_1238_1b44();
+					this.parent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 				}
 				else
 				{
@@ -509,7 +509,7 @@ namespace OpenCivOne
 					$"Trade route established\nThe goods sold for {caravanGoodsWorth} coins.\n", 80, 80);
 
 				// Instruction address 0x2459:0x0b1e, size: 5
-				this.parent.Segment_1238.F0_1238_107e();
+				this.parent.GameEngine.F0_1238_107e_ReportHumanTaxAndPopulation();
 			}
 
 			// Instruction address 0x2459:0x0b29, size: 5

@@ -1914,7 +1914,7 @@ namespace OpenCivOne
 			this.oParent.Var_aa_Screen0_Rectangle.FontID = 1;
 
 			// Instruction address 0x0000:0x16b9, size: 5
-			this.oParent.Segment_1238.F0_1238_1b44();
+			this.oParent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 
 			this.oParent.Var_3936 = -1;
 			this.oParent.Var_3934 = 0;

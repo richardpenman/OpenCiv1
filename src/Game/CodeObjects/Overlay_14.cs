@@ -103,7 +103,7 @@ namespace OpenCivOne
 			this.oParent.CAPI.strcat(0xba06, ": ");
 
 			// Instruction address 0x0000:0x011c, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.Segment_1238.YearToString(this.oParent.GameData.Year));
+			this.oParent.CAPI.strcat(0xba06, this.oParent.GameEngine.YearToString(this.oParent.GameData.Year));
 
 			// Instruction address 0x0000:0x0131, size: 5
 			this.oParent.DrawTools.DrawCenteredStringToScreen0(0xba06, 160, 18, 15);
@@ -1200,7 +1200,7 @@ namespace OpenCivOne
 			if (this.oCPU.Flags.E) goto L1154;
 
 			// Instruction address 0x0000:0x114d, size: 5
-			this.oParent.Segment_1238.F0_1238_1b44();
+			this.oParent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 
 			goto L1159;
 

@@ -120,7 +120,7 @@ namespace OpenCivOne
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
 			this.parent.DrawTools.DrawStringToScreen0("10 cents", 272, 28, 0);
-			this.parent.DrawTools.DrawStringToScreen0($"January 1, {this.parent.Segment_1238.YearToString(this.parent.GameData.Year)}", 8, 28, 0);
+			this.parent.DrawTools.DrawStringToScreen0($"January 1, {this.parent.GameEngine.YearToString(this.parent.GameData.Year)}", 8, 28, 0);
 
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 2;
 

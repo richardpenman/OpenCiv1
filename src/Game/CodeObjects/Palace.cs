@@ -529,7 +529,7 @@ namespace OpenCivOne
 			this.parent.CommonTools.PlayTune(1, 0);
 
 			// Instruction address 0x0000:0x07dc, size: 5
-			this.parent.Segment_1238.F0_1238_1b44();
+			this.parent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 		}
 
 		/// <summary>

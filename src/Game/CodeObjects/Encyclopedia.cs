@@ -58,7 +58,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x0053, size: 5
-			this.parent.Segment_1238.F0_1238_1b44();
+			this.parent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 
 			// Instruction address 0x0000:0x0058, size: 5
 			this.parent.Tools.StartPaletteCycleSlots();

@@ -204,7 +204,7 @@ namespace OpenCivOne
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2),
 				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))));
 
-			this.oParent.Segment_1238.TurnCountToYear(this.oCPU.AX.Int16);
+			this.oParent.GameEngine.TurnCountToYear(this.oCPU.AX.Int16);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), this.oCPU.AX.UInt16);
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x6810, 0xffff);
@@ -1317,7 +1317,7 @@ namespace OpenCivOne
 			this.oParent.Var_aa_Screen0_Rectangle.FontID = 1;
 
 			// Instruction address 0x0000:0x0f6a, size: 5
-			this.oParent.Segment_1238.F0_1238_1b44();
+			this.oParent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x680e, 0x0);
 			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;

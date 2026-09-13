@@ -72,7 +72,7 @@ namespace OpenCivOne
 			if (this.Var_654a == 1)
 			{
 				// Instruction address 0x2c84:0x0094, size: 5
-				this.parent.Segment_1238.F0_1238_1b44();
+				this.parent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 			}
 
 			if (this.Var_654a == 0)

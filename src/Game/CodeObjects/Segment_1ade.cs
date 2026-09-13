@@ -87,7 +87,7 @@ namespace OpenCivOne
 			this.oParent.CityWorker.F0_1d12_0045_ProcessCityState(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 1);
 
 			// Instruction address 0x1ade:0x009b, size: 5
-			this.oParent.Segment_1238.F0_1238_1b44();
+			this.oParent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 
 			if (this.oParent.Var_b1e8 == 2) goto L00aa;
 			goto L001e;
@@ -433,7 +433,7 @@ namespace OpenCivOne
 			if (this.oParent.Var_6b64 == 0) goto L0419;
 
 			// Instruction address 0x1ade:0x0412, size: 5
-			this.oParent.Segment_1238.F0_1238_1b44();
+			this.oParent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 
 			goto L041d;
 
@@ -2695,7 +2695,7 @@ namespace OpenCivOne
 			this.oParent.Encyclopedia.DisplayEncyclopediaTopic(EncyclopediaTopicEnum.TechnologyAdvance, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x46)));
 			
 			// Instruction address 0x1ade:0x1cb5, size: 5
-			this.oParent.Segment_1238.F0_1238_1b44();
+			this.oParent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x16), 0x1);
 			goto L1638;
@@ -2988,7 +2988,7 @@ namespace OpenCivOne
 			this.oParent.StartGameMenu.F5_0000_1af6_LoadGovernmentImage();
 
 			// Instruction address 0x1ade:0x203a, size: 5
-			this.oParent.Segment_1238.F0_1238_1b44();
+			this.oParent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 
 		L203f:
 			if (this.oParent.Var_3934 == -1) goto L2049;
@@ -2996,7 +2996,7 @@ namespace OpenCivOne
 
 		L2049:
 			// Instruction address 0x1ade:0x2049, size: 5
-			this.oParent.Segment_1238.F0_1238_1b44();
+			this.oParent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 			
 			if (technology != TechnologyAdvanceEnum.Monarchy)
 				goto L20d9;

@@ -257,7 +257,7 @@ namespace OpenCivOne
 								this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(diplomatPlayerID, diplomatUnitID);
 
 								// Instruction address 0x0000:0x05e4, size: 5
-								this.parent.Segment_1238.F0_1238_107e();
+								this.parent.GameEngine.F0_1238_107e_ReportHumanTaxAndPopulation();
 							}
 						}
 
@@ -358,7 +358,7 @@ namespace OpenCivOne
 							this.parent.GameData.Players[destinationPlayerID].Units[destinationUnitID].Position.Y);
 
 						// Instruction address 0x0000:0x0950, size: 5
-						this.parent.Segment_1238.F0_1238_107e();
+						this.parent.GameEngine.F0_1238_107e_ReportHumanTaxAndPopulation();
 
 						// Instruction address 0x0000:0x0959, size: 5
 						this.parent.CommonTools.WaitTimer(30);

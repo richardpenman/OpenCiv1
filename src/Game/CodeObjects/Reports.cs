@@ -225,7 +225,7 @@ namespace OpenCivOne
 				{
 					// Instruction address 0x0000:0x0667, size: 5
 					this.parent.DrawTools.DrawStringToScreen0(
-						this.parent.Segment_1238.YearToString(this.parent.Segment_1238.TurnCountToYear(i)), i / 2, 194, 15);
+						this.parent.GameEngine.YearToString(this.parent.GameEngine.TurnCountToYear(i)), i / 2, 194, 15);
 				}
 			}
 
@@ -470,8 +470,8 @@ namespace OpenCivOne
 							this.parent.CommonTools.WaitTimer(60);
 
 							// Instruction address 0x0000:0x0ccd, size: 5
-							this.parent.Segment_1238.F0_1238_14a3(selectedPlayerID,
-								this.parent.Segment_1238.F0_1238_1c98_GetPalaceLevelFromScore(this.parent.GameData.Players[selectedPlayerID].Score),
+							this.parent.GameEngine.F0_1238_14a3_DrawMiniPalace(selectedPlayerID,
+								this.parent.GameEngine.F0_1238_1c98_GetPalaceLevelFromScore(this.parent.GameData.Players[selectedPlayerID].Score),
 								128, y - 13);
 
 							// Instruction address 0x0000:0x0ce8, size: 5

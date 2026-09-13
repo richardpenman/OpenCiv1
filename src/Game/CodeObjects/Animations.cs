@@ -71,7 +71,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x0aeb, size: 5
-			this.parent.Segment_1238.F0_1238_1beb();
+			this.parent.GameEngine.F0_1238_1beb_LoadAndApplyDefaultColorPalette();
 		}
 
 		/// <summary>
@@ -113,7 +113,7 @@ namespace OpenCivOne
 
 			// Instruction address 0x0000:0x0fc9, size: 5
 			this.parent.DrawTools.DrawCenteredStringToScreen0($"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} founded in", 160, 4, 0);
-			this.parent.DrawTools.DrawCenteredStringToScreen0($"the year {this.parent.Segment_1238.YearToString(this.parent.GameData.Year)}.", 160, 20, 0);
+			this.parent.DrawTools.DrawCenteredStringToScreen0($"the year {this.parent.GameEngine.YearToString(this.parent.GameData.Year)}.", 160, 20, 0);
 
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
@@ -170,7 +170,7 @@ namespace OpenCivOne
 				this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
 				// Instruction address 0x0000:0x113e, size: 5
-				this.parent.Segment_1238.F0_1238_1beb();
+				this.parent.GameEngine.F0_1238_1beb_LoadAndApplyDefaultColorPalette();
 			}
 
 			// Instruction address 0x0000:0x1148, size: 5

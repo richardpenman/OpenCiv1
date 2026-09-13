@@ -55,7 +55,7 @@ namespace OpenCivOne
 				this.parent.Var_d75e_MapViewY = 19;
 
 				// Instruction address 0x11a8:0x016a, size: 5
-				this.parent.Segment_1238.F0_1238_1b44();
+				this.parent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 			}
 
 			this.parent.Var_dc48_GameEndType = 0;
@@ -63,7 +63,7 @@ namespace OpenCivOne
 			while (this.parent.Var_dc48_GameEndType == 0)
 			{
 				// Instruction address 0x11a8:0x0175, size: 5
-				this.parent.Segment_1238.F0_1238_0092_GameTurn();
+				this.parent.GameEngine.F0_1238_0092_GameTurn();
 			}
 		
 			// Instruction address 0x11a8:0x0191, size: 3

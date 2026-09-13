@@ -174,7 +174,7 @@ namespace OpenCivOne
 			this.oParent.Tools.AddDefaultPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x0250, size: 5
-			this.oParent.Segment_1238.F0_1238_1b44();
+			this.oParent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 
 			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
 			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();

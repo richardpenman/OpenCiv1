@@ -106,8 +106,8 @@ namespace OpenCivOne
 			// function body
 			this.parent.Var_1ae0 = 0;
 
-			this.parent.Segment_1238.F0_1238_0fea_DrawMainMenu();
-			this.parent.Segment_1238.F0_1238_107e();
+			this.parent.GameEngine.F0_1238_0fea_DrawMainMenu();
+			this.parent.GameEngine.F0_1238_107e_ReportHumanTaxAndPopulation();
 
 			this.parent.Var_d4cc_MapViewX = this.parent.MapManagement.AdjustXPosition(x);
 			this.parent.Var_d75e_MapViewY = this.parent.Tools.CheckValueRange(y, 0, 38);

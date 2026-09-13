@@ -84,7 +84,7 @@ namespace OpenCivOne
 			if (this.parent.Var_1ae0 != 0)
 			{
 				// Instruction address 0x1403:0x0160, size: 5
-				this.parent.Segment_1238.F0_1238_1b44();
+				this.parent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 			}
 
 			if (this.parent.Var_dc48_GameEndType != 0)
@@ -390,7 +390,7 @@ namespace OpenCivOne
 					this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 					// Instruction address 0x1403:0x0826, size: 5
-					this.parent.Segment_1238.F0_1238_1b44();
+					this.parent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 
 					// Instruction address 0x1403:0x082b, size: 5
 					this.parent.Tools.StartPaletteCycleSlots();
@@ -469,7 +469,7 @@ namespace OpenCivOne
 									this.parent.Encyclopedia.DisplayEncyclopediaTopic(EncyclopediaTopicEnum.TerrainType, (int)this.parent.MapManagement.GetTerrainType(mouseX, mouseY));
 
 									// Instruction address 0x1403:0x09c5, size: 5
-									this.parent.Segment_1238.F0_1238_1b44();
+									this.parent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 								}
 							}
 							break;
@@ -509,7 +509,7 @@ namespace OpenCivOne
 						// Instruction address 0x1403:0x0b9a, size: 5
 						this.parent.Segment_1ade.F0_1ade_03ea(cityID);
 						// Instruction address 0x1403:0x0ba2, size: 5
-						this.parent.Segment_1238.F0_1238_107e();
+						this.parent.GameEngine.F0_1238_107e_ReportHumanTaxAndPopulation();
 
 						flag2 = false;
 					}
@@ -600,7 +600,7 @@ namespace OpenCivOne
 						this.parent.StartGameMenu.F5_0000_1af6_LoadGovernmentImage();
 
 						// Instruction address 0x1403:0x35be, size: 5
-						this.parent.Segment_1238.F0_1238_1b44();
+						this.parent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 					}
 					break;
 
@@ -1258,7 +1258,7 @@ namespace OpenCivOne
 						this.parent.GameData.Players[playerID].TaxRate = (short)selectedTaxRate;
 
 						// Instruction address 0x1403:0x36b1, size: 5
-						this.parent.Segment_1238.F0_1238_107e();
+						this.parent.GameEngine.F0_1238_107e_ReportHumanTaxAndPopulation();
 					}
 					break;
 
@@ -1283,7 +1283,7 @@ namespace OpenCivOne
 					{
 						this.parent.GameData.Players[playerID].ScienceTaxRate = (short)(10 - this.parent.GameData.Players[playerID].TaxRate - newLuxuryRate);
 						// Instruction address 0x1403:0x37a3, size: 5
-						this.parent.Segment_1238.F0_1238_107e();
+						this.parent.GameEngine.F0_1238_107e_ReportHumanTaxAndPopulation();
 					}
 					break;
 
@@ -1703,7 +1703,7 @@ namespace OpenCivOne
 			if (playerID == this.parent.GameData.HumanPlayerID)
 			{
 				// Instruction address 0x1403:0x3ec1, size: 5
-				this.parent.Segment_1238.F0_1238_1bb2_FillRectangleWithShadow(0, 97, 80, 103);
+				this.parent.GameEngine.F0_1238_1bb2_FillRectangleWithShadow(0, 97, 80, 103);
 			}
 		}
 
@@ -2499,7 +2499,7 @@ namespace OpenCivOne
 
 			// function body
 			// Instruction address 0x1403:0x407c, size: 5
-			this.parent.Segment_1238.F0_1238_1bb2_FillRectangleWithShadow(0, 97, 80, 103);
+			this.parent.GameEngine.F0_1238_1bb2_FillRectangleWithShadow(0, 97, 80, 103);
 
 			if (unitID == 128)
 			{

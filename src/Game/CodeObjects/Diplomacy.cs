@@ -208,7 +208,7 @@ namespace OpenCivOne
 						this.parent.StartGameMenu.F5_0000_1af6_LoadGovernmentImage();
 
 						// Instruction address 0x2517:0x05dc, size: 5
-						this.parent.Segment_1238.F0_1238_1b44();
+						this.parent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 
 						this.parent.StartGameMenu.F5_0000_1ba2_ChangeGovernment();
 					}
@@ -285,7 +285,7 @@ namespace OpenCivOne
 					this.parent.StartGameMenu.F5_0000_1af6_LoadGovernmentImage();
 
 					// Instruction address 0x2517:0x05dc, size: 5
-					this.parent.Segment_1238.F0_1238_1b44();
+					this.parent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 
 					this.parent.StartGameMenu.F5_0000_1ba2_ChangeGovernment();
 				}

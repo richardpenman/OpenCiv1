@@ -111,7 +111,7 @@ namespace OpenCivOne
 				{
 					// Instruction address 0x0000:0x037c, size: 5
 					this.parent.DrawTools.DrawStringToScreen0($"{i + 1}. {entry.PlayerName}, {this.parent.Array_33a2_GameDifficultyNames[entry.GameDifficulty]}" +
-						$" of the {entry.NationName} to {this.parent.Segment_1238.YearToString(entry.FinalYear)}", x, y, 0);
+						$" of the {entry.NationName} to {this.parent.GameEngine.YearToString(entry.FinalYear)}", x, y, 0);
 
 					y += 8;
 

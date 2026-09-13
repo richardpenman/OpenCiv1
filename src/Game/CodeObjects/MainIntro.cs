@@ -530,7 +530,7 @@ namespace OpenCivOne
 
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
-			this.parent.Segment_1238.F0_1238_1beb();
+			this.parent.GameEngine.F0_1238_1beb_LoadAndApplyDefaultColorPalette();
 
 			this.parent.Tools.AddDefaultPaletteCycleSlots();
 		}
@@ -620,7 +620,7 @@ namespace OpenCivOne
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
 			// Instruction address 0x0000:0x17c7, size: 5
-			this.parent.Segment_1238.F0_1238_1beb();
+			this.parent.GameEngine.F0_1238_1beb_LoadAndApplyDefaultColorPalette();
 
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 		}

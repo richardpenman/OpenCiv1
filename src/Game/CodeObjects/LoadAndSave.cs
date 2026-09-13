@@ -188,7 +188,7 @@ namespace OpenCivOne
 
 				saveGameText.Append($" CIVIL{this.gameIndex}.SVE\n {this.parent.Array_33a2_GameDifficultyNames[this.parent.GameData.DifficultyLevel]} ");
 				saveGameText.Append($"{this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Name}\n {this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Nation}");
-				saveGameText.Append($"/{this.parent.Segment_1238.YearToString(this.parent.GameData.Year)}");
+				saveGameText.Append($"/{this.parent.GameEngine.YearToString(this.parent.GameData.Year)}");
 				saveGameText.Append("\n ... save in progress.\n");
 
 				// Instruction address 0x0000:0x05c3, size: 5

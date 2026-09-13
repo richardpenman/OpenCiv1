@@ -21,7 +21,7 @@ namespace OpenCivOne
 		private StartGame startGame;
 		private Animations animations;
 		private CommonTools commonTools;
-		private Segment_1238 oSegment_1238;
+		private GameEngine gameEngine;
 		private MenuBoxDialog menuBoxDialog;
 		private PlayerTurn playerTurn;
 		private Tools tools;
@@ -143,7 +143,7 @@ namespace OpenCivOne
 			this.startGame = new StartGame(this);
 			this.animations = new Animations(this);
 			this.commonTools = new CommonTools(this);
-			this.oSegment_1238 = new Segment_1238(this);
+			this.gameEngine = new GameEngine(this);
 			this.menuBoxDialog = new MenuBoxDialog(this);
 			this.playerTurn = new PlayerTurn(this);
 			this.tools = new Tools(this);
@@ -519,22 +519,13 @@ namespace OpenCivOne
 		#endregion
 
 		#region Public Segment objects
-		public StartGame StartGame
-		{
-			get { return this.startGame; }
-		}
+		public StartGame StartGame { get => this.startGame; }
 
-		public CommonTools CommonTools
-		{
-			get { return this.commonTools; }
-		}
+		public CommonTools CommonTools { get => this.commonTools; }
 
 		public Animations Animations { get => this.animations; }
 
-		public Segment_1238 Segment_1238
-		{
-			get { return this.oSegment_1238; }
-		}
+		public GameEngine GameEngine { get => this.gameEngine; }
 
 		public MenuBoxDialog MenuBoxDialog
 		{

@@ -22,6 +22,7 @@ Microprose, Firaxis Games or Take-Two Interactive Software.</li>
 <ul>
 <li><a href="https://gigazine.net/gsc_news/en/20240129-openciv1/" target="_blank">OpenCiv1 is a project that disassembles the first 'Civilization' and makes it open source, by logu_ii (from Jan 29, 2024)</a></li>
 <li><a href="https://thepixelspulse.com/posts/openciv1-rewrite-modernizing-civilization-1/" target="_blank">OpenCiv1 Rewrite: A Blueprint for Modernizing Civilization 1, by gaming-insider (from March 28, 2026)</a></li>
+<li><a href="https://github.com/yo-yo-yo-jbo/civ_ace/" target="_blank">Civilization 1 arbitrary code execution - A fun weekend project on how to hack Civilization 1 PIC files.</a> From <a href="https://jonathanbaror.com/" target="_blank">Jonathan Bar Or (Security Researcher, Hacker and Public Speaker)</a></li>
 </ul>
 
 ## Copyright considerations
@@ -69,7 +70,7 @@ Currently, you can contribute to this repository in one of the following ways:
 
 <ul>
 <li>Reaching the initial playability of the game (passed),</li>
-<li>Rewrite of the game code, functionalities and features (in progress... only 14.1% of the code left to rewrite),</li>
+<li>Rewrite of the game code, functionalities and features (in progress... only 10% of the code left to rewrite),</li>
 <li>Test game functionalities for game fidelity and bugs,</li>
 <li>Archive the game code.</li>
 </ul>
