@@ -35,8 +35,8 @@ namespace OpenCivOne
 				bitmaps[i] = this.parent.Graphics.F0_VGA_0b85_ScreenToBitmap(1, ((i % 7) * 45) + 1, ((i / 7) * 45) + 1, 44, 44);
 			}
 
-			x = this.parent.Tools.CheckValueRange(this.parent.MapManagement.AdjustXPosition(x - this.parent.Var_d4cc_MapViewX) * 16 + 66, 80, 276);
-			y = this.parent.Tools.CheckValueRange((y - this.parent.Var_d75e_MapViewY) * 16 - 6, 8, 156);
+			x = this.parent.CommonTools.CheckValueRange(this.parent.MapManagement.AdjustXPosition(x - this.parent.Var_d4cc_MapViewX) * 16 + 66, 80, 276);
+			y = this.parent.CommonTools.CheckValueRange((y - this.parent.Var_d75e_MapViewY) * 16 - 6, 8, 156);
 
 			// Instruction address 0x0000:0x0a41, size: 5
 			this.parent.CommonTools.PlayTune(42, 0);
@@ -67,11 +67,11 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x0ad2, size: 5
 			for (int i = 0; i < 28; i++)
 			{
-				this.parent.Tools.FreeNativeResource(bitmaps[i], "NukeAnimation");
+				this.parent.Graphics.FreeResource(bitmaps[i], "NukeAnimation");
 			}
 
 			// Instruction address 0x0000:0x0aeb, size: 5
-			this.parent.GameEngine.F0_1238_1beb_LoadAndApplyDefaultColorPalette();
+			this.parent.CommonTools.LoadAndApplyDefaultColorPalette();
 		}
 
 		/// <summary>
@@ -84,7 +84,7 @@ namespace OpenCivOne
 
 			// function body
 			// Instruction address 0x0000:0x0ecd, size: 5
-			this.parent.Tools.StopPaletteCycleSlots();
+			this.parent.CommonTools.StopPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x0ee4, size: 5
 			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "SETTLERS.PIC", 0);
@@ -153,7 +153,7 @@ namespace OpenCivOne
 			for (int i = 0; i < 4; i++)
 			{
 				// Instruction address 0x0000:0x10d3, size: 5
-				this.parent.Tools.FreeNativeResource(bitmaps[i], "FoundNewCity");
+				this.parent.Graphics.FreeResource(bitmaps[i], "FoundNewCity");
 			}
 
 			// Instruction address 0x0000:0x10fc, size: 5
@@ -170,7 +170,7 @@ namespace OpenCivOne
 				this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
 				// Instruction address 0x0000:0x113e, size: 5
-				this.parent.GameEngine.F0_1238_1beb_LoadAndApplyDefaultColorPalette();
+				this.parent.CommonTools.LoadAndApplyDefaultColorPalette();
 			}
 
 			// Instruction address 0x0000:0x1148, size: 5

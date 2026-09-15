@@ -191,7 +191,7 @@ namespace OpenCivOne
 						int cityOwnerPlayerID = this.parent.MapManagement.F0_2aea_1369_GetCityOwner(newX, newY);
 
 						// Instruction address 0x1866:0x0426, size: 5
-						int cityID = this.parent.Tools.GetCityByLocation(newX, newY);
+						int cityID = this.parent.MapManagement.GetCityByLocation(newX, newY);
 
 						// Instruction address 0x1866:0x0433, size: 3
 						F0_1866_0006_RestoreFortifiedCityUnits(cityID);
@@ -299,7 +299,7 @@ namespace OpenCivOne
 					}
 				}
 
-				if (flag && (playerID == this.parent.GameData.HumanPlayerID || this.parent.Var_d806_DebugFlag))
+				if (flag && (playerID == this.parent.GameData.HumanPlayerID || this.parent.GlobalPreferences.Debug.DebugMode))
 				{
 					// Instruction address 0x1866:0x0344, size: 5
 					this.parent.MapManagement.F0_2aea_11d4_DrawCellWithUnit(newX, newY);
@@ -362,7 +362,7 @@ namespace OpenCivOne
 							}
 						}
 
-						if (flag && (playerID == this.parent.GameData.HumanPlayerID || this.parent.Var_d806_DebugFlag))
+						if (flag && (playerID == this.parent.GameData.HumanPlayerID || this.parent.GlobalPreferences.Debug.DebugMode))
 						{
 							// Instruction address 0x1866:0x0a1a, size: 5
 							this.parent.MapManagement.F0_2aea_11d4_DrawCellWithUnit(newX, newY);
@@ -641,7 +641,7 @@ namespace OpenCivOne
 				unit.SpecialMoves = this.parent.GameData.Units[(int)unit.UnitType].TurnsOutside;
 
 				// Instruction address 0x1866:0x0db6, size: 5
-				unit.HomeCityID = (short)this.parent.Tools.FindNearestCity(x, y);
+				unit.HomeCityID = (short)this.parent.MapManagement.FindNearestCity(x, y);
 
 				short cityOwnerID = (short)((unit.HomeCityID < 128 && unit.HomeCityID != -1) ? this.parent.GameData.Cities[unit.HomeCityID].PlayerID : -1);
 
@@ -659,7 +659,7 @@ namespace OpenCivOne
 
 				if (!this.Var_20f4)
 				{
-					if (this.parent.Var_d806_DebugFlag || playerID == this.parent.GameData.HumanPlayerID ||
+					if (this.parent.GlobalPreferences.Debug.DebugMode || playerID == this.parent.GameData.HumanPlayerID ||
 						(unit.VisibleByPlayer & (1 << this.parent.GameData.HumanPlayerID)) != 0)
 					{
 						// Instruction address 0x1866:0x0e5c, size: 5
@@ -763,7 +763,7 @@ namespace OpenCivOne
 	
 				if (!this.Var_20f4 && this.parent.Var_3936 == -1)
 				{
-					if (this.parent.Var_d806_DebugFlag || playerID == this.parent.GameData.HumanPlayerID ||
+					if (this.parent.GlobalPreferences.Debug.DebugMode || playerID == this.parent.GameData.HumanPlayerID ||
 						(unit.VisibleByPlayer & (1 << this.parent.GameData.HumanPlayerID)) != 0)
 					{	
 						// Instruction address 0x1866:0x107d, size: 5
@@ -1306,37 +1306,6 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Center map according to given position
-		/// </summary>
-		/// <param name="playerID"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		public void F0_1866_16a9_CenterMap(int playerID, int x, int y)
-		{
-			//this.oCPU.Log.EnterBlock($"F0_1866_16a9({playerID}, {x}, {y})");
-
-			// function body
-			bool flag = false;
-
-			if (x < 16 && this.parent.Var_d4cc_MapViewX > 64)
-			{
-				x += 80;
-			}
-
-			if (x < this.parent.Var_d4cc_MapViewX + 2 || x > this.parent.Var_d4cc_MapViewX + 13 ||
-				y < this.parent.Var_d75e_MapViewY + 2 || y > this.parent.Var_d75e_MapViewY + 9)
-			{
-				flag = true;
-			}
-
-			if (flag)
-			{
-				// Instruction address 0x1866:0x1719, size: 5
-				this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(playerID, this.parent.MapManagement.AdjustXPosition(x - 8), y - 6);
-			}
-		}
-
-		/// <summary>
 		/// This function tests if unit is near and updates visibility if player is human player
 		/// This should be reworked as the function should update visibility for any player taking into account the visibility range
 		/// </summary>
@@ -1405,7 +1374,7 @@ namespace OpenCivOne
 							if (this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY).HasFlag(TerrainImprovementFlagsEnum.City))
 							{
 								// Instruction address 0x1866:0x186e, size: 5
-								int cityID = this.parent.Tools.GetCityByLocation(newX, newY);
+								int cityID = this.parent.MapManagement.GetCityByLocation(newX, newY);
 
 								this.parent.GameData.Cities[cityID].VisibleSize = this.parent.GameData.Cities[cityID].ActualSize;
 
@@ -1480,7 +1449,7 @@ namespace OpenCivOne
 
 						if ((this.parent.GameData.MapVisibility[newX, newY] & playerBitmask) != 0 &&
 							mapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY).HasFlag(TerrainImprovementFlagsEnum.City) &&
-							(cityID = this.parent.Tools.GetCityByLocation(newX, newY)) != -1 &&
+							(cityID = this.parent.MapManagement.GetCityByLocation(newX, newY)) != -1 &&
 							this.parent.GameData.Cities[cityID].PlayerID != playerID)
 						{
 							return true;
@@ -1528,6 +1497,40 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
+		/// Find nearest unit from a given player, except a current unit
+		/// </summary>
+		/// <param name="playerID"></param>
+		/// <param name="currentUnitID"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
+		public int FindNearestPlayerUnit(int playerID, int currentUnitID, int x, int y)
+		{
+			//this.oCPU.Log.EnterBlock($"F0_2dc4_0177({playerID}, {unitID}, {x}, {y})");
+
+			// function body
+			int minDistance = 999;
+			int nearestUnitID = -1;
+
+			for (int i = 0; i < 128; i++)
+			{
+				if (this.parent.GameData.Players[playerID].Units[i].UnitType != UnitTypeEnum.None && i != currentUnitID)
+				{
+					// Instruction address 0x2dc4:0x01b2, size: 3
+					int distance = this.parent.MapManagement.GetDistance(x, y, this.parent.GameData.Players[playerID].Units[i].Position);
+
+					if (distance < minDistance)
+					{
+						minDistance = distance;
+						nearestUnitID = i;
+					}
+				}
+			}
+
+			return nearestUnitID;
+		}
+
+		/// <summary>
 		/// Activate minor tribal hut
 		/// </summary>
 		/// <param name="playerID"></param>
@@ -1541,7 +1544,7 @@ namespace OpenCivOne
 				this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].MovementType != UnitMovementTypeEnum.Air)
 			{
 				// Instruction address 0x1866:0x1980, size: 5
-				int nearestCityID = this.parent.Tools.FindNearestCity(this.parent.GameData.Players[playerID].Units[unitID].Position);
+				int nearestCityID = this.parent.MapManagement.FindNearestCity(this.parent.GameData.Players[playerID].Units[unitID].Position);
 
 				// Instruction address 0x1866:0x19a9, size: 5
 				int nearestCityDistance = (nearestCityID < 0 || nearestCityID > 127) ? int.MaxValue: this.parent.MapManagement.GetDistance(
@@ -1735,7 +1738,7 @@ namespace OpenCivOne
 					}
 				}
 				// Instruction address 0x1866:0x1c86, size: 5
-				i += this.parent.Tools.CheckValueRange(4 - this.parent.GameData.Players[playerID].CityCount, 1, 4);
+				i += this.parent.CommonTools.CheckValueRange(4 - this.parent.GameData.Players[playerID].CityCount, 1, 4);
 			}
 		}
 

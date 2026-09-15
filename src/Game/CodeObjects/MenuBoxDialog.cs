@@ -174,6 +174,10 @@ namespace OpenCivOne
 					{
 						optionChars.Add(char.ToLower(menuItem[1]));
 					}
+					else
+					{
+						optionChars.Add('\0');
+					}
 				}
 			}
 

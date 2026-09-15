@@ -117,7 +117,7 @@ namespace OpenCivOne
 
 					// Instruction address 0x0000:0x0438, size: 5
 					this.parent.DrawTools.DrawStringToScreen0(
-						$"Population: {this.parent.Tools.PopulationValueToString(entry.TotalPopulation)}, Score: {entry.TotalScore}", x + 12, y, 7);
+						$"Population: {this.parent.GameEngine.PopulationValueToString(entry.TotalPopulation)}, Score: {entry.TotalScore}", x + 12, y, 7);
 
 					y += 8;
 
@@ -169,7 +169,7 @@ namespace OpenCivOne
 				entry.FinalYear = this.parent.GameData.Year;
 				entry.AchievementsScore = humanPlayer.AchievementScore;
 				entry.TotalCitizenCount = humanPlayer.TotalCitizenCount;
-				entry.TotalPopulation = this.parent.Tools.GetPlayerPopulationCount(this.parent.GameData.HumanPlayerID);
+				entry.TotalPopulation = this.parent.GameEngine.GetPlayerPopulationCount(this.parent.GameData.HumanPlayerID);
 				entry.PlayerName = humanPlayer.Name;
 				entry.NationName = humanPlayer.Nation;
 

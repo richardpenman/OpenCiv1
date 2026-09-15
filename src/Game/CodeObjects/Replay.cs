@@ -551,7 +551,7 @@ namespace OpenCivOne
 			this.oParent.CAPI.strcat(0xba06, " cities; ");
 
 			// Instruction address 0x0000:0x064e, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.Tools.PopulationValueToString(
+			this.oParent.CAPI.strcat(0xba06, this.oParent.GameEngine.PopulationValueToString(
 				this.oCPU.ReadInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)) + this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10))));
 
 			// Instruction address 0x0000:0x0405, size: 5
@@ -948,22 +948,22 @@ namespace OpenCivOne
 
 		L0ada:
 			// Instruction address 0x0000:0x0ae8, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Tools.CheckValueRange(xPos - 5, 0, 80);
+			this.oCPU.AX.Int16 = (short)this.oParent.CommonTools.CheckValueRange(xPos - 5, 0, 80);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.AX.UInt16);
 
 			// Instruction address 0x0000:0x0b01, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Tools.CheckValueRange(xPos + 5, 0, 80);
+			this.oCPU.AX.Int16 = (short)this.oParent.CommonTools.CheckValueRange(xPos + 5, 0, 80);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), this.oCPU.AX.UInt16);
 
 			// Instruction address 0x0000:0x0b1b, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Tools.CheckValueRange(yPos - 5, 2, 49);
+			this.oCPU.AX.Int16 = (short)this.oParent.CommonTools.CheckValueRange(yPos - 5, 2, 49);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8), this.oCPU.AX.UInt16);
 
 			// Instruction address 0x0000:0x0b35, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Tools.CheckValueRange(yPos + 5, 2, 49);
+			this.oCPU.AX.Int16 = (short)this.oParent.CommonTools.CheckValueRange(yPos + 5, 2, 49);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa), this.oCPU.AX.UInt16);
 
@@ -1257,7 +1257,7 @@ namespace OpenCivOne
 			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, 0x680e, 0x1);
 
 			// Instruction address 0x0000:0x0dea, size: 5
-			this.oParent.Tools.StopPaletteCycleSlots();
+			this.oParent.CommonTools.StopPaletteCycleSlots();
 
 			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xb1d4, 0x0);
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x0);
@@ -1468,8 +1468,9 @@ namespace OpenCivOne
 			this.oCPU.SI.UInt16 = this.oCPU.BX.UInt16;
 			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xc1dc));
 			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xbdf4), this.oCPU.AX.LowUInt8);
+
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)), 0x1b0);
+			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)), 432);
 			if (this.oCPU.Flags.L) goto L122d;
 
 			// Instruction address 0x0000:0x124c, size: 5
@@ -1613,7 +1614,7 @@ namespace OpenCivOne
 				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x30)));
 
 			// Instruction address 0x0000:0x14d1, size: 5
-			this.oParent.Tools.FreeNativeResource(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)), "");
+			this.oParent.Graphics.FreeResource(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)), "");
 
 			// Instruction address 0x0000:0x14dd, size: 5
 			this.oParent.CommonTools.PlayTune(1, 0);

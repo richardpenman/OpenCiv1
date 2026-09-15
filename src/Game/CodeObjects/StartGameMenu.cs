@@ -35,7 +35,7 @@ namespace OpenCivOne
 				if (mouseEvent.Position.X < 135)
 				{
 					// Instruction address 0x0000:0x0090, size: 5
-					this.parent.GameData.DifficultyLevel = (short)this.parent.Tools.CheckValueRange((mouseEvent.Position.Y - 12) / 35, 0, 4);
+					this.parent.GameData.DifficultyLevel = (short)this.parent.CommonTools.CheckValueRange((mouseEvent.Position.Y - 12) / 35, 0, 4);
 				}
 			}
 
@@ -80,7 +80,7 @@ namespace OpenCivOne
 			while (this.parent.GameData.AIOpponentCount == -1);
 
 			// Instruction address 0x0000:0x01a8, size: 5
-			this.parent.GameData.AIOpponentCount = (short)this.parent.Tools.CheckValueRange(6 - this.parent.GameData.AIOpponentCount, 2, 6);
+			this.parent.GameData.AIOpponentCount = (short)this.parent.CommonTools.CheckValueRange(6 - this.parent.GameData.AIOpponentCount, 2, 6);
 			this.parent.GameData.ActiveCivilizations = (short)(0xff >> (6 - this.parent.GameData.AIOpponentCount));
 
 			for (int i = this.parent.GameData.AIOpponentCount; i >= 0; i--)
@@ -493,7 +493,7 @@ namespace OpenCivOne
 						this.parent.MapManagement.F0_2aea_1894_CellHasMinorTribeHut(xStart, yStart, this.parent.MapManagement.GetTerrainType(xStart, yStart))) goto L0a5e;
 
 					int distance;
-					int cityID = this.parent.Tools.FindNearestCity(xStart, yStart);
+					int cityID = this.parent.MapManagement.FindNearestCity(xStart, yStart);
 
 					if (cityID == -1)
 					{

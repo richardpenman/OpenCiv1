@@ -87,7 +87,7 @@ namespace OpenCivOne
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
 			// Instruction address 0x0000:0x0075, size: 5
-			this.parent.Tools.StopPaletteCycleSlots();
+			this.parent.CommonTools.StopPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x0091, size: 5
 			this.parent.CommonTools.PlayTune(this.parent.GameData.Nations[player.NationalityID].LongTune, 3);
@@ -267,7 +267,7 @@ namespace OpenCivOne
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 
 				// Instruction address 0x0000:0x0347, size: 5
-				int newPalaceLevel = this.parent.Tools.CheckValueRange(player.PalaceLevels[selectedPalaceSection] + 1, 1, 4);
+				int newPalaceLevel = this.parent.CommonTools.CheckValueRange(player.PalaceLevels[selectedPalaceSection] + 1, 1, 4);
 				int newPalaceSectionType = -1;
 
 				if (selectedPalaceSection < 9)
@@ -764,7 +764,7 @@ namespace OpenCivOne
 					this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
 						0, ((player.PalaceLevels[9] <= 1) ? 105 : 94), bitmapID);
 
-					this.parent.Tools.FreeNativeResource(bitmapID, "DrawPalace 3");
+					this.parent.Graphics.FreeResource(bitmapID, "DrawPalace 3");
 				}
 
 				if (player.PalaceLevels[11] != 0)
@@ -776,7 +776,7 @@ namespace OpenCivOne
 					this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
 						184, ((player.PalaceLevels[11] <= 1) ? 105 : 94), bitmapID);
 
-					this.parent.Tools.FreeNativeResource(bitmapID, "DrawPalace 3");
+					this.parent.Graphics.FreeResource(bitmapID, "DrawPalace 3");
 				}
 			}
 
@@ -838,7 +838,7 @@ namespace OpenCivOne
 					{
 						if (this.bitmaps[i, j, k] != -1)
 						{
-							this.parent.Tools.FreeNativeResource(this.bitmaps[i, j, k], "FreeCastleBitmaps()");
+							this.parent.Graphics.FreeResource(this.bitmaps[i, j, k], "FreePalaceBitmaps()");
 
 							this.bitmaps[i, j, k] = -1;
 						}

@@ -286,7 +286,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x08e4, size: 5
-			this.parent.Tools.StopPaletteCycleSlots();
+			this.parent.CommonTools.StopPaletteCycleSlots();
 
 			F19_0000_137f_LoadCityViewBitmaps(wonderID, city.PlayerID, cityID);
 
@@ -576,15 +576,15 @@ namespace OpenCivOne
 				this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
 				// Instruction address 0x0000:0x0fcf, size: 5
-				this.parent.GameEngine.F0_1238_1beb_LoadAndApplyDefaultColorPalette();
+				this.parent.CommonTools.LoadAndApplyDefaultColorPalette();
 
 				// Instruction address 0x0000:0x0fd4, size: 5
-				this.parent.Tools.StartPaletteCycleSlots();
+				this.parent.CommonTools.StartPaletteCycleSlots();
 			}
 
 			for (int i = 0; i < 20; i++)
 			{
-				this.parent.Tools.FreeNativeResource(this.Array_817a_Houses[i], "City layout");
+				this.parent.Graphics.FreeResource(this.Array_817a_Houses[i], "City layout");
 			}
 		}
 
@@ -636,7 +636,7 @@ namespace OpenCivOne
 			{
 				// Instruction address 0x0000:0x10b2, size: 5
 				this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_19d4_Screen1_Rectangle,
-					this.parent.Tools.CheckValueRange(((y & 1) * 8) + (x * 16) - 9, 0, 999), 16 + (y << 3),
+					this.parent.CommonTools.CheckValueRange(((y & 1) * 8) + (x * 16) - 9, 0, 999), 16 + (y << 3),
 					this.Array_81a2_Buildings[bitmapID]);
 
 			}
@@ -647,7 +647,7 @@ namespace OpenCivOne
 
 				// Instruction address 0x0000:0x1115, size: 5
 				this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_19d4_Screen1_Rectangle,
-					this.parent.Tools.CheckValueRange(((y & 1) * 8) + (x * 16) - 9, 0, 999), y - 10,
+					this.parent.CommonTools.CheckValueRange(((y & 1) * 8) + (x * 16) - 9, 0, 999), y - 10,
 					this.Array_68a0_Wonders[bitmapID]);
 			}
 		}
@@ -696,20 +696,20 @@ namespace OpenCivOne
 				xStep = 12;
 			}
 
-			int happyCitizenCount = this.parent.Tools.CheckValueRange(this.parent.Var_70e2_CityHappyCitizenCount, 0, this.parent.GameData.Cities[cityID].ActualSize);
-			int unhappyCitizenCount = this.parent.Tools.CheckValueRange(this.parent.Var_70e4_CityUnhappyCitizenCount, 0, this.parent.GameData.Cities[cityID].ActualSize);
+			int happyCitizenCount = this.parent.CommonTools.CheckValueRange(this.parent.Var_70e2_CityHappyCitizenCount, 0, this.parent.GameData.Cities[cityID].ActualSize);
+			int unhappyCitizenCount = this.parent.CommonTools.CheckValueRange(this.parent.Var_70e4_CityUnhappyCitizenCount, 0, this.parent.GameData.Cities[cityID].ActualSize);
 
-			while (happyCitizenCount + unhappyCitizenCount > this.parent.Tools.CheckValueRange(this.parent.GameData.Cities[cityID].ActualSize - this.parent.Var_e8b8, 0, 99))
+			while (happyCitizenCount + unhappyCitizenCount > this.parent.CommonTools.CheckValueRange(this.parent.GameData.Cities[cityID].ActualSize - this.parent.Var_e8b8, 0, 99))
 			{
 				happyCitizenCount--;
 
 				// Instruction address 0x0000:0x11fc, size: 5
-				happyCitizenCount = this.parent.Tools.CheckValueRange(happyCitizenCount, 0, this.parent.GameData.Cities[cityID].ActualSize);
+				happyCitizenCount = this.parent.CommonTools.CheckValueRange(happyCitizenCount, 0, this.parent.GameData.Cities[cityID].ActualSize);
 
 				unhappyCitizenCount--;
 
 				// Instruction address 0x0000:0x1214, size: 5
-				unhappyCitizenCount = this.parent.Tools.CheckValueRange(unhappyCitizenCount, 0, this.parent.GameData.Cities[cityID].ActualSize);
+				unhappyCitizenCount = this.parent.CommonTools.CheckValueRange(unhappyCitizenCount, 0, this.parent.GameData.Cities[cityID].ActualSize);
 			}
 
 			for (int i = 0; i < happyCitizenCount; i++)
@@ -762,7 +762,7 @@ namespace OpenCivOne
 			for (int i = 0; i < 9; i++)
 			{
 				// Instruction address 0x0000:0x1372, size: 5
-				this.parent.Tools.FreeNativeResource(bitmaps[i], "Draw city population");
+				this.parent.Graphics.FreeResource(bitmaps[i], "Draw city population");
 			}
 		}
 
@@ -892,7 +892,7 @@ namespace OpenCivOne
 
 			// function body
 			// Instruction address 0x0000:0x1682, size: 5
-			this.parent.Tools.StopPaletteCycleSlots();
+			this.parent.CommonTools.StopPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x1698, size: 5
 			this.parent.Graphics.SetPaletteColor(0xfd, GBitmap.Color18ToColor(3, 3, 3));
@@ -972,12 +972,12 @@ namespace OpenCivOne
 			this.parent.CommonTools.ClearKeyboardAndMouseEvents();
 
 			// Instruction address 0x0000:0x18b7, size: 5
-			this.parent.Tools.StartPaletteCycleSlots();
+			this.parent.CommonTools.StartPaletteCycleSlots();
 
 			for (int i = 0; i < 10; i++)
 			{
 				// Instruction address 0x0000:0x1ad4, size: 5
-				this.parent.Tools.FreeNativeResource(bitmaps[i], "Invaders");
+				this.parent.Graphics.FreeResource(bitmaps[i], "Invaders");
 			}
 		}
 
@@ -992,7 +992,7 @@ namespace OpenCivOne
 			int[] bitmaps = new int[10];
 
 			// Instruction address 0x0000:0x18c8, size: 5
-			this.parent.Tools.StopPaletteCycleSlots();
+			this.parent.CommonTools.StopPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x18df, size: 5
 			if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.University))
@@ -1066,7 +1066,7 @@ namespace OpenCivOne
 			for (int i = 0; i < 10; i++)
 			{
 				// Instruction address 0x0000:0x1ad4, size: 5
-				this.parent.Tools.FreeNativeResource(bitmaps[i], "Civil disorder");
+				this.parent.Graphics.FreeResource(bitmaps[i], "Civil disorder");
 			}
 		}
 
@@ -1079,7 +1079,7 @@ namespace OpenCivOne
 
 			// function body
 			// Instruction address 0x0000:0x1ae8, size: 5
-			this.parent.Tools.StopPaletteCycleSlots();
+			this.parent.CommonTools.StopPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x1afa, size: 5
 			if (!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Industrialization))
@@ -1145,7 +1145,7 @@ namespace OpenCivOne
 			for (int i = 0; i < 10; i++)
 			{
 				// Instruction address 0x0000:0x1ad4, size: 5
-				this.parent.Tools.FreeNativeResource(bitmaps[i], "Love leader");
+				this.parent.Graphics.FreeResource(bitmaps[i], "Love leader");
 			}
 		}
 	}

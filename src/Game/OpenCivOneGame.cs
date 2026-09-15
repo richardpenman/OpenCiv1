@@ -24,7 +24,6 @@ namespace OpenCivOne
 		private GameEngine gameEngine;
 		private MenuBoxDialog menuBoxDialog;
 		private PlayerTurn playerTurn;
-		private Tools tools;
 		private DrawTools drawTools;
 		private ImageTools imageTools;
 		private LanguageTools languageTools;
@@ -74,6 +73,7 @@ namespace OpenCivOne
 		private string gameResourcePath = "";
 		private string gameMainPath = "";
 		private string gameSavePath = "";
+		private GlobalPreferences globalPreferences;
 
 		// Keyboard
 		public static readonly object KeyboardAndMouseLock = new();
@@ -135,6 +135,8 @@ namespace OpenCivOne
 				throw new Exception($"Could not create necessary game paths. The error is '{e.Message}'");
 			}
 
+			this.globalPreferences = GlobalPreferences.DeSerializeFromJSON(this, this.gameMainPath);
+
 			#region Initialize Segments
 			this.CApi = new CAPI(this);
 			this.graphics = new GDriver(this);
@@ -146,7 +148,6 @@ namespace OpenCivOne
 			this.gameEngine = new GameEngine(this);
 			this.menuBoxDialog = new MenuBoxDialog(this);
 			this.playerTurn = new PlayerTurn(this);
-			this.tools = new Tools(this);
 			this.drawTools = new DrawTools(this);
 			this.imageTools = new ImageTools(this);
 			this.languageTools = new LanguageTools(this);
@@ -477,6 +478,8 @@ namespace OpenCivOne
 
 		public string SavePath { get => this.gameSavePath; }
 
+		public GlobalPreferences GlobalPreferences { get => this.globalPreferences; }
+
 		public Queue<int> Keys
 		{
 			get { return this.keys; }
@@ -535,11 +538,6 @@ namespace OpenCivOne
 		public PlayerTurn PlayerTurn
 		{
 			get { return this.playerTurn; }
-		}
-
-		public Tools Tools
-		{
-			get { return this.tools; }
 		}
 
 		public DrawTools DrawTools

@@ -219,7 +219,7 @@ namespace OpenCivOne
 
 					// Instruction address 0x1d12:0x056f, size: 5
 					this.parent.DrawTools.DrawCenteredStringToScreen0($"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} " +
-						$"(Population:{this.parent.Tools.PopulationValueToString(cityPopulation)})", 104, 2, 15);
+						$"(Population:{this.parent.GameEngine.PopulationValueToString(cityPopulation)})", 104, 2, 15);
 
 					// Instruction address 0x1d12:0x0587, size: 5
 					this.parent.DrawTools.DrawRectangleAndFillWithPattern(127, 23, 208, 104, 208, 100, 16, 16);
@@ -594,20 +594,20 @@ namespace OpenCivOne
 
 							// Instruction address 0x1d12:0x1151, size: 5
 							int cityFood = F0_1d12_6abc_GetCityResourceCount(this.Var_6548_PlayerID, this.Var_653e_CityID, newX, newY, CityResourceTypeEnum.Food) * 
-								(16 / this.parent.Tools.CheckValueRange(this.parent.Var_70da_Arr[0] - (city.ActualSize * 2) - (productionRatio * this.parent.Var_e3c6), 1, 99));
+								(16 / this.parent.CommonTools.CheckValueRange(this.parent.Var_70da_Arr[0] - (city.ActualSize * 2) - (productionRatio * this.parent.Var_e3c6), 1, 99));
 
 							// Instruction address 0x1d12:0x1190, size: 5
 							int resourceCount = F0_1d12_6abc_GetCityResourceCount(this.Var_6548_PlayerID, this.Var_653e_CityID, newX, newY, CityResourceTypeEnum.Production);
 
 							// Instruction address 0x1d12:0x11af, size: 5
-							cityFood += ((city.ActualSize * 3) / this.parent.Tools.CheckValueRange(
+							cityFood += ((city.ActualSize * 3) / this.parent.CommonTools.CheckValueRange(
 								this.parent.Var_70da_Arr[1] - this.parent.Var_d2f6, 1, 99)) * resourceCount;
 
 							// Instruction address 0x1d12:0x11dc, size: 5
 							int tradeResources = F0_1d12_6abc_GetCityResourceCount(this.Var_6548_PlayerID, this.Var_653e_CityID, newX, newY, CityResourceTypeEnum.Trade);
 
 							// Instruction address 0x1d12:0x11f7, size: 5
-							cityFood += ((city.ActualSize * 2) / this.parent.Tools.CheckValueRange(this.parent.Var_70da_Arr[2], 1, 99)) * tradeResources;
+							cityFood += ((city.ActualSize * 2) / this.parent.CommonTools.CheckValueRange(this.parent.Var_70da_Arr[2], 1, 99)) * tradeResources;
 
 							if (cityFood > local_d6)
 							{
@@ -707,7 +707,7 @@ namespace OpenCivOne
 				}
 
 				// Instruction address 0x1d12:0x1484, size: 5
-				cityPowerProductionRatio = this.parent.Tools.CheckValueRange(cityPowerProductionRatio, 0, cityFactoryRatio);
+				cityPowerProductionRatio = this.parent.CommonTools.CheckValueRange(cityPowerProductionRatio, 0, cityFactoryRatio);
 				int temp1 = this.parent.Var_70da_Arr[1];
 				int temp2 = this.parent.Var_70da_Arr[2];
 
@@ -812,7 +812,7 @@ namespace OpenCivOne
 											if (this.parent.GameData.Cities[i].PlayerID != this.parent.GameData.HumanPlayerID || this.parent.GameData.Cities[i].Status != CityStatusEnum.Invalid)
 											{
 												// Instruction address 0x1d12:0x1898, size: 5
-												int nearestUnitID = this.parent.Tools.FindNearestPlayerUnit(this.Var_6548_PlayerID, newUnitID,
+												int nearestUnitID = this.parent.UnitManagement.FindNearestPlayerUnit(this.Var_6548_PlayerID, newUnitID,
 													this.parent.GameData.Cities[i].Position.X, this.parent.GameData.Cities[i].Position.Y);
 
 												int unitDistance = Math.Abs(this.parent.MapManagement.GetDistance(this.parent.GameData.Cities[i].Position, 
@@ -1172,7 +1172,7 @@ namespace OpenCivOne
 						if ((city.Status & CityStatusEnum.CivilDisorder) != CityStatusEnum.None && city.CurrentProductionID < 0 && city.ShieldsCount != 0)
 						{
 							// Instruction address 0x1d12:0x24a7, size: 5
-							cityShieldIncome = this.parent.Tools.CheckValueRange(
+							cityShieldIncome = this.parent.CommonTools.CheckValueRange(
 								(this.parent.GameData.GetImprovementType(-city.CurrentProductionID).Cost * difficultyProductionRatio) - city.ShieldsCount,
 								0, this.parent.GameData.Players[this.Var_6548_PlayerID].Coins / 8);
 						}
@@ -1182,7 +1182,7 @@ namespace OpenCivOne
 							(city.Status & CityStatusEnum.AutoProduction) != CityStatusEnum.None) && city.CurrentProductionID >= 0 && city.ShieldsCount != 0)
 						{
 							// Instruction address 0x1d12:0x2530, size: 5
-							cityShieldIncome = this.parent.Tools.CheckValueRange(
+							cityShieldIncome = this.parent.CommonTools.CheckValueRange(
 								(this.parent.GameData.Units[city.CurrentProductionID].Cost * difficultyProductionRatio) - city.ShieldsCount,
 								0, this.parent.GameData.Players[this.Var_6548_PlayerID].Coins / 3);
 						}
@@ -1190,7 +1190,7 @@ namespace OpenCivOne
 						if (city.CurrentProductionID == -1 && city.ShieldsCount != 0)
 						{
 							// Instruction address 0x1d12:0x2591, size: 5
-							cityShieldIncome = this.parent.Tools.CheckValueRange(
+							cityShieldIncome = this.parent.CommonTools.CheckValueRange(
 								(this.parent.GameData.Units[city.CurrentProductionID].Cost * difficultyProductionRatio) - city.ShieldsCount,
 								0, this.parent.GameData.Players[this.Var_6548_PlayerID].Coins / 3);
 						}
@@ -1199,7 +1199,7 @@ namespace OpenCivOne
 							this.parent.GameData.Players[this.Var_6548_PlayerID].ActiveUnits[(int)UnitTypeEnum.Nuclear] == 0 && city.ShieldsCount != 0)
 						{
 							// Instruction address 0x1d12:0x260d, size: 5
-							cityShieldIncome = this.parent.Tools.CheckValueRange(
+							cityShieldIncome = this.parent.CommonTools.CheckValueRange(
 								(this.parent.GameData.Units[city.CurrentProductionID].Cost * difficultyProductionRatio) - city.ShieldsCount,
 								0, this.parent.GameData.Players[this.Var_6548_PlayerID].Coins / 4);
 						}
@@ -1299,7 +1299,7 @@ namespace OpenCivOne
 				}
 
 				// Instruction address 0x1d12:0x2960, size: 5
-				this.parent.Var_70da_Arr[3] = this.parent.Tools.CheckValueRange(
+				this.parent.Var_70da_Arr[3] = this.parent.CommonTools.CheckValueRange(
 					((-(this.parent.GameData.Players[this.Var_6548_PlayerID].ScienceTaxRate +
 						this.parent.GameData.Players[this.Var_6548_PlayerID].TaxRate - 10) *
 						(this.parent.Var_70da_Arr[2] - this.parent.Var_d2e0)) + 5) / 10,
@@ -1307,7 +1307,7 @@ namespace OpenCivOne
 
 				// !!! Minimum value is greater than maximum value, why?
 				// Instruction address 0x1d12:0x2999, size: 5
-				this.parent.Var_e17a = this.parent.Tools.CheckValueRange(
+				this.parent.Var_e17a = this.parent.CommonTools.CheckValueRange(
 					((this.parent.GameData.Players[this.Var_6548_PlayerID].TaxRate * (this.parent.Var_70da_Arr[2] - this.parent.Var_d2e0)) + 5) / 10,
 					0, this.parent.Var_70da_Arr[2] - this.parent.Var_70da_Arr[3] - this.parent.Var_d2e0);
 
@@ -1572,7 +1572,7 @@ namespace OpenCivOne
 					}
 
 					// Instruction address 0x1d12:0x3079, size: 5
-					this.parent.Var_70e4_CityUnhappyCitizenCount -= this.parent.Tools.CheckValueRange(attackUnitCount, 0, this.parent.Var_70e4_CityUnhappyCitizenCount);
+					this.parent.Var_70e4_CityUnhappyCitizenCount -= this.parent.CommonTools.CheckValueRange(attackUnitCount, 0, this.parent.Var_70e4_CityUnhappyCitizenCount);
 				}
 				else
 				{
@@ -1913,7 +1913,7 @@ namespace OpenCivOne
 					}
 
 					// Instruction address 0x1d12:0x3a2c, size: 5
-					this.parent.Var_e3c2 += this.parent.Tools.CheckValueRange(this.parent.Var_deb8, 0, city.ActualSize);
+					this.parent.Var_e3c2 += this.parent.CommonTools.CheckValueRange(this.parent.Var_deb8, 0, city.ActualSize);
 
 					if (city.HasImprovement(ImprovementEnum.MarketPlace))
 					{
@@ -2018,7 +2018,7 @@ namespace OpenCivOne
 					}
 
 					// Instruction address 0x1d12:0x3d7a, size: 5
-					int productionSpacing = this.parent.Tools.CheckValueRange(((productionCost - 1) / 10) + 1, ((city.ShieldsCount - 1) / 100) + 1, 99);
+					int productionSpacing = this.parent.CommonTools.CheckValueRange(((productionCost - 1) / 10) + 1, ((city.ShieldsCount - 1) / 100) + 1, 99);
 					int foodStorage = 80 / difficultyProductionRatio;
 					cityWindowX = (((productionSpacing * 8) - 8) / productionSpacing) + (difficultyProductionRatio * foodStorage);
 					cityWindowY = (((productionCost - 1) / productionSpacing) * 8) + 8;
@@ -2063,7 +2063,7 @@ namespace OpenCivOne
 					// Instruction address 0x1d12:0x3f7b, size: 5
 					if (city.ActualSize != 0)
 					{
-						foodStorage = this.parent.Tools.CheckValueRange(80 / city.ActualSize, 1, 8);
+						foodStorage = this.parent.CommonTools.CheckValueRange(80 / city.ActualSize, 1, 8);
 					}
 					else
 					{
@@ -2088,7 +2088,7 @@ namespace OpenCivOne
 					}
 
 					// Instruction address 0x1d12:0x406a, size: 5
-					int iTemp = this.parent.Tools.CheckValueRange(city.FoodCount, 0, (city.ActualSize + 1) * difficultyProductionRatio);
+					int iTemp = this.parent.CommonTools.CheckValueRange(city.FoodCount, 0, (city.ActualSize + 1) * difficultyProductionRatio);
 
 					for (int i = 0; i < iTemp; i++)
 					{
@@ -2121,14 +2121,14 @@ namespace OpenCivOne
 						{
 							// Instruction address 0x1d12:0x416d, size: 5
 							// Instruction address 0x1d12:0x4181, size: 5
-							xStep = this.parent.Tools.CheckValueRange(
-								116 / (this.parent.Tools.CheckValueRange(this.parent.Var_70da_Arr[i], 
+							xStep = this.parent.CommonTools.CheckValueRange(
+								116 / (this.parent.CommonTools.CheckValueRange(this.parent.Var_70da_Arr[i], 
 									(city.ActualSize * 2) + (productionRatio * this.parent.Var_e3c6), 999) + 1), 1, 8);
 						}
 						else
 						{
 							// Instruction address 0x1d12:0x41ac, size: 5
-							xStep = this.parent.Tools.CheckValueRange(116 / (this.parent.Var_70da_Arr[i] + 1), 1, 8);
+							xStep = this.parent.CommonTools.CheckValueRange(116 / (this.parent.Var_70da_Arr[i] + 1), 1, 8);
 						}
 
 						for (int j = 0; j < this.parent.Var_70da_Arr[i]; j++)
@@ -2168,7 +2168,7 @@ namespace OpenCivOne
 					cityX = 8;
 
 					// Instruction address 0x1d12:0x42a6, size: 5
-					xStep = this.parent.Tools.CheckValueRange(
+					xStep = this.parent.CommonTools.CheckValueRange(
 						224 / (this.parent.Var_70da_Arr[3] + this.parent.Var_70e6 + this.parent.Var_e17a + this.parent.Var_d2e0 + 2), 1, 16);
 
 					for (int i = 0; i < this.parent.Var_70da_Arr[3]; i++)
@@ -2213,7 +2213,7 @@ namespace OpenCivOne
 					if ((city.ActualSize * 2) + (productionRatio * this.parent.Var_e3c6) > this.parent.Var_70da_Arr[0])
 					{
 						// Instruction address 0x1d12:0x43ed, size: 5
-						xStep = this.parent.Tools.CheckValueRange(116 / ((city.ActualSize * 2) + (productionRatio * this.parent.Var_e3c6) + 1), 1, 8);
+						xStep = this.parent.CommonTools.CheckValueRange(116 / ((city.ActualSize * 2) + (productionRatio * this.parent.Var_e3c6) + 1), 1, 8);
 
 						for (int i = this.parent.Var_70da_Arr[0]; i < (city.ActualSize * 2) + (productionRatio * this.parent.Var_e3c6); i++)
 						{
@@ -2232,7 +2232,7 @@ namespace OpenCivOne
 					if (this.parent.Var_70da_Arr[1] < this.parent.Var_d2f6)
 					{
 						// Instruction address 0x1d12:0x44b9, size: 5
-						xStep = this.parent.Tools.CheckValueRange(116 / (this.parent.Var_70da_Arr[1] + 1), 1, 8);
+						xStep = this.parent.CommonTools.CheckValueRange(116 / (this.parent.Var_70da_Arr[1] + 1), 1, 8);
 
 						for (int i = this.parent.Var_70da_Arr[1]; i < this.parent.Var_d2f6; i++)
 						{
@@ -2251,7 +2251,7 @@ namespace OpenCivOne
 					if (this.parent.Var_d2e0 != 0)
 					{
 						// Instruction address 0x1d12:0x455a, size: 5
-						xStep = this.parent.Tools.CheckValueRange(116 / (this.parent.Var_70da_Arr[2] + 1), 1, 8);
+						xStep = this.parent.CommonTools.CheckValueRange(116 / (this.parent.Var_70da_Arr[2] + 1), 1, 8);
 
 						// Instruction address 0x1d12:0x4598, size: 5
 						this.parent.Graphics.F0_VGA_009a_ReplaceColor(this.parent.Var_aa_Screen0_Rectangle,
@@ -2309,7 +2309,7 @@ namespace OpenCivOne
 
 						// Instruction address 0x1d12:0x47ef, size: 5
 						// Instruction address 0x1d12:0x4802, size: 5
-						cityWindowY = this.parent.Tools.CheckValueRange(100 / this.parent.Tools.CheckValueRange(local_e0, 1, 99), 1, 8);
+						cityWindowY = this.parent.CommonTools.CheckValueRange(100 / this.parent.CommonTools.CheckValueRange(local_e0, 1, 99), 1, 8);
 
 						for (int i = 0; i < local_e0; i++)
 						{
@@ -2464,7 +2464,7 @@ namespace OpenCivOne
 									itemShieldCost = this.parent.GameData.Units[city.CurrentProductionID].Cost;
 
 									// Instruction address 0x1d12:0x4c3d, size: 5
-									costToComplete = this.parent.Tools.CheckValueRange((10 * itemShieldCost) - city.ShieldsCount, 0, 999);
+									costToComplete = this.parent.CommonTools.CheckValueRange((10 * itemShieldCost) - city.ShieldsCount, 0, 999);
 
 									costToComplete = (costToComplete * costToComplete) / 20 + costToComplete * 2;
 								}
@@ -2473,7 +2473,7 @@ namespace OpenCivOne
 									itemShieldCost = this.parent.GameData.GetImprovementType(-city.CurrentProductionID).Cost;
 
 									// Instruction address 0x1d12:0x4ca0, size: 5
-									costToComplete = this.parent.Tools.CheckValueRange((10 * itemShieldCost) - city.ShieldsCount, 0, 999) * 2;
+									costToComplete = this.parent.CommonTools.CheckValueRange((10 * itemShieldCost) - city.ShieldsCount, 0, 999) * 2;
 
 									if ((-city.CurrentProductionID) > 21)
 									{
@@ -2697,7 +2697,7 @@ namespace OpenCivOne
 								}
 
 								// Instruction address 0x1d12:0x5151, size: 5
-								outsideFreeUnitCount = this.parent.Tools.CheckValueRange(outsideUnitIndex, 0, cityWindowUnitCount - 1);
+								outsideFreeUnitCount = this.parent.CommonTools.CheckValueRange(outsideUnitIndex, 0, cityWindowUnitCount - 1);
 
 								if (pressedKey1 == '\n' || pressedKey1 == ' ')
 								{
@@ -2762,7 +2762,7 @@ namespace OpenCivOne
 								}
 
 								// Instruction address 0x1d12:0x5301, size: 5
-								improvementIndex = this.parent.Tools.CheckValueRange(outsideUnitIndex, 0, shownImprovementCount - 1);
+								improvementIndex = this.parent.CommonTools.CheckValueRange(outsideUnitIndex, 0, shownImprovementCount - 1);
 
 								if (cityWindowY == '\n' || cityWindowY == ' ') goto L5740;
 							}
@@ -3964,12 +3964,12 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x1d12:0x6e16, size: 5
-			this.parent.Var_70e2_CityHappyCitizenCount = this.parent.Tools.CheckValueRange(this.parent.Var_70e2_CityHappyCitizenCount, 0, this.parent.GameData.Cities[cityID].ActualSize);
+			this.parent.Var_70e2_CityHappyCitizenCount = this.parent.CommonTools.CheckValueRange(this.parent.Var_70e2_CityHappyCitizenCount, 0, this.parent.GameData.Cities[cityID].ActualSize);
 			// Instruction address 0x1d12:0x6e98, size: 5
-			this.parent.Var_70e4_CityUnhappyCitizenCount = this.parent.Tools.CheckValueRange(this.parent.Var_70e4_CityUnhappyCitizenCount, 0, this.parent.GameData.Cities[cityID].ActualSize);
+			this.parent.Var_70e4_CityUnhappyCitizenCount = this.parent.CommonTools.CheckValueRange(this.parent.Var_70e4_CityUnhappyCitizenCount, 0, this.parent.GameData.Cities[cityID].ActualSize);
 
 			// Instruction address 0x1d12:0x6ebb, size: 5
-			while ((this.parent.Var_70e2_CityHappyCitizenCount + this.parent.Var_70e4_CityUnhappyCitizenCount) > this.parent.Tools.CheckValueRange(this.parent.GameData.Cities[cityID].ActualSize - size, 0, 99))
+			while ((this.parent.Var_70e2_CityHappyCitizenCount + this.parent.Var_70e4_CityUnhappyCitizenCount) > this.parent.CommonTools.CheckValueRange(this.parent.GameData.Cities[cityID].ActualSize - size, 0, 99))
 			{
 				if (this.Var_6542 > 0)
 				{
@@ -3980,13 +3980,13 @@ namespace OpenCivOne
 					this.parent.Var_70e2_CityHappyCitizenCount--;
 
 					// Instruction address 0x1d12:0x6e74, size: 5
-					this.parent.Var_70e2_CityHappyCitizenCount = this.parent.Tools.CheckValueRange(this.parent.Var_70e2_CityHappyCitizenCount, 0, this.parent.GameData.Cities[cityID].ActualSize);
+					this.parent.Var_70e2_CityHappyCitizenCount = this.parent.CommonTools.CheckValueRange(this.parent.Var_70e2_CityHappyCitizenCount, 0, this.parent.GameData.Cities[cityID].ActualSize);
 				}
 
 				this.parent.Var_70e4_CityUnhappyCitizenCount--;
 
 				// Instruction address 0x1d12:0x6e98, size: 5
-				this.parent.Var_70e4_CityUnhappyCitizenCount = this.parent.Tools.CheckValueRange(this.parent.Var_70e4_CityUnhappyCitizenCount, 0, this.parent.GameData.Cities[cityID].ActualSize);
+				this.parent.Var_70e4_CityUnhappyCitizenCount = this.parent.CommonTools.CheckValueRange(this.parent.Var_70e4_CityUnhappyCitizenCount, 0, this.parent.GameData.Cities[cityID].ActualSize);
 			}
 		}
 

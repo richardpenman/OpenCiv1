@@ -129,7 +129,7 @@ namespace OpenCivOne
 
 		L010c:
 			// Instruction address 0x1ade:0x0116, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Tools.CheckValueRange(
+			this.oCPU.AX.Int16 = (short)this.oParent.CommonTools.CheckValueRange(
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), 0, 4);
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), this.oCPU.AX.UInt16);
@@ -341,7 +341,7 @@ namespace OpenCivOne
 			this.oCPU.WriteInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8), (short)(y + direction.Y));
 
 			// Instruction address 0x1ade:0x0342, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Tools.FindNearestCity(
+			this.oCPU.AX.Int16 = (short)this.oParent.MapManagement.FindNearestCity(
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)),
 				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)));
 			int nearestCityDistance = this.oParent.MapManagement.GetDistance(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)),
@@ -1446,7 +1446,7 @@ namespace OpenCivOne
 
 		L0e47:
 			// Instruction address 0x1ade:0x0e66, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Tools.CheckValueRange(
+			this.oCPU.AX.Int16 = (short)this.oParent.CommonTools.CheckValueRange(
 				this.oParent.GameData.Players[playerID].DiscoveredTechnologyCount -
 				this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].DiscoveredTechnologyCount + 10,
 				5, 10);
@@ -2182,11 +2182,11 @@ namespace OpenCivOne
 			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x2);
 
 			// Instruction address 0x1ade:0x150b, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Tools.CheckValueRange(this.oParent.Var_70da_Arr[1] - this.oParent.Var_d2f6, 1, 99);
+			this.oCPU.AX.Int16 = (short)this.oParent.CommonTools.CheckValueRange(this.oParent.Var_70da_Arr[1] - this.oParent.Var_d2f6, 1, 99);
 			this.oCPU.CX.UInt16 = this.oCPU.AX.UInt16;
 
 			// Instruction address 0x1ade:0x152d, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.Tools.CheckValueRange(
+			this.oCPU.AX.Int16 = (short)this.oParent.CommonTools.CheckValueRange(
 				(((10 * cost) - this.oParent.GameData.Cities[cityID].ShieldsCount - 1) / (short)this.oCPU.CX.UInt16) + 1,
 				1, 999);
 
@@ -2390,7 +2390,7 @@ namespace OpenCivOne
 			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
 
 			// Instruction address 0x1ade:0x175b, size: 5
-			this.oParent.Tools.StopPaletteCycleSlots();
+			this.oParent.CommonTools.StopPaletteCycleSlots();
 
 			// Instruction address 0x1ade:0x1764, size: 5
 			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, (ushort)(this.oCPU.BP.UInt16 - 0x10), 1);
@@ -2439,6 +2439,21 @@ namespace OpenCivOne
 				// Instruction address 0x1ade:0x1948, size: 5
 				this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x8), ".PAL");
 
+				/*
+				// Instruction address 0x1238:0x1c52, size: 5
+				this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0,
+					$"BACK{('0' + (char)((governmentType == GovernmentTypeEnum.Communist) ? 3 : (int)governmentType / 2))}" +
+						$"{(this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Invention) ? 'M' : 'A')}.PAL", 0xc1d6);
+
+				// Instruction address 0x1238:0x1c62, size: 5
+				this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SP256.PAL", 0xc5be);
+
+				// Instruction address 0x1238:0x1c76, size: 5
+				this.parent.CAPI.memcpy(0xc744, 0xc35c, 384); // 384 / 3 = 128; 0xc35c - 0xc1d6 = 0x186 (390); 390 - 6 = 384 / 3 = 128
+
+				// Instruction address 0x1238:0x1c86, size: 5
+				this.parent.CommonTools.TransformPalette(5, 0xc5be);*/
+
 				// Instruction address 0x1ade:0x1958, size: 5
 				this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, (ushort)(this.oCPU.BP.UInt16 - 0x10), 0xc1d6);
 
@@ -2446,7 +2461,7 @@ namespace OpenCivOne
 				this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "ICONPG1.PAL", 0xc5be);
 
 				// Instruction address 0x1ade:0x197c, size: 5
-				this.oParent.CAPI.memcpy(0xc5c4, 0xc1dc, 0xff);
+				this.oParent.CAPI.memcpy(0xc5c4, 0xc1dc, 255);
 
 				// Instruction address 0x1ade:0x198c, size: 5
 				this.oParent.CommonTools.TransformPalette(30, 0xc5be);
@@ -2455,7 +2470,7 @@ namespace OpenCivOne
 				this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 				// Instruction address 0x1ade:0x199e, size: 5
-				this.oParent.Tools.StartPaletteCycleSlots();
+				this.oParent.CommonTools.StartPaletteCycleSlots();
 			}
 
 			// Instruction address 0x1ade:0x19bc, size: 3

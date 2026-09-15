@@ -18,6 +18,33 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
+		/// Draws the main menu items
+		/// </summary>
+		public void F0_1238_0fea_DrawMainMenu()
+		{
+			//this.oCPU.Log.EnterBlock("F0_1238_0fea()");
+
+			// function body
+			// Instruction address 0x1238:0x0ffd, size: 5
+			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 8, 0);
+
+			// Instruction address 0x1238:0x1015, size: 5
+			this.parent.DrawTools.DrawStringToScreen0("G\x0087AME", 8, 1, 15);
+
+			// Instruction address 0x1238:0x102d, size: 5
+			this.parent.DrawTools.DrawStringToScreen0("O\x0087RDERS", 64, 1, 15);
+
+			// Instruction address 0x1238:0x1045, size: 5
+			this.parent.DrawTools.DrawStringToScreen0("A\x0087DVISORS", 128, 1, 15);
+
+			// Instruction address 0x1238:0x105d, size: 5
+			this.parent.DrawTools.DrawStringToScreen0("W\x0087ORLD", 192, 1, 15);
+
+			// Instruction address 0x1238:0x1075, size: 5
+			this.parent.DrawTools.DrawStringToScreen0("E\x0087NCYCLOP.", 240, 1, 15);
+		}
+
+		/// <summary>
 		/// Shows and handles one of the five top menus: Game, Orders, Advisors, World and Encyclopedia
 		/// </summary>
 		/// <param name="playerID"></param>
@@ -36,7 +63,7 @@ namespace OpenCivOne
 			if (menuIndex == -1)
 			{
 				// Instruction address 0x2c84:0x0026, size: 5
-				menuIndex = this.parent.Tools.CheckValueRange(mouseEvent.Position.X / 60, 0, 4);
+				menuIndex = this.parent.CommonTools.CheckValueRange(mouseEvent.Position.X / 60, 0, 4);
 			}
 
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
@@ -97,9 +124,11 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x2c84:0x00f4, size: 5
+			this.parent.Var_b276_MenuBoxDisabledOptions = ((this.parent.GameData.SpaceshipFlags & 0x100) != 0) ? 0 : 1 << 7;
+
 			int selectedOption = this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(
-				" Tax Rate\n Luxuries Rate\n FindCity\n Options\n Save Game\n REVOLUTION!\n \n Retire\n QUIT to DOS\n" +
-				(((this.parent.GameData.SpaceshipFlags & 0x100) != 0) ? " View Replay\n" : ""), 16, 8, true, false, false);
+				$" Tax Rate\n Luxuries Rate\n FindCity\n Preferences\n Save Game\n REVOLUTION!\n \n View Replay\n Retire\n QUIT to DOS\n",
+				16, 8, true, false, false);
 
 			// Instruction address 0x2c84:0x00ff, size: 5
 			this.parent.CommonTools.ClearKeyboardAndMouseEvents();
@@ -118,17 +147,22 @@ namespace OpenCivOne
 					this.Var_d4ca_MenuShortcutKey = '?';
 					break;
 
-				case 3: // Options
-						// Instruction address 0x2c84:0x0143, size: 5
+				// Preferences
+				case 3:
 					int index;
 
 					do
 					{
-						// Write current flags to show as checkmarks in options submenu
+						// Write current flags to show as checked in options sub menu
 						this.parent.Var_d7f2_MenuBoxCheckedOptions = this.parent.GameData.GameSettingFlags.Value;
-						// Process options submenu, return selected option index or -1 if selection was rejected
+						this.parent.Var_d7f2_MenuBoxCheckedOptions |= (this.parent.GlobalPreferences.Debug.DebugMode ? 1 << 9 : 0);
+						this.parent.Var_d7f2_MenuBoxCheckedOptions |= (this.parent.GlobalPreferences.Debug.FastMode ? 1 << 10 : 0);
+						this.parent.Var_d7f2_MenuBoxCheckedOptions |= (this.parent.GlobalPreferences.Debug.SaveEveryTurn ? 1 << 11 : 0);
+
+						// Process options sub menu, return selected option index or -1 if selection was rejected
 						index = this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(
-							"Options:\n Instant Advice\n AutoSave\n End of Turn\n Animations\n Sound\n Enemy Moves\n Encyclopedia Text\n Palace\n Debug saves\n",
+							"Game:\n Instant Advice\n AutoSave\n End of Turn\n Animations\n Sound\n Enemy Moves\n Encyclopedia Text\n Palace\n \n" +
+							"\u008fDebugging (global):\n Enable debug mode\n Fast mode\n Save game every turn",
 							24, 16, true, false, false);
 
 						if (index == -1)
@@ -138,7 +172,34 @@ namespace OpenCivOne
 
 						if (!this.parent.Var_2f9c_MenuBoxHelpRequested)
 						{
-							this.parent.GameData.GameSettingFlags.Value ^= (short)(1 << index);
+							switch (index)
+							{
+								case 0:
+								case 1:
+								case 2:
+								case 3:
+								case 4:
+								case 5:
+								case 6:
+								case 7:
+									this.parent.GameData.GameSettingFlags.Value ^= (short)(1 << index);
+									break;
+
+								case 9:
+									this.parent.GlobalPreferences.Debug.DebugMode ^= true;
+									this.parent.RefreshScreenMap = true;
+									break;
+
+								case 10:
+									this.parent.GlobalPreferences.Debug.FastMode ^= true;
+									this.parent.RefreshScreenMap = true;
+									break;
+
+								case 11:
+									this.parent.GlobalPreferences.Debug.SaveEveryTurn ^= true;
+									this.parent.RefreshScreenMap = true;
+									break;
+							}
 						}
 
 						if (index != -1)
@@ -160,25 +221,25 @@ namespace OpenCivOne
 					this.Var_d4ca_MenuShortcutKey = -2;
 					break;
 
+					// spacer
 				case 6:
-					// Empty option line
 					break;
 
 				case 7:
+					// View replay
+					this.parent.Replay.F9_0000_0000();
+					break;
+
+				case 8:
 					// Retire
 					this.parent.Var_dc48_GameEndType = 2;
 					this.Var_d4ca_MenuShortcutKey = 0x1000;
 					break;
 
-				case 8:
+				case 9:
 					// Quit
 					this.parent.Var_dc48_GameEndType = 1;
 					this.Var_d4ca_MenuShortcutKey = 0x1000;
-					break;
-
-				case 9:
-					// View replay
-					this.parent.Replay.F9_0000_0000();
 					break;
 			}
 		}

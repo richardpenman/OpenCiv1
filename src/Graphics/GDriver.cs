@@ -1,9 +1,10 @@
+using Avalonia.Media;
+using IRB.Collections.Generic;
+using IRB.VirtualCPU;
+using OpenCivOne.Resources;
+using OpenCivOne.UI;
 using System;
 using System.IO.Compression;
-using IRB.VirtualCPU;
-using IRB.Collections.Generic;
-using Avalonia.Media;
-using OpenCivOne.Resources;
 
 namespace OpenCivOne.Graphics
 {
@@ -51,16 +52,7 @@ namespace OpenCivOne.Graphics
 		#endregion
 
 		#region Memory and Initialization functions
-		public ushort F0_VGA_0492_GetFreeMemory()
-		{
-			// function body
-			this.CPU.AX.UInt16 = (ushort)((this.CPU.Memory.FreeMemory.Size >> 4) & 0xffff);
-			this.CPU.Flags.C = true;
-
-			return this.CPU.AX.UInt16;
-		}
-
-		public ushort F0_VGA_04ae_AllocateScreen(int screenID)
+		public void AllocateScreen(int screenID)
 		{
 			// function body
 			if (!this.screens.ContainsKey(screenID))
@@ -72,10 +64,39 @@ namespace OpenCivOne.Graphics
 					this.screens.Add(screenID, bitmap);
 				}
 			}
+		}
 
-			this.CPU.AX.UInt16 = 0xa000; // return something to make underlying code happy
+		/// <summary>
+		/// Free resource, shows Memory error dialog if an error happens
+		/// </summary>
+		/// <param name="bitmapID"></param>
+		/// <param name="stringPtr"></param>
+		public void FreeResource(int bitmapID, string text)
+		{
+			//this.oCPU.Log.EnterBlock($"F0_2dc4_0523_FreeResource({bitmapID}, \"{text}\")");
 
-			return this.CPU.AX.UInt16;
+			// function body
+			// ignore unallocated bitmaps
+			if (bitmapID != 0)
+			{
+				// Instruction address 0x2dc4:0x0529, size: 5
+				if (this.parent.Graphics.Bitmaps.ContainsKey(bitmapID))
+				{
+					this.parent.Graphics.Bitmaps.RemoveByKey(bitmapID);
+				}
+				else
+				{
+					// Instruction address 0x2dc4:0x0570, size: 5
+					if (string.IsNullOrEmpty(text))
+					{
+						MessageBox.Show("Unspecified memory error", "Memory error", MessageBoxIcon.Error, MessageBoxButtons.OK);
+					}
+					else
+					{
+						MessageBox.Show(text, "Memory error", MessageBoxIcon.Error, MessageBoxButtons.OK);
+					}
+				}
+			}
 		}
 		#endregion
 

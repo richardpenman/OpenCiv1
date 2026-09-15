@@ -326,12 +326,16 @@ namespace OpenCivOne.UI
 							this.game.Keys.Enqueue(0x1e00);
 							break;
 
-						case Key.C:
+						case Key.D:
+							this.game.Keys.Enqueue(0x2000);
+							break;
+
+						case Key.E:
 							this.game.Keys.Enqueue(0x2e00);
 							break;
 
-						case Key.D:
-							this.game.Keys.Enqueue(0x2000);
+						case Key.F:
+							this.game.Keys.Enqueue(0x2001);
 							break;
 
 						case Key.G:
@@ -714,6 +718,8 @@ namespace OpenCivOne.UI
 
 		private void GameThread()
 		{
+			bool savePreferences = true;
+
 			try
 			{
 				this.game.Start();
@@ -725,7 +731,14 @@ namespace OpenCivOne.UI
 			{
 				// Show exceptions on UI Thread
 				this.gameException = ex;
+				savePreferences = false;
 			}
+
+			if (savePreferences)
+			{
+				this.game.GlobalPreferences.SerializeToJSON(this.game, this.game.MainPath);
+			}
+
 #if !DEBUG
 			catch (Exception ex)
 			{

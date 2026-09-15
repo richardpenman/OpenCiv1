@@ -974,7 +974,7 @@ namespace OpenCivOne
 						}
 
 						// Instruction address 0x0000:0x1111, size: 5
-						totalLocationScore = this.parent.Tools.CheckValueRange((totalLocationScore - 120) / 8, 1, 15) / 2 + 8;
+						totalLocationScore = this.parent.CommonTools.CheckValueRange((totalLocationScore - 120) / 8, 1, 15) / 2 + 8;
 
 						// !!! Sets build score to Land ownership field also, why this needs reworking!
 						this.map.SetBuildLocationScore(i, j, totalLocationScore);

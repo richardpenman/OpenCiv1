@@ -65,7 +65,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x2459:0x0108, size: 5
-			int cityTreasury = this.parent.Tools.CheckValueRange(F0_2459_0687_GetCityTreasury(cityID), 0, this.parent.GameData.Players[cityPlayerID].Coins);
+			int cityTreasury = this.parent.CommonTools.CheckValueRange(F0_2459_0687_GetCityTreasury(cityID), 0, this.parent.GameData.Players[cityPlayerID].Coins);
 
 			// Instruction address 0x2459:0x011f, size: 5
 			int unitID = this.parent.MapManagement.F0_2aea_1458_GetCellActiveUnitID(cityX, cityY);
@@ -144,7 +144,7 @@ namespace OpenCivOne
 				if (cityPlayerID == this.parent.GameData.HumanPlayerID)
 				{
 					// Instruction address 0x2459:0x02cb, size: 5
-					this.parent.UnitManagement.F0_1866_16a9_CenterMap(this.parent.GameData.HumanPlayerID, cityX, cityY);
+					this.parent.MapManagement.F0_1866_16a9_CenterMap(this.parent.GameData.HumanPlayerID, cityX, cityY);
 				}
 
 				// Instruction address 0x2459:0x02d9, size: 5

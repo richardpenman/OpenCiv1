@@ -35,7 +35,7 @@ namespace OpenCivOne
 
 			// function body
 			// Instruction address 0x0000:0x0006, size: 5
-			this.parent.Tools.StopPaletteCycleSlots();
+			this.parent.CommonTools.StopPaletteCycleSlots();
 
 			int itemStartIndex = 0;
 			int result = 0;
@@ -61,7 +61,7 @@ namespace OpenCivOne
 			this.parent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 
 			// Instruction address 0x0000:0x0058, size: 5
-			this.parent.Tools.StartPaletteCycleSlots();
+			this.parent.CommonTools.StartPaletteCycleSlots();
 		}
 
 		/// <summary>
@@ -308,7 +308,7 @@ namespace OpenCivOne
 				return;
 
 			// Instruction address 0x0000:0x063a, size: 5
-			this.parent.Tools.StopPaletteCycleSlots();
+			this.parent.CommonTools.StopPaletteCycleSlots();
 
 			int colour = 15;
 
@@ -359,7 +359,7 @@ namespace OpenCivOne
 						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, $"ICONPG{(fileID / 9) + 1}.PIC", 0);
 
 						// Instruction address 0x0000:0x076c, size: 5
-						this.parent.Tools.ReadAndSetPalette("ICONPG1.PAL");
+						this.parent.CommonTools.ReadAndSetPalette("ICONPG1.PAL");
 
 						DrawEncyclopediaImage(((fileID % 3) * 111) + 1, (((fileID % 9) / 3) * 69) + 1, 110, 68, 62, 42);
 					}
@@ -378,7 +378,7 @@ namespace OpenCivOne
 						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "CITYPIX2.PIC", 0);
 
 						// Instruction address 0x0000:0x0934, size: 5
-						this.parent.Tools.ReadAndSetPalette("HILL.PAL");
+						this.parent.CommonTools.ReadAndSetPalette("HILL.PAL");
 
 						// Instruction address 0x0000:0x0973, size: 5
 						int bitmapID = this.parent.Graphics.F0_VGA_0b85_ScreenToBitmap(1, (((topicIndex - 2) >> 2) * 50) + 1, (((topicIndex - 2) & 0x3) * 50) + 1, 49, 49);
@@ -387,7 +387,7 @@ namespace OpenCivOne
 						this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, 37, 17, bitmapID);
 
 						// Instruction address 0x0000:0x099d, size: 5
-						this.parent.Tools.FreeNativeResource(bitmapID, "Encyclopedia");
+						this.parent.Graphics.FreeResource(bitmapID, "Encyclopedia");
 					}
 
 					if (topicIndex > 24)
@@ -414,7 +414,7 @@ namespace OpenCivOne
 						this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, $"ICONPG{(char)('A' + (fileID / 6))}.PIC", 0);
 
 						// Instruction address 0x0000:0x0a20, size: 5
-						this.parent.Tools.ReadAndSetPalette("ICONPGA.PAL");
+						this.parent.CommonTools.ReadAndSetPalette("ICONPGA.PAL");
 
 						DrawEncyclopediaImage(((fileID & 1) * 160) + 1, ((fileID % 6) >> 1) * 61, 158, 61, 88, 42);
 					}
@@ -821,7 +821,7 @@ namespace OpenCivOne
 				this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 8, 8, 304, 184, (byte)colour);
 
 				// Instruction address 0x0000:0x16b4, size: 5
-				this.parent.Tools.StartPaletteCycleSlots();
+				this.parent.CommonTools.StartPaletteCycleSlots();
 			}		
 		}
 

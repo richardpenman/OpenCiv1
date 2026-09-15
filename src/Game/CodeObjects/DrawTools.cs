@@ -528,6 +528,23 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
+		/// Fills given rectangle with pattern and draw a shadow under rectangle
+		/// </summary>
+		/// <param name="xPos"></param>
+		/// <param name="yPos"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		public void F0_1238_1bb2_FillRectangleWithShadow(int xPos, int yPos, int width, int height)
+		{
+			// function body
+			// Instruction address 0x1238:0x1bc1, size: 5
+			this.parent.DrawTools.FillRectangleWithPattern(xPos, yPos, width, height);
+
+			// Instruction address 0x1238:0x1be1, size: 5
+			this.parent.DrawTools.DrawShadowRectangle(xPos, yPos, width - 1, height - 1, 15, 8);
+		}
+
+		/// <summary>
 		/// Fills the rectangle and draws a double shadow around the rectangle
 		/// </summary>
 		/// <param name="x"></param>

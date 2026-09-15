@@ -34,6 +34,8 @@ namespace OpenCivOne
 			new GPoint(-2, -3), new GPoint(-1, -3), new GPoint(3, 3), 
 			new GPoint(3, -3), new GPoint(-3, 3), new GPoint(-3, -3)}; // size is 49
 
+		public bool RefreshScreenMap = false;
+
 		public int Var_42 = 0; // ushort
 		public int Var_44 = 0; // ushort
 		public int Var_46 = 0; // ushort
@@ -204,7 +206,6 @@ namespace OpenCivOne
 		public bool Var_d760_HumanPlayerMessageFlag = false;
 		public bool Var_d76a_EarthMap = false;
 		public int Var_deba = 0;
-		public bool Var_d806_DebugFlag = false;
 
 		public int Var_db38 = 0;
 

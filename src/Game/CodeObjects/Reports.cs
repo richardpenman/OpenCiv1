@@ -30,7 +30,7 @@ namespace OpenCivOne
 			int playerMask = 0x1 << this.parent.GameData.HumanPlayerID;
 			int yMaximum = 0;
 
-			if (this.parent.Var_d806_DebugFlag)
+			if (this.parent.GlobalPreferences.Debug.DebugMode)
 			{
 				yMedian = 0;
 				xOffset = 0;
@@ -85,7 +85,7 @@ namespace OpenCivOne
 			{
 				for (int j = 0; j < 80; j++)
 				{
-					if (this.parent.Var_d806_DebugFlag || 
+					if (this.parent.GlobalPreferences.Debug.DebugMode || 
 						(this.parent.MapManagement.ValidateMapCoordinates(0, i + yMedian) && (this.parent.GameData.MapVisibility[j, i] & playerMask) != 0))
 					{
 						int cellX = this.parent.MapManagement.AdjustXPosition(j + xOffset) * 4;
@@ -101,9 +101,9 @@ namespace OpenCivOne
 						if (this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(j, i).HasFlag(TerrainImprovementFlagsEnum.City))
 						{
 							// Instruction address 0x0000:0x01c0, size: 5
-							int cityID = this.parent.Tools.GetCityByLocation(j, i);
+							int cityID = this.parent.MapManagement.GetCityByLocation(j, i);
 
-							if (this.parent.Var_d806_DebugFlag ||
+							if (this.parent.GlobalPreferences.Debug.DebugMode ||
 								this.parent.GameData.Cities[cityID].VisibleSize != 0 || 
 								this.parent.GameData.Cities[cityID].PlayerID == this.parent.GameData.HumanPlayerID)
 							{
@@ -125,7 +125,7 @@ namespace OpenCivOne
 								// Instruction address 0x0000:0x023d, size: 5
 								int unitID = this.parent.MapManagement.F0_2aea_1458_GetCellActiveUnitID(j, i);
 
-								if (this.parent.Var_d806_DebugFlag || 
+								if (this.parent.GlobalPreferences.Debug.DebugMode || 
 									unitPlayerID == this.parent.GameData.HumanPlayerID ||
 									(this.parent.GameData.Players[unitPlayerID].Units[unitID].VisibleByPlayer & (0x1 << this.parent.GameData.HumanPlayerID)) != 0)
 								{
@@ -463,7 +463,7 @@ namespace OpenCivOne
 
 					if (selectedPlayerID != -1)
 					{
-						if (this.parent.Var_d806_DebugFlag || this.parent.GameData.DifficultyLevel == 0 || selectedPlayerID == this.parent.GameData.HumanPlayerID ||
+						if (this.parent.GlobalPreferences.Debug.DebugMode || this.parent.GameData.DifficultyLevel == 0 || selectedPlayerID == this.parent.GameData.HumanPlayerID ||
 							this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Diplomacy[selectedPlayerID].HasFlag(DiplomacyFlagsEnum.EmbassyEstablished))
 						{
 							// Instruction address 0x0000:0x0ca5, size: 5
@@ -639,14 +639,14 @@ namespace OpenCivOne
 
 			for (int i = 1; i < 8; i++)
 			{
-				int populationCount = this.parent.Tools.GetPlayerPopulationCount(i);
+				int populationCount = this.parent.GameEngine.GetPlayerPopulationCount(i);
 
 				rankData[i] = populationCount;
 
 				if (i == playerID)
 				{
 					// Instruction address 0x0000:0x10a1, size: 5
-					this.parent.DrawTools.DrawStringToScreen0($"{this.parent.Tools.PopulationValueToString(populationCount)}", 104, yPosition, 15);
+					this.parent.DrawTools.DrawStringToScreen0($"{this.parent.GameEngine.PopulationValueToString(populationCount)}", 104, yPosition, 15);
 				}
 			}
 
@@ -736,7 +736,7 @@ namespace OpenCivOne
 					rankData[i] *= 2;
 				}
 
-				rankData[i] = this.parent.Tools.CheckValueRange(rankData[i], 0, 100);
+				rankData[i] = this.parent.CommonTools.CheckValueRange(rankData[i], 0, 100);
 
 				if (i == playerID)
 				{
@@ -798,7 +798,7 @@ namespace OpenCivOne
 
 			for (int i = 1; i < 8; i++)
 			{
-				rankData[i] = this.parent.Tools.CheckValueRange(cityGrowthCounts[i], 20, 99);
+				rankData[i] = this.parent.CommonTools.CheckValueRange(cityGrowthCounts[i], 20, 99);
 
 				if (i == playerID)
 				{
@@ -1055,7 +1055,7 @@ namespace OpenCivOne
 					this.parent.CityWorker.F0_1d12_6ed4_DrawResources(cityID, 48, y + 10, this.parent.Var_e8b8, 160);
 
 					// Instruction address 0x0000:0x0bd9, size: 5
-					wonderX += this.parent.Tools.CheckValueRange(this.parent.GameData.Cities[cityID].ActualSize * 8, 0, 160) + 8;
+					wonderX += this.parent.CommonTools.CheckValueRange(this.parent.GameData.Cities[cityID].ActualSize * 8, 0, 160) + 8;
 
 					for (int j = 1; j < 22; j++)
 					{

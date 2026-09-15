@@ -18,6 +18,7 @@ Anyone can contribute to this repository in accordance with these rules:
 <li>Some code has Hungarian Notation variable names (iTotal, bIsReady, sUserName, ...), these should be renamed according to the new naming rules,</li>
 <li>Global variables should be Pascal case (example: UserAge, PlayerID, ...),</li>
 <li>Local variables should be Camel case (example: userAge, playerID, ...),</li>
+<li>Local property variables should be defined as underscore with Camel case name (example: _userAge, _playerID, ...),</li>
 <li>Function names should be a Pascal case (sometimes combined with an underscore) (example: DrawRectangle, GenerateMap_Phase1, ...),</li>
 <li>Loop variables are generally i, j, k... (it is also allowed to use ii, jj, kk...),</li>
 <li>GoTo statements should generally be removed and not used at all if possible.</li>

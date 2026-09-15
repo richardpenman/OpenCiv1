@@ -61,6 +61,8 @@ namespace OpenCivOne
 				}
 			}
 
+			this.parent.RefreshScreenMap = false;
+
 			int command;
 			int maxUnitID = 127;
 			bool flag2 = true;
@@ -134,7 +136,7 @@ namespace OpenCivOne
 					if (this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(this.parent.GameData.Players[playerID].Units[unitID].Position.X,
 						this.parent.GameData.Players[playerID].Units[unitID].Position.Y).HasFlag(TerrainImprovementFlagsEnum.City))
 					{
-						int cityID = this.parent.Tools.GetCityByLocation(this.parent.GameData.Players[playerID].Units[unitID].Position.X,
+						int cityID = this.parent.MapManagement.GetCityByLocation(this.parent.GameData.Players[playerID].Units[unitID].Position.X,
 							this.parent.GameData.Players[playerID].Units[unitID].Position.Y);
 
 						if (this.parent.GameData.Cities[cityID].ActualSize >= 3)
@@ -147,7 +149,7 @@ namespace OpenCivOne
 				if (this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(this.parent.GameData.Players[playerID].Units[unitID].Position.X,
 					this.parent.GameData.Players[playerID].Units[unitID].Position.Y).HasFlag(TerrainImprovementFlagsEnum.City))
 				{
-					int cityID = this.parent.Tools.GetCityByLocation(this.parent.GameData.Players[playerID].Units[unitID].Position.X,
+					int cityID = this.parent.MapManagement.GetCityByLocation(this.parent.GameData.Players[playerID].Units[unitID].Position.X,
 						this.parent.GameData.Players[playerID].Units[unitID].Position.Y);
 
 					if (this.parent.GameData.Players[playerID].Units[unitID].HomeCityID == cityID)
@@ -286,6 +288,13 @@ namespace OpenCivOne
 			goto Label151;
 
 		Label79:
+			if (this.parent.RefreshScreenMap)
+			{
+				this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
+
+				this.parent.RefreshScreenMap = false;
+			}
+
 			// Instruction address 0x1403:0x05d2, size: 5
 			F0_1403_4060_DrawStatusPanel(playerID, unitID);
 
@@ -365,7 +374,7 @@ namespace OpenCivOne
 
 					this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(playerID,
 						this.parent.MapManagement.AdjustXPosition(mouseEvent.Position.X - 7 + this.parent.Var_6ed6_MiniMapX),
-						this.parent.Tools.CheckValueRange(mouseEvent.Position.Y - 14 + this.parent.Var_70ea_MiniMapY, 0, 49));
+						this.parent.CommonTools.CheckValueRange(mouseEvent.Position.Y - 14 + this.parent.Var_70ea_MiniMapY, 0, 49));
 					//}
 				}
 				else if (mouseEvent.Position.Y < 72)
@@ -375,7 +384,7 @@ namespace OpenCivOne
 					this.parent.Var_aa_Screen0_Rectangle.ScreenID = 0;
 
 					// Instruction address 0x1403:0x07af, size: 5
-					this.parent.Tools.StopPaletteCycleSlots();
+					this.parent.CommonTools.StopPaletteCycleSlots();
 
 					// Instruction address 0x1403:0x07cc, size: 5
 					this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 0);
@@ -393,7 +402,7 @@ namespace OpenCivOne
 					this.parent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
 
 					// Instruction address 0x1403:0x082b, size: 5
-					this.parent.Tools.StartPaletteCycleSlots();
+					this.parent.CommonTools.StartPaletteCycleSlots();
 				}
 				else if (unitID >= 128)
 				{
@@ -463,7 +472,7 @@ namespace OpenCivOne
 								//this.parent.Var_db3a_MouseButton = 2;
 								mouseEvent = new MouseEvent(mouseEvent.Position, MouseButtonsEnum.Right);
 
-								if ((this.parent.GameData.MapVisibility[mouseX, mouseY] & (0x1 << this.parent.GameData.HumanPlayerID)) != 0 || this.parent.Var_d806_DebugFlag)
+								if ((this.parent.GameData.MapVisibility[mouseX, mouseY] & (0x1 << this.parent.GameData.HumanPlayerID)) != 0 || this.parent.GlobalPreferences.Debug.DebugMode)
 								{
 									// Instruction address 0x1403:0x09b4, size: 5
 									this.parent.Encyclopedia.DisplayEncyclopediaTopic(EncyclopediaTopicEnum.TerrainType, (int)this.parent.MapManagement.GetTerrainType(mouseX, mouseY));
@@ -502,9 +511,9 @@ namespace OpenCivOne
 				{
 					if (this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(mouseX, mouseY).HasFlag(TerrainImprovementFlagsEnum.City) &&
 						(this.parent.MapManagement.F0_2aea_1369_GetCityOwner(mouseX, mouseY) == this.parent.GameData.HumanPlayerID ||
-							this.parent.Var_d806_DebugFlag))
+							this.parent.GlobalPreferences.Debug.DebugMode))
 					{
-						int cityID = this.parent.Tools.GetCityByLocation(mouseX, mouseY);
+						int cityID = this.parent.MapManagement.GetCityByLocation(mouseX, mouseY);
 
 						// Instruction address 0x1403:0x0b9a, size: 5
 						this.parent.Segment_1ade.F0_1ade_03ea(cityID);
@@ -518,7 +527,7 @@ namespace OpenCivOne
 						int activeUnitID1 = this.parent.MapManagement.F0_2aea_1458_GetCellActiveUnitID(mouseX, mouseY);
 						int playerID1 = this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(mouseX, mouseY);
 
-						if (activeUnitID1 != -1 && this.parent.Var_d806_DebugFlag)
+						if (activeUnitID1 != -1 && this.parent.GlobalPreferences.Debug.DebugMode)
 						{
 							this.parent.ShowDebugDetails.ShowUnitStatus(playerID1, activeUnitID1);
 						}
@@ -641,7 +650,7 @@ namespace OpenCivOne
 						unit.UnitType != UnitTypeEnum.Fighter)
 					{
 						// Instruction address 0x1403:0x0df1, size: 5
-						int cityID = this.parent.Tools.FindNearestCity(unit.Position.X, unit.Position.Y);
+						int cityID = this.parent.MapManagement.FindNearestCity(unit.Position.X, unit.Position.Y);
 
 						if (unit.RemainingMoves != 0)
 						{
@@ -759,7 +768,7 @@ namespace OpenCivOne
 							if (playerID != this.parent.GameData.HumanPlayerID &&
 								this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(unit.Position.X, unit.Position.Y).HasFlag(TerrainImprovementFlagsEnum.City))
 							{
-								unit.HomeCityID = (short)this.parent.Tools.GetCityByLocation(unit.Position.X, unit.Position.Y);
+								unit.HomeCityID = (short)this.parent.MapManagement.GetCityByLocation(unit.Position.X, unit.Position.Y);
 							}
 						}
 						else
@@ -771,7 +780,7 @@ namespace OpenCivOne
 								unit.ClearStatusFlags(UnitStatusEnum.SettlerBuildFortress);
 								unit.SpecialMoves = 0;
 
-								this.parent.UnitManagement.F0_1866_16a9_CenterMap(playerID, unit.Position.X, unit.Position.Y);
+								this.parent.MapManagement.F0_1866_16a9_CenterMap(playerID, unit.Position.X, unit.Position.Y);
 							}
 							else
 							{
@@ -823,7 +832,7 @@ namespace OpenCivOne
 				case 'h':
 					if (unit == null || unitID >= 128) break;
 
-					nearestCityID = this.parent.Tools.FindNearestCity(unit.Position);
+					nearestCityID = this.parent.MapManagement.FindNearestCity(unit.Position);
 
 					if (nearestCityID != -1 && this.parent.MapManagement.GetDistance(unit.Position, this.parent.GameData.Cities[nearestCityID].Position) == 0)
 					{
@@ -864,7 +873,7 @@ namespace OpenCivOne
 						this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(unit.Position.X, unit.Position.Y).HasFlag(TerrainImprovementFlagsEnum.Irrigation))
 					{
 						// Instruction address 0x1403:0x15ce, size: 5
-						this.parent.UnitManagement.F0_1866_16a9_CenterMap(playerID, unit.Position.X, unit.Position.Y);
+						this.parent.MapManagement.F0_1866_16a9_CenterMap(playerID, unit.Position.X, unit.Position.Y);
 
 						if (unit.UnitType != UnitTypeEnum.Settler)
 						{
@@ -884,7 +893,7 @@ namespace OpenCivOne
 						if (irrigatedTerrainType == -1)
 						{
 							// Instruction address 0x1403:0x165e, size: 5
-							this.parent.UnitManagement.F0_1866_16a9_CenterMap(playerID, unit.Position.X, unit.Position.Y);
+							this.parent.MapManagement.F0_1866_16a9_CenterMap(playerID, unit.Position.X, unit.Position.Y);
 							this.parent.Help.F4_0000_03aa_ShowInstantWarningPopup("*NOIRR");
 
 							unit.ClearStatusFlags(UnitStatusEnum.SettlerBuildIrrigation);
@@ -933,7 +942,7 @@ namespace OpenCivOne
 							else
 							{
 								// Instruction address 0x1403:0x16b2, size: 5
-								this.parent.UnitManagement.F0_1866_16a9_CenterMap(playerID, unit.Position.X, unit.Position.Y);
+								this.parent.MapManagement.F0_1866_16a9_CenterMap(playerID, unit.Position.X, unit.Position.Y);
 								// Instruction address 0x1403:0x16be, size: 5
 								this.parent.Help.F4_0000_03aa_ShowInstantWarningPopup("*NOWATER");
 
@@ -951,7 +960,7 @@ namespace OpenCivOne
 						this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(unit.Position.X, unit.Position.Y).HasFlag(TerrainImprovementFlagsEnum.Mines))
 					{
 						// Instruction address 0x1403:0x17fc, size: 5
-						this.parent.UnitManagement.F0_1866_16a9_CenterMap(playerID, unit.Position.X, unit.Position.Y);
+						this.parent.MapManagement.F0_1866_16a9_CenterMap(playerID, unit.Position.X, unit.Position.Y);
 
 						if (unit.UnitType != UnitTypeEnum.Settler)
 						{
@@ -972,7 +981,7 @@ namespace OpenCivOne
 						if (minedTerrainType == -1)
 						{
 							// Instruction address 0x1403:0x188c, size: 5
-							this.parent.UnitManagement.F0_1866_16a9_CenterMap(playerID, unit.Position.X, unit.Position.Y);
+							this.parent.MapManagement.F0_1866_16a9_CenterMap(playerID, unit.Position.X, unit.Position.Y);
 							// Instruction address 0x1403:0x1898, size: 5
 							this.parent.Help.F4_0000_03aa_ShowInstantWarningPopup("*NOMINE");
 
@@ -1048,7 +1057,7 @@ namespace OpenCivOne
 							unit.SpecialMoves = 0;
 
 							// Instruction address 0x1403:0x11e6, size: 5
-							this.parent.UnitManagement.F0_1866_16a9_CenterMap(playerID, unit.Position.X, unit.Position.Y);
+							this.parent.MapManagement.F0_1866_16a9_CenterMap(playerID, unit.Position.X, unit.Position.Y);
 						}
 						else
 						{
@@ -1102,7 +1111,7 @@ namespace OpenCivOne
 							unit.SpecialMoves = 0;
 
 							// Instruction address 0x1403:0x148f, size: 5
-							this.parent.UnitManagement.F0_1866_16a9_CenterMap(playerID, unit.Position.X, unit.Position.Y);
+							this.parent.MapManagement.F0_1866_16a9_CenterMap(playerID, unit.Position.X, unit.Position.Y);
 						}
 						else
 						{
@@ -1363,7 +1372,7 @@ namespace OpenCivOne
 					}
 
 					// Instruction address 0x1403:0x3843, size: 5
-					MessageBox.Show("Leaders randomized", "Game", MessageBoxIcon.Information, MessageBoxButtons.OK);
+					MessageBox.Show("Leader traits are randomized", "Game", MessageBoxIcon.Information, MessageBoxButtons.OK);
 					break;
 
 				// Alt + O - Show Order menu
@@ -1390,12 +1399,17 @@ namespace OpenCivOne
 					}
 					break;
 
-				// Alt + D - Activate / Deactivate debug mode
+				// Alt + D - Activate / Deactivate Debug mode
 				case 0x2000:
-					this.parent.Var_d806_DebugFlag = !this.parent.Var_d806_DebugFlag;
+					this.parent.GlobalPreferences.Debug.DebugMode ^= true;
 
 					// Instruction address 0x1403:0x3506, size: 5
 					this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
+					break;
+
+				// Alt + F - Activate / Deactivate Fast mode
+				case 0x2001:
+					this.parent.GlobalPreferences.Debug.FastMode ^= true;
 					break;
 
 				// Alt + G - Show Game menu
@@ -1438,7 +1452,7 @@ namespace OpenCivOne
 
 				// F1 - City status
 				case 0x3b00:
-					if (this.parent.Var_d806_DebugFlag)
+					if (this.parent.GlobalPreferences.Debug.DebugMode)
 					{
 						this.parent.ShowDebugDetails.ShowMapWithStrategy();
 					}
@@ -1450,7 +1464,7 @@ namespace OpenCivOne
 
 				// F2 - Military Advisor
 				case 0x3c00:
-					if (this.parent.Var_d806_DebugFlag)
+					if (this.parent.GlobalPreferences.Debug.DebugMode)
 					{
 						this.parent.ShowDebugDetails.ShowUnitStatistics();
 					}
@@ -1462,7 +1476,7 @@ namespace OpenCivOne
 
 				// F3 - Intelligence Advisor
 				case 0x3d00:
-					if (this.parent.Var_d806_DebugFlag)
+					if (this.parent.GlobalPreferences.Debug.DebugMode)
 					{
 						// Instruction address 0x1403:0x33ae, size: 5
 						this.parent.Graphics.F0_VGA_06b7_DrawScreenToScreen0WithEffect(2);
@@ -1496,7 +1510,7 @@ namespace OpenCivOne
 
 				// F7 - Wonders of the World
 				case 0x4100:
-					if (this.parent.Var_d806_DebugFlag)
+					if (this.parent.GlobalPreferences.Debug.DebugMode)
 					{
 						for (int i = 1; i < 8; i++)
 						{
@@ -1511,7 +1525,7 @@ namespace OpenCivOne
 
 				// F8 - Top 5 Cities
 				case 0x4200:
-					if (this.parent.Var_d806_DebugFlag)
+					if (this.parent.GlobalPreferences.Debug.DebugMode)
 					{
 						this.parent.Reports.F12_0000_0573_ShowPowerGraphReport();
 						this.parent.Replay.F9_0000_0000();
@@ -1524,7 +1538,7 @@ namespace OpenCivOne
 
 				// F9 - Civilization Score
 				case 0x4300:
-					if (this.parent.Var_d806_DebugFlag)
+					if (this.parent.GlobalPreferences.Debug.DebugMode)
 					{
 						this.parent.Reports.F12_0000_03ac_ShowContinentStatisticReport();
 					}
@@ -1703,7 +1717,7 @@ namespace OpenCivOne
 			if (playerID == this.parent.GameData.HumanPlayerID)
 			{
 				// Instruction address 0x1403:0x3ec1, size: 5
-				this.parent.GameEngine.F0_1238_1bb2_FillRectangleWithShadow(0, 97, 80, 103);
+				this.parent.DrawTools.F0_1238_1bb2_FillRectangleWithShadow(0, 97, 80, 103);
 			}
 		}
 
@@ -1730,7 +1744,7 @@ namespace OpenCivOne
 						if (!terrainImprovements.HasFlag(TerrainImprovementFlagsEnum.City) &&
 							(terrainImprovements.HasFlag(TerrainImprovementFlagsEnum.Mines) || terrainImprovements.HasFlag(TerrainImprovementFlagsEnum.Irrigation)) &&
 							unit.UnitType != UnitTypeEnum.Legion && unit.UnitType != UnitTypeEnum.Knights &&
-							this.parent.GameData.Cities[this.parent.Tools.FindNearestCity(unit.Position.X, unit.Position.Y)].PlayerID == this.parent.GameData.HumanPlayerID)
+							this.parent.GameData.Cities[this.parent.MapManagement.FindNearestCity(unit.Position.X, unit.Position.Y)].PlayerID == this.parent.GameData.HumanPlayerID)
 						{
 							// Instruction address 0x1403:0x1d35, size: 5
 							this.parent.MapManagement.F0_2aea_16ee_ClearTerrainImprovements(unit.Position.X, unit.Position.Y, TerrainImprovementFlagsEnum.Mines | TerrainImprovementFlagsEnum.Irrigation);
@@ -1788,7 +1802,7 @@ namespace OpenCivOne
 						// Diplomat or Caravan unit
 						if (unit.UnitType == UnitTypeEnum.Diplomat || unit.UnitType == UnitTypeEnum.Caravan)
 						{
-							int cityID = this.parent.Tools.GetCityByLocation(newX, newY);
+							int cityID = this.parent.MapManagement.GetCityByLocation(newX, newY);
 
 							if (cityID != -1)
 							{
@@ -1805,7 +1819,7 @@ namespace OpenCivOne
 										unit.VisibleByPlayer |= (ushort)(1 << this.parent.GameData.HumanPlayerID);
 
 										// Instruction address 0x1403:0x1f7f, size: 5
-										this.parent.UnitManagement.F0_1866_16a9_CenterMap(this.parent.GameData.HumanPlayerID,
+										this.parent.MapManagement.F0_1866_16a9_CenterMap(this.parent.GameData.HumanPlayerID,
 											unit.Position.X, unit.Position.Y);
 										// Instruction address 0x1403:0x1f8b, size: 5
 										this.parent.CommonTools.WaitTimer(30);
@@ -1950,7 +1964,7 @@ namespace OpenCivOne
 						if (newActiveUnitPlayerID == this.parent.GameData.HumanPlayerID)
 						{
 							// Instruction address 0x1403:0x23eb, size: 5
-							this.parent.UnitManagement.F0_1866_16a9_CenterMap(this.parent.GameData.HumanPlayerID, newX, newY);
+							this.parent.MapManagement.F0_1866_16a9_CenterMap(this.parent.GameData.HumanPlayerID, newX, newY);
 						}
 
 						newActiveUnitID = this.parent.UnitManagement.F0_1866_1122_GetBestDefenseUnitInStack(newActiveUnitPlayerID, newActiveUnitID);
@@ -1983,7 +1997,7 @@ namespace OpenCivOne
 						if (!newImprovements.HasFlag(TerrainImprovementFlagsEnum.City))
 							return;
 
-						int cityID = this.parent.Tools.GetCityByLocation(newX, newY);
+						int cityID = this.parent.MapManagement.GetCityByLocation(newX, newY);
 
 						if (this.parent.GameData.Cities[cityID].PlayerID != this.parent.GameData.HumanPlayerID)
 						{
@@ -2025,7 +2039,7 @@ namespace OpenCivOne
 
 						if (playerID == this.parent.GameData.HumanPlayerID ||
 							newActiveUnitPlayerID == this.parent.GameData.HumanPlayerID ||
-							this.parent.Var_d806_DebugFlag)
+							this.parent.GlobalPreferences.Debug.DebugMode)
 						{
 							this.parent.GameData.Cities[cityID].VisibleSize = this.parent.GameData.Cities[cityID].ActualSize;
 
@@ -2196,7 +2210,7 @@ namespace OpenCivOne
 					if (playerID == 0 && newTerrainType != TerrainTypeEnum.Water &&
 						(this.parent.GameData.MapVisibility[unit.Position.X, unit.Position.Y] & (0x1 << this.parent.GameData.HumanPlayerID)) != 0 &&
 						(unit.VisibleByPlayer & (0x1 << this.parent.GameData.HumanPlayerID)) == 0 &&
-						this.parent.GameData.Cities[this.parent.Tools.FindNearestCity(unit.Position.X, unit.Position.Y)].PlayerID == this.parent.GameData.HumanPlayerID)
+						this.parent.GameData.Cities[this.parent.MapManagement.FindNearestCity(unit.Position.X, unit.Position.Y)].PlayerID == this.parent.GameData.HumanPlayerID)
 					{
 						unit.VisibleByPlayer |= this.parent.GameData.MapVisibility[unit.Position.X, unit.Position.Y];
 					}
@@ -2218,7 +2232,7 @@ namespace OpenCivOne
 					}
 
 					if ((unit.VisibleByPlayer & (0x1 << this.parent.GameData.HumanPlayerID)) != 0 ||
-						playerID == this.parent.GameData.HumanPlayerID || (this.parent.Var_d806_DebugFlag && playerID != 0))
+						playerID == this.parent.GameData.HumanPlayerID || (this.parent.GlobalPreferences.Debug.DebugMode && playerID != 0))
 					{
 						if (!this.parent.GameData.GameSettingFlags.EnemyMoves && playerID != this.parent.GameData.HumanPlayerID)
 						{
@@ -2228,7 +2242,7 @@ namespace OpenCivOne
 						else
 						{
 							// Instruction address 0x1403:0x2cb3, size: 5
-							this.parent.UnitManagement.F0_1866_16a9_CenterMap(this.parent.GameData.HumanPlayerID, newX, newY);
+							this.parent.MapManagement.F0_1866_16a9_CenterMap(this.parent.GameData.HumanPlayerID, newX, newY);
 							// Instruction address 0x1403:0x2cc4, size: 5
 							this.parent.UnitManagement.F0_1866_1d55_AnimateUnitMove(playerID, unitID, newMoveDirection);
 						}
@@ -2329,7 +2343,7 @@ namespace OpenCivOne
 						unit.VisibleByPlayer |= (ushort)(1 << cityPlayerID1);
 
 						// Instruction address 0x1403:0x303e, size: 5
-						this.parent.Segment_2459.F0_2459_0000_CityTakeover(playerID, this.parent.Tools.GetCityByLocation(newX, newY), false);
+						this.parent.Segment_2459.F0_2459_0000_CityTakeover(playerID, this.parent.MapManagement.GetCityByLocation(newX, newY), false);
 						// Instruction address 0x1403:0x304c, size: 5
 						this.parent.MapManagement.F0_2aea_1511_ActiveUnitSetFlag8(newX, newY);
 					}
@@ -2359,19 +2373,19 @@ namespace OpenCivOne
 					{
 						if ((this.parent.GameData.MapVisibility[newX, newY] & (0x1 << this.parent.GameData.HumanPlayerID)) != 0 &&
 							(unit.VisibleByPlayer & (0x1 << this.parent.GameData.HumanPlayerID)) == 0 &&
-							this.parent.GameData.Cities[this.parent.Tools.FindNearestCity(newX, newY)].PlayerID == this.parent.GameData.HumanPlayerID)
+							this.parent.GameData.Cities[this.parent.MapManagement.FindNearestCity(newX, newY)].PlayerID == this.parent.GameData.HumanPlayerID)
 						{
 							unit.VisibleByPlayer |= this.parent.GameData.MapVisibility[newX, newY];
 						}
 					}
 
 					if ((unit.VisibleByPlayer & (0x1 << this.parent.GameData.HumanPlayerID)) != 0 ||
-						playerID == this.parent.GameData.HumanPlayerID || this.parent.Var_d806_DebugFlag && playerID != 0)
+						playerID == this.parent.GameData.HumanPlayerID || this.parent.GlobalPreferences.Debug.DebugMode && playerID != 0)
 					{
 						if (playerID == this.parent.GameData.HumanPlayerID || this.parent.GameData.GameSettingFlags.EnemyMoves)
 						{
 							// Instruction address 0x1403:0x31e6, size: 5
-							this.parent.UnitManagement.F0_1866_16a9_CenterMap(this.parent.GameData.HumanPlayerID, newX, newY);
+							this.parent.MapManagement.F0_1866_16a9_CenterMap(this.parent.GameData.HumanPlayerID, newX, newY);
 							// Instruction address 0x1403:0x31f4, size: 5
 							this.parent.MapManagement.F0_2aea_0e29_DrawUnit(playerID, unitID);
 
@@ -2426,7 +2440,7 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock("'Fn2'(Cdecl, Far, Return) at 0x3ed7");
 
 			// function body
-			if ((this.parent.GameData.MapVisibility[x, y] & (1 << this.parent.GameData.HumanPlayerID)) != 0 || this.parent.Var_d806_DebugFlag)
+			if ((this.parent.GameData.MapVisibility[x, y] & (1 << this.parent.GameData.HumanPlayerID)) != 0 || this.parent.GlobalPreferences.Debug.DebugMode)
 			{
 				// Instruction address 0x1403:0x3f09, size: 5
 				this.parent.MapManagement.F0_2aea_11d4_DrawCellWithUnit(x, y);
@@ -2499,7 +2513,7 @@ namespace OpenCivOne
 
 			// function body
 			// Instruction address 0x1403:0x407c, size: 5
-			this.parent.GameEngine.F0_1238_1bb2_FillRectangleWithShadow(0, 97, 80, 103);
+			this.parent.DrawTools.F0_1238_1bb2_FillRectangleWithShadow(0, 97, 80, 103);
 
 			if (unitID == 128)
 			{
@@ -2535,7 +2549,7 @@ namespace OpenCivOne
 						y += 8;
 					}
 
-					int Local_e = this.parent.Tools.CheckValueRange(this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves / 3, 0, 99);
+					int Local_e = this.parent.CommonTools.CheckValueRange(this.parent.GameData.Players[playerID].Units[unitID].RemainingMoves / 3, 0, 99);
 					int Local_e1 = Local_e + ((this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].TurnsOutside != 0) ?
 					(this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].MoveCount *
 							this.parent.GameData.Players[playerID].Units[unitID].SpecialMoves) : 0);
@@ -2614,7 +2628,7 @@ namespace OpenCivOne
 					if (this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(this.parent.GameData.Players[playerID].Units[unitID].Position.X,
 						this.parent.GameData.Players[playerID].Units[unitID].Position.Y).HasFlag(TerrainImprovementFlagsEnum.City))
 					{
-						int cityID = this.parent.Tools.GetCityByLocation(
+						int cityID = this.parent.MapManagement.GetCityByLocation(
 							this.parent.GameData.Players[playerID].Units[unitID].Position.X,
 							this.parent.GameData.Players[playerID].Units[unitID].Position.Y);
 

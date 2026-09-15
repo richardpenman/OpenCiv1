@@ -352,8 +352,8 @@ namespace OpenCivOne
 					this.parent.UnitManagement.F0_1866_1380_GetStackUnitCount(destinationPlayerID, destinationUnitID, UnitRoleTypeEnum.SeaTransport) > 0);
 				int goToDistance = map.GetDistance(unit.Position, unit.GoToDestination);
 
-				int startCityID = this.parent.Tools.GetCityByLocation(unit.Position.X, unit.Position.Y);
-				int destinationCityID = this.parent.Tools.GetCityByLocation(unit.GoToDestination.X, unit.GoToDestination.Y);
+				int startCityID = this.parent.MapManagement.GetCityByLocation(unit.Position.X, unit.Position.Y);
+				int destinationCityID = this.parent.MapManagement.GetCityByLocation(unit.GoToDestination.X, unit.GoToDestination.Y);
 
 				// Exception rules
 

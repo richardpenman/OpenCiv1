@@ -75,7 +75,7 @@ namespace OpenCivOne
 			// Instruction address 0x11a8:0x019c, size: 5
 			this.parent.CommonTools.StopGameMainTimer();
 
-			this.parent.Tools.FreeNativeResource(this.parent.Var_6e92_MouseIconHandle, "Mouse icon");
+			this.parent.Graphics.FreeResource(this.parent.Var_6e92_MouseIconHandle, "Mouse icon");
 		}
 
 		/// <summary>
@@ -291,7 +291,7 @@ namespace OpenCivOne
 			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SP257.PIC", 1);
 
 			// Instruction address 0x11a8:0x086f, size: 5
-			this.parent.Tools.AddDefaultPaletteCycleSlots();
+			this.parent.CommonTools.AddDefaultPaletteCycleSlots();
 		}
 	}
 }

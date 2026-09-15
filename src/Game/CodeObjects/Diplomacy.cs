@@ -115,7 +115,7 @@ namespace OpenCivOne
 							this.parent.MeetWithKing.F6_0000_16cd(playerID, -1, 0) == 0)
 						{
 							// Instruction address 0x2517:0x0355, size: 5
-							int helpAmount = this.parent.Tools.CheckValueRange(this.parent.GameData.Players[playerID].Coins / 100, 1, 10) * 50;
+							int helpAmount = this.parent.CommonTools.CheckValueRange(this.parent.GameData.Players[playerID].Coins / 100, 1, 10) * 50;
 
 							// Instruction address 0x2517:0x036d, size: 5
 							this.parent.Array_30b8[1] = this.parent.GameData.Players[i].Nation;

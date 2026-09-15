@@ -247,7 +247,7 @@ namespace OpenCivOne
 						this.parent.GameData.Players[playerID].Units[i].Position.X, this.parent.GameData.Players[playerID].Units[i].Position.Y).HasFlag(TerrainImprovementFlagsEnum.City))
 					{
 						// Instruction address 0x0000:0x0780, size: 5
-						int cityID = this.parent.Tools.GetCityByLocation(
+						int cityID = this.parent.MapManagement.GetCityByLocation(
 							this.parent.GameData.Players[playerID].Units[i].Position.X, this.parent.GameData.Players[playerID].Units[i].Position.Y);
 
 						unitType = this.parent.GameData.Players[playerID].Units[i].UnitType;

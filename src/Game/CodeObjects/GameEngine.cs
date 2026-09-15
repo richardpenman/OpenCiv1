@@ -26,7 +26,7 @@ namespace OpenCivOne
 
 			// function body
 			// Instruction address 0x1238:0x009f, size: 5
-			this.parent.Tools.StartPaletteCycleSlots();
+			this.parent.CommonTools.StartPaletteCycleSlots();
 
 			Player humanPlayer = this.parent.GameData.Players[this.parent.GameData.HumanPlayerID];
 
@@ -252,12 +252,12 @@ namespace OpenCivOne
 				if (this.parent.GameData.Year >= 0)
 				{
 					// Instruction address 0x1238:0x0484, size: 5
-					this.parent.Var_d2de = this.parent.Tools.CheckValueRange(
+					this.parent.Var_d2de = this.parent.CommonTools.CheckValueRange(
 						this.parent.GameData.MaximumTechnologyCount - (this.parent.GameData.TurnCount / 9), 0, 6);
 				}
 
 				// Instruction address 0x1238:0x0493, size: 5
-				int playerPopulation = this.parent.Tools.GetPlayerPopulationCount(this.parent.GameData.HumanPlayerID);
+				int playerPopulation = this.parent.GameEngine.GetPlayerPopulationCount(this.parent.GameData.HumanPlayerID);
 
 				// Instruction address 0x1238:0x04c8, size: 5
 				this.parent.UnitManagement.F0_1866_250e_AddReplayData(11, (byte)humanPlayer.CityCount, (byte)((playerPopulation & 0xff00) >> 8), (byte)(playerPopulation & 0xff));
@@ -490,7 +490,7 @@ namespace OpenCivOne
 						this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(x, y) != -1 ||
 						this.parent.MapManagement.F0_2aea_195d_GetMapGroupSize(x, y) < 16);
 
-					int barbarianUnitCount = this.parent.Tools.CheckValueRange((this.parent.GameData.TurnCount / 150) + 1, 1, 3);
+					int barbarianUnitCount = this.parent.CommonTools.CheckValueRange((this.parent.GameData.TurnCount / 150) + 1, 1, 3);
 
 					// Instruction address 0x1238:0x0a43, size: 5
 					if (this.parent.MapManagement.GetTerrainType(x, y) == TerrainTypeEnum.Water)
@@ -538,7 +538,7 @@ namespace OpenCivOne
 						x = this.parent.GameData.Cities[selectedCityID].Position.X + this.parent.CAPI.RNG.Next(13) - 6;
 						y = this.parent.GameData.Cities[selectedCityID].Position.Y + this.parent.CAPI.RNG.Next(13) - 6;
 
-						selectedCityID = this.parent.Tools.FindNearestCity(x, y);
+						selectedCityID = this.parent.MapManagement.FindNearestCity(x, y);
 
 						int distance = this.parent.MapManagement.GetDistance(x, y, this.parent.GameData.Cities[selectedCityID].Position);
 
@@ -582,7 +582,7 @@ namespace OpenCivOne
 						}
 					
 						// 99 units? Isn't that a little too big, the city would actually be the size of 198 to reach that count. Is that even possible?
-						int barbarianUnitCount = this.parent.Tools.CheckValueRange(this.parent.CAPI.RNG.Next(this.parent.GameData.Cities[selectedCityID].ActualSize / 2), 2, 99);
+						int barbarianUnitCount = this.parent.CommonTools.CheckValueRange(this.parent.CAPI.RNG.Next(this.parent.GameData.Cities[selectedCityID].ActualSize / 2), 2, 99);
 
 						for (int i = 0; i <= barbarianUnitCount; i++)
 						{
@@ -663,7 +663,7 @@ namespace OpenCivOne
 
 				if (this.parent.GameData.TurnCount < 600)
 				{
-					this.parent.GameData.ScoreGraphData[((this.parent.GameData.TurnCount / 4) % 150) * 8 + i] = (byte)this.parent.Tools.CheckValueRange(rankingScores[i] / 8, 0, 255);
+					this.parent.GameData.ScoreGraphData[((this.parent.GameData.TurnCount / 4) % 150) * 8 + i] = (byte)this.parent.CommonTools.CheckValueRange(rankingScores[i] / 8, 0, 255);
 				}
 			
 				int peaceFlags = 0;
@@ -735,33 +735,6 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// Draws the main menu items
-		/// </summary>
-		public void F0_1238_0fea_DrawMainMenu()
-		{
-			//this.oCPU.Log.EnterBlock("F0_1238_0fea()");
-
-			// function body
-			// Instruction address 0x1238:0x0ffd, size: 5
-			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 8, 0);
-
-			// Instruction address 0x1238:0x1015, size: 5
-			this.parent.DrawTools.DrawStringToScreen0("G\x0087AME", 8, 1, 15);
-
-			// Instruction address 0x1238:0x102d, size: 5
-			this.parent.DrawTools.DrawStringToScreen0("O\x0087RDERS", 64, 1, 15);
-
-			// Instruction address 0x1238:0x1045, size: 5
-			this.parent.DrawTools.DrawStringToScreen0("A\x0087DVISORS", 128, 1, 15);
-
-			// Instruction address 0x1238:0x105d, size: 5
-			this.parent.DrawTools.DrawStringToScreen0("W\x0087ORLD", 192, 1, 15);
-
-			// Instruction address 0x1238:0x1075, size: 5
-			this.parent.DrawTools.DrawStringToScreen0("C\x0087IVILOPEDIA", 240, 1, 15);
-		}
-
-		/// <summary>
 		/// Report tax and population values for human player
 		/// </summary>
 		public void F0_1238_107e_ReportHumanTaxAndPopulation()
@@ -770,7 +743,7 @@ namespace OpenCivOne
 
 			// function body			
 			// Instruction address 0x1238:0x109f, size: 3
-			F0_1238_1bb2_FillRectangleWithShadow(0, 58, 80, 39);
+			this.parent.DrawTools.F0_1238_1bb2_FillRectangleWithShadow(0, 58, 80, 39);
 
 			// Instruction address 0x1238:0x10ba, size: 5
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 3, 60, 74, 11, 11);
@@ -778,18 +751,18 @@ namespace OpenCivOne
 			if (this.parent.GameData.PeaceTurnCount > 1)
 			{
 				// Instruction address 0x1238:0x10f3, size: 5
-				this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 3, 60, this.parent.Tools.CheckValueRange(this.parent.GameData.PeaceTurnCount * 2, 0, 60), 2, 15);
+				this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 3, 60, this.parent.CommonTools.CheckValueRange(this.parent.GameData.PeaceTurnCount * 2, 0, 60), 2, 15);
 			}
 
 			// Instruction address 0x1238:0x110c, size: 3
 			F0_1238_14a3_DrawMiniPalace(this.parent.GameData.HumanPlayerID, this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].PalaceBuildCount, 8, 58);
 
-			int populationCount = this.parent.Tools.GetPlayerPopulationCount(this.parent.GameData.HumanPlayerID);
+			int populationCount = this.parent.GameEngine.GetPlayerPopulationCount(this.parent.GameData.HumanPlayerID);
 
 			if (populationCount != 0)
 			{
 				// Instruction address 0x1238:0x1196, size: 5
-				this.parent.DrawTools.DrawStringToScreen0($"{this.parent.Tools.PopulationValueToString(populationCount)}#", 2, 73, 0);
+				this.parent.DrawTools.DrawStringToScreen0($"{this.parent.GameEngine.PopulationValueToString(populationCount)}#", 2, 73, 0);
 			}
 
 			// Instruction address 0x1238:0x11b6, size: 5
@@ -812,13 +785,13 @@ namespace OpenCivOne
 
 			// Instruction address 0x1238:0x1229, size: 5
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19e8_Screen2_Rectangle,
-				(this.parent.Tools.CheckValueRange(researchValue, 0, 3) * 8) + 160, 120, 8, 8, this.parent.Var_aa_Screen0_Rectangle, 48, 80);
+				(this.parent.CommonTools.CheckValueRange(researchValue, 0, 3) * 8) + 160, 120, 8, 8, this.parent.Var_aa_Screen0_Rectangle, 48, 80);
 
 			if (this.parent.GameData.PollutionEffectLevel != 0)
 			{
 				// Instruction address 0x1238:0x1280, size: 5
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19e8_Screen2_Rectangle,
-					(this.parent.Tools.CheckValueRange(this.parent.GameData.PollutionEffectLevel / 4, 0, 3) * 8) + 160, 128, 8, 8, this.parent.Var_aa_Screen0_Rectangle, 56, 80);
+					(this.parent.CommonTools.CheckValueRange(this.parent.GameData.PollutionEffectLevel / 4, 0, 3) * 8) + 160, 128, 8, 8, this.parent.Var_aa_Screen0_Rectangle, 56, 80);
 			}
 
 			// Instruction address 0x1238:0x1382, size: 5
@@ -850,7 +823,7 @@ namespace OpenCivOne
 
 				// Instruction address 0x1238:0x1498, size: 3
 				this.parent.MenuBoxDialog.ShowDialog($"The population of the\n{this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Nationality} " +
-					$"empire now\nexceeds {this.parent.Tools.PopulationValueToString(populationCount)} citizens.\n", 100, 80);
+					$"empire now\nexceeds {this.parent.GameEngine.PopulationValueToString(populationCount)} citizens.\n", 100, 80);
 			}
 		}
 
@@ -894,7 +867,7 @@ namespace OpenCivOne
 				}
 				else
 				{
-					int miniPalaceLevel = this.parent.Tools.CheckValueRange(palaceBuildCount + 3, 3, 36);
+					int miniPalaceLevel = this.parent.CommonTools.CheckValueRange(palaceBuildCount + 3, 3, 36);
 					int miniPalaceThreshold = miniPalaceLevel / 5;
 					int randomValue = playerID * this.parent.GameData.RandomSeed;
 
@@ -964,7 +937,7 @@ namespace OpenCivOne
 						// Instruction address 0x1238:0x16cd, size: 5
 						this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
 							(i * 7) + x, y - 1,
-							this.parent.Array_d21c[palaceTypes[i], this.parent.Tools.CheckValueRange(palaceLevels[i] - 1, 0, 3) * 5 + palaceSection]);
+							this.parent.Array_d21c[palaceTypes[i], this.parent.CommonTools.CheckValueRange(palaceLevels[i] - 1, 0, 3) * 5 + palaceSection]);
 					}
 				}
 			}
@@ -1057,7 +1030,7 @@ namespace OpenCivOne
 			//this.CPU.Log.EnterBlock("F0_1238_1767()");
 
 			// function body
-			this.parent.GameData.PollutionEffectLevel = (short)this.parent.Tools.CheckValueRange(
+			this.parent.GameData.PollutionEffectLevel = (short)this.parent.CommonTools.CheckValueRange(
 				Math.Sign(this.parent.GameData.PollutedSquareCount * 2 - this.parent.GameData.GlobalWarmingCount * 4 - this.parent.GameData.PollutionEffectLevel) +
 					this.parent.GameData.PollutionEffectLevel, 0, 99);
 
@@ -1134,7 +1107,7 @@ namespace OpenCivOne
 								// Instruction address 0x1238:0x1a6f, size: 5
 								this.parent.UnitManagement.F0_1866_250e_AddReplayData(10, (byte)((sbyte)playerID), (byte)((sbyte)wonderID));
 
-								this.parent.GameData.Players[playerID].Coins -= (short)this.parent.Tools.CheckValueRange(this.parent.GameData.Players[playerID].Coins / 3, 0,
+								this.parent.GameData.Players[playerID].Coins -= (short)this.parent.CommonTools.CheckValueRange(this.parent.GameData.Players[playerID].Coins / 3, 0,
 									(10 * this.parent.GameData.Wonders[wonderID].Cost) - this.parent.GameData.Cities[cityID].ShieldsCount);
 
 								// Instruction address 0x1238:0x1b1e, size: 5
@@ -1198,7 +1171,7 @@ namespace OpenCivOne
 
 			// function body
 			// Instruction address 0x1238:0x1b48, size: 5
-			this.parent.Tools.StopPaletteCycleSlots();
+			this.parent.CommonTools.StopPaletteCycleSlots();
 
 			// Instruction address 0x1238:0x1b66, size: 5
 			this.parent.CommonTools.TransformPaletteToColor(5, Color.FromRgb(0, 0, 0));
@@ -1207,84 +1180,13 @@ namespace OpenCivOne
 			this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, this.parent.Var_d4cc_MapViewX, this.parent.Var_d75e_MapViewY);
 
 			// Instruction address 0x1238:0x1b97, size: 3
-			F0_1238_1bb2_FillRectangleWithShadow(0, 97, 80, 103);
+			this.parent.DrawTools.F0_1238_1bb2_FillRectangleWithShadow(0, 97, 80, 103);
 
 			// Instruction address 0x1238:0x1ba3, size: 3
-			F0_1238_1beb_LoadAndApplyDefaultColorPalette();
+			this.parent.CommonTools.LoadAndApplyDefaultColorPalette();
 
 			// Instruction address 0x1238:0x1bac, size: 5
-			this.parent.Tools.StartPaletteCycleSlots();
-		}
-
-		/// <summary>
-		/// Fills given rectangle with pattern and draw a shadow under rectangle
-		/// </summary>
-		/// <param name="xPos"></param>
-		/// <param name="yPos"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		public void F0_1238_1bb2_FillRectangleWithShadow(int xPos, int yPos, int width, int height)
-		{
-			// function body
-			// Instruction address 0x1238:0x1bc1, size: 5
-			this.parent.DrawTools.FillRectangleWithPattern(xPos, yPos, width, height);
-
-			// Instruction address 0x1238:0x1be1, size: 5
-			this.parent.DrawTools.DrawShadowRectangle(xPos, yPos, width - 1, height - 1, 15, 8);
-		}
-
-		/// <summary>
-		/// Loads and applies the default color palette
-		/// </summary>
-		public void F0_1238_1beb_LoadAndApplyDefaultColorPalette()
-		{
-			//this.CPU.Log.EnterBlock("F0_1238_1beb()");
-
-			// function body
-			// Instruction address 0x1238:0x1bfc, size: 5
-			this.parent.Tools.StopPaletteCycleSlots();
-
-			// Combine two palettes
-
-			GovernmentTypeEnum governmentType = this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].GovernmentType;
-
-			/*
-			// Instruction address 0x1238:0x1c52, size: 5
-			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0,
-				$"BACK{('0' + (char)((governmentType == GovernmentTypeEnum.Communist) ? 3 : (int)governmentType / 2))}" +
-					$"{(this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Invention) ? 'M' : 'A')}.PAL", 0xc1d6);
-
-			// Instruction address 0x1238:0x1c62, size: 5
-			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SP256.PAL", 0xc5be);
-
-			// Instruction address 0x1238:0x1c76, size: 5
-			this.parent.CAPI.memcpy(0xc744, 0xc35c, 384); // 384 / 3 = 128; 0xc35c - 0xc1d6 = 0x186 (390); 390 - 6 = 384 / 3 = 128
-
-			// Instruction address 0x1238:0x1c86, size: 5
-			this.parent.CommonTools.TransformPalette(5, 0xc5be);*/
-
-			byte[] palette;
-
-			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0,
-				$"BACK{(char)((int)'0' + ((governmentType == GovernmentTypeEnum.Communist) ? 3 : (int)governmentType / 2))}" +
-					$"{(this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Invention) && 
-						governmentType != GovernmentTypeEnum.Communist ? 'M' : 'A')}.PAL", out palette);
-
-			byte[] palette1;
-
-			// Instruction address 0x1238:0x1c62, size: 5
-			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SP256.PAL", out palette1);
-
-			for (int i = 6; i < 6 + (128 * 3); i++)
-			{
-				palette[i] = palette1[i];
-			}
-
-			// Instruction address 0x1238:0x1c86, size: 5
-			this.parent.CommonTools.TransformPalette(5, palette);
-			
-			// Instruction address 0x1238:0x1c8e, size: 5
-			this.parent.Tools.StartPaletteCycleSlots();
+			this.parent.CommonTools.StartPaletteCycleSlots();
 		}
 
 		/// <summary>
@@ -1390,6 +1292,42 @@ namespace OpenCivOne
 					}
 				}
 			}
+		}
+
+		/// <summary>
+		/// Get a sum of total population count for a given player
+		/// </summary>
+		/// <param name="playerID"></param>
+		/// <returns></returns>
+		public int GetPlayerPopulationCount(int playerID)
+		{
+			//this.oCPU.Log.EnterBlock($"F0_2dc4_02cd({playerID})");
+
+			// function body
+			int population = 0;
+
+			for (int i = 0; i < 128; i++)
+			{
+				if (this.parent.GameData.Cities[i].PlayerID == playerID && this.parent.GameData.Cities[i].Status != CityStatusEnum.Invalid)
+				{
+					for (int j = 1; j <= this.parent.GameData.Cities[i].ActualSize; j++)
+					{
+						population += j;
+					}
+				}
+			}
+
+			return population;
+		}
+
+		/// <summary>
+		/// Converts population value to string
+		/// </summary>
+		/// <param name="value"></param>
+		public string PopulationValueToString(int value)
+		{
+			// function body
+			return $"{(value * 1000):###,###,##0}";
 		}
 	}
 }

@@ -21,12 +21,23 @@ namespace OpenCivOne
 		private int transformValue = 0;
 		private int transformCount = 0;
 		private TransformColor[] transformColors = new TransformColor[0];
+		private bool paletteCycleEnabled = false;
 
 		public CommonTools(OpenCivOneGame parent)
 		{
 			this.parent = parent;
 			this.CPU = parent.CPU;
 			this.graphics = parent.Graphics;
+		}
+
+		/// <summary>
+		/// Randomizes a default Random Number Generator
+		/// </summary>
+		public void RandomizeRNG()
+		{
+			// function body
+			this.parent.GameData.RandomSeed = (ushort)(this.parent.CAPI.time(0) & 0x7fff);
+			this.parent.CAPI.srand(this.parent.GameData.RandomSeed);
 		}
 
 		/// <summary>
@@ -180,7 +191,151 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// Loads and applies the default color palette
+		/// </summary>
+		public void LoadAndApplyDefaultColorPalette()
+		{
+			//this.CPU.Log.EnterBlock("F0_1238_1beb()");
+
+			// function body
+			// Instruction address 0x1238:0x1bfc, size: 5
+			StopPaletteCycleSlots();
+
+			// Combine two palettes
+
+			GovernmentTypeEnum governmentType = this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].GovernmentType;
+
+			/*
+			// Instruction address 0x1238:0x1c52, size: 5
+			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0,
+				$"BACK{('0' + (char)((governmentType == GovernmentTypeEnum.Communist) ? 3 : (int)governmentType / 2))}" +
+					$"{(this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Invention) ? 'M' : 'A')}.PAL", 0xc1d6);
+
+			// Instruction address 0x1238:0x1c62, size: 5
+			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SP256.PAL", 0xc5be);
+
+			// Instruction address 0x1238:0x1c76, size: 5
+			this.parent.CAPI.memcpy(0xc744, 0xc35c, 384); // 384 / 3 = 128; 0xc35c - 0xc1d6 = 0x186 (390); 390 - 6 = 384 / 3 = 128
+
+			// Instruction address 0x1238:0x1c86, size: 5
+			this.parent.CommonTools.TransformPalette(5, 0xc5be);*/
+
+			byte[] palette;
+
+			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0,
+				$"BACK{(char)((int)'0' + ((governmentType == GovernmentTypeEnum.Communist) ? 3 : (int)governmentType / 2))}" +
+					$"{(this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Invention) &&
+						governmentType != GovernmentTypeEnum.Communist ? 'M' : 'A')}.PAL", out palette);
+
+			byte[] palette1;
+
+			// Instruction address 0x1238:0x1c62, size: 5
+			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SP256.PAL", out palette1);
+
+			for (int i = 6; i < 6 + (128 * 3); i++)
+			{
+				palette[i] = palette1[i];
+			}
+
+			// Instruction address 0x1238:0x1c86, size: 5
+			this.parent.CommonTools.TransformPalette(5, palette);
+
+			// Instruction address 0x1238:0x1c8e, size: 5
+			StartPaletteCycleSlots();
+		}
+
+		/// <summary>
+		/// Reads the palette from file and applies it to screen 0
+		/// </summary>
+		/// <param name="filenamePtr"></param>
+		public void ReadAndSetPalette(string filename)
+		{
+			//this.oCPU.Log.EnterBlock($"F0_2dc4_047d_ReadAndSetPalette(0x{filename:x4})");
+
+			// function body
+			byte[] palette;
+
+			// Instruction address 0x2dc4:0x0492, size: 5
+			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, filename, out palette);
+
+			// 0xbdf4 - 0xbdee = 6
+
+			for (int i = 0; i < 48; i++)
+			{
+				palette[6 + i] = this.parent.Var_6b34[i];
+			}
+
+			// Instruction address 0x2dc4:0x04b9, size: 5
+			this.parent.Graphics.F0_VGA_0162_SetColorsFromColorStruct(palette);
+
+			// Instruction address 0x2dc4:0x04d2, size: 3
+			this.parent.Graphics.SetPaletteColor(45, GBitmap.Color18ToColor(51, 39, 25));
+		}
+
+		/// <summary>
+		/// Adds a default palette cycle slots
+		/// </summary>
+		public void AddDefaultPaletteCycleSlots()
+		{
+			//this.oCPU.Log.EnterBlock("F0_2dc4_05dd()");
+
+			// function body
+			// Instruction address 0x2dc4:0x05ed, size: 5
+			this.parent.CommonTools.AddPaletteCycleSlot(1, 15, 96, 103);
+
+			// Instruction address 0x2dc4:0x0605, size: 5
+			this.parent.CommonTools.AddPaletteCycleSlot(2, 15, 104, 111);
+
+			// Instruction address 0x2dc4:0x061d, size: 5
+			this.parent.CommonTools.AddPaletteCycleSlot(3, 15, 112, 127);
+		}
+
+		/// <summary>
+		/// Starts default palette cycle slots
+		/// </summary>
+		public void StartPaletteCycleSlots()
+		{
+			// function body
+			if (!this.paletteCycleEnabled)
+			{
+				// Instruction address 0x2dc4:0x0638, size: 5
+				this.parent.CommonTools.StartPaletteCycleSlot(1);
+
+				// Instruction address 0x2dc4:0x0644, size: 5
+				this.parent.CommonTools.StartPaletteCycleSlot(2);
+
+				// Instruction address 0x2dc4:0x0650, size: 5
+				this.parent.CommonTools.StartPaletteCycleSlot(3);
+			}
+
+			this.paletteCycleEnabled = true;
+		}
+
+		/// <summary>
+		/// Stops default palette cycle slots
+		/// </summary>
+		public void StopPaletteCycleSlots()
+		{
+			//this.oCPU.Log.EnterBlock("F0_2dc4_065f()");
+
+			// function body
+			if (this.paletteCycleEnabled)
+			{
+				// Instruction address 0x2dc4:0x0671, size: 5
+				this.parent.CommonTools.StopPaletteCycleSlot(1);
+
+				// Instruction address 0x2dc4:0x067d, size: 5
+				this.parent.CommonTools.StopPaletteCycleSlot(2);
+
+				// Instruction address 0x2dc4:0x0689, size: 5
+				this.parent.CommonTools.StopPaletteCycleSlot(3);
+			}
+
+			this.paletteCycleEnabled = false;
+		}
+
+		/// <summary>
+		/// Adds a new palette cycle slot
 		/// </summary>
 		/// <param name="index"></param>
 		/// <param name="speed"></param>
@@ -246,7 +401,7 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// Starts referenced palette cycle slot
 		/// </summary>
 		/// <param name="index"></param>
 		public void StartPaletteCycleSlot(int index)
@@ -273,7 +428,7 @@ namespace OpenCivOne
 		}
 
 		/// <summary>
-		/// ?
+		/// Stops referenced palette cycle slot
 		/// </summary>
 		/// <param name="index"></param>
 		public void StopPaletteCycleSlot(int index)
@@ -588,6 +743,28 @@ namespace OpenCivOne
 			}
 
 			while (this.parent.GetMouseEvent().Buttons != MouseButtonsEnum.None) { Thread.Sleep(1); }
+		}
+
+		/// <summary>
+		/// Check and adjusts value to given range
+		/// </summary>
+		/// <param name="value"></param>
+		/// <param name="minValue"></param>
+		/// <param name="maxValue"></param>
+		/// <returns></returns>
+		/// <exception cref="Exception"></exception>
+		public int CheckValueRange(int value, int minValue, int maxValue)
+		{
+			// function body
+			if (minValue > maxValue)
+			{
+				// do nothing, just return minimum value
+				//this.parent.Log.WriteLine($"CheckValueRange({value}, {minValue}, {maxValue}), Minimum value is greater than maximum value.");
+				//return minValue;
+				throw new Exception("Minimum value is greater than maximum value");
+			}
+
+			return Math.Min(Math.Max(value, minValue), maxValue);
 		}
 
 		/// <summary>

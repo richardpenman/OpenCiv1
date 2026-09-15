@@ -7,7 +7,6 @@ namespace OpenCivOne
 	{
 		private OpenCivOneGame parent;
 
-		private bool loadingGame = false;
 		private int gameIndex = 0;
 
 		public LoadAndSave(OpenCivOneGame parent)
@@ -152,12 +151,10 @@ namespace OpenCivOne
 			//this.CPU.Log.EnterBlock($"F11_0000_036a({autoSave})");
 
 			// function body
-			this.loadingGame = false;
-
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 15);
 
 			// Instruction address 0x0000:0x03d3, size: 5
-			this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = this.parent.Tools.CheckValueRange(this.gameIndex, 0, 3);
+			this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = this.parent.CommonTools.CheckValueRange(this.gameIndex, 0, 3);
 
 			if (!autoSave)
 			{

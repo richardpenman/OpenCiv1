@@ -135,6 +135,7 @@ MicroProse and its successors never released the original source code which rema
 <b>A:</b> Yes, these are additional keyboard shortcuts that you can use during the game:
 <ul>
 <li>Alt + D - Enable / Disable the <b>Debug mode</b> (previously, Shift-56)</li>
+<li>Alt + F - Enable / Disable Fast mode (no animations, palette transitions and delays)</li>
 <li>Alt + P - Pause / Resume game</li>
 <li>Alt + 1 - Show / Hide Screen 1</li>
 <li>Alt + 2 - Show / Hide Screen 2</li>

@@ -93,7 +93,7 @@ namespace OpenCivOne
 				}
 			}
 
-			int unitThreshold = this.parent.Tools.CheckValueRange(this.parent.GameData.Players[playerID].UnitCount / 8, 3, 99);
+			int unitThreshold = this.parent.CommonTools.CheckValueRange(this.parent.GameData.Players[playerID].UnitCount / 8, 3, 99);
 			this.parent.GameData.Players[playerID].TotalCitySize = 0;
 			this.parent.GameData.Players[playerID].CityCount = 0;
 
@@ -607,11 +607,11 @@ namespace OpenCivOne
 
 				bool isUnitNear = this.parent.UnitManagement.F0_1866_1725_IsUnitNear(playerID, unit.Position.X, unit.Position.Y);
 
-				int nearestCityID = this.parent.Tools.FindNearestCity(unitX, unitY);
+				int nearestCityID = this.parent.MapManagement.FindNearestCity(unitX, unitY);
 				int nearestCityDistance = (nearestCityID != -1) ? 
 					this.parent.MapManagement.GetDistance(unitX, unitY, this.parent.GameData.Cities[nearestCityID].Position) : int.MaxValue;
 
-				int nearestUnitID = this.parent.Tools.FindNearestPlayerUnit(playerID, unitID, unitX, unitY);
+				int nearestUnitID = this.parent.UnitManagement.FindNearestPlayerUnit(playerID, unitID, unitX, unitY);
 				int nearestUnitDistance = (nearestUnitID == -1) ? int.MaxValue : this.parent.MapManagement.GetDistance(unitX, unitY, this.parent.GameData.Players[playerID].Units[nearestUnitID].Position);
 
 				TerrainTypeEnum terrainType = this.parent.MapManagement.GetTerrainType(unitX, unitY);
@@ -1811,7 +1811,7 @@ namespace OpenCivOne
 										if (unit.RemainingMoves < 3)
 										{
 											actionScore = (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(playerID, unitID, UnitStackValueTypeEnum.DefenseStrength) * actionScore) /
-												this.parent.Tools.CheckValueRange(this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(playerID, unitID, UnitStackValueTypeEnum.AttackStrength), 1, 99);
+												this.parent.CommonTools.CheckValueRange(this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(playerID, unitID, UnitStackValueTypeEnum.AttackStrength), 1, 99);
 										}
 									}
 
@@ -2191,7 +2191,7 @@ namespace OpenCivOne
 				}
 
 				// Instruction address 0x25fb:0x36df, size: 5
-				nearestCityID = this.parent.Tools.FindNearestCity(unitX, unitY);
+				nearestCityID = this.parent.MapManagement.FindNearestCity(unitX, unitY);
 				nearestCityDistance = this.parent.MapManagement.GetDistance(unit.Position, this.parent.GameData.Cities[nearestCityID].Position);
 
 				for (int i = 1; i < 9; i++)
@@ -2213,13 +2213,13 @@ namespace OpenCivOne
 							unit.VisibleByPlayer |= (ushort)(1 << this.parent.GameData.HumanPlayerID);
 
 							// Instruction address 0x25fb:0x3813, size: 5
-							this.parent.UnitManagement.F0_1866_16a9_CenterMap(this.parent.GameData.HumanPlayerID, newX, newY);
+							this.parent.MapManagement.F0_1866_16a9_CenterMap(this.parent.GameData.HumanPlayerID, newX, newY);
 
 							this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DefenseMinisterReport;
 
 							// Instruction address 0x25fb:0x3867, size: 5
 							this.parent.MenuBoxDialog.ShowDialog("Barbarian raiding party\nlands near " +
-								$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(this.parent.Tools.FindNearestCity(newX, newY))}!\nCitizens are alarmed.\n", 100, 32);
+								$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(this.parent.MapManagement.FindNearestCity(newX, newY))}!\nCitizens are alarmed.\n", 100, 32);
 						}
 
 						unit.VisibleByPlayer |= this.parent.GameData.MapVisibility[newX, newY];
@@ -2269,7 +2269,7 @@ namespace OpenCivOne
 				}
 			}
 
-			nearestCityID = this.parent.Tools.FindNearestCity(unitX, unitY);
+			nearestCityID = this.parent.MapManagement.FindNearestCity(unitX, unitY);
 			nearestCityDistance = this.parent.MapManagement.GetDistance(unit.Position, this.parent.GameData.Cities[nearestCityID].Position);
 			// The algorithm for distance has been contained within FindNearestCity and FindNearestPlayerUnit, so there was a confusion
 			// Perhaps we don't need this at all
@@ -2352,7 +2352,8 @@ namespace OpenCivOne
 				else
 				{
 					// Instruction address 0x25fb:0x3b55, size: 5
-					int playerUnitID = this.parent.Tools.FindNearestPlayerUnit(playerID, unitID, unitX, unitY);
+					int playerUnitID = this.parent.UnitManagement.FindNearestPlayerUnit(playerID, unitID, unitX, unitY);
+
 					if (playerUnitID != -1)
 					{
 						int nearestUnitDistance = this.parent.MapManagement.GetDistance(unit.Position,

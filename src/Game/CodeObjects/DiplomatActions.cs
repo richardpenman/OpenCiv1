@@ -351,7 +351,7 @@ namespace OpenCivOne
 
 					this.parent.GameData.Players[diplomatPlayerID].Coins -= (short)actionCost;
 
-					if (this.parent.Var_d806_DebugFlag || destinationPlayerID == this.parent.GameData.HumanPlayerID)
+					if (this.parent.GlobalPreferences.Debug.DebugMode || destinationPlayerID == this.parent.GameData.HumanPlayerID)
 					{
 						// Instruction address 0x0000:0x0948, size: 5
 						this.parent.MapManagement.F0_2aea_11d4_DrawCellWithUnit(this.parent.GameData.Players[destinationPlayerID].Units[destinationUnitID].Position.X,

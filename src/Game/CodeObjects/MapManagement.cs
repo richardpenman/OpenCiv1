@@ -92,7 +92,38 @@ namespace OpenCivOne
 		}
 		#endregion
 
-		#region Screen drawing functions
+		#region Map drawing functions
+		/// <summary>
+		/// Center map according to given position
+		/// </summary>
+		/// <param name="playerID"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		public void F0_1866_16a9_CenterMap(int playerID, int x, int y)
+		{
+			//this.oCPU.Log.EnterBlock($"F0_1866_16a9({playerID}, {x}, {y})");
+
+			// function body
+			bool flag = false;
+
+			if (x < 16 && this.parent.Var_d4cc_MapViewX > 64)
+			{
+				x += 80;
+			}
+
+			if (x < this.parent.Var_d4cc_MapViewX + 2 || x > this.parent.Var_d4cc_MapViewX + 13 ||
+				y < this.parent.Var_d75e_MapViewY + 2 || y > this.parent.Var_d75e_MapViewY + 9)
+			{
+				flag = true;
+			}
+
+			if (flag)
+			{
+				// Instruction address 0x1866:0x1719, size: 5
+				this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(playerID, this.parent.MapManagement.AdjustXPosition(x - 8), y - 6);
+			}
+		}
+
 		/// <summary>
 		/// Draws visible Map to screen
 		/// </summary>
@@ -106,11 +137,11 @@ namespace OpenCivOne
 			// function body
 			this.parent.Var_1ae0 = 0;
 
-			this.parent.GameEngine.F0_1238_0fea_DrawMainMenu();
+			this.parent.Menus.F0_1238_0fea_DrawMainMenu();
 			this.parent.GameEngine.F0_1238_107e_ReportHumanTaxAndPopulation();
 
 			this.parent.Var_d4cc_MapViewX = this.parent.MapManagement.AdjustXPosition(x);
-			this.parent.Var_d75e_MapViewY = this.parent.Tools.CheckValueRange(y, 0, 38);
+			this.parent.Var_d75e_MapViewY = this.parent.CommonTools.CheckValueRange(y, 0, 38);
 
 			// Another error, the code modified first parameter (playerID) to a
 			// Visibility Mask and that conflicts with other code which expects playerID.
@@ -129,7 +160,7 @@ namespace OpenCivOne
 
 				if (cellXPos < 15 && cellYPos < 12)
 				{
-					if (this.parent.Var_d806_DebugFlag ||
+					if (this.parent.GlobalPreferences.Debug.DebugMode ||
 						(this.parent.GameData.MapVisibility[this.parent.MapManagement.AdjustXPosition(this.parent.Var_d4cc_MapViewX + cellXPos),
 							this.parent.Var_d75e_MapViewY + cellYPos] & mapPlayerVisibilityMask) != 0)
 					{
@@ -157,7 +188,7 @@ namespace OpenCivOne
 					int mapX = this.parent.MapManagement.AdjustXPosition(this.parent.Var_d4cc_MapViewX + i);
 					int mapY = this.parent.Var_d75e_MapViewY + j;
 
-					if (this.parent.Var_d806_DebugFlag || (this.parent.GameData.MapVisibility[mapX, mapY] & mapPlayerVisibilityMask) != 0)
+					if (this.parent.GlobalPreferences.Debug.DebugMode || (this.parent.GameData.MapVisibility[mapX, mapY] & mapPlayerVisibilityMask) != 0)
 					{
 						// Instruction address 0x2aea:0x0122, size: 3
 						F0_2aea_11d4_DrawCellWithUnit(mapX, mapY);
@@ -183,7 +214,7 @@ namespace OpenCivOne
 				// Instruction address 0x2aea:0x018d, size: 5
 				this.parent.DrawTools.DrawStringWithShadow(
 					this.parent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityInfo.CityID), 327 - cityInfo.ScreenPos.X),
-					this.parent.Tools.CheckValueRange(cityInfo.ScreenPos.X - 8, 80, 999), cityInfo.ScreenPos.Y + 16, 11);
+					this.parent.CommonTools.CheckValueRange(cityInfo.ScreenPos.X - 8, 80, 999), cityInfo.ScreenPos.Y + 16, 11);
 			}
 
 			int xMap = x - 32;
@@ -233,7 +264,7 @@ namespace OpenCivOne
 			// Instruction address 0x2aea:0x0233, size: 5
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 8, 80, 50, 0);
 
-			if (this.parent.Var_d806_DebugFlag)
+			if (this.parent.GlobalPreferences.Debug.DebugMode)
 			{
 				this.parent.Graphics.DrawBitmapToScreen(this.gameData.Map, mapXSrc, mapYSrc, mapXDst, mapYDst,
 					this.parent.Var_aa_Screen0_Rectangle, 0, mapYOffset + 8);
@@ -310,7 +341,7 @@ namespace OpenCivOne
 				TerrainTypeEnum terrainType = GetTerrainType(x, y);
 				TerrainImprovementFlagsEnum terrainImprovements = F0_2aea_15c1_GetTerrainImprovements(x, y);
 
-				if (this.parent.Var_d806_DebugFlag)
+				if (this.parent.GlobalPreferences.Debug.DebugMode)
 				{
 					// Instruction address 0x2aea:0x04a3, size: 3
 					terrainImprovements = F0_2aea_1585_GetVisibleTerrainImprovements(x, y);
@@ -558,7 +589,7 @@ namespace OpenCivOne
 					this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, scrX, scrY, this.parent.Array_d4ce[30]);
 				}
 
-				if (!this.parent.Var_d806_DebugFlag)
+				if (!this.parent.GlobalPreferences.Debug.DebugMode)
 				{
 					// Draw fog of war borders
 
@@ -584,14 +615,14 @@ namespace OpenCivOne
 					// Draw city
 
 					// Instruction address 0x2aea:0x0c09, size: 5
-					int cityID = this.parent.Tools.GetCityByLocation(x, y);
+					int cityID = this.parent.MapManagement.GetCityByLocation(x, y);
 
 					if (cityID != -1)
 					{
 						// Draw city white borders at the left and bottom sides
 						City city = this.parent.GameData.Cities[cityID];
 
-						if (city.PlayerID == this.parent.GameData.HumanPlayerID || city.VisibleSize > 0 || this.parent.Var_d806_DebugFlag)
+						if (city.PlayerID == this.parent.GameData.HumanPlayerID || city.VisibleSize > 0 || this.parent.GlobalPreferences.Debug.DebugMode)
 						{
 							// Instruction address 0x2aea:0x0c4b, size: 5
 							this.parent.DrawTools.DrawRectangle(scrX + 1, scrY + 1, 13, 13, 15);
@@ -618,7 +649,7 @@ namespace OpenCivOne
 							this.parent.Graphics.F0_VGA_009a_ReplaceColor(this.parent.Var_aa_Screen0_Rectangle, scrX + 2, scrY + 2, 12, 12, 5,
 								this.parent.Array_1956[city.PlayerID]);
 
-							int citySize = (city.PlayerID == this.parent.GameData.HumanPlayerID || this.parent.Var_d806_DebugFlag) ?
+							int citySize = (city.PlayerID == this.parent.GameData.HumanPlayerID || this.parent.GlobalPreferences.Debug.DebugMode) ?
 									city.ActualSize : city.VisibleSize;
 
 							if ((city.Status & CityStatusEnum.CivilDisorder) != CityStatusEnum.None)
@@ -804,7 +835,7 @@ namespace OpenCivOne
 				{
 					int playerID = F0_2aea_14e0_GetCellActiveUnitPlayerID(x, y);
 
-					if (this.parent.Var_d806_DebugFlag || playerID == this.parent.GameData.HumanPlayerID ||
+					if (this.parent.GlobalPreferences.Debug.DebugMode || playerID == this.parent.GameData.HumanPlayerID ||
 						(this.parent.GameData.Players[playerID].Units[unitID].VisibleByPlayer & (0x1 << this.parent.GameData.HumanPlayerID)) != 0)
 					{
 						// Instruction address 0x2aea:0x123e, size: 3
@@ -1625,6 +1656,74 @@ namespace OpenCivOne
 			}
 
 			return directionIndex;
+		}
+
+		/// <summary>
+		/// Tests if city is present at given coordinates
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns>City ID, otherwise -1</returns>
+		public int GetCityByLocation(int x, int y)
+		{
+			//this.oCPU.Log.EnterBlock($"F0_2dc4_00ba({x}, {y})");
+
+			// function body
+			for (int i = 0; i < 128; i++)
+			{
+				City city = this.parent.GameData.Cities[i];
+
+				if (city.Status != CityStatusEnum.Invalid && city.Position.X == x && city.Position.Y == y)
+				{
+					return i;
+				}
+			}
+
+			return -1;
+		}
+
+		/// <summary>
+		/// Finds a nearest city
+		/// </summary>
+		/// <param name="pt"></param>
+		/// <returns></returns>
+		public int FindNearestCity(GPoint pt)
+		{
+			return FindNearestCity(pt.X, pt.Y);
+		}
+
+		/// <summary>
+		/// Finds a nearest city
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
+		public int FindNearestCity(int x, int y)
+		{
+			//this.oCPU.Log.EnterBlock($"F0_2dc4_0102({xPos}, {yPos})");
+
+			// function body
+			int minDistance = 999;
+			int cityID = -1;
+
+			for (int i = 0; i < 128; i++)
+			{
+				City city = this.parent.GameData.Cities[i];
+
+				if (city.Status != CityStatusEnum.Invalid)
+				{
+					// Instruction address 0x2dc4:0x0142, size: 3
+					int distance = this.parent.MapManagement.GetDistance(x, y, city.Position);
+
+					if (distance < minDistance)
+					{
+						minDistance = distance;
+						cityID = i;
+					}
+				}
+			}
+
+			return cityID;
 		}
 		#endregion
 
