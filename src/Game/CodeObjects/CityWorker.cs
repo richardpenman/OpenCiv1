@@ -957,7 +957,7 @@ namespace OpenCivOne
 
 									// Instruction address 0x1d12:0x1dbe, size: 5
 									if (this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID && 
-										this.parent.GameData.GameSettingFlags.Animations && 
+										this.parent.GameData.GameSettingFlags.Animations && !this.parent.GlobalPreferences.Debug.FastMode &&
 										(newShields <= 21 || newShields > 24) && (city.Status & CityStatusEnum.AutoProduction) == CityStatusEnum.None && newShields != 1)
 									{
 										this.parent.CityView.F19_0000_0000_ShowCityLayout(cityID, newShields,
@@ -3138,7 +3138,8 @@ namespace OpenCivOne
 								// Instruction address 0x1d12:0x5d3b, size: 5
 								this.parent.CommonTools.PlayTune(36, 0);
 
-								if (this.parent.GameData.GameSettingFlags.Animations && (city.Status & CityStatusEnum.CivilDisorder) == CityStatusEnum.None && this.parent.Var_6b92 == 0)
+								if (this.parent.GameData.GameSettingFlags.Animations && !this.parent.GlobalPreferences.Debug.FastMode &&
+									(city.Status & CityStatusEnum.CivilDisorder) == CityStatusEnum.None && this.parent.Var_6b92 == 0)
 								{
 									this.parent.CityView.F19_0000_0000_ShowCityLayout(cityID, -2,
 										$"Civil Disorder in\n{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}! Mayor\nflees in panic.\n");
@@ -3267,7 +3268,7 @@ namespace OpenCivOne
 										// Instruction address 0x1d12:0x6143, size: 5
 										this.parent.CommonTools.PlayTune(34, 0);
 
-										if (this.parent.GameData.GameSettingFlags.Animations)
+										if (this.parent.GameData.GameSettingFlags.Animations && !this.parent.GlobalPreferences.Debug.FastMode)
 										{
 											this.parent.CityView.F19_0000_0000_ShowCityLayout(cityID, -2,
 												$"'We love the {this.parent.Array_19b2_GovernmentTypeNames[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType]}'\n" +

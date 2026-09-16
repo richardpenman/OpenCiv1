@@ -2358,7 +2358,7 @@ namespace OpenCivOne
 			
 			if (this.oParent.Var_deba <= 3) goto L16f1;
 
-			if (!this.oParent.GameData.GameSettingFlags.Animations) goto L16f1;
+			if (!this.oParent.GameData.GameSettingFlags.Animations || this.oParent.GlobalPreferences.Debug.FastMode) goto L16f1;
 
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x42), 0x1);
 

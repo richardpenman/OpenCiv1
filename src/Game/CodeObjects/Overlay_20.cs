@@ -374,7 +374,7 @@ namespace OpenCivOne
 		L0456:
 			if (playerID != this.oParent.GameData.HumanPlayerID) goto L0499;
 
-			if (!this.oParent.GameData.GameSettingFlags.Animations) goto L0484;
+			if (!this.oParent.GameData.GameSettingFlags.Animations || this.oParent.GlobalPreferences.Debug.FastMode) goto L0484;
 			
 			this.oParent.Animations.F22_0000_0eaf_FoundNewCityAnimation(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)));
 

@@ -153,7 +153,7 @@ namespace OpenCivOne
 				// Instruction address 0x2459:0x035d, size: 5
 				this.parent.CommonTools.PlayTune(this.parent.GameData.Nations[this.parent.GameData.Players[playerID].NationalityID].ShortTune, 0);
 
-				if (this.parent.GameData.GameSettingFlags.Animations)
+				if (this.parent.GameData.GameSettingFlags.Animations && !this.parent.GlobalPreferences.Debug.FastMode)
 				{
 					this.parent.CityView.F19_0000_0000_ShowCityLayout(cityID, -2,
 						$"{this.parent.GameData.Players[playerID].Nation} capture\n{F0_2459_08c6_GetCityName(cityID)}. " +
