@@ -518,17 +518,15 @@ namespace OpenCivOne
 				}
 
 				// Instruction address 0x1866:0x0c00, size: 5
-				if (this.parent.CAPI.kbhit() != 0 || (this.parent.HasNewMouseEvent() && this.parent.PeekMouseEvent().Buttons != MouseButtonsEnum.None))
-				{
-					// Instruction address 0x1866:0x0c12, size: 5
-					//this.parent.CommonTools.WaitTimer(1);
-				}
-				else
+				if (this.parent.CAPI.kbhit() == 0 && (!this.parent.HasNewMouseEvent() || this.parent.PeekMouseEvent().Buttons == MouseButtonsEnum.None))
 				{
 					if (this.parent.GlobalPreferences.Debug.FastMode)
 					{
 						// unit blinks faster if fast mode is activated
-						this.parent.CommonTools.WaitTimer(6);
+						for (int i = 0; i < 7 && this.parent.CAPI.kbhit() == 0 && (!this.parent.HasNewMouseEvent() || this.parent.PeekMouseEvent().Buttons == MouseButtonsEnum.None); i++)
+						{
+							this.parent.CommonTools.WaitTimer(1);
+						}
 					}
 					else
 					{
@@ -570,17 +568,15 @@ namespace OpenCivOne
 				}
 
 				// Instruction address 0x1866:0x0cbe, size: 5
-				if (this.parent.CAPI.kbhit() != 0 || (this.parent.HasNewMouseEvent() && this.parent.PeekMouseEvent().Buttons != MouseButtonsEnum.None))
-				{
-					// Instruction address 0x1866:0x0cd0, size: 5
-					//this.parent.CommonTools.WaitTimer(1);
-				}
-				else
+				if (this.parent.CAPI.kbhit() == 0 && (!this.parent.HasNewMouseEvent() || this.parent.PeekMouseEvent().Buttons == MouseButtonsEnum.None))
 				{
 					if (this.parent.GlobalPreferences.Debug.FastMode)
 					{
 						// unit blinks faster if fast mode is activated
-						this.parent.CommonTools.WaitTimer(6);
+						for (int i = 0; i < 7 && this.parent.CAPI.kbhit() == 0 && (!this.parent.HasNewMouseEvent() || this.parent.PeekMouseEvent().Buttons == MouseButtonsEnum.None); i++)
+						{
+							this.parent.CommonTools.WaitTimer(1);
+						}
 					}
 					else
 					{
@@ -1795,7 +1791,7 @@ namespace OpenCivOne
 							this.parent.Array_d4ce[64 + (int)this.parent.GameData.Players[playerID].Units[unitID].UnitType + (playerID * 32)]);
 
 						// Instruction address 0x1866:0x1f16, size: 5
-						this.parent.CommonTools.WaitTimer(0.5);
+						this.parent.CommonTools.WaitTimer(1);
 
 						int newX = mapX + direction.X * i;
 						int newY = mapY + direction.Y * i;

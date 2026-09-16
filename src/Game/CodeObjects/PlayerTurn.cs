@@ -1824,7 +1824,7 @@ namespace OpenCivOne
 
 										if (this.parent.GlobalPreferences.Debug.FastMode)
 										{
-											this.parent.CommonTools.WaitTimer(6);
+											this.parent.CommonTools.WaitTimer(7);
 										}
 										else
 										{
@@ -2401,7 +2401,7 @@ namespace OpenCivOne
 							{
 								if (this.parent.GlobalPreferences.Debug.FastMode)
 								{
-									this.parent.CommonTools.WaitTimer(6);
+									this.parent.CommonTools.WaitTimer(15);
 								}
 								else
 								{
@@ -2415,7 +2415,7 @@ namespace OpenCivOne
 							{
 								if (this.parent.GlobalPreferences.Debug.FastMode)
 								{
-									this.parent.CommonTools.WaitTimer(2);
+									this.parent.CommonTools.WaitTimer(5);
 								}
 								else
 								{
