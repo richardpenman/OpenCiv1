@@ -171,15 +171,15 @@ namespace OpenCivOne
 		/// Waits for specified number of main timer ticks
 		/// </summary>
 		/// <param name="waitTime"></param>
-		public void WaitTimer(int waitTime)
+		public void WaitTimer(double waitTime)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1182_0134_WaitTime({waitTime})");
 
 			ResetWaitTimer();
 
-			int iTime = Math.Max(waitTime * 12, 1);
+			int sleepTime = (int)Math.Ceiling(Math.Max(waitTime * 12, 1));
 
-			Thread.Sleep(iTime);
+			Thread.Sleep(sleepTime);
 			this.CPU.DoEvents();
 
 			/*waitTime = (short)(Math.Ceiling(0.6 * waitTime));

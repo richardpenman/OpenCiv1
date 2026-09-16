@@ -528,7 +528,7 @@ namespace OpenCivOne
 					if (this.parent.GlobalPreferences.Debug.FastMode)
 					{
 						// unit blinks faster if fast mode is activated
-						this.parent.CommonTools.WaitTimer(7);
+						this.parent.CommonTools.WaitTimer(6);
 					}
 					else
 					{
@@ -580,7 +580,7 @@ namespace OpenCivOne
 					if (this.parent.GlobalPreferences.Debug.FastMode)
 					{
 						// unit blinks faster if fast mode is activated
-						this.parent.CommonTools.WaitTimer(7);
+						this.parent.CommonTools.WaitTimer(6);
 					}
 					else
 					{
@@ -1795,7 +1795,7 @@ namespace OpenCivOne
 							this.parent.Array_d4ce[64 + (int)this.parent.GameData.Players[playerID].Units[unitID].UnitType + (playerID * 32)]);
 
 						// Instruction address 0x1866:0x1f16, size: 5
-						this.parent.CommonTools.WaitTimer(1);
+						this.parent.CommonTools.WaitTimer(0.5);
 
 						int newX = mapX + direction.X * i;
 						int newY = mapY + direction.Y * i;

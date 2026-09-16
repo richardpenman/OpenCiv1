@@ -1822,8 +1822,14 @@ namespace OpenCivOne
 										this.parent.MapManagement.F0_1866_16a9_CenterMap(this.parent.GameData.HumanPlayerID,
 											unit.Position.X, unit.Position.Y);
 
-										if (!this.parent.GlobalPreferences.Debug.FastMode)
+										if (this.parent.GlobalPreferences.Debug.FastMode)
+										{
+											this.parent.CommonTools.WaitTimer(6);
+										}
+										else
+										{
 											this.parent.CommonTools.WaitTimer(30);
+										}
 
 										// Instruction address 0x1403:0x1f9c, size: 5
 										this.parent.UnitManagement.F0_1866_1d55_AnimateUnitMove(playerID, unitID, newMoveDirection);
@@ -2395,7 +2401,7 @@ namespace OpenCivOne
 							{
 								if (this.parent.GlobalPreferences.Debug.FastMode)
 								{
-									this.parent.CommonTools.WaitTimer(15);
+									this.parent.CommonTools.WaitTimer(6);
 								}
 								else
 								{
@@ -2409,7 +2415,7 @@ namespace OpenCivOne
 							{
 								if (this.parent.GlobalPreferences.Debug.FastMode)
 								{
-									this.parent.CommonTools.WaitTimer(5);
+									this.parent.CommonTools.WaitTimer(2);
 								}
 								else
 								{
