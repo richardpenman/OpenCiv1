@@ -180,8 +180,8 @@ namespace OpenCivOne
 						}
 						else
 						{
-							// Instruction address 0x1403:0x03dd, size: 5
-							this.parent.CommonTools.WaitTimer(30);
+							if (!this.parent.GlobalPreferences.Debug.FastMode)
+								this.parent.CommonTools.WaitTimer(30);
 
 							this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(playerID,
 								this.parent.GameData.Players[playerID].Units[unitID].Position.X - 7,
@@ -1821,8 +1821,10 @@ namespace OpenCivOne
 										// Instruction address 0x1403:0x1f7f, size: 5
 										this.parent.MapManagement.F0_1866_16a9_CenterMap(this.parent.GameData.HumanPlayerID,
 											unit.Position.X, unit.Position.Y);
-										// Instruction address 0x1403:0x1f8b, size: 5
-										this.parent.CommonTools.WaitTimer(30);
+
+										if (!this.parent.GlobalPreferences.Debug.FastMode)
+											this.parent.CommonTools.WaitTimer(30);
+
 										// Instruction address 0x1403:0x1f9c, size: 5
 										this.parent.UnitManagement.F0_1866_1d55_AnimateUnitMove(playerID, unitID, newMoveDirection);
 									}
@@ -2391,16 +2393,28 @@ namespace OpenCivOne
 
 							if (playerID != this.parent.GameData.HumanPlayerID)
 							{
-								// Instruction address 0x1403:0x3215, size: 5
-								this.parent.CommonTools.WaitTimer(30);
+								if (this.parent.GlobalPreferences.Debug.FastMode)
+								{
+									this.parent.CommonTools.WaitTimer(15);
+								}
+								else
+								{
+									this.parent.CommonTools.WaitTimer(30);
+								}
 							}
 						}
 						else
 						{
 							if (this.parent.MapManagement.F0_2aea_0e29_DrawUnit(playerID, unitID))
 							{
-								// Instruction address 0x1403:0x323a, size: 5
-								this.parent.CommonTools.WaitTimer(10);
+								if (this.parent.GlobalPreferences.Debug.FastMode)
+								{
+									this.parent.CommonTools.WaitTimer(5);
+								}
+								else
+								{
+									this.parent.CommonTools.WaitTimer(10);
+								}
 							}
 						}
 					}

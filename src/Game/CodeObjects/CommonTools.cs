@@ -465,94 +465,53 @@ namespace OpenCivOne
 		/// </summary>
 		/// <param name="speed"></param>
 		/// <param name="palettePtr"></param>
-		public void TransformPalette(int speed, ushort palettePtr)
-		{
-			//this.oCPU.Log.EnterBlock($"F0_1000_04aa_TransformPalette({speed}, 0x{palettePtr:x4})");
-
-			// function body
-			if (speed < 1 || speed > 50)
-				throw new ArgumentOutOfRangeException("The argument speed is out of range");
-
-			this.transformColors = new TransformColor[256];
-			palettePtr += 6;
-
-			lock (VCPU.GraphicsLock)
-			{
-				while (this.inTimer)
-				{
-					Thread.Sleep(1);
-				}
-
-				this.transformValue = speed * 10;
-				this.transformCount = 0;
-
-				for (int i = 0; i < 256; i++)
-				{
-					HSVColor from = HSVColor.FromColor(this.graphics.GetPaletteColor((byte)i));
-					HSVColor to = HSVColor.FromColor(GBitmap.Color18ToColor(this.CPU.ReadUInt8(this.CPU.DS.UInt16, palettePtr),
-						this.CPU.ReadUInt8(this.CPU.DS.UInt16, (ushort)(palettePtr + 1)),
-						this.CPU.ReadUInt8(this.CPU.DS.UInt16, (ushort)(palettePtr + 2))));
-
-					this.transformColors[i] = new TransformColor(from, to, this.transformValue);
-
-					palettePtr += 3;
-				}
-
-				this.transformFlag = true;
-			}
-
-			while (this.transformFlag)
-			{
-				this.CPU.DoEvents();
-				Thread.Sleep(1);
-			}
-		}
-
-		/// <summary>
-		/// Transform current palette to another palette
-		/// </summary>
-		/// <param name="speed"></param>
-		/// <param name="palettePtr"></param>
 		public void TransformPalette(int speed, byte[] palette)
 		{
 			//this.oCPU.Log.EnterBlock($"F0_1000_04aa_TransformPalette({speed}, 0x{palettePtr:x4})");
 
 			// function body
-			int position = 0;
-
-			if (speed < 1 || speed > 50)
-				throw new ArgumentOutOfRangeException("The argument speed is out of range");
-
-			this.transformColors = new TransformColor[256];
-			position += 6;
-
-			lock (VCPU.GraphicsLock)
+			if (this.parent.GlobalPreferences.Debug.FastMode)
 			{
-				while (this.inTimer)
+				this.parent.Graphics.SetColorsFromColorStruct(palette);
+			}
+			else
+			{
+				int position = 0;
+
+				if (speed < 1 || speed > 50)
+					throw new ArgumentOutOfRangeException("The argument speed is out of range");
+
+				this.transformColors = new TransformColor[256];
+				position += 6;
+
+				lock (VCPU.GraphicsLock)
 				{
+					while (this.inTimer)
+					{
+						Thread.Sleep(1);
+					}
+
+					this.transformValue = speed * 10;
+					this.transformCount = 0;
+
+					for (int i = 0; i < 256; i++)
+					{
+						HSVColor from = HSVColor.FromColor(this.graphics.GetPaletteColor((byte)i));
+						HSVColor to = HSVColor.FromColor(GBitmap.Color18ToColor(palette[position], palette[position + 1], palette[position + 2]));
+
+						this.transformColors[i] = new TransformColor(from, to, this.transformValue);
+
+						position += 3;
+					}
+
+					this.transformFlag = true;
+				}
+
+				while (this.transformFlag)
+				{
+					this.CPU.DoEvents();
 					Thread.Sleep(1);
 				}
-
-				this.transformValue = speed * 10;
-				this.transformCount = 0;
-
-				for (int i = 0; i < 256; i++)
-				{
-					HSVColor from = HSVColor.FromColor(this.graphics.GetPaletteColor((byte)i));
-					HSVColor to = HSVColor.FromColor(GBitmap.Color18ToColor(palette[position], palette[position + 1], palette[position + 2]));
-
-					this.transformColors[i] = new TransformColor(from, to, this.transformValue);
-
-					position += 3;
-				}
-
-				this.transformFlag = true;
-			}
-
-			while (this.transformFlag)
-			{
-				this.CPU.DoEvents();
-				Thread.Sleep(1);
 			}
 		}
 
@@ -566,33 +525,43 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock($"F0_1000_04d4_TransformPaletteToColor({speed}, {color})");
 
 			// function body
-			HSVColor to = HSVColor.FromColor(color);
-			this.transformColors = new TransformColor[256];
-
-			lock (VCPU.GraphicsLock)
+			if (this.parent.GlobalPreferences.Debug.FastMode)
 			{
-				while (this.inTimer)
-				{
-					Thread.Sleep(1);
-				}
-
-				this.transformValue = speed * 10;
-				this.transformCount = 0;
-
 				for (int i = 0; i < 256; i++)
 				{
-					HSVColor from = HSVColor.FromColor(this.graphics.GetPaletteColor((byte)i));
+					this.parent.Graphics.SetPaletteColor((byte)i, color);
+				}
+			}
+			else
+			{
+				HSVColor to = HSVColor.FromColor(color);
+				this.transformColors = new TransformColor[256];
 
-					this.transformColors[i] = new TransformColor(from, to, this.transformValue);
+				lock (VCPU.GraphicsLock)
+				{
+					while (this.inTimer)
+					{
+						Thread.Sleep(1);
+					}
+
+					this.transformValue = speed * 10;
+					this.transformCount = 0;
+
+					for (int i = 0; i < 256; i++)
+					{
+						HSVColor from = HSVColor.FromColor(this.graphics.GetPaletteColor((byte)i));
+
+						this.transformColors[i] = new TransformColor(from, to, this.transformValue);
+					}
+
+					this.transformFlag = true;
 				}
 
-				this.transformFlag = true;
-			}
-
-			while (this.transformFlag)
-			{
-				this.CPU.DoEvents();
-				Thread.Sleep(1);
+				while (this.transformFlag)
+				{
+					this.CPU.DoEvents();
+					Thread.Sleep(1);
+				}
 			}
 		}
 

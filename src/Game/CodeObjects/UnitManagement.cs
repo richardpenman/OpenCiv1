@@ -525,8 +525,15 @@ namespace OpenCivOne
 				}
 				else
 				{
-					// Instruction address 0x1866:0x0c12, size: 5
-					this.parent.CommonTools.WaitTimer(10);
+					if (this.parent.GlobalPreferences.Debug.FastMode)
+					{
+						// unit blinks faster if fast mode is activated
+						this.parent.CommonTools.WaitTimer(7);
+					}
+					else
+					{
+						this.parent.CommonTools.WaitTimer(10);
+					}
 				}
 
 				if (unitID >= 128)
@@ -570,17 +577,16 @@ namespace OpenCivOne
 				}
 				else
 				{
-					// Instruction address 0x1866:0x0cd0, size: 5
-					this.parent.CommonTools.WaitTimer(10);
+					if (this.parent.GlobalPreferences.Debug.FastMode)
+					{
+						// unit blinks faster if fast mode is activated
+						this.parent.CommonTools.WaitTimer(7);
+					}
+					else
+					{
+						this.parent.CommonTools.WaitTimer(10);
+					}
 				}
-
-				/*mouseState = this.parent.PeekMouseEvent();
-
-				if (mouseState.Buttons == MouseButtonsEnum.None)
-				{
-					// We can safely consume this mouse event
-					mouseState = this.parent.GetMouseEvent();
-				}*/
 			}
 			while (this.parent.CAPI.kbhit() == 0 && !this.parent.HasNewMouseEvent());
 		}
@@ -1779,21 +1785,43 @@ namespace OpenCivOne
 				int mapX = this.parent.MapManagement.AdjustXPosition(this.parent.GameData.Players[playerID].Units[unitID].Position.X - this.parent.Var_d4cc_MapViewX) * 16 + 80;
 				int mapY = (this.parent.GameData.Players[playerID].Units[unitID].Position.Y - this.parent.Var_d75e_MapViewY) * 16 + 8;
 
-				for (int i = 0; i < 17; i++)
+				if (this.parent.GlobalPreferences.Debug.FastMode)
 				{
-					// Instruction address 0x1866:0x1f0a, size: 5
-					this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
-						(direction.X * i) + mapX + 1, (direction.Y * i) + mapY + 1,
-						this.parent.Array_d4ce[64 + (int)this.parent.GameData.Players[playerID].Units[unitID].UnitType + (playerID * 32)]);
+					for (int i = 0; i < 17; i += 2)
+					{
+						// Instruction address 0x1866:0x1f0a, size: 5
+						this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+							mapX + (direction.X * i) + 1, mapY + (direction.Y * i) + 1,
+							this.parent.Array_d4ce[64 + (int)this.parent.GameData.Players[playerID].Units[unitID].UnitType + (playerID * 32)]);
 
-					// Instruction address 0x1866:0x1f16, size: 5
-					this.parent.CommonTools.WaitTimer(1);
+						// Instruction address 0x1866:0x1f16, size: 5
+						this.parent.CommonTools.WaitTimer(1);
 
-					int newX = direction.X * i + mapX;
-					int newY = direction.Y * i + mapY;
+						int newX = mapX + direction.X * i;
+						int newY = mapY + direction.Y * i;
 
-					// Instruction address 0x1866:0x1f4a, size: 5
-					this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, newX, newY, 16, 16, this.parent.Var_aa_Screen0_Rectangle, newX, newY);
+						// Instruction address 0x1866:0x1f4a, size: 5
+						this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, newX, newY, 16, 16, this.parent.Var_aa_Screen0_Rectangle, newX, newY);
+					}
+				}
+				else
+				{
+					for (int i = 0; i < 17; i++)
+					{
+						// Instruction address 0x1866:0x1f0a, size: 5
+						this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+							mapX + (direction.X * i) + 1, mapY + (direction.Y * i) + 1,
+							this.parent.Array_d4ce[64 + (int)this.parent.GameData.Players[playerID].Units[unitID].UnitType + (playerID * 32)]);
+
+						// Instruction address 0x1866:0x1f16, size: 5
+						this.parent.CommonTools.WaitTimer(1);
+
+						int newX = mapX + direction.X * i;
+						int newY = mapY + direction.Y * i;
+
+						// Instruction address 0x1866:0x1f4a, size: 5
+						this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, newX, newY, 16, 16, this.parent.Var_aa_Screen0_Rectangle, newX, newY);
+					}
 				}
 			}
 		}

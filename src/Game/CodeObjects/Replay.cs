@@ -1455,26 +1455,24 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x1200, size: 5
 			this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x9), "PAL");
 
+			byte[] palette; // 0xc1d6
+			byte[] palette1; // 0xbdee
+
 			// Instruction address 0x0000:0x1210, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, (ushort)(this.oCPU.BP.UInt16 - 0x10), 0xc1d6);
+			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, this.oCPU.ReadString(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), out palette);
 
 			// Instruction address 0x0000:0x1220, size: 5
-			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SLAM1.PAL", 0xbdee);
+			this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SLAM1.PAL", out palette1);
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e), 0xc0);
+			for (int i = 192; i < 432; i++) // 192 / 3 = 64; 432 / 3 = 144; 144 - 64 = 80; 432 - 192 = 240 / 3 = 80
+			{
+				//this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(0xbdf4 + i), this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(0xc1dc + i)));
 
-		L122d:
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e));
-			this.oCPU.SI.UInt16 = this.oCPU.BX.UInt16;
-			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.SI.UInt16 + 0xc1dc));
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(this.oCPU.BX.UInt16 + 0xbdf4), this.oCPU.AX.LowUInt8);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2e)), 432);
-			if (this.oCPU.Flags.L) goto L122d;
+				palette1[i + 6] = palette[i + 6];
+			}
 
 			// Instruction address 0x0000:0x124c, size: 5
-			this.oParent.CommonTools.TransformPalette(8, 0xbdee);
+			this.oParent.CommonTools.TransformPalette(8, palette1);
 
 			this.oCPU.AX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.DS.UInt16, 0xb1d4);
 			this.oCPU.CBW(this.oCPU.AX);

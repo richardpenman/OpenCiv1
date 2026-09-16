@@ -232,38 +232,53 @@ namespace OpenCivOne
 					int xStep = Math.Sign(this.parent.GameData.Players[playerID2].Units[unitID2].Position.X - this.parent.GameData.Players[playerID1].Units[unitID1].Position.X);
 					int yStep = Math.Sign(this.parent.GameData.Players[playerID2].Units[unitID2].Position.Y - this.parent.GameData.Players[playerID1].Units[unitID1].Position.Y);
 
-					// Always false
-					if (this.parent.GameData.Players[playerID2].Units[unitID2].Position.X != 0 ||
-						this.parent.GameData.Players[playerID1].Units[unitID1].Position.X != 79) goto L05a3;
-
-					xStep = -xStep;
-					goto L05d9;
-
-				L05a3:
-					// Always false
-					if (this.parent.GameData.Players[playerID1].Units[unitID1].Position.X != 0 ||
-						this.parent.GameData.Players[playerID2].Units[unitID2].Position.X != 79) goto L05d9;
-
-					xStep = -xStep;
-					goto L05d9;
-
-				L05d9:
-					for (int i = 0; i < 11; i++)
+					if ((this.parent.GameData.Players[playerID1].Units[unitID1].Position.X == 0 &&
+						this.parent.GameData.Players[playerID2].Units[unitID2].Position.X == 79) ||
+						(this.parent.GameData.Players[playerID2].Units[unitID2].Position.X == 0 &&
+						this.parent.GameData.Players[playerID1].Units[unitID1].Position.X == 79))
 					{
-						int cellX = (i * xStep) + newXWindow;
-						int cellY = (i * yStep) + newYWindow;
+						xStep = -xStep;
+					}
 
-						// Instruction address 0x29f3:0x061e, size: 5
-						this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
-							cellX + 1, cellY + 1,
-							this.parent.Array_d4ce[64 + (int)this.parent.GameData.Players[playerID1].Units[unitID1].UnitType + (playerID1 * 32)]);
+					if (this.parent.GlobalPreferences.Debug.FastMode)
+					{
+						for (int i = 0; i < 11; i += 2)
+						{
+							int cellX = newXWindow + (i * xStep);
+							int cellY = newYWindow + (i * yStep);
 
-						// Instruction address 0x29f3:0x062a, size: 5
-						this.parent.CommonTools.WaitTimer(2);
+							// Instruction address 0x29f3:0x061e, size: 5
+							this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+								cellX + 1, cellY + 1,
+								this.parent.Array_d4ce[64 + (int)this.parent.GameData.Players[playerID1].Units[unitID1].UnitType + (playerID1 * 32)]);
 
-						// Instruction address 0x29f3:0x0643, size: 5
-						this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle,
-							cellX, cellY, 16, 16, this.parent.Var_aa_Screen0_Rectangle, cellX, cellY);
+							// Instruction address 0x29f3:0x062a, size: 5
+							this.parent.CommonTools.WaitTimer(1);
+
+							// Instruction address 0x29f3:0x0643, size: 5
+							this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle,
+								cellX, cellY, 16, 16, this.parent.Var_aa_Screen0_Rectangle, cellX, cellY);
+						}
+					}
+					else
+					{
+						for (int i = 0; i < 11; i++)
+						{
+							int cellX = newXWindow + (i * xStep);
+							int cellY = newYWindow + (i * yStep);
+
+							// Instruction address 0x29f3:0x061e, size: 5
+							this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+								cellX + 1, cellY + 1,
+								this.parent.Array_d4ce[64 + (int)this.parent.GameData.Players[playerID1].Units[unitID1].UnitType + (playerID1 * 32)]);
+
+							// Instruction address 0x29f3:0x062a, size: 5
+							this.parent.CommonTools.WaitTimer(2);
+
+							// Instruction address 0x29f3:0x0643, size: 5
+							this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle,
+								cellX, cellY, 16, 16, this.parent.Var_aa_Screen0_Rectangle, cellX, cellY);
+						}
 					}
 
 					// Instruction address 0x29f3:0x0670, size: 5
@@ -277,21 +292,43 @@ namespace OpenCivOne
 					// Instruction address 0x29f3:0x06b4, size: 5
 					this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 256, 200, this.parent.Var_19d4_Screen1_Rectangle, 0, 0);
 
-					for (int i = 0; i < 8; i++)
+					if (this.parent.GlobalPreferences.Debug.FastMode)
 					{
-						int cellX = (local_24 * xStep) + newXWindow;
-						int cellY = (local_24 * yStep) + newYWindow;
+						for (int i = 0; i < 8; i += 2)
+						{
+							int cellX = newXWindow + (i * xStep);
+							int cellY = newYWindow + (i * yStep);
 
-						// Instruction address 0x29f3:0x06e6, size: 5
-						this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
-							cellX + 1, cellY + 1, this.parent.Array_d4ce[32 + i]);
+							// Instruction address 0x29f3:0x06e6, size: 5
+							this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+								cellX + 1, cellY + 1, this.parent.Array_d4ce[32 + i]);
 
-						// Instruction address 0x29f3:0x06f2, size: 5
-						this.parent.CommonTools.WaitTimer(4);
+							// Instruction address 0x29f3:0x06f2, size: 5
+							this.parent.CommonTools.WaitTimer(1);
 
-						// Instruction address 0x29f3:0x070b, size: 5
-						this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle,
-							cellX, cellY, 16, 16, this.parent.Var_aa_Screen0_Rectangle, cellX, cellY);
+							// Instruction address 0x29f3:0x070b, size: 5
+							this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle,
+								cellX, cellY, 16, 16, this.parent.Var_aa_Screen0_Rectangle, cellX, cellY);
+						}
+					}
+					else
+					{
+						for (int i = 0; i < 8; i++)
+						{
+							int cellX = newXWindow + (i * xStep);
+							int cellY = newYWindow + (i * yStep);
+
+							// Instruction address 0x29f3:0x06e6, size: 5
+							this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle,
+								cellX + 1, cellY + 1, this.parent.Array_d4ce[32 + i]);
+
+							// Instruction address 0x29f3:0x06f2, size: 5
+							this.parent.CommonTools.WaitTimer(4);
+
+							// Instruction address 0x29f3:0x070b, size: 5
+							this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle,
+								cellX, cellY, 16, 16, this.parent.Var_aa_Screen0_Rectangle, cellX, cellY);
+						}
 					}
 				}
 			}

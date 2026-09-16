@@ -251,66 +251,73 @@ namespace OpenCivOne.Graphics
 		public void F0_VGA_06b7_DrawScreenToScreen0WithEffect(int screenID)
 		{
 			// function body
-			// this is either random fade in image, or a scrolling from right to left
-			if (screenID != 0)
+			if (this.parent.GlobalPreferences.Debug.FastMode)
 			{
-				if (this.screens.ContainsKey(screenID))
+				F0_VGA_06b7_DrawScreenToScreen0(screenID);
+			}
+			else
+			{
+				// this is either random fade in image, or a scrolling from right to left
+				if (screenID != 0)
 				{
-					RandomMT19937 oRNG = new RandomMT19937();
-					GBitmap screen0 = this.screens.GetValueByKey(0);
-					GBitmap newScreen = this.screens.GetValueByKey(screenID);
-					bool[,] aPixels = new bool[newScreen.Width, newScreen.Height];
-
-					for (int i = 0; i < newScreen.Width; i++)
+					if (this.screens.ContainsKey(screenID))
 					{
-						for (int j = 0; j < newScreen.Height; j++)
-						{
-							aPixels[i, j] = false;
-						}
-					}
+						RandomMT19937 oRNG = new RandomMT19937();
+						GBitmap screen0 = this.screens.GetValueByKey(0);
+						GBitmap newScreen = this.screens.GetValueByKey(screenID);
+						bool[,] aPixels = new bool[newScreen.Width, newScreen.Height];
 
-					int iCount = 0;
-					int iPixelCount = newScreen.Width * newScreen.Height;
-
-					while (iCount < iPixelCount)
-					{
-						// draw it in batches, because of the slow timer
-						lock (VCPU.GraphicsLock)
+						for (int i = 0; i < newScreen.Width; i++)
 						{
-							for (int k = 0; k < 80 && iCount < iPixelCount; k++)
+							for (int j = 0; j < newScreen.Height; j++)
 							{
-								int xPos = oRNG.Next(newScreen.Width);
-								int yPos = oRNG.Next(newScreen.Height);
-
-								while (aPixels[xPos, yPos])
-								{
-									xPos = oRNG.Next(newScreen.Width);
-									yPos = oRNG.Next(newScreen.Height);
-								}
-
-								aPixels[xPos, yPos] = true;
-								iCount++;
-								screen0.SetPixel(xPos, yPos, newScreen.GetPixel(xPos, yPos));
+								aPixels[i, j] = false;
 							}
 						}
 
-						if (this.parent.CAPI.kbhit() != 0 || this.parent.PeekMouseEvent().Buttons != MouseButtonsEnum.None)
-						{
-							screen0.DrawBitmap(newScreen);
-							break;
-						}
+						int iCount = 0;
+						int iPixelCount = newScreen.Width * newScreen.Height;
 
-						Thread.Sleep(1);
+						while (iCount < iPixelCount)
+						{
+							// draw it in batches, because of the slow timer
+							lock (VCPU.GraphicsLock)
+							{
+								for (int k = 0; k < 80 && iCount < iPixelCount; k++)
+								{
+									int xPos = oRNG.Next(newScreen.Width);
+									int yPos = oRNG.Next(newScreen.Height);
+
+									while (aPixels[xPos, yPos])
+									{
+										xPos = oRNG.Next(newScreen.Width);
+										yPos = oRNG.Next(newScreen.Height);
+									}
+
+									aPixels[xPos, yPos] = true;
+									iCount++;
+									screen0.SetPixel(xPos, yPos, newScreen.GetPixel(xPos, yPos));
+								}
+							}
+
+							if (this.parent.CAPI.kbhit() != 0 || this.parent.PeekMouseEvent().Buttons != MouseButtonsEnum.None)
+							{
+								screen0.DrawBitmap(newScreen);
+								break;
+							}
+
+							Thread.Sleep(1);
+						}
 					}
-				}
-				else
-				{
-					throw new Exception($"The screen {screenID} is not allocated");
+					else
+					{
+						throw new Exception($"The screen {screenID} is not allocated");
+					}
 				}
 			}
 		}
 
-		public void F0_VGA_06b7_DrawScreenToMainScreen(int screenID)
+		public void F0_VGA_06b7_DrawScreenToScreen0(int screenID)
 		{
 			// function body
 			if (screenID != 0)

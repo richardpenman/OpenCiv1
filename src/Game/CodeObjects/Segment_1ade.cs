@@ -2439,32 +2439,24 @@ namespace OpenCivOne
 				// Instruction address 0x1ade:0x1948, size: 5
 				this.oParent.CAPI.strcpy((ushort)(this.oCPU.BP.UInt16 - 0x8), ".PAL");
 
-				/*
-				// Instruction address 0x1238:0x1c52, size: 5
-				this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0,
-					$"BACK{('0' + (char)((governmentType == GovernmentTypeEnum.Communist) ? 3 : (int)governmentType / 2))}" +
-						$"{(this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Invention) ? 'M' : 'A')}.PAL", 0xc1d6);
-
-				// Instruction address 0x1238:0x1c62, size: 5
-				this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SP256.PAL", 0xc5be);
-
-				// Instruction address 0x1238:0x1c76, size: 5
-				this.parent.CAPI.memcpy(0xc744, 0xc35c, 384); // 384 / 3 = 128; 0xc35c - 0xc1d6 = 0x186 (390); 390 - 6 = 384 / 3 = 128
-
-				// Instruction address 0x1238:0x1c86, size: 5
-				this.parent.CommonTools.TransformPalette(5, 0xc5be);*/
+				byte[] palette; // 0xc1d6
+				byte[] palette1; // 0xc5be
 
 				// Instruction address 0x1ade:0x1958, size: 5
-				this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, (ushort)(this.oCPU.BP.UInt16 - 0x10), 0xc1d6);
+				this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, this.oCPU.ReadString(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x10)), out palette);
 
 				// Instruction address 0x1ade:0x1968, size: 5
-				this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "ICONPG1.PAL", 0xc5be);
+				this.oParent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "ICONPG1.PAL", out palette1);
 
-				// Instruction address 0x1ade:0x197c, size: 5
-				this.oParent.CAPI.memcpy(0xc5c4, 0xc1dc, 255);
+				// this.oParent.CAPI.memcpy(0xc5c4, 0xc1dc, 255); // 0xc5c4 - 0xc5be = 6; 0xc1dc - 0xc1d6 = 6; 255 / 3 = 85
+
+				for (int i = 0; i < 255; i++)
+				{
+					palette1[i + 6] = palette[i + 6];
+				}
 
 				// Instruction address 0x1ade:0x198c, size: 5
-				this.oParent.CommonTools.TransformPalette(30, 0xc5be);
+				this.oParent.CommonTools.TransformPalette(30, palette1);
 
 				// Instruction address 0x1ade:0x1994, size: 5
 				this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();

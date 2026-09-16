@@ -360,8 +360,14 @@ namespace OpenCivOne
 						// Instruction address 0x0000:0x0950, size: 5
 						this.parent.GameEngine.F0_1238_107e_ReportHumanTaxAndPopulation();
 
-						// Instruction address 0x0000:0x0959, size: 5
-						this.parent.CommonTools.WaitTimer(30);
+						if (this.parent.GlobalPreferences.Debug.FastMode)
+						{
+							this.parent.CommonTools.WaitTimer(15);
+						}
+						else
+						{
+							this.parent.CommonTools.WaitTimer(30);
+						}
 					}
 				}
 			}

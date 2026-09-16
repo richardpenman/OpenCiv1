@@ -138,15 +138,6 @@ namespace OpenCivOne
 		/// Loads an Bitmap (Icon) from given image filename
 		/// </summary>
 		/// <param name="filenamePtr"></param>
-		public int F0_2fa1_044c_LoadIcon(ushort filenamePtr)
-		{
-			return this.parent.Graphics.LoadIcon(CAPI.GetDOSFileName(this.CPU.ReadString(VCPU.ToLinearAddress(this.CPU.DS.UInt16, filenamePtr))));
-		}
-
-		/// <summary>
-		/// Loads an Bitmap (Icon) from given image filename
-		/// </summary>
-		/// <param name="filenamePtr"></param>
 		public int F0_2fa1_044c_LoadIcon(string filename)
 		{
 			return this.parent.Graphics.LoadIcon(filename);

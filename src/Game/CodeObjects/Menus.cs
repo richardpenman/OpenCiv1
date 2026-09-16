@@ -127,7 +127,7 @@ namespace OpenCivOne
 			this.parent.Var_b276_MenuBoxDisabledOptions = ((this.parent.GameData.SpaceshipFlags & 0x100) != 0) ? 0 : 1 << 7;
 
 			int selectedOption = this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox(
-				$" Tax Rate\n Luxuries Rate\n FindCity\n Preferences\n Save Game\n REVOLUTION!\n \n View Replay\n Retire\n QUIT to DOS\n",
+				$" Tax Rate\n Luxuries Rate\n FindCity\n Preferences\n Save Game\n REVOLUTION!\n \n View Replay\n Retire\n QUIT\n",
 				16, 8, true, false, false);
 
 			// Instruction address 0x2c84:0x00ff, size: 5

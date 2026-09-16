@@ -299,11 +299,7 @@ namespace OpenCivOne
 			// Instruction address 0x0000:0x0b7b, size: 5
 			this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_19d4_Screen1_Rectangle, 0, 64, logoBitmapID);
 
-#if DEBUG
-			this.parent.Graphics.F0_VGA_06b7_DrawScreenToMainScreen(1);
-#else
-			this.oParent.Graphics.F0_VGA_06b7_DrawScreenToMainScreenWithEffect(1);
-#endif
+			this.parent.Graphics.F0_VGA_06b7_DrawScreenToScreen0WithEffect(1);
 
 			// Instruction address 0x0000:0x0bab, size: 5
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);

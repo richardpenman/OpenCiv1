@@ -509,8 +509,8 @@ namespace OpenCivOne
 					{
 						if (selectedOptionIndex != -1)
 						{
-							// Instruction address 0x2d05:0x0441, size: 5
-							this.parent.CommonTools.WaitTimer(20);
+							if (!this.parent.GlobalPreferences.Debug.FastMode)
+								this.parent.CommonTools.WaitTimer(20);
 						}
 						else
 						{

@@ -540,7 +540,7 @@ namespace OpenCivOne
 					F19_0000_111f_DrawCityPopulation(cityID, 24, 140, 256);
 				}
 
-				if (wonderID <= -1 || this.parent.CAPI.kbhit() != 0)
+				if (wonderID <= -1 || this.parent.CAPI.kbhit() != 0 || this.parent.PeekMouseEvent().Buttons != MouseButtonsEnum.None)
 					break;
 
 				wonderID = -1;
@@ -549,7 +549,7 @@ namespace OpenCivOne
 				// Instruction address 0x0000:0x0f3d, size: 5
 				this.parent.CommonTools.WaitTimer(60);
 			}
-			while (this.parent.CAPI.kbhit() == 0);
+			while (this.parent.CAPI.kbhit() == 0 && this.parent.PeekMouseEvent().Buttons == MouseButtonsEnum.None);
 
 			if (wonderID == -2)
 			{

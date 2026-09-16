@@ -57,8 +57,14 @@ namespace OpenCivOne
 					this.parent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.parent.Var_aa_Screen0_Rectangle, x, y, bitmaps[i]);
 				}
 
-				// Instruction address 0x0000:0x0a92, size: 5
-				this.parent.CommonTools.WaitTimer(5);
+				if (this.parent.GlobalPreferences.Debug.FastMode)
+				{
+					this.parent.CommonTools.WaitTimer(1);
+				}
+				else
+				{
+					this.parent.CommonTools.WaitTimer(5);
+				}
 
 				// Instruction address 0x0000:0x0ab3, size: 5
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, x, y, 44, 44, this.parent.Var_aa_Screen0_Rectangle, x, y);
