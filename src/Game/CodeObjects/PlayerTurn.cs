@@ -207,11 +207,11 @@ namespace OpenCivOne
 			}
 
 		Label54:
-			if ((this.parent.GameData.PlayerFlags & (0x1 << playerID)) != 0)
+			/*if ((this.parent.GameData.PlayerFlags & (0x1 << playerID)) != 0)
 			{
 				// Instruction address 0x1403:0x044c, size: 5
 				this.parent.CommonTools.ClearKeyboardAndMouseEvents();
-			}
+			}*/
 
 			int unitMoveRetryCount = 0;
 
