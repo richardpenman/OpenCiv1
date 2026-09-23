@@ -227,7 +227,10 @@ namespace OpenCivOne
 
 				case 7:
 					// View replay
-					this.parent.Replay.F9_0000_0000();
+					if ((this.parent.GameData.SpaceshipFlags & 0x100) != 0)
+					{
+						this.parent.Replay.F9_0000_0000();
+					}
 					break;
 
 				case 8:
