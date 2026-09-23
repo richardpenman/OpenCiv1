@@ -337,7 +337,7 @@ namespace OpenCivOne
 				if (playerID != this.parent.GameData.HumanPlayerID &&
 					this.parent.GameData.Players[playerID].SettlerCount == 0 && this.parent.GameData.Players[playerID].CityCount == 0)
 				{
-					this.parent.StartGameMenu.F5_0000_0e6c_TestIfAIPlayerIsDestroyed(playerID, 0);
+					this.parent.StartGameMenu.F5_0000_0e6c_TestIfAIPlayerIsDestroyed(playerID, -1);
 				}
 
 				if (((playerID + this.parent.GameData.TurnCount) & 0x7) == 0)

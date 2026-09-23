@@ -134,6 +134,15 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock($"F0_1866_01dc({x}, {y}, {playerID}, {unitID}, {flag})");
 
 			// function body
+
+			// Taking a city can destroy it, deleting the units standing there, while the
+			// caller continues with the same unit id. A deleted slot has UnitType None (-1),
+			// which the unit table lookup below cannot index.
+			if (this.parent.GameData.Players[playerID].Units[unitID].UnitType == UnitTypeEnum.None)
+			{
+				return;
+			}
+
 			TerrainTypeEnum terrainType = this.parent.MapManagement.GetTerrainType(x, y);
 			// Instruction address 0x1866:0x02b5, size: 5
 			TerrainImprovementFlagsEnum visibleTerrainImprovements = this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(x, y);

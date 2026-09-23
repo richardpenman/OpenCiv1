@@ -632,7 +632,7 @@ namespace OpenCivOne
 
 				reader.Close();
 
-				bSuccess = true;
+				bSuccess = ValidateLoadedGameData();
 			}
 			catch (Exception ex)
 			{
@@ -643,6 +643,25 @@ namespace OpenCivOne
 			}
 
 			return bSuccess;
+		}
+
+		/// <summary>
+		/// Here we want to verify the loaded data thoroughly.
+		/// We also want to fix any errors that are fixable, otherwise reject data as invalid.
+		/// </summary>
+		/// <returns></returns>
+		private bool ValidateLoadedGameData()
+		{
+			// Initialize Barbarians and fix the uninitialized data bug.
+			// Player 0 is the Barbarian but it is never given a nationality or name.
+			// We need to fix that as the game doesn't function properly without this data!
+			// NationalityID 0 is the Barbarian entry the nations table already provides.
+			this.parent.GameData.Players[0].NationalityID = 0;
+			this.parent.GameData.Players[0].Name = this.parent.GameData.Nations[0].Leader;
+			this.parent.GameData.Players[0].Nation = this.parent.GameData.Nations[0].Nation;
+			this.parent.GameData.Players[0].Nationality = this.parent.GameData.Nations[0].Nationality;
+
+			return true;
 		}
 
 		/// <summary>

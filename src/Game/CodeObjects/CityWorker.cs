@@ -308,7 +308,7 @@ namespace OpenCivOne
 								// Instruction address 0x1d12:0x0843, size: 5
 								this.parent.Segment_1ade.F0_1ade_018e(cityID, city.Position.X, city.Position.Y);
 
-								this.parent.StartGameMenu.F5_0000_0e6c_TestIfAIPlayerIsDestroyed(this.Var_6548_PlayerID, 0);
+								this.parent.StartGameMenu.F5_0000_0e6c_TestIfAIPlayerIsDestroyed(this.Var_6548_PlayerID, -1);
 
 								goto L6927;
 							}
@@ -773,7 +773,7 @@ namespace OpenCivOne
 										// Instruction address 0x1d12:0x1727, size: 5
 										this.parent.UnitManagement.F0_1866_0cf5_CreateUnit(this.Var_6548_PlayerID, (UnitTypeEnum)city.CurrentProductionID, city.Position.X, city.Position.Y);
 
-										this.parent.StartGameMenu.F5_0000_0e6c_TestIfAIPlayerIsDestroyed(this.Var_6548_PlayerID, 0);
+										this.parent.StartGameMenu.F5_0000_0e6c_TestIfAIPlayerIsDestroyed(this.Var_6548_PlayerID, -1);
 
 										goto L6927;
 									}

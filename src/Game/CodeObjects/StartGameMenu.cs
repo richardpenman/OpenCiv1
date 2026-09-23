@@ -264,10 +264,6 @@ namespace OpenCivOne
 
 			for (int i = 0; i < 8; i++)
 			{
-				for (int j = 0; j < 8; j++)
-				{
-					this.parent.GameData.Players[i].UnitsDestroyed[j] = 0;
-				}
 				F5_0000_07c7_InitPlayerData(i);
 			}
 
@@ -422,6 +418,11 @@ namespace OpenCivOne
 					this.parent.GameData.Players[i].Diplomacy[playerID] = DiplomacyFlagsEnum.None;
 				}
 
+				for (int i = 0; i < 8; i++)
+				{
+					this.parent.GameData.Players[playerID].UnitsDestroyed[i] = 0;
+				}
+
 				for (int i = 0; i < 5; i++)
 				{
 					this.parent.GameData.Players[playerID].DiscoveredTechnologyFlags[i] = 0;
@@ -443,166 +444,190 @@ namespace OpenCivOne
 					}
 				}
 
-				if (playerID != 0 && (this.parent.GameData.ActiveCivilizations & (0x1 << playerID)) != 0)
+				if (playerID != 0)
 				{
-					if (playerID != this.parent.GameData.HumanPlayerID)
+					if ((this.parent.GameData.ActiveCivilizations & (0x1 << playerID)) != 0)
 					{
-						if (this.parent.GameData.TurnCount == 0)
+						// Find available NationalityID for an AI player
+						if (playerID != this.parent.GameData.HumanPlayerID)
 						{
-							bool flag;
-
-							do
+							if (this.parent.GameData.TurnCount == 0)
 							{
-								// Instruction address 0x0000:0x09f9, size: 5
-								this.parent.GameData.Players[playerID].NationalityID = (short)this.parent.CAPI.RNG.Next(16);
-								flag = true;
+								bool flag = false;
 
-								if ((this.parent.GameData.Players[playerID].NationalityID & 7) != playerID)
+								while (!flag)
 								{
-									flag = false;
-								}
+									// Instruction address 0x0000:0x09f9, size: 5
+									this.parent.GameData.Players[playerID].NationalityID = (short)this.parent.CAPI.RNG.Next(16);
+									flag = true;
 
-								for (int i = 0; i < 8; i++)
-								{
-									if (i != playerID && this.parent.GameData.Players[i].NationalityID == this.parent.GameData.Players[playerID].NationalityID)
+									if ((this.parent.GameData.Players[playerID].NationalityID & 7) != playerID)
 									{
 										flag = false;
 									}
+
+									for (int i = 0; i < 8; i++)
+									{
+										if (i != playerID && this.parent.GameData.Players[i].NationalityID == this.parent.GameData.Players[playerID].NationalityID)
+										{
+											flag = false;
+										}
+									}
 								}
 							}
-							while (!flag);
+							else
+							{
+								// Don't know if this is correct, respawned AI NationalityID should be checked!
+								this.parent.GameData.Players[playerID].NationalityID ^= 8;
+							}
 						}
-						else
-						{
-							this.parent.GameData.Players[playerID].NationalityID ^= 8;
-						}
-					}
 
-					int xStart;
-					int yStart;
-					int buildScore;
-					int tryCount = 0;
+						// Find up a suitable starting position for a first unit
+						int xStart;
+						int yStart;
+						int buildScore;
+						int tryCount = 0;
 
-					// pick up a suitable starting position for a first unit
-				L0a5e:
-					// Instruction address 0x0000:0x0a62, size: 5
-					xStart = this.parent.CAPI.RNG.Next(64) + 8;
-					yStart = this.parent.CAPI.RNG.Next(34) + 8;
+					L0a5e:
+						// Instruction address 0x0000:0x0a62, size: 5
+						xStart = this.parent.CAPI.RNG.Next(64) + 8;
+						yStart = this.parent.CAPI.RNG.Next(34) + 8;
 
-					if (this.parent.MapManagement.GetTerrainType(xStart, yStart) == TerrainTypeEnum.Water ||
-						this.parent.MapManagement.F0_2aea_1894_CellHasMinorTribeHut(xStart, yStart, this.parent.MapManagement.GetTerrainType(xStart, yStart))) goto L0a5e;
+						if (this.parent.MapManagement.GetTerrainType(xStart, yStart) == TerrainTypeEnum.Water ||
+							this.parent.MapManagement.F0_2aea_1894_CellHasMinorTribeHut(xStart, yStart, this.parent.MapManagement.GetTerrainType(xStart, yStart))) goto L0a5e;
 
 					int distance;
 					int cityID = this.parent.MapManagement.FindNearestCity(xStart, yStart);
 
-					if (cityID == -1)
-					{
-						distance = 30;
-					}
-					else
-					{
-						// Instruction address 0x0000:0x0abf, size: 5
-						distance = this.parent.MapManagement.GetDistance(xStart, yStart, this.parent.GameData.Cities[cityID].Position);
-					}
-
-					if (this.parent.GameData.TurnCount == 0)
-					{
-						for (int j = 1; j < playerID; j++)
+						if (cityID == -1)
 						{
-							// Instruction address 0x0000:0x0af2, size: 5
-							int newDistance = this.parent.MapManagement.GetDistance(xStart, yStart, this.parent.GameData.Players[j].Units[0].Position);
+							distance = 30;
+						}
+						else
+						{
+							// Instruction address 0x0000:0x0abf, size: 5
+							distance = this.parent.MapManagement.GetDistance(xStart, yStart, this.parent.GameData.Cities[cityID].Position);
+						}
 
-							if (newDistance < distance)
+						if (this.parent.GameData.TurnCount == 0)
+						{
+							for (int j = 1; j < playerID; j++)
 							{
-								distance = newDistance;
+								// Instruction address 0x0000:0x0af2, size: 5
+								int newDistance = this.parent.MapManagement.GetDistance(xStart, yStart, this.parent.GameData.Players[j].Units[0].Position);
+
+								if (newDistance < distance)
+								{
+									distance = newDistance;
+								}
 							}
 						}
-					}
 
-					// Instruction address 0x0000:0x0b24, size: 5
-					buildScore = this.parent.MapManagement.GetBuildLocationScore(xStart, yStart);
+						// Instruction address 0x0000:0x0b24, size: 5
+						buildScore = this.parent.MapManagement.GetBuildLocationScore(xStart, yStart);
 
-					tryCount++;
+						tryCount++;
 
-					if (tryCount <= 2000 || (playerID == this.parent.GameData.HumanPlayerID && this.parent.GameData.TurnCount == 0))
-					{
-						// Instruction address 0x0000:0x0b54, size: 5
-						if ((12 - (tryCount / 32)) > buildScore || distance < (10 - (tryCount / 64)) || 
-							this.parent.GameData.Continents[this.parent.MapManagement.F0_2aea_1942_GetGroupID(xStart, yStart)].BuildSiteCount < (32 - (this.parent.GameData.TurnCount / 32) + (tryCount / 64)) ||
-							(this.parent.GameData.Year > 0 && cityCount[this.parent.MapManagement.F0_2aea_1942_GetGroupID(xStart, yStart)] != 0)) goto L0a5e;
-					}
-
-					if (this.parent.GameData.TurnCount == 0 && this.parent.Var_d76a_EarthMap)
-					{
-						xStart = this.parent.Array_35da[this.parent.GameData.Players[playerID].NationalityID].X;
-						yStart = this.parent.Array_35da[this.parent.GameData.Players[playerID].NationalityID].Y;
-						tryCount = 0;
-					}
-
-					if (this.parent.GameData.TurnCount != 0 &&
-						((this.parent.GameData.Players[playerID].NationalityID > 7 && (this.parent.GameData.PlayerIdentityFlags & (0x1 << playerID)) != 0) ||
-							(this.parent.GameData.Players[playerID].NationalityID < 8 && (this.parent.GameData.PlayerIdentityFlags & (0x1 << playerID)) == 0)))
-					{
-						tryCount = 2000;
-					}
-
-					if (playerID != this.parent.GameData.HumanPlayerID)
-					{
-						this.parent.GameData.Players[playerID].ScienceTaxRate = (short)(this.parent.GameData.Nations[this.parent.GameData.Players[playerID].NationalityID].Ideology + 3);
-						this.parent.GameData.Players[playerID].TaxRate = (short)(9 - this.parent.GameData.Players[playerID].ScienceTaxRate);
-					}
-
-					if ((-((50 * this.parent.GameData.DifficultyLevel) - 350) < this.parent.GameData.TurnCount || tryCount >= 2000) &&
-						playerID != this.parent.GameData.HumanPlayerID)
-					{
-						this.parent.GameData.Players[playerID].NationalityID ^= 8;
-						this.parent.GameData.ActiveCivilizations &= (short)(~(0x1 << playerID));
-
-						if (((0x1 << this.parent.GameData.HumanPlayerID) | 0x1) == this.parent.GameData.ActiveCivilizations)
+						if (tryCount <= 2000 || (playerID == this.parent.GameData.HumanPlayerID && this.parent.GameData.TurnCount == 0))
 						{
-							this.parent.Var_dc48_GameEndType = 1;
-							this.parent.Var_b884 = 1;
+							// Instruction address 0x0000:0x0b54, size: 5
+							if ((12 - (tryCount / 32)) > buildScore || distance < (10 - (tryCount / 64)) ||
+								this.parent.GameData.Continents[this.parent.MapManagement.F0_2aea_1942_GetGroupID(xStart, yStart)].BuildSiteCount < (32 - (this.parent.GameData.TurnCount / 32) + (tryCount / 64)) ||
+								(this.parent.GameData.Year > 0 && cityCount[this.parent.MapManagement.F0_2aea_1942_GetGroupID(xStart, yStart)] != 0)) goto L0a5e;
 						}
 
-						return false;
-					}
-
-					// Instruction address 0x0000:0x0d26, size: 5
-					this.parent.GameData.Players[playerID].Name = this.parent.GameData.Nations[this.parent.GameData.Players[playerID].NationalityID].Leader;
-
-					if (playerID != this.parent.GameData.HumanPlayerID || string.IsNullOrEmpty(this.parent.GameData.Players[playerID].Nationality))
-					{
-						this.parent.GameData.Players[playerID].Nationality = this.parent.GameData.Nations[this.parent.GameData.Players[playerID].NationalityID].Nationality;
-						this.parent.GameData.Players[playerID].Nation = this.parent.GameData.Nations[this.parent.GameData.Players[playerID].NationalityID].Nation;
-					}
-
-					// Instruction address 0x0000:0x0db7, size: 5
-					this.parent.MapManagement.F0_2aea_138c_SetCityOwner(xStart, yStart, playerID);
-
-					// Instruction address 0x0000:0x0dcb, size: 5
-					this.parent.UnitManagement.F0_1866_0cf5_CreateUnit(playerID, UnitTypeEnum.Settler, xStart, yStart);
-
-					this.parent.GameData.Players[playerID].XStart = (short)xStart;
-
-					for (int i = 0; i < 128; i++)
-					{
-						if (this.parent.GameData.Players[0].Units[i].UnitType != UnitTypeEnum.None &&
-							this.parent.MapManagement.GetDistance(xStart, yStart, this.parent.GameData.Players[0].Units[i].Position) < 9)
+						if (this.parent.GameData.TurnCount == 0 && this.parent.Var_d76a_EarthMap)
 						{
-							// Instruction address 0x0000:0x0e18, size: 5
-							this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(0, i);
+							xStart = this.parent.Array_35da[this.parent.GameData.Players[playerID].NationalityID].X;
+							yStart = this.parent.Array_35da[this.parent.GameData.Players[playerID].NationalityID].Y;
+							tryCount = 0;
+						}
+
+						if (this.parent.GameData.TurnCount != 0 &&
+							((this.parent.GameData.Players[playerID].NationalityID > 7 && (this.parent.GameData.PlayerIdentityFlags & (0x1 << playerID)) != 0) ||
+								(this.parent.GameData.Players[playerID].NationalityID < 8 && (this.parent.GameData.PlayerIdentityFlags & (0x1 << playerID)) == 0)))
+						{
+							tryCount = 2000;
+						}
+
+						if (playerID != this.parent.GameData.HumanPlayerID)
+						{
+							this.parent.GameData.Players[playerID].ScienceTaxRate = (short)(this.parent.GameData.Nations[this.parent.GameData.Players[playerID].NationalityID].Ideology + 3);
+							this.parent.GameData.Players[playerID].TaxRate = (short)(9 - this.parent.GameData.Players[playerID].ScienceTaxRate);
+						}
+
+						if ((-((50 * this.parent.GameData.DifficultyLevel) - 350) < this.parent.GameData.TurnCount || tryCount >= 2000) &&
+							playerID != this.parent.GameData.HumanPlayerID)
+						{
+							this.parent.GameData.Players[playerID].NationalityID ^= 8;
+							this.parent.GameData.ActiveCivilizations &= (short)(~(0x1 << playerID));
+
+							if (((0x1 << this.parent.GameData.HumanPlayerID) | 0x1) == this.parent.GameData.ActiveCivilizations)
+							{
+								this.parent.Var_dc48_GameEndType = 1;
+								this.parent.Var_b884 = 1;
+							}
+
+							return false;
+						}
+
+						// Initialize player Name, Nationality and Nation
+						this.parent.GameData.Players[playerID].Name = this.parent.GameData.Nations[this.parent.GameData.Players[playerID].NationalityID].Leader;
+
+						if (playerID != this.parent.GameData.HumanPlayerID || string.IsNullOrEmpty(this.parent.GameData.Players[playerID].Nationality))
+						{
+							this.parent.GameData.Players[playerID].Nationality = this.parent.GameData.Nations[this.parent.GameData.Players[playerID].NationalityID].Nationality;
+							this.parent.GameData.Players[playerID].Nation = this.parent.GameData.Nations[this.parent.GameData.Players[playerID].NationalityID].Nation;
+						}
+
+						// Create an Initial Settler unit
+						this.parent.MapManagement.F0_2aea_138c_SetCityOwner(xStart, yStart, playerID);
+						this.parent.UnitManagement.F0_1866_0cf5_CreateUnit(playerID, UnitTypeEnum.Settler, xStart, yStart);
+
+						this.parent.GameData.Players[playerID].XStart = (short)xStart;
+
+						// For AI players created later in game, delete units that are too far from the starting position
+						for (int i = 0; i < 128; i++)
+						{
+							if (this.parent.GameData.Players[0].Units[i].UnitType != UnitTypeEnum.None &&
+								this.parent.MapManagement.GetDistance(xStart, yStart, this.parent.GameData.Players[0].Units[i].Position) < 9)
+							{
+								// Instruction address 0x0000:0x0e18, size: 5
+								this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(0, i);
+							}
+						}
+
+						this.parent.GameData.Players[playerID].DiscoveredTechnologyCount = 1;
+
+						for (int i = 0; i < 28; i++)
+						{
+							this.parent.GameData.Players[playerID].LostUnits[i] = 0;
+							this.parent.GameData.Players[playerID].ActiveUnits[i] = 0;
+							this.parent.GameData.Players[playerID].UnitsInProduction[i] = 0;
 						}
 					}
-
-					this.parent.GameData.Players[playerID].DiscoveredTechnologyCount = 1;
 				}
-
-				for (int i = 0; i < 28; i++)
+				else
 				{
-					this.parent.GameData.Players[playerID].LostUnits[i] = 0;
-					this.parent.GameData.Players[playerID].ActiveUnits[i] = 0;
-					this.parent.GameData.Players[playerID].UnitsInProduction[i] = 0;
+					// Initialize Barbarians
+					// Player 0 is the Barbarian but it is never given a nationality or name.
+					// We need to fix that as the game doesn't function properly without this data!
+					// NationalityID 0 is the Barbarian entry the nations table already provides.
+					this.parent.GameData.Players[playerID].NationalityID = 0;
+					this.parent.GameData.Players[playerID].Name = this.parent.GameData.Nations[0].Leader;
+					this.parent.GameData.Players[playerID].Nation = this.parent.GameData.Nations[0].Nation;
+					this.parent.GameData.Players[playerID].Nationality = this.parent.GameData.Nations[0].Nationality;
+
+					this.parent.GameData.Players[playerID].DiscoveredTechnologyCount = 0;
+
+					for (int i = 0; i < 28; i++)
+					{
+						this.parent.GameData.Players[playerID].LostUnits[i] = 0;
+						this.parent.GameData.Players[playerID].ActiveUnits[i] = 0;
+						this.parent.GameData.Players[playerID].UnitsInProduction[i] = 0;
+					}
 				}
+
 				return true;
 			}
 
@@ -650,15 +675,23 @@ namespace OpenCivOne
 						this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DefenseMinisterReport;
 					}
 
-					// Instruction address 0x0000:0x0f32, size: 5
-					this.parent.MenuBoxDialog.ShowDialog(
-						 $"{this.parent.GameData.Players[playerID].Nationality}\ncivilization\ndestroyed\nby {this.parent.GameData.Players[playerID1].Nation}!\n", 100, 80);
+					// A civilization can end in three ways, and the destroying player tells them apart:
+					//   -1  no attacker at all, for example its last city built a settler or starved
+					//    0  the barbarians took the last city
+					//   >0  another civilization conquered it
+					this.parent.MenuBoxDialog.ShowDialog((playerID1 >= 0) ?
+						$"{this.parent.GameData.Players[playerID].Nationality}\ncivilization\ndestroyed\nby {this.parent.GameData.Players[playerID1].Nation}!\n" :
+						$"{this.parent.GameData.Players[playerID].Nationality}\ncivilization\nhas died out!\n", 100, 80);
 
 					// Instruction address 0x0000:0x0f3d, size: 5
 					this.parent.Segment_2459.F0_2459_05ee_SpaceshipArrivalFailed(playerID);
 
-					// Instruction address 0x0000:0x0f53, size: 5
-					this.parent.UnitManagement.F0_1866_250e_AddReplayData(13, (byte)playerID, (byte)playerID1);
+					// The replay stream stores the destroyer as a player index byte and the replay
+					// reader indexes Players[] with it, so the "no attacker" sentinel must not reach
+					// it: (byte)-1 would be 255 and index out of range. Record it as 0, which is what
+					// this call has always written for the no-attacker case.
+					// !!! This should be later fixed to properly record that the nation died out, or was destroyed by another player.
+					this.parent.UnitManagement.F0_1866_250e_AddReplayData(13, (byte)playerID, (byte)(playerID1 < 0 ? 0 : playerID1));
 
 					for (int i = 0; i < 128; i++)
 					{
