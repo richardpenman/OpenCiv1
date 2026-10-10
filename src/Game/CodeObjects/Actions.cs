@@ -528,25 +528,26 @@ namespace OpenCivOne
 			{
 				int tradeCityID = this.parent.GameData.Cities[homeCityID].TradeCityIDs[i];
 
-				if (tradeCityID != cityID)
+				// The cities already have a trade route
+				if (tradeCityID == cityID)
+					return;
+
+				int currentTradeWorth = -1;
+
+				if (tradeCityID != -1)
 				{
-					int currentTradeWorth = -1;
+					currentTradeWorth = this.parent.GameData.Cities[tradeCityID].BaseTrade;
 
-					if (tradeCityID != -1)
+					if (this.parent.GameData.Cities[tradeCityID].PlayerID != playerID)
 					{
-						currentTradeWorth = this.parent.GameData.Cities[tradeCityID].BaseTrade;
-
-						if (this.parent.GameData.Cities[tradeCityID].PlayerID != playerID)
-						{
-							currentTradeWorth *= 2;
-						}
+						currentTradeWorth *= 2;
 					}
+				}
 
-					if (currentTradeWorth < totalTradeWorth)
-					{
-						totalTradeWorth = currentTradeWorth;
-						maximumTradeCityID = i;
-					}
+				if (currentTradeWorth < totalTradeWorth)
+				{
+					totalTradeWorth = currentTradeWorth;
+					maximumTradeCityID = i;
 				}
 			}
 

@@ -11,6 +11,7 @@ namespace OpenCivOne.Tests
 		private const int Up = 1;
 		private const int UpRight = 2;
 		private const int Right = 3;
+		private const int Down = 5;
 
 		private static (GameHarness Harness, int PlayerID, Player Player) LoadScenarios()
 		{
@@ -173,6 +174,22 @@ namespace OpenCivOne.Tests
 			}
 
 			Assert.InRange(lost, 1, 9);
+		}
+
+		[Fact]
+		public void CaravanDoesNotDuplicateTradeRoute()
+		{
+			var (harness, playerID, player) = LoadScenarios();
+			using GameHarness _ = harness;
+			City samarkand = harness.Game.GameData.Cities[player.Units[51].HomeCityID];
+			int moscowID = samarkand.TradeCityIDs[0];
+			Assert.NotEqual(-1, moscowID);
+
+			// Caravan #51 from Samarkand, which already trades with Moscow, enters Moscow from (52,18)
+			harness.MoveUnit(playerID, 51, Down);
+
+			Assert.Equal(UnitTypeEnum.None, player.Units[51].UnitType);
+			Assert.Equal(1, samarkand.TradeCityIDs.Count(id => id == moscowID));
 		}
 
 		[Fact]
