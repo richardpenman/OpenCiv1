@@ -5,6 +5,7 @@ using OpenCivOne.Graphics;
 using OpenCivOne.Resources;
 using SkiaSharp;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace OpenCivOne
 {
@@ -106,7 +107,7 @@ namespace OpenCivOne
 #if DEBUG
 				if (Environment.OSVersion.Platform == PlatformID.Win32NT)
 				{
-					this.gameResourcePath = string.Format("C:{0}Dos{0}Civ1{0}", separator);
+					this.gameResourcePath = string.Format(CultureInfo.InvariantCulture, "C:{0}Dos{0}Civ1{0}", separator);
 				}
 				else
 				{
@@ -266,7 +267,7 @@ namespace OpenCivOne
 
 			for (int i = 0; i < aResourceFiles.Length; i++)
 			{
-				string sFilePath = $"{this.gameResourcePath}{aResourceFiles[i].ToUpper()}";
+				string sFilePath = $"{this.gameResourcePath}{aResourceFiles[i].ToUpperInvariant()}";
 
 				if (!File.Exists(sFilePath))
 				{

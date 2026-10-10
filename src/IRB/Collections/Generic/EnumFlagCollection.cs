@@ -1,5 +1,6 @@
 ﻿using OpenCivOne;
 using System.Collections;
+using System.Globalization;
 
 namespace IRB.Collections.Generic
 {
@@ -237,11 +238,7 @@ namespace IRB.Collections.Generic
 		{
 			EnumFlagCollection<T> newValue = new(value1);
 			
-			if (newValue.flagCollection.Contains(value2))
-			{
-				newValue.flagCollection.Remove(value2);
-			}
-			else
+			if (!newValue.flagCollection.Remove(value2))
 			{
 				newValue.flagCollection.Add(value2);
 			}
@@ -255,11 +252,7 @@ namespace IRB.Collections.Generic
 
 			foreach (T flag in value2)
 			{
-				if (newValue.flagCollection.Contains(flag))
-				{
-					newValue.flagCollection.Remove(flag);
-				}
-				else
+				if (!newValue.flagCollection.Remove(flag))
 				{
 					newValue.flagCollection.Add(flag);
 				}
@@ -345,7 +338,7 @@ namespace IRB.Collections.Generic
 
 					foreach (T flag in this.flagCollection)
 					{
-						values.Add(Convert.ToUInt32(flag));
+						values.Add(Convert.ToUInt32(flag, CultureInfo.InvariantCulture));
 					}
 
 					this.hashCode = (int)CRC32.GetCRC32(values);

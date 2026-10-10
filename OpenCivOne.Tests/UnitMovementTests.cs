@@ -8,7 +8,6 @@ namespace OpenCivOne.Tests
 	/// </summary>
 	public class UnitMovementTests
 	{
-		private const int Up = 1;
 		private const int UpRight = 2;
 		private const int Right = 3;
 		private const int Down = 5;

@@ -68,11 +68,11 @@ namespace OpenCivOne
 			// sanity check
 			if (size.Width < 0 || size.Width < MinimumMapSize.Width)
 			{
-				throw new ArgumentOutOfRangeException("Width");
+				throw new ArgumentOutOfRangeException(nameof(size), "The map width is too small");
 			}
 			if (size.Height < 0 || size.Height < MinimumMapSize.Height)
 			{
-				throw new ArgumentOutOfRangeException("Height");
+				throw new ArgumentOutOfRangeException(nameof(size), "The map height is too small");
 			}
 
 			this.oParent = parent;
@@ -200,11 +200,11 @@ namespace OpenCivOne
 			// sanity check
 			if (bitmap.Size.Width < 0 || bitmap.Size.Width < MinimumMapSize.Width)
 			{
-				throw new ArgumentOutOfRangeException("Width");
+				throw new ArgumentOutOfRangeException(nameof(bitmap), "The map width is too small");
 			}
 			if (bitmap.Size.Height < 0 || bitmap.Size.Height < MinimumMapSize.Height)
 			{
-				throw new ArgumentOutOfRangeException("Height");
+				throw new ArgumentOutOfRangeException(nameof(bitmap), "The map height is too small");
 			}
 
 			this.oParent = parent;
@@ -1552,11 +1552,11 @@ namespace OpenCivOne
 					// sanity check
 					if (value.Width < 0 || value.Width < MinimumMapSize.Width)
 					{
-						throw new ArgumentOutOfRangeException("Size.Width");
+						throw new ArgumentOutOfRangeException(nameof(value), "The map width is too small");
 					}
 					if (value.Height < 0 || value.Height < MinimumMapSize.Height)
 					{
-						throw new ArgumentOutOfRangeException("Size.Height");
+						throw new ArgumentOutOfRangeException(nameof(value), "The map height is too small");
 					}
 
 					this.oSize = value;
@@ -1727,7 +1727,7 @@ namespace OpenCivOne
 		{
 			StreamReader reader;
 
-			if (path.EndsWith(".gz"))
+			if (path.EndsWith(".gz", StringComparison.Ordinal))
 			{
 				reader = new StreamReader(new GZipStream(new BufferedStream(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read), 65536), CompressionMode.Decompress));
 			}
@@ -1751,7 +1751,8 @@ namespace OpenCivOne
 		public static TerrainMap Deserialize(StreamReader reader)
 		{
 			XmlSerializer ser = new XmlSerializer(typeof(TerrainMap));
-			object? obj = ser.Deserialize(reader);
+			using System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(reader);
+			object? obj = ser.Deserialize(xmlReader);
 
 			if (obj == null)
 				throw new Exception("Can't deserialize Map object");
@@ -1780,7 +1781,7 @@ namespace OpenCivOne
 		{
 			StreamWriter writer;
 
-			if (filePath.EndsWith(".gz"))
+			if (filePath.EndsWith(".gz", StringComparison.Ordinal))
 			{
 				writer = new StreamWriter(new GZipStream(new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.Read), CompressionMode.Compress));
 			}

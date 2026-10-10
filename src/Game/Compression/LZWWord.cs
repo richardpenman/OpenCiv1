@@ -8,7 +8,7 @@ namespace OpenCivOne.Compression
 	public class LZWWord : IEquatable<LZWWord>, IEquatable<List<byte>>,
 		IComparable<LZWWord>, IComparable<List<byte>>
 	{
-		protected byte[] aItems = new byte[] { };
+		protected byte[] aItems = Array.Empty<byte>();
 		protected int iHashCode = 0;
 		private static LZWWord oEmpty = new LZWWord();
 

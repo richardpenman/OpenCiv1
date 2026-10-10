@@ -175,17 +175,17 @@ namespace OpenCivOne
 		{
 			string filename = path;
 
-			if (filename.IndexOf(':') == 1)
+			if (filename.IndexOf(':', StringComparison.Ordinal) == 1)
 			{
 				filename = filename.Substring(2);
 			}
 
-			if (filename.IndexOf('\\') > 0)
+			if (filename.IndexOf('\\', StringComparison.Ordinal) > 0)
 			{
 				filename = filename.Substring(filename.LastIndexOf('\\') + 1);
 			}
 
-			return filename.ToUpper();
+			return filename.ToUpperInvariant();
 		}
 
 		public short fopen(ushort filenamePtr, ushort modePtr)
@@ -211,7 +211,7 @@ namespace OpenCivOne
 			FileAccess eAccess = FileAccess.Write;
 			FileStreamTypeEnum eType = FileStreamTypeEnum.Binary;
 
-			mode = mode.Trim().ToLower();
+			mode = mode.Trim().ToLowerInvariant();
 			for (int i = 0; i < mode.Length; i++)
 			{
 				switch (mode[i])
@@ -243,7 +243,7 @@ namespace OpenCivOne
 			}
 
 			short sHandle = -1;
-			string sPath = $"{this.oParent.ResourcePath}{GetDOSFileName(filename.ToUpper())}";
+			string sPath = $"{this.oParent.ResourcePath}{GetDOSFileName(filename.ToUpperInvariant())}";
 			//this.oCPU.Log.WriteLine($"Opening file '{sPath}', with file handle {this.oCPU.FileHandleCount}");
 
 			try
@@ -348,7 +348,7 @@ namespace OpenCivOne
 				FileStreamItem fileItem = this.oCPU.Files.GetValueByKey(handle);
 				StringBuilder sbResult = new StringBuilder();
 
-				switch (format.ToLower())
+				switch (format.ToLowerInvariant())
 				{
 					case "%[^\n]\n":
 						short ch;
@@ -610,7 +610,7 @@ namespace OpenCivOne
 			}
 
 			short sHandle = -1;
-			string sPath = $"{this.oParent.ResourcePath}{GetDOSFileName(filename.ToUpper())}";
+			string sPath = $"{this.oParent.ResourcePath}{GetDOSFileName(filename.ToUpperInvariant())}";
 
 			//this.oCPU.Log.WriteLine($"Opening file '{sPath}', with file handle {this.oCPU.FileHandleCount}");
 			try
@@ -764,7 +764,7 @@ namespace OpenCivOne
 				eMode = FileMode.Open;
 			}
 
-			string sPath = $"{this.oParent.ResourcePath}{GetDOSFileName(sName.ToUpper())}";
+			string sPath = $"{this.oParent.ResourcePath}{GetDOSFileName(sName.ToUpperInvariant())}";
 			if (File.Exists(sPath))
 			{
 				// this.oCPU.Log.WriteLine($"Opening file '{sPath}', with file handle {this.oCPU.FileHandleCount}");
@@ -950,7 +950,7 @@ namespace OpenCivOne
 		{
 			string sS2 = this.oCPU.ReadString(VCPU.ToLinearAddress(this.oCPU.DS.UInt16, string2Ptr));
 
-			short sRetVal = (short)string.Compare(string1, sS2, StringComparison.CurrentCultureIgnoreCase);
+			short sRetVal = (short)string.Compare(string1, sS2, StringComparison.OrdinalIgnoreCase);
 
 			this.oCPU.AX.UInt16 = (ushort)sRetVal; // preserve compatibility
 			return sRetVal;
@@ -961,7 +961,7 @@ namespace OpenCivOne
 			string sS1 = this.oCPU.ReadString(VCPU.ToLinearAddress(this.oCPU.DS.UInt16, string1Ptr));
 			string sS2 = this.oCPU.ReadString(VCPU.ToLinearAddress(this.oCPU.DS.UInt16, string2Ptr));
 
-			short sRetVal = (short)string.Compare(sS1, sS2, StringComparison.CurrentCultureIgnoreCase);
+			short sRetVal = (short)string.Compare(sS1, sS2, StringComparison.OrdinalIgnoreCase);
 
 			this.oCPU.AX.UInt16 = (ushort)sRetVal; // preserve compatibility
 			return sRetVal;
@@ -978,7 +978,7 @@ namespace OpenCivOne
 			if (sS2.Length > maxLength)
 				sS2 = sS2.Substring(0, maxLength);
 
-			short sRetVal = (short)string.Compare(sS1, sS2, StringComparison.CurrentCultureIgnoreCase);
+			short sRetVal = (short)string.Compare(sS1, sS2, StringComparison.OrdinalIgnoreCase);
 
 			this.oCPU.AX.UInt16 = (ushort)sRetVal; // preserve compatibility
 			return sRetVal;
@@ -986,7 +986,7 @@ namespace OpenCivOne
 
 		public ushort strupr(ushort stringPtr)
 		{
-			string text = this.oCPU.ReadString(VCPU.ToLinearAddress(this.oCPU.DS.UInt16, stringPtr)).ToUpper();
+			string text = this.oCPU.ReadString(VCPU.ToLinearAddress(this.oCPU.DS.UInt16, stringPtr)).ToUpperInvariant();
 
 			this.oCPU.WriteString(VCPU.ToLinearAddress(this.oCPU.DS.UInt16, stringPtr), text);
 
@@ -998,7 +998,7 @@ namespace OpenCivOne
 		{
 			string sS1 = this.oCPU.ReadString(VCPU.ToLinearAddress(this.oCPU.DS.UInt16, string1Ptr));
 
-			short sRetVal = (short)sS1.IndexOf(string2);
+			short sRetVal = (short)sS1.IndexOf(string2, StringComparison.Ordinal);
 
 			if (sRetVal >= 0) // preserve compatibility
 			{
@@ -1017,7 +1017,7 @@ namespace OpenCivOne
 			string sS1 = this.oCPU.ReadString(VCPU.ToLinearAddress(this.oCPU.DS.UInt16, string1Ptr));
 			string sS2 = this.oCPU.ReadString(VCPU.ToLinearAddress(this.oCPU.DS.UInt16, string2Ptr));
 
-			short sRetVal = (short)sS1.IndexOf(sS2);
+			short sRetVal = (short)sS1.IndexOf(sS2, StringComparison.Ordinal);
 
 			if (sRetVal >= 0) // preserve compatibility
 			{

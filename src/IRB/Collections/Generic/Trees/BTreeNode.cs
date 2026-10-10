@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace IRB.Collections.Generic.Trees
 {
@@ -137,7 +138,7 @@ namespace IRB.Collections.Generic.Trees
 			{
 				if (i > 0)
 					writer.Write(", ");
-				writer.Write(string.Format(" {0}", aKeys[i]));
+				writer.Write(string.Format(CultureInfo.InvariantCulture, " {0}", aKeys[i]));
 			}
 
 			// Traverse through children, if this is not a leaf node

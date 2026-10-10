@@ -116,8 +116,8 @@ namespace OpenCivOne
 
 			//this.CPU.Log.EnterBlock($"F0_2fa1_01a2_LoadBitmapOrPalette(0x{screenID:x4}, 0x{xPos:x4}, 0x{yPos:x4}, '{filename1}')");
 
-			if (screenID >= 0 && (Path.GetExtension(filename1).Equals(".pic", StringComparison.InvariantCultureIgnoreCase) ||
-				Path.GetExtension(filename1).Equals(".map", StringComparison.InvariantCultureIgnoreCase)))
+			if (screenID >= 0 && (Path.GetExtension(filename1).Equals(".pic", StringComparison.OrdinalIgnoreCase) ||
+				Path.GetExtension(filename1).Equals(".map", StringComparison.OrdinalIgnoreCase)))
 			{
 				if (this.parent.Graphics.Screens.ContainsKey(screenID))
 				{

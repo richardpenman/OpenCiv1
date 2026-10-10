@@ -120,7 +120,7 @@ namespace OpenCivOne.Graphics
 		public static GFonts Deserialize(string path)
 		{
 			Stream reader;
-			if (path.EndsWith(".gz"))
+			if (path.EndsWith(".gz", StringComparison.Ordinal))
 			{
 				reader = new GZipStream(new BufferedStream(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read), 65536), CompressionMode.Decompress);
 			}
@@ -144,7 +144,8 @@ namespace OpenCivOne.Graphics
 		public static GFonts Deserialize(Stream reader)
 		{
 			XmlSerializer ser = new XmlSerializer(typeof(GFonts));
-			object? obj = ser.Deserialize(reader);
+			using System.Xml.XmlReader xmlReader = System.Xml.XmlReader.Create(reader);
+			object? obj = ser.Deserialize(xmlReader);
 			if (obj == null)
 				throw new Exception("Can't deserialize object");
 
@@ -170,7 +171,7 @@ namespace OpenCivOne.Graphics
 		public void Serialize(string filePath)
 		{
 			StreamWriter writer;
-			if (filePath.EndsWith(".gz"))
+			if (filePath.EndsWith(".gz", StringComparison.Ordinal))
 			{
 				writer = new StreamWriter(new GZipStream(new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.Read), CompressionMode.Compress));
 			}

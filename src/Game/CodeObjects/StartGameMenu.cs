@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 
 namespace OpenCivOne
@@ -69,7 +70,7 @@ namespace OpenCivOne
 			for (int i = 7; i > 2; i--)
 			{
 				// Instruction address 0x0000:0x016b, size: 5
-				competitionList.Append($"{i} Civilizations\n ");
+				competitionList.Append(CultureInfo.InvariantCulture, $"{i} Civilizations\n ");
 			}
 
 			do
@@ -162,13 +163,13 @@ namespace OpenCivOne
 			for (int i = 1; i < this.parent.GameData.AIOpponentCount + 2; i++)
 			{
 				// Instruction address 0x0000:0x033d, size: 5
-				tribeList.Append($"{this.parent.GameData.Nations[i].Nationality}\n ");
+				tribeList.Append(CultureInfo.InvariantCulture, $"{this.parent.GameData.Nations[i].Nationality}\n ");
 			}
 
 			for (int i = 1; i < this.parent.GameData.AIOpponentCount + 2; i++)
 			{
 				// Instruction address 0x0000:0x0377, size: 5
-				tribeList.Append($"{this.parent.GameData.Nations[8 + i].Nationality}\n ");
+				tribeList.Append(CultureInfo.InvariantCulture, $"{this.parent.GameData.Nations[8 + i].Nationality}\n ");
 			}
 
 			// Instruction address 0x0000:0x03ba, size: 5
@@ -312,7 +313,7 @@ namespace OpenCivOne
 				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, (TechnologyAdvanceEnum)i))
 				{
 					// Instruction address 0x0000:0x06d7, size: 5
-					startText.Append($"{this.parent.GameData.TechnologyAdvances[i].Name}, ");
+					startText.Append(CultureInfo.InvariantCulture, $"{this.parent.GameData.TechnologyAdvances[i].Name}, ");
 				}
 			}
 

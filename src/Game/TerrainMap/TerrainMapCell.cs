@@ -639,10 +639,7 @@ namespace OpenCivOne
 			}
 			else
 			{
-				if (this.VisibilityList.Contains(playerID))
-				{
-					this.VisibilityList.Remove(playerID);
-				}
+				this.VisibilityList.Remove(playerID);
 			}
 		}
 

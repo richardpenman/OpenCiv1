@@ -2,6 +2,7 @@ using IRB.VirtualCPU;
 using OpenCivOne.Graphics;
 using OpenCivOne.UI;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 
 namespace OpenCivOne
@@ -1204,7 +1205,7 @@ namespace OpenCivOne
 					for (int i = 0; this.parent.GameData.Players[playerID].TaxRate + this.parent.GameData.Players[playerID].ScienceTaxRate >= i; i++)
 					{
 						// Instruction address 0x1403:0x362a, size: 5
-						taxOptions.Append($"{i * 10}% Tax, " +
+						taxOptions.Append(CultureInfo.InvariantCulture, $"{i * 10}% Tax, " +
 							$"({(this.parent.GameData.Players[playerID].TaxRate + this.parent.GameData.Players[playerID].ScienceTaxRate - i) * 10}% Science)\n ");
 					}
 
@@ -1233,7 +1234,7 @@ namespace OpenCivOne
 
 					for (int i = 0; 10 - this.parent.GameData.Players[playerID].TaxRate >= i; i++)
 					{
-						luxuryOptions.Append($"{i * 10}% Luxuries, ({(10 - this.parent.GameData.Players[playerID].TaxRate - i) * 10}% Science)\n ");
+						luxuryOptions.Append(CultureInfo.InvariantCulture, $"{i * 10}% Luxuries, ({(10 - this.parent.GameData.Players[playerID].TaxRate - i) * 10}% Science)\n ");
 					}
 
 					this.parent.Var_2f9a_MenuBoxDefaultOptionIndex = (10 - this.parent.GameData.Players[playerID].TaxRate - this.parent.GameData.Players[playerID].ScienceTaxRate);

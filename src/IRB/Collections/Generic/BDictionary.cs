@@ -1,5 +1,6 @@
 ﻿using IRB.Collections.Generic.Trees;
 using System;
+using System.Globalization;
 using System.Xml.Serialization;
 
 namespace IRB.Collections.Generic
@@ -115,7 +116,7 @@ namespace IRB.Collections.Generic
 		{
 			if (this.ContainsKey(key))
 			{
-				throw new InvalidOperationException(string.Format("This collection already contains key '{0}'", key));
+				throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "This collection already contains key '{0}'", key));
 			}
 			this.aItems.Insert(index, new BKeyValuePair<TKey, TValue>(key, value));
 			oBTree.AdjustNodeIndex(index, 1);
@@ -128,7 +129,7 @@ namespace IRB.Collections.Generic
 			BKeyIndexPair? pair = oBTree.Find(iKeyHash);
 			if (pair == null)
 			{
-				throw new InvalidOperationException(string.Format("This collection doesn't contain key '{0}'", key));
+				throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "This collection doesn't contain key '{0}'", key));
 			}
 			this.aItems.RemoveAt(pair.Index);
 			this.oBTree.Delete(iKeyHash);
@@ -194,7 +195,7 @@ namespace IRB.Collections.Generic
 				return this.aItems[pair.Index].Value;
 			}
 
-			throw new InvalidOperationException(string.Format("This collection doesn't contain key '{0}'", key));
+			throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "This collection doesn't contain key '{0}'", key));
 		}
 
 		public void SetValueByKey(TKey key, TValue value)
@@ -202,7 +203,7 @@ namespace IRB.Collections.Generic
 			BKeyIndexPair? pair = oBTree.Find(key.GetHashCode());
 			if (pair == null)
 			{
-				throw new InvalidOperationException(string.Format("This collection doesn't contain key '{0}'", key));
+				throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "This collection doesn't contain key '{0}'", key));
 			}
 
 			this.aItems[pair.Index] = new BKeyValuePair<TKey, TValue>(key, value);
@@ -225,7 +226,7 @@ namespace IRB.Collections.Generic
 		{
 			if (this.ContainsKey(item.Key))
 			{
-				throw new InvalidOperationException(string.Format("This collection already contains key '{0}'", item.Key));
+				throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "This collection already contains key '{0}'", item.Key));
 			}
 			this.aItems.Insert(index, item);
 			oBTree.AdjustNodeIndex(index, 1);
@@ -256,7 +257,7 @@ namespace IRB.Collections.Generic
 					BKeyIndexPair? pair = oBTree.Find(value.Key.GetHashCode());
 					if (pair != null)
 					{
-						throw new InvalidOperationException(string.Format("This collection already contains key '{0}'", value.Key));
+						throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "This collection already contains key '{0}'", value.Key));
 					}
 
 					this.oBTree.Delete(this.aItems[index].Key.GetHashCode());
@@ -359,8 +360,7 @@ namespace IRB.Collections.Generic
 
 			internal KeyCollection(BDictionary<TKey, TValue> parent)
 			{
-				if (parent == null)
-					throw new ArgumentNullException("The parent can't be null");
+				ArgumentNullException.ThrowIfNull(parent);
 
 				this.oParent = parent;
 			}
@@ -414,8 +414,7 @@ namespace IRB.Collections.Generic
 
 			public void CopyTo(TKey[] array, int arrayIndex)
 			{
-				if (array == null)
-					throw new ArgumentNullException("The target array is null");
+				ArgumentNullException.ThrowIfNull(array);
 				if (arrayIndex < 0 || arrayIndex > array.Length)
 					throw new ArgumentOutOfRangeException("arrayIndex", "needs non negative value in range of an array");
 				if (array.Length - arrayIndex < this.oParent.aItems.Count)
@@ -518,8 +517,7 @@ namespace IRB.Collections.Generic
 
 			internal ValueCollection(BDictionary<TKey, TValue> parent)
 			{
-				if (parent == null)
-					throw new ArgumentNullException("The parent can't be null");
+				ArgumentNullException.ThrowIfNull(parent);
 
 				this.oParent = parent;
 			}
@@ -573,8 +571,7 @@ namespace IRB.Collections.Generic
 
 			public void CopyTo(TValue[] array, int arrayIndex)
 			{
-				if (array == null)
-					throw new ArgumentNullException("The target array is null");
+				ArgumentNullException.ThrowIfNull(array);
 				if (arrayIndex < 0 || arrayIndex > array.Length)
 					throw new ArgumentOutOfRangeException("arrayIndex", "needs non negative value in range of an array");
 				if (array.Length - arrayIndex < this.oParent.aItems.Count)

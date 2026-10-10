@@ -2,6 +2,7 @@
 using IRB.Collections.Generic;
 using OpenCivOne;
 using OpenCivOne.Graphics;
+using System.Globalization;
 using System.Reflection;
 using System.Text;
 
@@ -81,11 +82,11 @@ namespace IRB.VirtualCPU
 #if DEBUG
 			if (Environment.OSVersion.Platform == PlatformID.Win32NT)
 			{
-				DefaultCIVPath = string.Format("C:{0}Dos{0}Civ1{0}", Path.DirectorySeparatorChar);
+				DefaultCIVPath = string.Format(CultureInfo.InvariantCulture, "C:{0}Dos{0}Civ1{0}", Path.DirectorySeparatorChar);
 			}
 			else
 			{
-				DefaultCIVPath = string.Format("{0}{1}Dos{1}Civ1{1}",
+				DefaultCIVPath = string.Format(CultureInfo.InvariantCulture, "{0}{1}Dos{1}Civ1{1}",
 					Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Path.DirectorySeparatorChar);
 			}
 #else
@@ -2062,7 +2063,7 @@ namespace IRB.VirtualCPU
 					break;
 
 				default:
-					throw new Exception(string.Format("Unknown 0x{0:x2} interrupt", value));
+					throw new Exception(string.Format(CultureInfo.InvariantCulture, "Unknown 0x{0:x2} interrupt", value));
 			}
 		}
 
@@ -2093,7 +2094,7 @@ namespace IRB.VirtualCPU
 		{
 			if (this.oAX.LowUInt8 == 3)
 			{
-				string sName = CAPI.GetDOSFileName(this.ReadString(VCPU.ToLinearAddress(this.DS.UInt16, this.DX.UInt16)).ToUpper());
+				string sName = CAPI.GetDOSFileName(this.ReadString(VCPU.ToLinearAddress(this.DS.UInt16, this.DX.UInt16)).ToUpperInvariant());
 				string sPath = $"{VCPU.DefaultCIVPath}{sName}";
 				ushort usSegment = ReadUInt16(this.oES.UInt16, this.oBX.UInt16);
 				ushort usRelocationSegment = ReadUInt16(this.oES.UInt16, (ushort)(this.oBX.UInt16 + 2));
@@ -2248,7 +2249,7 @@ namespace IRB.VirtualCPU
 		private void DOSCreateFileUsingHandle()
 		{
 			// open file
-			string sName = CAPI.GetDOSFileName(this.ReadString(VCPU.ToLinearAddress(this.DS.UInt16, this.DX.UInt16)).ToUpper());
+			string sName = CAPI.GetDOSFileName(this.ReadString(VCPU.ToLinearAddress(this.DS.UInt16, this.DX.UInt16)).ToUpperInvariant());
 			string sPath = $"{VCPU.DefaultCIVPath}{sName}";
 			FileAccess access = FileAccess.ReadWrite;
 
@@ -2353,7 +2354,7 @@ namespace IRB.VirtualCPU
 		private void DOSOpenFileUsingHandle()
 		{
 			// open file
-			string sName = this.ReadString(VCPU.ToLinearAddress(this.DS.UInt16, this.DX.UInt16)).ToUpper();
+			string sName = this.ReadString(VCPU.ToLinearAddress(this.DS.UInt16, this.DX.UInt16)).ToUpperInvariant();
 			string sPath = $"{VCPU.DefaultCIVPath}{sName}";
 			FileAccess access = FileAccess.Read;
 
@@ -2465,7 +2466,7 @@ namespace IRB.VirtualCPU
 		private void DOSGetCurrentDefaultDrive()
 		{
 			// Force C drive
-			//string sTemp = Path.GetPathRoot(sDefaultCIVPath).ToUpper();
+			//string sTemp = Path.GetPathRoot(sDefaultCIVPath).ToUpperInvariant();
 			this.oAX.LowUInt8 = 2; // (byte)(sTemp[0] - 'A');
 			this.oFlags.C = false;
 		}
@@ -2476,7 +2477,7 @@ namespace IRB.VirtualCPU
 			{
 				this.oLog.WriteLine($"Wrong drive number {this.oDX.LowUInt8}");
 			}
-			string sTemp = VCPU.DefaultCIVPath.Substring(3).ToUpper();
+			string sTemp = VCPU.DefaultCIVPath.Substring(3).ToUpperInvariant();
 			this.WriteString(VCPU.ToLinearAddress(this.oDS.UInt16, this.oSI.UInt16), sTemp);
 			this.oFlags.C = false;
 		}
@@ -2497,7 +2498,7 @@ namespace IRB.VirtualCPU
 			for (int i = 0; i < this.aFileHandles.Length; i++)
 			{
 				file = this.aFileHandles[i];
-				if (file != null && file.Name.Equals(shortname, StringComparison.CurrentCultureIgnoreCase))
+				if (file != null && file.Name.Equals(shortname, StringComparison.OrdinalIgnoreCase))
 				{
 					handle = i;
 					fcb.FileOpen((byte)handle);
@@ -2552,7 +2553,7 @@ namespace IRB.VirtualCPU
 		void DOSParseAFilenameForFCB()
 		{
 			DOS_FCB fcb = new DOS_FCB(this.oMemory, this.oES.UInt16, this.oDI.UInt16);
-			string sFilename = CAPI.GetDOSFileName(this.ReadString(VCPU.ToLinearAddress(this.oDS.UInt16, this.oSI.UInt16)).ToUpper());
+			string sFilename = CAPI.GetDOSFileName(this.ReadString(VCPU.ToLinearAddress(this.oDS.UInt16, this.oSI.UInt16)).ToUpperInvariant());
 			string sName = Path.GetFileNameWithoutExtension(sFilename);
 			string sExtension = Path.GetExtension(sFilename).Substring(1);
 			string sPath = $"{VCPU.DefaultCIVPath}{sFilename}";
@@ -2577,7 +2578,7 @@ namespace IRB.VirtualCPU
 		{
 			DOS_FCB fcb = new DOS_FCB(this.oMemory, this.oDS.UInt16, this.oDX.UInt16);
 			string sFileName = fcb.GetName();
-			string sPath = $"{VCPU.DefaultCIVPath}{sFileName.ToUpper()}";
+			string sPath = $"{VCPU.DefaultCIVPath}{sFileName.ToUpperInvariant()}";
 
 			if (File.Exists(sPath))
 			{
@@ -3135,7 +3136,7 @@ namespace IRB.VirtualCPU
 
 					if (sRoot != null && sRoot.Length == 3 && sRoot[1] == ':' && sRoot[2] == Path.PathSeparator)
 					{
-						drv = (byte)((byte)char.ToUpper(sRoot[0]) - (byte)'A');
+						drv = (byte)((byte)char.ToUpperInvariant(sRoot[0]) - (byte)'A');
 					}
 
 					return drv;

@@ -352,7 +352,7 @@ namespace OpenCivOne
 			string textContent = this.parent.LanguageTools.F0_2f4d_0471_ReplaceKeywords(this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey("KING",
 				((playerID == this.parent.GameData.HumanPlayerID) ? "*SPACE" : "*SPACE2")));
 
-			string[] content = textContent.Replace("\n", "").Split('^');
+			string[] content = textContent.Replace("\n", "", StringComparison.Ordinal).Split('^');
 
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 6;
 
@@ -555,7 +555,7 @@ namespace OpenCivOne
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 
 			// Instruction address 0x0000:0x15d9, size: 5
-			this.parent.Array_30b8[0] = this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Name.ToUpper();
+			this.parent.Array_30b8[0] = this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Name.ToUpperInvariant();
 
 			// Instruction address 0x0000:0x15e9, size: 5
 			this.parent.Array_30b8[3] = "Irrigation";
@@ -570,7 +570,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x1645, size: 5
-			string gameEndText = this.parent.LanguageTools.F0_2f4d_0471_ReplaceKeywords(this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey("KING", "*ARCH")).Replace("\n", "");
+			string gameEndText = this.parent.LanguageTools.F0_2f4d_0471_ReplaceKeywords(this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey("KING", "*ARCH")).Replace("\n", "", StringComparison.Ordinal);
 
 			string[] gameEndBlock = gameEndText.Split('^');
 

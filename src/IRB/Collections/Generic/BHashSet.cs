@@ -1,5 +1,6 @@
 ﻿using IRB.Collections.Generic.Trees;
 using System;
+using System.Globalization;
 
 namespace IRB.Collections.Generic
 {
@@ -90,7 +91,7 @@ namespace IRB.Collections.Generic
 		{
 			if (this.Contains(value))
 			{
-				throw new InvalidOperationException(string.Format("This collection already contains value '{0}'", value));
+				throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "This collection already contains value '{0}'", value));
 			}
 			this.oBTree.AdjustNodeIndex(index, 1);
 			this.aItems.Insert(index, value);
@@ -114,7 +115,7 @@ namespace IRB.Collections.Generic
 			{
 				if (this.Contains(value))
 				{
-					throw new InvalidOperationException(string.Format("This collection already contains value '{0}'", value));
+					throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "This collection already contains value '{0}'", value));
 				}
 
 				this.oBTree.Delete(this.aItems[index].GetHashCode());
@@ -155,8 +156,7 @@ namespace IRB.Collections.Generic
 
 		public void CopyTo(TValue[] array, int arrayIndex)
 		{
-			if (array == null)
-				throw new ArgumentNullException("The target array is null");
+			ArgumentNullException.ThrowIfNull(array);
 			if (arrayIndex < 0 || arrayIndex > array.Length)
 				throw new ArgumentOutOfRangeException("arrayIndex", "needs non negative value in range of an array");
 			if (array.Length - arrayIndex < this.aItems.Count)

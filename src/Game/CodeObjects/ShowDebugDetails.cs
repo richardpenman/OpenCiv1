@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 
 namespace OpenCivOne
@@ -25,7 +26,7 @@ namespace OpenCivOne
 
 			for (int i = 1; i < 8; i++)
 			{
-				playerList.Append($"{this.parent.GameData.Players[i].Nationality}\n ");
+				playerList.Append(CultureInfo.InvariantCulture, $"{this.parent.GameData.Players[i].Nationality}\n ");
 			}
 
 			int selectedPlayerID = this.parent.MenuBoxDialog.ShowDialog(playerList.ToString(), 100, 80) + 1;
@@ -251,14 +252,14 @@ namespace OpenCivOne
 			// function body
 			StringBuilder unitStatus = new();
 
-			unitStatus.Append($"{this.parent.GameData.Players[playerID].Nationality}\n({unitID})/" +
+			unitStatus.Append(CultureInfo.InvariantCulture, $"{this.parent.GameData.Players[playerID].Nationality}\n({unitID})/" +
 				$"{this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].Name}\n" +
 				$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(this.parent.GameData.Players[playerID].Units[unitID].HomeCityID)}\n" +
 				$"Loc:{this.parent.GameData.Players[playerID].Units[unitID].Position.X},{this.parent.GameData.Players[playerID].Units[unitID].Position.Y}\n");
 
 			if (this.parent.GameData.Players[playerID].Units[unitID].GoToDestination.X != -1)
 			{
-				unitStatus.Append($"To:{this.parent.GameData.Players[playerID].Units[unitID].GoToDestination.X},"+
+				unitStatus.Append(CultureInfo.InvariantCulture, $"To:{this.parent.GameData.Players[playerID].Units[unitID].GoToDestination.X},"+
 					$"{this.parent.GameData.Players[playerID].Units[unitID].GoToDestination.Y}\n");
 			}
 		
@@ -270,7 +271,7 @@ namespace OpenCivOne
 				if (this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType != UnitTypeEnum.None)
 				{
 					// Instruction address 0x0000:0x066b, size: 5
-					unitStatus.Append($"*{this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].Name}\n");
+					unitStatus.Append(CultureInfo.InvariantCulture, $"*{this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].Name}\n");
 				}
 
 				nextUnitID = this.parent.GameData.Players[playerID].Units[nextUnitID].NextUnitID;

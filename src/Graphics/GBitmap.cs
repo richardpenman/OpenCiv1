@@ -603,7 +603,7 @@ namespace OpenCivOne.Graphics
 			GBitmap? bitmap = null;
 			FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
 			List<BKeyValuePair<int, Color>> aPalette = new List<BKeyValuePair<int, Color>>();
-			palette = new byte[0];
+			palette = Array.Empty<byte>();
 			
 			// PIC file is written in blocks
 			while (true)
@@ -811,7 +811,7 @@ namespace OpenCivOne.Graphics
 		{
 			FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read);
 			List<BKeyValuePair<int, Color>> aPalette = new List<BKeyValuePair<int, Color>>();
-			palette = new byte[0];
+			palette = Array.Empty<byte>();
 
 			// PIC file is written in blocks
 			while (true)
