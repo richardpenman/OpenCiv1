@@ -43,23 +43,7 @@ namespace OpenCivOne
 				}
 			}
 
-			for (int i = 0; i < 128; i++)
-			{
-				if (this.parent.GameData.Players[playerID].Units[i].UnitType != UnitTypeEnum.None && this.parent.Var_df60 != 1)
-				{
-					this.parent.GameData.Players[playerID].Units[i].RemainingMoves =
-						(short)(this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[i].UnitType].MoveCount * 3);
-
-					if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[i].UnitType].MovementType != UnitMovementTypeEnum.Water)
-					{
-						if (this.parent.CityWorker.F0_1d12_6c97_PlayerHasWonder(playerID, WonderEnum.Lighthouse) ||
-							this.parent.CityWorker.F0_1d12_6c97_PlayerHasWonder(playerID, WonderEnum.MagellansExpedition))
-						{
-							this.parent.GameData.Players[playerID].Units[i].RemainingMoves += 3;
-						}
-					}
-				}
-			}
+			ResetUnitMoves(playerID);
 
 			this.parent.RefreshScreenMap = false;
 
@@ -2431,6 +2415,33 @@ namespace OpenCivOne
 								unit.RemainingMoves = 0;
 								unit.SpecialMoves = this.parent.GameData.Units[(int)unit.UnitType].TurnsOutside;
 							}
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gives all the player's units their full moves for the new turn
+		/// </summary>
+		/// <param name="playerID"></param>
+		internal void ResetUnitMoves(int playerID)
+		{
+			for (int i = 0; i < 128; i++)
+			{
+				Unit unit = this.parent.GameData.Players[playerID].Units[i];
+
+				if (unit.UnitType != UnitTypeEnum.None && this.parent.Var_df60 != 1)
+				{
+					unit.RemainingMoves = (short)(this.parent.GameData.Units[(int)unit.UnitType].MoveCount * 3);
+
+					// The Lighthouse and Magellan's Expedition give ships one extra move
+					if (this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Water)
+					{
+						if (this.parent.CityWorker.F0_1d12_6c97_PlayerHasWonder(playerID, WonderEnum.Lighthouse) ||
+							this.parent.CityWorker.F0_1d12_6c97_PlayerHasWonder(playerID, WonderEnum.MagellansExpedition))
+						{
+							unit.RemainingMoves += 3;
 						}
 					}
 				}
