@@ -2145,11 +2145,9 @@ namespace OpenCivOne
 						{
 							newDirectionCount++;
 
-							int ownerPlayerID = this.parent.MapManagement.GetPlayerLandOwnership(newX1, newY1);
-
-							// Check if the owner of this cell is the player with which we have a peace treaty
-							if (ownerPlayerID != -1 && ownerPlayerID != playerID && 
-								this.parent.GameData.Players[playerID].Diplomacy[ownerPlayerID].HasFlag(DiplomacyFlagsEnum.Peace))
+							// Don't count land owned by the human player if we have a peace treaty with them
+							if (this.parent.GameData.Players[playerID].Diplomacy[this.parent.GameData.HumanPlayerID].HasFlag(DiplomacyFlagsEnum.Peace) &&
+								this.parent.MapManagement.GetPlayerLandOwnership(newX1, newY1) == this.parent.GameData.HumanPlayerID)
 							{
 								newDirectionCount--;
 							}
