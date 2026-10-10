@@ -2762,7 +2762,7 @@ namespace OpenCivOne
 		/// <param name="playerID"></param>
 		/// <param name="unitID"></param>
 		/// <returns></returns>
-		private int F0_1403_4562_FindNearestUnitIDInUnitStack(int playerID, int unitID)
+		internal int F0_1403_4562_FindNearestUnitIDInUnitStack(int playerID, int unitID)
 		{
 			//this.oCPU.Log.EnterBlock("'Fn9'(Cdecl, Far, Return) at 0x4562");
 
@@ -2783,9 +2783,9 @@ namespace OpenCivOne
 
 				for (int i = 0; i < 16; i++)
 				{
-					// An empty slot in the stack chain has UnitType None (-1); Units[-1] throws in C#
+					// Skip ships. An empty slot in the stack chain has UnitType None (-1); Units[-1] throws in C#
 					if (this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType != UnitTypeEnum.None &&
-						this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].MovementType != UnitMovementTypeEnum.Air)
+						this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].MovementType != UnitMovementTypeEnum.Water)
 					{
 						int idRange;
 

@@ -192,6 +192,17 @@ namespace OpenCivOne.Tests
 			Assert.Equal(1, samarkand.TradeCityIDs.Count(id => id == moscowID));
 		}
 
+		[Theory]
+		[InlineData(37, 38)] // Carrier #37 at sea with Fighter #38
+		[InlineData(5, 13)] // Chariot #5 in Samarkand: Trireme #12 is skipped, Militia #13 is next
+		public void UnloadingSelectsNextUnitThatIsNotAShip(int unitID, int expectedUnitID)
+		{
+			using GameHarness harness = GameHarness.Load("BugScenarios");
+			int playerID = harness.Game.GameData.HumanPlayerID;
+
+			Assert.Equal(expectedUnitID, harness.Game.PlayerTurn.F0_1403_4562_FindNearestUnitIDInUnitStack(playerID, unitID));
+		}
+
 		[Fact]
 		public void BattleshipOnlyRevealsWaterTwoSquaresAway()
 		{
