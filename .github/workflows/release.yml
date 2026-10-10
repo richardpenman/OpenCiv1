@@ -1,0 +1,66 @@
+name: Release
+
+# Builds downloadable versions of the game when a version tag (for example v1.0.0) is pushed,
+# and attaches them to a GitHub release for that tag.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing tag to build a release for, for example v1.0.0'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish
+    runs-on: ubuntu-latest
+
+    env:
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ env.TAG }}
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Test
+      run: dotnet test OpenCivOne.sln --configuration Release
+
+    - name: Build for each platform
+      run: |
+        mkdir -p artifacts
+        for rid in win-x64 linux-x64 osx-x64 osx-arm64; do
+          dotnet publish src/OpenCivOne.csproj --configuration Release --runtime $rid --self-contained true \
+            -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=none \
+            --output publish/$rid
+          cp README.md LICENSE publish/$rid/
+          if [ "$rid" = "win-x64" ]; then
+            (cd publish/$rid && zip -r ../../artifacts/OpenCivOne-$TAG-$rid.zip .)
+          else
+            tar -czf artifacts/OpenCivOne-$TAG-$rid.tar.gz -C publish/$rid .
+          fi
+        done
+
+    - name: Create release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ env.TAG }}
+        name: OpenCivOne ${{ env.TAG }}
+        generate_release_notes: true
+        body: |
+          Downloads for Windows, Linux and macOS (Intel and Apple silicon). Each contains a single executable.
+
+          The game needs the files of the original DOS Civilization (version 475.05). Put the OpenCivOne
+          executable in the folder that contains them, then run it.
+        files: artifacts/*

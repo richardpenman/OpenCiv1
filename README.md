@@ -166,6 +166,8 @@ You can also compile with CLI method:
 </ul>
 To run the unit tests use: dotnet test (they run automatically on GitHub for each push and pull request).
 
+Ready-made builds for Windows, Linux and macOS are on the [Releases page](https://github.com/richardpenman/OpenCiv1/releases). Put the executable in the folder that contains the original game's files.
+
 ## Current screenshots of the OpenCivOne game
 
 <p align="center">
