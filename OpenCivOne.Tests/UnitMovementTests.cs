@@ -73,6 +73,22 @@ namespace OpenCivOne.Tests
 		}
 
 		[Fact]
+		public void FighterLandingOnCarrierEndsTurnAndRefuels()
+		{
+			var (harness, playerID, player) = LoadScenarios();
+			using GameHarness _ = harness;
+			Unit fighter = player.Units[43];
+			fighter.SpecialMoves = 0;
+
+			// Fighter #43 at (74,18) flies onto Carrier #42 at (75,18)
+			harness.MoveUnit(playerID, 43, Right);
+
+			Assert.Equal(new GPoint(75, 18), fighter.Position);
+			Assert.Equal(0, fighter.RemainingMoves);
+			Assert.Equal(harness.Game.GameData.Units[(int)UnitTypeEnum.Fighter].TurnsOutside, fighter.SpecialMoves);
+		}
+
+		[Fact]
 		public void BomberTurnEndsAfterAttacking()
 		{
 			// Bomber #44 at (69,15) attacks the barbarian Militia at (70,14)

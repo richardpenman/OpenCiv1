@@ -2441,7 +2441,8 @@ namespace OpenCivOne
 
 					if (this.parent.GameData.Units[(int)unit.UnitType].TurnsOutside != 0)
 					{
-						if (this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Water)
+						// An aircraft landing on a Carrier ends its turn and is refuelled
+						if (this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Air)
 						{
 							if (this.parent.UnitManagement.F0_1866_1331_CountUnitTypesInStack(playerID, unitID, UnitTypeEnum.Carrier) != 0)
 							{
