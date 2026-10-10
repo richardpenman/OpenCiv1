@@ -526,7 +526,7 @@ namespace OpenCivOne
 					break;
 
 				case 2: // Civilization Score
-					this.parent.CivilizationScore.F20_0000_0ca9_ShowCivilizationScorePopup(this.parent.GameData.HumanPlayerID, true);
+					this.parent.CivilizationScore.ShowCivilizationScore(this.parent.GameData.HumanPlayerID, true);
 					break;
 
 				case 3: // World Map

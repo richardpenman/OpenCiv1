@@ -1497,7 +1497,7 @@ namespace OpenCivOne
 					}
 					else
 					{
-						this.parent.CivilizationScore.F20_0000_0ca9_ShowCivilizationScorePopup(this.parent.GameData.HumanPlayerID, true);
+						this.parent.CivilizationScore.ShowCivilizationScore(this.parent.GameData.HumanPlayerID, true);
 					}
 					break;
 

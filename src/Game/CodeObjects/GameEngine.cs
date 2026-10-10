@@ -342,7 +342,7 @@ namespace OpenCivOne
 					(this.parent.GameData.Cities[i].ImprovementFlags0 & 0x1) != 0)
 				{
 					if (this.parent.GameData.GameSettingFlags.BuildPalace && (this.parent.GameData.SpaceshipFlags & 0x100) == 0 &&
-						(short)this.parent.CivilizationScore.F20_0000_0ca9_ShowCivilizationScorePopup(this.parent.GameData.HumanPlayerID, false) >= F0_1238_16e7_GetPalaceBuildNewScoreThreshold(humanPlayer.PalaceBuildCount + 1))
+						(short)this.parent.CivilizationScore.ShowCivilizationScore(this.parent.GameData.HumanPlayerID, false) >= F0_1238_16e7_GetPalaceBuildNewScoreThreshold(humanPlayer.PalaceBuildCount + 1))
 					{
 						humanPlayer.PalaceBuildCount++;
 
@@ -454,7 +454,7 @@ namespace OpenCivOne
 			if ((this.parent.GameData.SpaceshipFlags & 0x100) == 0)
 			{
 				this.parent.HallOfFame.F3_0000_065d_ShowFamousPersonsWindow((this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].PalaceBuildCount / 2) - 1,
-					(short)this.parent.CivilizationScore.F20_0000_0ca9_ShowCivilizationScorePopup(this.parent.GameData.HumanPlayerID, true));
+					(short)this.parent.CivilizationScore.ShowCivilizationScore(this.parent.GameData.HumanPlayerID, true));
 
 				this.parent.HallOfFame.F3_0000_002b_ReadHallOfFameFromFile();
 

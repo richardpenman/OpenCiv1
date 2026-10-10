@@ -233,8 +233,50 @@ namespace OpenCivOne.Tests
 				}
 			}
 
-			Check(state, "CivilizationScore", (game, player) => game.CivilizationScore.F20_0000_0ca9_ShowCivilizationScorePopup(player, true), Escape, Escape, Escape);
-			Check(state, "CivilizationScoreEndOfGame", (game, player) => game.CivilizationScore.F20_0000_0ca9_ShowCivilizationScorePopup(player, false), Escape, Escape, Escape);
+			// Every city and wonder belongs to the human player, so that the score doesn't fit on the screen, with every
+			// kind of extra score
+			Check(state, "CivilizationScoreFull", (game, player) =>
+			{
+				GameData gameData = game.GameData;
+
+				foreach (City city in gameData.Cities)
+				{
+					if (city.Status != CityStatusEnum.Invalid)
+					{
+						city.PlayerID = player;
+					}
+				}
+
+				Player human = gameData.Players[player];
+				human.SpaceshipPopulation = 120;
+				human.SpaceshipSuccessRate = 80;
+				human.SpaceshipETAYear = gameData.Year;
+				human.FutureTechnologyCount = 3;
+				gameData.PollutedSquareCount = 7;
+				gameData.PeaceTurnCount = 20;
+				game.Var_b884 = 1;
+
+				game.CivilizationScore.ShowCivilizationScore(player, true);
+			}, Escape, Escape, Escape);
+
+			// Large cities: the citizens need more rows than fit, so the rows are moved closer together
+			Check(state, "CivilizationScoreTooLong", (game, player) =>
+			{
+				foreach (City city in game.GameData.Cities)
+				{
+					if (city.Status != CityStatusEnum.Invalid)
+					{
+						city.PlayerID = player;
+						city.ActualSize = 30;
+					}
+				}
+
+				game.CivilizationScore.ShowCivilizationScore(player, true);
+				game.CivilizationScore.ShowCivilizationScore(player, true);
+			}, Escape, Escape, Escape, Escape, Escape, Escape);
+
+			Check(state, "CivilizationScore", (game, player) => game.CivilizationScore.ShowCivilizationScore(player, true), Escape, Escape, Escape);
+			Check(state, "CivilizationScoreEndOfGame", (game, player) => game.CivilizationScore.ShowCivilizationScore(player, false), Escape, Escape, Escape);
 		}
 
 		private void Check(string state, string name, Action<OpenCivOneGame, short> action, params int[] keys)
