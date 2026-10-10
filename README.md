@@ -14,7 +14,6 @@
 <li>The news, discussions about this project and release news are published regularly on <a href="https://forums.civfanatics.com/threads/opencivone-project-free-and-open-source-foss-preservation-effort-and-rewrite-of-the-iconic-1991-civilization-game.682623/" target="_blank">Civilization Fanatics OpenCivOne Forum page</a></li>
 <li>The OpenCivOne project in not affiliated or sponsored by Civilization Fanatics' Center,
 Microprose, Firaxis Games or Take-Two Interactive Software.</li>
-<li>For contact purposes openciv1@yahoo.com public email address can be used.</li>
 </ul>
 
 ## Project reviews
@@ -48,8 +47,8 @@ The other resources (like graphics, music and text) will also be completely repl
 
 ## How to Contribute to this project
 
-<p>Anyone can contribute to this repository in accordance with these <a href="https://codeberg.org/rhorvat/OpenCivOne/src/branch/master/CONTRIBUTING/CONTRIBUTING.md">Contributing guidelines</a>.</p>
-<p><b>The more detailed current project <a href="https://codeberg.org/rhorvat/OpenCivOne/src/branch/master/CONTRIBUTING/roadmap.md">roadmap is here</a>.</b></p>
+<p>Anyone can contribute to this repository in accordance with these <a href="https://github.com/richardpenman/OpenCiv1/blob/master/CONTRIBUTING/CONTRIBUTING.md">Contributing guidelines</a>.</p>
+<p><b>The more detailed current project <a href="https://github.com/richardpenman/OpenCiv1/blob/master/CONTRIBUTING/roadmap.md">roadmap is here</a>.</b></p>
 <p><b>Important! Before you write any bugfix, patch and submit any Pull Request, please, create an Issue first.
 Otherwise, you may be fixing the issue that has already been fixed
 or you are fixing the issue with the component that is currently being replaced.</b></p>
@@ -64,7 +63,7 @@ Currently, you can contribute to this repository in one of the following ways:
 ## Project milestones
 
 <p>The goal is to completely rewrite the code and fix the bugs (first stage), and port the code to a modern platform (second stage).</p>
-<p><b>The more detailed current project <a href="https://codeberg.org/rhorvat/OpenCivOne/src/branch/master/CONTRIBUTING/roadmap.md">roadmap is here</a>.</b></p>
+<p><b>The more detailed current project <a href="https://github.com/richardpenman/OpenCiv1/blob/master/CONTRIBUTING/roadmap.md">roadmap is here</a>.</b></p>
 
 ### Milestones for a first stage
 
@@ -161,8 +160,8 @@ It is where its home directory resides (Images, palettes, text and save games ar
 </ul>
 You can also compile with CLI method:
 <ul>
-<li>git clone https://codeberg.org/rhorvat/OpenCivOne (To clone a specific branch use: git clone -b [branch] https://codeberg.org/rhorvat/OpenCivOne)</li>
-<li>cd OpenCivOne</li>
+<li>git clone https://github.com/richardpenman/OpenCiv1 (To clone a specific branch use: git clone -b [branch] https://github.com/richardpenman/OpenCiv1)</li>
+<li>cd OpenCiv1</li>
 <li>dotnet build -c Debug</li>
 </ul>
 

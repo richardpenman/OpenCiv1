@@ -3,7 +3,7 @@
 Anyone can contribute to this repository in accordance with these rules:
 <ul>
 <li>All communication between contributors must be conducted in accordance with this repository
-    <a href="https://codeberg.org/rhorvat/OpenCivOne/src/branch/master/CONTRIBUTING/code_of_conduct.md">Code Of Conduct</a>,</li>
+    <a href="https://github.com/richardpenman/OpenCiv1/blob/master/CONTRIBUTING/code_of_conduct.md">Code Of Conduct</a>,</li>
 <li>There must not be any copyrighted material contributed to this repository that would violate any of its licenses, or the license of the copyrighted material that is being contributed,</li>
 <li>The contributed material must be released under the same license as this repository (MIT license), or a compatible one,</li>
 <li>Contributed code changes and 'Default' game behavior must preserve Original Game behavior and design as much as possible,

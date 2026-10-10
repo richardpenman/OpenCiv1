@@ -8,9 +8,9 @@
     <Title>OpenCivOne project - Free and Open Source (FOSS) preservation effort and rewrite of the iconic Civilization Game designed by Sid Meier and Bruce Shelley in year 1991</Title>
     <Version>1.475.6.7</Version>
     <Copyright>Copyright (c) 2023-2026 by Rajko Horvat</Copyright>
-    <PackageProjectUrl>https://codeberg.org/rhorvat/OpenCivOne</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/richardpenman/OpenCiv1</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryUrl>https://codeberg.org/rhorvat/OpenCivOne</RepositoryUrl>
+    <RepositoryUrl>https://github.com/richardpenman/OpenCiv1</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>4x;4x-strategy-game;civilization;civilization-games;game;remake;remake-game;remake-games;retro;retro-game;retro-games;retrogaming</PackageTags>
     <NeutralLanguage>en</NeutralLanguage>
