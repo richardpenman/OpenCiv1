@@ -7,6 +7,18 @@ namespace OpenCivOne
 		private OpenCivOneGame parent;
 
 		private int[,] MapUnitRoles = new int[20, 13];
+
+		/// <summary>
+		/// Reads MapUnitRoles at a map position divided by 4. The original read outside the table near the map
+		/// edges; here the X coordinate wraps around the map and rows outside the map count as fully occupied.
+		/// </summary>
+		private int GetMapUnitRoles(int x, int y)
+		{
+			if (y < 0 || y >= MapUnitRoles.GetLength(1))
+				return 0xff;
+
+			return MapUnitRoles[((x % 20) + 20) % 20, y];
+		}
 		public int AIPlayerFlags = 0;
 		public bool MakeContactWithPlayer = false;
 
@@ -1435,8 +1447,7 @@ namespace OpenCivOne
 							newX = (unit.Position.X / 4) + direction.X;
 							newY = (unit.Position.Y / 4) + direction.Y;
 
-							// !!! Illegal memory access this.oCPU.ReadUInt16(this.oCPU.SS.Word, (ushort)(this.oCPU.BP.Word - 0x26)) == -1
-							if ((MapUnitRoles[newX, newY] & 0x3) == 0)
+							if ((GetMapUnitRoles(newX, newY) & 0x3) == 0)
 							{
 								unit.GoToDestination = new(unit.Position.X + (direction.X * 4), unit.Position.Y + (direction.Y * 4));
 
@@ -1781,7 +1792,7 @@ namespace OpenCivOne
 										newY = unitY + (direction.Y * 4);
 
 										if (this.parent.MapManagement.ValidateMapCoordinates(newX, newY) &&
-											MapUnitRoles[newX / 4, newY / 4] == 0 &&
+											GetMapUnitRoles(newX / 4, newY / 4) == 0 &&
 											this.parent.MapManagement.GetTerrainType(newX, newY) != TerrainTypeEnum.Water)
 										{
 											actionScore += 8;
