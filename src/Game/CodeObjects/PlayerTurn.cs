@@ -2137,7 +2137,7 @@ namespace OpenCivOne
 						playerID != this.parent.GameData.HumanPlayerID && !newImprovements.HasFlag(TerrainImprovementFlagsEnum.City))
 					{
 						if (this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Land ||
-							(this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Water &&
+							(this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Air &&
 								unit.SpecialMoves != 0))
 						{
 							if (((unit.RemainingMoves != 0) ? 4 : 2) <= this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(playerID, newActiveUnitID, UnitStackValueTypeEnum.UnitCount))
@@ -2253,7 +2253,7 @@ namespace OpenCivOne
 					unit.VisibleByPlayer = 0;
 
 					if (playerID != this.parent.GameData.HumanPlayerID &&
-						this.parent.GameData.Units[(int)unit.UnitType].MovementType != UnitMovementTypeEnum.Water)
+						this.parent.GameData.Units[(int)unit.UnitType].MovementType != UnitMovementTypeEnum.Air)
 					{
 						unit.ClearStatusFlags(UnitStatusEnum.Sentry | UnitStatusEnum.SettlerBuildRoadOrRail | UnitStatusEnum.Fortifying |
 							 UnitStatusEnum.Fortified | UnitStatusEnum.SettlerBuildIrrigation | UnitStatusEnum.SettlerBuildMineOrForest);
