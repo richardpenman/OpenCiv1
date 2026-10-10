@@ -73,6 +73,48 @@ namespace OpenCivOne.Tests
 		}
 
 		[Fact]
+		public void BomberTurnEndsAfterAttacking()
+		{
+			// Bomber #44 at (69,15) attacks the barbarian Militia at (70,14)
+			Unit bomber = AttackAndWin(44, UpRight);
+
+			Assert.Equal(0, bomber.RemainingMoves);
+		}
+
+		[Fact]
+		public void CruiserKeepsMovesAfterAttacking()
+		{
+			// Cruiser #46 at (67,13), 6 moves, attacks the barbarian Militia at (68,13)
+			Unit cruiser = AttackAndWin(46, Right);
+
+			Assert.Equal(15, cruiser.RemainingMoves);
+		}
+
+		/// <summary>
+		/// Combat is random, so repeat the attack with different seeds until the attacker survives.
+		/// </summary>
+		private static Unit AttackAndWin(int unitID, int direction)
+		{
+			for (int seed = 1; seed <= 20; seed++)
+			{
+				var (harness, playerID, player) = LoadScenarios();
+				using GameHarness _ = harness;
+
+				harness.SeedRandom(seed);
+				harness.MoveUnit(playerID, unitID, direction);
+
+				if (player.Units[unitID].UnitType != UnitTypeEnum.None)
+				{
+					return player.Units[unitID];
+				}
+			}
+
+			Assert.Fail($"Unit #{unitID} lost every attack");
+
+			return null!;
+		}
+
+		[Fact]
 		public void BattleshipOnlyRevealsWaterTwoSquaresAway()
 		{
 			using GameHarness harness = GameHarness.Load("BugScenarios");

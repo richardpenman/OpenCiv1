@@ -1997,7 +1997,8 @@ namespace OpenCivOne
 
 						unit.RemainingMoves -= 3;
 
-						if (unit.RemainingMoves < 0 || unit.RemainingMoves == 15)
+						// A Bomber's turn ends after it attacks
+						if (unit.RemainingMoves < 0 || unit.UnitType == UnitTypeEnum.Bomber)
 						{
 							unit.RemainingMoves = 0;
 						}

@@ -63,6 +63,14 @@ namespace OpenCivOne.Tests
 		}
 
 		/// <summary>
+		/// Seeds the game's random number generator, so combat and other random events repeat between runs.
+		/// </summary>
+		public void SeedRandom(int seed)
+		{
+			this.Game.CAPI.srand(seed);
+		}
+
+		/// <summary>
 		/// Moves a unit one square, as if the player pressed a direction key.
 		/// Directions: 1 up, 2 up-right, 3 right, 4 down-right, 5 down, 6 down-left, 7 left, 8 up-left.
 		/// </summary>
