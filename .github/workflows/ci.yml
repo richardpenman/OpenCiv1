@@ -52,6 +52,9 @@ jobs:
         dotnet format analyzers OpenCivOne.sln --verify-no-changes
 
     - name: Run security scan
+      env:
+        # security-scan targets .NET Core 3.1/5, which the runner does not have
+        DOTNET_ROLL_FORWARD: Major
       run: |
         dotnet tool install --global security-scan
         security-scan OpenCivOne.sln
