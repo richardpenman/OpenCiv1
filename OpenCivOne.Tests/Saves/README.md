@@ -21,3 +21,8 @@ Units placed to reproduce unit movement, combat, transport, trade route and AI m
 | Triremes #47 to #50 | 67,21 70,21 70,12 72,12 | End the turn | Never lost next to land |
 | Caravan #51 (home Samarkand, already trades with Moscow) | 52,18 | Move down into Moscow | Still one trade route with Moscow |
 | Battleship #52 | 52,26 | Move down-right | Only water revealed two squares away |
+
+## AITURNS
+
+A game with five civilizations, used by `LateGameAITests` to play many turns with every civilization run by the
+computer. Its unit stacks are intact, which the tests check after every turn.

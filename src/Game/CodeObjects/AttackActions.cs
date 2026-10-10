@@ -540,15 +540,18 @@ namespace OpenCivOne
 				}
 				else
 				{
+					// The original gives up after 32 steps, so removing a unit from a stack of more than 33 units left
+					// the previous unit pointing at it. A player has at most 128 units, so search the whole stack.
+					const int maximumStackSize = 128;
 					int count = 0;
 
 					do
 					{
 						nextUnitID = this.parent.GameData.Players[playerID].Units[nextUnitID].NextUnitID;
 						count++;
-					} while (nextUnitID != -1 && count < 32 && this.parent.GameData.Players[playerID].Units[nextUnitID].NextUnitID != unitID);
+					} while (nextUnitID != -1 && count < maximumStackSize && this.parent.GameData.Players[playerID].Units[nextUnitID].NextUnitID != unitID);
 
-					if (count < 32 && nextUnitID != -1)
+					if (count < maximumStackSize && nextUnitID != -1)
 					{
 						this.parent.GameData.Players[playerID].Units[nextUnitID].NextUnitID = this.parent.GameData.Players[playerID].Units[unitID].NextUnitID;
 					}
