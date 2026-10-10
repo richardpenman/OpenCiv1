@@ -1157,7 +1157,7 @@ namespace OpenCivOne
 		L0cc3:
 			if (!flag) goto L0cd9;
 
-			this.oParent.Overlay_14.F14_0000_0000(0x506b, 3);
+			this.oParent.Overlay_14.ShowReportHeader("CIVILIZATION SCORE", 3);
 
 		L0cd9:
 			this.oParent.GameData.Players[0].Score = 0;

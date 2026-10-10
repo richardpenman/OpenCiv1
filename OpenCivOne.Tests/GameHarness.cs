@@ -324,6 +324,9 @@ namespace OpenCivOne.Tests
 			int nextKey = 0;
 			int pollsWhenEmpty = -1;
 
+			// Screen effects such as fading wait for the game's timer
+			this.Game.CommonTools.StartGameMainTimer();
+
 			thread.IsBackground = true;
 			thread.Start();
 
@@ -350,6 +353,8 @@ namespace OpenCivOne.Tests
 
 				thread.Join(1);
 			}
+
+			this.Game.CommonTools.StopGameMainTimer();
 
 			if (!finished)
 			{

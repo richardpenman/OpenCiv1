@@ -1,127 +1,80 @@
 using IRB.VirtualCPU;
+using System.Globalization;
 
 namespace OpenCivOne
 {
+	/// <summary>
+	/// The advisor reports: science, military, trade, intelligence, attitude and city status
+	/// </summary>
 	public class Overlay_14
 	{
 		private OpenCivOneGame oParent;
-		private VCPU oCPU;
 
 		public Overlay_14(OpenCivOneGame parent)
 		{
 			this.oParent = parent;
-			this.oCPU = parent.CPU;
 		}
 
 		/// <summary>
-		/// ?
+		/// Saves the current screen, so the report can restore it when it closes, and draws the report header
 		/// </summary>
-		/// <param name="stringPtr"></param>
-		/// <param name="mode"></param>
-		public void F14_0000_0000(ushort stringPtr, ushort mode)
+		/// <param name="title"></param>
+		/// <param name="backgroundColor"></param>
+		public void ShowReportHeader(string title, int backgroundColor)
 		{
-			this.oCPU.Log.EnterBlock($"F14_0000_0000(0x{stringPtr:x4}, {mode})");
-
-			// function body
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, this.oParent.Var_19d4_Screen1_Rectangle, 0, 0);
 
-			F14_0000_001c(stringPtr, mode);
-
-			// Far return
-			this.oCPU.Log.ExitBlock("F14_0000_0000");
+			DrawReportHeader(title, backgroundColor);
 		}
 
 		/// <summary>
-		/// ?
+		/// Clears the screen and draws the report title, the human player's empire and leader, and the year
 		/// </summary>
-		/// <param name="stringPtr"></param>
-		/// <param name="mode"></param>
-		public void F14_0000_001c(ushort stringPtr, ushort mode)
+		/// <param name="title"></param>
+		/// <param name="backgroundColor"></param>
+		public void DrawReportHeader(string title, int backgroundColor)
 		{
-			this.oCPU.Log.EnterBlock($"F14_0000_001c(0x{stringPtr:x4}, {mode})");
+			Player humanPlayer = this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID];
 
-			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
+			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, (ushort)backgroundColor);
 
-			// Instruction address 0x0000:0x0032, size: 5
-			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, mode);
+			this.oParent.DrawTools.DrawCenteredStringToScreen0(title, 160, 2, 15);
 
-			// Instruction address 0x0000:0x0049, size: 5
-			this.oParent.DrawTools.DrawCenteredStringToScreen0(stringPtr, 160, 2, 15);
+			// Despotism and Monarchy are an Empire, Communism and Republic a Kingdom, Democracy a Republic
+			string empire;
 
-			this.oCPU.AX.UInt16 = (ushort)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType;
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.AX.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.AX.UInt16, this.oCPU.DX.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.SAR_UInt16(this.oCPU.AX.UInt16, 0x1);
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L0070;
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x1);
-			if (this.oCPU.Flags.E) goto L0082;
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x2);
-			if (this.oCPU.Flags.E) goto L0087;
-			goto L008c;
+			switch ((int)humanPlayer.GovernmentType / 2)
+			{
+				case 0:
+					empire = "Empire";
+					break;
 
-		L0070:
-			// Instruction address 0x0000:0x0078, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Empire");
+				case 1:
+					empire = "Kingdom";
+					break;
 
-			goto L008c;
+				case 2:
+					empire = "Republic";
+					break;
 
-		L0082:
-			// Instruction address 0x0000:0x0078, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Kingdom");
+				default:
+					// The original leaves the previous text in the buffer
+					empire = "";
+					break;
+			}
 
-			goto L008c;
+			this.oParent.DrawTools.DrawCenteredStringToScreen0($"{empire} of the {humanPlayer.Nation}", 160, 10, 15);
 
-		L0087:
-			// Instruction address 0x0000:0x0078, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Republic");
-
-			goto L008c;
-
-		L008c:
-			// Instruction address 0x0000:0x0094, size: 5
-			this.oParent.CAPI.strcat(0xba06, " of the ");
-
-			// Instruction address 0x0000:0x00aa, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Nation);
-
-			// Instruction address 0x0000:0x00c2, size: 5
-			this.oParent.DrawTools.DrawCenteredStringToScreen0(0xba06, 160, 10, 15);
-
-			// Instruction address 0x0000:0x00de, size: 5
-			this.oParent.CAPI.strcpy(0xba06, this.oParent.Array_19b2_GovernmentTypeNames[(int)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].GovernmentType]);
-
-			// Instruction address 0x0000:0x00ee, size: 5
-			this.oParent.CAPI.strcat(0xba06, " ");
-
-			// Instruction address 0x0000:0x0104, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Name);
-
-			// Instruction address 0x0000:0x0114, size: 5
-			this.oParent.CAPI.strcat(0xba06, ": ");
-
-			// Instruction address 0x0000:0x011c, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.GameEngine.YearToString(this.oParent.GameData.Year));
-
-			// Instruction address 0x0000:0x0131, size: 5
-			this.oParent.DrawTools.DrawCenteredStringToScreen0(0xba06, 160, 18, 15);
-
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F14_0000_001c");
+			this.oParent.DrawTools.DrawCenteredStringToScreen0(
+				$"{this.oParent.Array_19b2_GovernmentTypeNames[(int)humanPlayer.GovernmentType]} {humanPlayer.Name}: " +
+				this.oParent.GameEngine.YearToString(this.oParent.GameData.Year), 160, 18, 15);
 		}
 
 		/// <summary>
-		/// ?
+		/// Waits for a key press or a mouse click, then restores the screen saved by ShowReportHeader
 		/// </summary>
-		public void F14_0000_013b()
+		public void WaitAndCloseReport()
 		{
-			//this.oCPU.Log.EnterBlock("F14_0000_013b()");
-
-			// function body
-			// Instruction address 0x0000:0x013b, size: 5
 			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
@@ -131,12 +84,9 @@ namespace OpenCivOne
 		/// Shows Science Report window.
 		/// </summary>
 		/// <param name="playerID"></param>
-		public void F14_0000_014b_ScienceReport(short playerID)
+		public void ScienceReport(short playerID)
 		{
-			//this.oCPU.Log.EnterBlock($"F14_0000_014b_ScienceReport({playerID})");
-
-			// function body
-			F14_0000_0000(0x4762, 1);
+			ShowReportHeader("SCIENCE REPORT", 1);
 
 			Player player = this.oParent.GameData.Players[playerID];
 			int progressBarValue = (player.DiscoveredTechnologyCount * ((this.oParent.GameData.Year < 0) ? 1 : 2)) *
@@ -147,48 +97,37 @@ namespace OpenCivOne
 
 			if (progressBarXStart > 40)
 			{
-				// Instruction address 0x0000:0x0226, size: 5
 				this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19e8_Screen2_Rectangle, 280, 140, 40, 60, this.oParent.Var_aa_Screen0_Rectangle, 278, 2);
 			}
-		
-			// Instruction address 0x0000:0x0244, size: 5
+
 			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, progressBarXStart, 25, progressBarWidth, 16, 9);
 
 			int progress = this.oParent.CommonTools.CheckValueRange(player.ResearchProgress, 0, progressBarValue);
 
 			for (int i = 0; i < progress; i++)
 			{
-				// Instruction address 0x0000:0x0270, size: 5
 				this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle, progressBarXStart + (progressBarSpacing * i / 8), 33,
 					this.oParent.Array_d4ce[12]);
 			}
-			
+
 			if (player.ResearchTechnologyID != -1)
 			{
-				// Instruction address 0x0000:0x02b1, size: 5
-				this.oParent.CAPI.strcpy(0xba06, $"Researching {this.oParent.GameData.TechnologyAdvances[player.ResearchTechnologyID].Name} ({progress}/{progressBarValue})");
+				string researching = $"Researching {this.oParent.GameData.TechnologyAdvances[player.ResearchTechnologyID].Name} ({progress}/{progressBarValue})";
 
-				// Instruction address 0x0000:0x02df, size: 5
-				this.oParent.DrawTools.DrawCenteredStringToScreen0(0xba06, 161, 26, 0);
+				this.oParent.DrawTools.DrawCenteredStringToScreen0(researching, 161, 26, 0);
 
-				// Instruction address 0x0000:0x02f7, size: 5
-				this.oParent.DrawTools.DrawCenteredStringToScreen0(0xba06, 160, 26, 15);
+				this.oParent.DrawTools.DrawCenteredStringToScreen0(researching, 160, 26, 15);
 			}
-		
+
 			int textYPos = 42;
 			int column = 0;
 
-			for(int i = 0; i < this.oParent.GameData.TechnologyAdvances.Length; i++)
+			for (int i = 0; i < this.oParent.GameData.TechnologyAdvances.Length; i++)
 			{
-				// Instruction address 0x0000:0x0361, size: 5
 				if (this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, this.oParent.GameData.TechnologyAdvances[i].Value))
 				{
-					// Instruction address 0x0000:0x037b, size: 5
-					this.oParent.CAPI.strcpy(0xba06, this.oParent.GameData.TechnologyAdvances[i].Name);
-
-					// Instruction address 0x0000:0x032f, size: 5
-					this.oParent.DrawTools.DrawStringToScreen0(0xba06, ((column % 3) * 100) + 8, textYPos, 
-						(byte)(((this.oParent.GameData.TechnologyFirstDiscoveredBy[i] & 0x7) != playerID) ? 11: 15));
+					this.oParent.DrawTools.DrawStringToScreen0(this.oParent.GameData.TechnologyAdvances[i].Name, ((column % 3) * 100) + 8, textYPos,
+						(byte)(((this.oParent.GameData.TechnologyFirstDiscoveredBy[i] & 0x7) != playerID) ? 11 : 15));
 
 					column++;
 
@@ -202,1701 +141,721 @@ namespace OpenCivOne
 				}
 			}
 
-			F14_0000_013b();
+			WaitAndCloseReport();
 		}
 
 		/// <summary>
 		/// Shows Military Report window.
 		/// </summary>
 		/// <param name="playerID"></param>
-		public void F14_0000_03ad_MilitaryReport(short playerID)
+		public void MilitaryReport(short playerID)
 		{
-			this.oCPU.Log.EnterBlock($"F14_0000_03ad_MilitaryStatus({playerID})");
+			Player player = this.oParent.GameData.Players[playerID];
 
-			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x6);
-			this.oCPU.PUSH_UInt16(this.oCPU.DI.UInt16);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
+			ShowReportHeader("MILITARY STATUS", 1);
 
-			F14_0000_0000(0x477e, 1);
+			int rowCount = 0;
+			int y = 32;
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 0x0);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 0x20);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x0);
+			for (int unitType = 0; unitType < 28; unitType++)
+			{
+				int activeCount = player.ActiveUnits[unitType];
+				int inProductionCount = player.UnitsInProduction[unitType];
 
-		L03d3:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			this.oCPU.AX.UInt16 = 0x38;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, (ushort)playerID);
-			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.AX.UInt16);
+				if (activeCount <= 0 && inProductionCount <= 0)
+					continue;
 
-			if (this.oParent.GameData.Players[playerID].ActiveUnits[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] > 0)
-				goto L03f1;
+				UnitDefinition unit = this.oParent.GameData.Units[unitType];
 
-			if (this.oParent.GameData.Players[playerID].UnitsInProduction[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] > 0)
-				goto L03f1;
+				this.oParent.Graphics.F0_VGA_0599_DrawLine(this.oParent.Var_aa_Screen0_Rectangle, 36, y - 2, 319, y - 2, 9);
 
-			goto L05d7;
+				// The unit icons alternate between two columns
+				this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle, ((rowCount & 0x1) << 4) + 2, y - 4,
+					this.oParent.Array_d4ce[64 + (playerID * 32) + unitType]);
 
-		L03f1:
-			// Instruction address 0x0000:0x0405, size: 5
-			this.oParent.Graphics.F0_VGA_0599_DrawLine(this.oParent.Var_aa_Screen0_Rectangle,
-				36, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)) - 2,
-				319, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)) - 2, 9);
+				rowCount++;
 
-			// Instruction address 0x0000:0x0432, size: 5
-			this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
-				((this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)) & 0x1) << 4) + 2,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)) - 4,
-				this.oParent.Array_d4ce[64 + (playerID * 32) + this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))]);
+				this.oParent.DrawTools.DrawStringToScreen0(unit.Name, 36, y, 15);
+				this.oParent.DrawTools.DrawStringToScreen0(
+					string.Create(CultureInfo.InvariantCulture, $"({unit.AttackStrength}/{unit.DefenseStrength}/{unit.MoveCount})"), 112, y, 11);
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))));
+				if (activeCount > 0)
+				{
+					this.oParent.DrawTools.DrawStringToScreen0(string.Create(CultureInfo.InvariantCulture, $"{activeCount} active"), 168, y, 15);
+				}
 
-			this.oCPU.AX.UInt16 = 0x22;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
+				if (inProductionCount > 0)
+				{
+					this.oParent.DrawTools.DrawStringToScreen0(string.Create(CultureInfo.InvariantCulture, $"{inProductionCount} in production"), 232, y, 11);
+				}
 
-			// Instruction address 0x0000:0x0453, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(
-				this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].Name,
-				36,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)),
-				15);
+				y += 9;
+			}
 
-			// Instruction address 0x0000:0x0463, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "(");
-
-			// Instruction address 0x0000:0x0484, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].AttackStrength, 10));
-
-			// Instruction address 0x0000:0x0494, size: 5
-			this.oParent.CAPI.strcat(0xba06, "/");
-
-			// Instruction address 0x0000:0x04b5, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].DefenseStrength, 10));
-
-			// Instruction address 0x0000:0x04c5, size: 5
-			this.oParent.CAPI.strcat(0xba06, "/");
-
-			// Instruction address 0x0000:0x04e6, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))].MoveCount, 10));
-
-			// Instruction address 0x0000:0x04f6, size: 5
-			this.oParent.CAPI.strcat(0xba06, ")");
-
-			// Instruction address 0x0000:0x050d, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 112, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 11);
-
-			this.oCPU.AX.UInt16 = 0x38;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, (ushort)playerID);
-			this.oCPU.DI.UInt16 = this.oCPU.AX.UInt16;
-			
-			this.oCPU.SI.UInt16 = (ushort)this.oParent.GameData.Players[playerID].ActiveUnits[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))];
-			this.oCPU.SI.UInt16 = this.oCPU.OR_UInt16(this.oCPU.SI.UInt16, this.oCPU.SI.UInt16);
-			if (this.oCPU.Flags.LE) goto L0574;
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
-			// Instruction address 0x0000:0x0545, size: 5
-			this.oParent.CAPI.strcat(0xba06, 
-				this.oParent.CAPI.itoa((short)this.oCPU.SI.UInt16, 10));
-
-			// Instruction address 0x0000:0x0555, size: 5
-			this.oParent.CAPI.strcat(0xba06, " active");
-
-			// Instruction address 0x0000:0x056c, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 168, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 15);
-
-		L0574:
-			this.oCPU.AX.UInt16 = 0x38;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, (ushort)playerID);
-			this.oCPU.DI.UInt16 = this.oCPU.AX.UInt16;
-
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-
-			this.oCPU.SI.UInt16 = (ushort)this.oParent.GameData.Players[playerID].UnitsInProduction[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))];
-
-			this.oCPU.SI.UInt16 = this.oCPU.OR_UInt16(this.oCPU.SI.UInt16, this.oCPU.SI.UInt16);
-			if (this.oCPU.Flags.LE) goto L05d3;
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
-			// Instruction address 0x0000:0x05a4, size: 5
-			this.oParent.CAPI.strcat(0xba06, 
-				this.oParent.CAPI.itoa((short)this.oCPU.SI.UInt16, 10));
-
-			// Instruction address 0x0000:0x05b4, size: 5
-			this.oParent.CAPI.strcat(0xba06, " in production");
-
-			// Instruction address 0x0000:0x05cb, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 232, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 11);
-
-		L05d3:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x9));
-
-		L05d7:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 0x1c);
-			if (this.oCPU.Flags.GE) goto L05e3;
-			goto L03d3;
-
-		L05e3:
-			// Instruction address 0x0000:0x0603, size: 5
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19e8_Screen2_Rectangle, 160, 140, 40, 60, this.oParent.Var_aa_Screen0_Rectangle, 278, 2);
 
-			F14_0000_013b();
+			WaitAndCloseReport();
 
-			F14_0000_061f(playerID);
-
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.DI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F14_0000_03ad_MilitaryStatus");
+			MilitaryLossesReport(playerID);
 		}
 
 		/// <summary>
-		/// ?
+		/// Shows the units lost by the player and by the other players
 		/// </summary>
 		/// <param name="playerID"></param>
-		public void F14_0000_061f(short playerID)
+		public void MilitaryLossesReport(short playerID)
 		{
-			this.oCPU.Log.EnterBlock($"F14_0000_061f({playerID})");
+			ShowReportHeader("MILITARY LOSSES", 4);
 
-			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0xc);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
+			int rowCount = 0;
+			int y = 28;
 
-			F14_0000_0000(0x47ad, 4);
+			for (int unitType = 0; unitType < 27; unitType++)
+			{
+				bool anyLost = false;
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 0x0);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8), 0x1c);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 0x0);
+				for (int i = 0; i < 8; i++)
+				{
+					if (this.oParent.GameData.Players[i].LostUnits[unitType] != 0)
+					{
+						anyLost = true;
+					}
+				}
 
-		L0644:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x0);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa), 0x0);
+				if (!anyLost)
+					continue;
 
-		L064e:
-			this.oCPU.CMP_UInt16((ushort)this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa))].LostUnits[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))], 0x0);
-			if (this.oCPU.Flags.E) goto L066e;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x1);
+				this.oParent.Graphics.F0_VGA_0599_DrawLine(this.oParent.Var_aa_Screen0_Rectangle, 36, y - 1, 319, y - 1, 8);
+				this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle, ((rowCount & 1) << 4) + 2, y - 4,
+					this.oParent.Array_d4ce[64 + (playerID * 32) + unitType]);
 
-		L066e:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa)), 0x8);
-			if (this.oCPU.Flags.L) goto L064e;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 0x0);
-			if (this.oCPU.Flags.NE) goto L0680;
-			goto L07b7;
+				rowCount++;
 
-		L0680:
-			// Instruction address 0x0000:0x0692, size: 5
-			this.oParent.Graphics.F0_VGA_0599_DrawLine(this.oParent.Var_aa_Screen0_Rectangle,
-				36, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)) - 1,
-				319, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)) - 1, 8);
+				this.oParent.DrawTools.DrawStringToScreen0(this.oParent.GameData.Units[unitType].Name, 36, y, 15);
 
-			// Instruction address 0x0000:0x06bf, size: 5
-			this.oParent.Graphics.F0_VGA_0c3e_DrawBitmapToScreen(this.oParent.Var_aa_Screen0_Rectangle,
-				((this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)) & 1) << 4) + 2,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)) - 4,
-				this.oParent.Array_d4ce[64 + (playerID * 32) + this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))]);
+				int lost = this.oParent.GameData.Players[playerID].LostUnits[unitType];
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc))));
+				if (lost != 0)
+				{
+					this.oParent.DrawTools.DrawStringToScreen0(lost.ToString(CultureInfo.InvariantCulture), 104, y, 12);
+				}
 
-			// Instruction address 0x0000:0x06dc, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(
-				this.oParent.GameData.Units[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))].Name,
-				36,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)),
-				15);
+				// The other players' losses, one column each in their colors
+				int x = 104;
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 0x68);
+				for (int otherPlayerID = 1; otherPlayerID < 8; otherPlayerID++)
+				{
+					if (otherPlayerID == playerID)
+						continue;
 
-			this.oCPU.SI.UInt16 = (ushort)this.oParent.GameData.Players[playerID].LostUnits[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))];
-			this.oCPU.SI.UInt16 = this.oCPU.OR_UInt16(this.oCPU.SI.UInt16, this.oCPU.SI.UInt16);
-			if (this.oCPU.Flags.E) goto L073f;
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
+					x += 28;
+					lost = this.oParent.GameData.Players[otherPlayerID].LostUnits[unitType];
 
-			// Instruction address 0x0000:0x0720, size: 5
-			this.oParent.CAPI.strcat(0xba06, 
-				this.oParent.CAPI.itoa((short)this.oCPU.SI.UInt16, 10));
+					if (lost != 0)
+					{
+						this.oParent.DrawTools.DrawStringToScreen0(lost.ToString(CultureInfo.InvariantCulture), x, y,
+							this.oParent.Array_1946_PlayerColours[otherPlayerID]);
+					}
+				}
 
-			// Instruction address 0x0000:0x0737, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 104, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)), 12);
+				y += 7;
+			}
 
-		L073f:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa), 0x1);
+			this.oParent.DrawTools.DrawRectangle(100, 25, 18, y - 25, this.oParent.Array_1946_PlayerColours[this.oParent.GameData.HumanPlayerID]);
 
-		L0744:
-			this.oCPU.AX.UInt16 = (ushort)playerID;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa)), this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L07aa;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x1c));
-
-			this.oCPU.SI.UInt16 = (ushort)this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa))].LostUnits[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))];
-			this.oCPU.SI.UInt16 = this.oCPU.OR_UInt16(this.oCPU.SI.UInt16, this.oCPU.SI.UInt16);
-			if (this.oCPU.Flags.E) goto L07aa;
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
-			// Instruction address 0x0000:0x0787, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa((short)this.oCPU.SI.UInt16, 10));
-
-			// Instruction address 0x0000:0x07a2, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)),
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)),
-				this.oParent.Array_1946_PlayerColours[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa))]);
-
-		L07aa:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa)), 0x8);
-			if (this.oCPU.Flags.L) goto L0744;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)), 0x7));
-
-		L07b7:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), 0x1b);
-			if (this.oCPU.Flags.GE) goto L07c3;
-			goto L0644;
-
-		L07c3:
-			// Instruction address 0x0000:0x07e0, size: 5
-			this.oParent.DrawTools.DrawRectangle(100, 25,
-				18, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)) - 25,
-				this.oParent.Array_1946_PlayerColours[this.oParent.GameData.HumanPlayerID]);
-
-			F14_0000_013b();
-
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F14_0000_061f");
+			WaitAndCloseReport();
 		}
 
 		/// <summary>
 		/// Shows Trade Report window.
 		/// </summary>
 		/// <param name="playerID"></param>
-		public void F14_0000_07f1_TradeReport(short playerID)
+		public void TradeReport(short playerID)
 		{
-			this.oCPU.Log.EnterBlock($"F14_0000_07f1_TradeReport({playerID})");
+			// The Palace costs more to maintain on higher difficulty levels and with Gunpowder and Combustion
+			int palaceMaintenance = this.oParent.GameData.DifficultyLevel / 2;
 
-			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x40);
-			this.oCPU.PUSH_UInt16(this.oCPU.DI.UInt16);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
-			this.oCPU.AX.UInt16 = (ushort)oParent.GameData.DifficultyLevel;
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.AX.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.AX.UInt16, this.oCPU.DX.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.SAR_UInt16(this.oCPU.AX.UInt16, 0x1);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3e), this.oCPU.AX.UInt16);
-
-			// Instruction address 0x0000:0x080b, size: 5
-			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Gunpowder) ? 1 : 0);
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.NE)
+			if (this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Gunpowder))
 			{
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3e), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3e))));
+				palaceMaintenance++;
 			}
 
-			// Instruction address 0x0000:0x0821, size: 5
-			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Combustion) ? 1 : 0);
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.NE)
+			if (this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Combustion))
 			{
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3e), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3e))));
+				palaceMaintenance++;
 			}
-		
-			F14_0000_0000(0x47bd, 2);
 
-			// Instruction address 0x0000:0x085f, size: 5
+			ShowReportHeader("TRADE REPORT", 2);
+
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19e8_Screen2_Rectangle, 200, 140, 40, 60, this.oParent.Var_aa_Screen0_Rectangle, 278, 2);
 
-			// Instruction address 0x0000:0x0877, size: 5
 			this.oParent.DrawTools.DrawStringToScreen0("City Trade", 8, 32, 15);
 
-			this.oCPU.AX.UInt16 = 0;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c), this.oCPU.AX.UInt16);
+			// The totals are 16-bit, as in the original
+			short totalIncome = 0;
+			short totalScience = 0;
 
-		L088a:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 + this.oCPU.SI.UInt16 - 0x34), 0x0);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c)), 0x18);
-			if (this.oCPU.Flags.L) goto L088a;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36), 0x28);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x38), 0x0);
-			goto L09d3;
+			// The maintenance cost of each improvement, indexed by the improvement's bit in the city's improvement flags
+			int[] maintenance = new int[24];
 
-		L08aa:
-			// Instruction address 0x0000:0x08b2, size: 5
-			this.oParent.CAPI.strcat(0xba06, " ");
+			int y = 40;
 
-			// Instruction address 0x0000:0x08d3, size: 5
-			this.oParent.CAPI.strcat(0xba06, 
-				this.oParent.CAPI.itoa(this.oParent.Var_70da_Arr[3], 10));
+			for (int cityID = 0; cityID < 128; cityID++)
+			{
+				City city = this.oParent.GameData.Cities[cityID];
 
-			// Instruction address 0x0000:0x08e3, size: 5
-			this.oParent.CAPI.strcat(0xba06, "\\/");
+				if (city.Status == CityStatusEnum.Invalid || city.PlayerID != playerID)
+					continue;
 
-			// Instruction address 0x0000:0x0904, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.CAPI.itoa(this.oParent.Var_e17a, 10));
+				if (y >= 180)
+				{
+					// Next page
+					this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
-			// Instruction address 0x0000:0x0914, size: 5
-			this.oParent.CAPI.strcat(0xba06, "$/");
+					DrawReportHeader("TRADE REPORT", 2);
 
-			// Instruction address 0x0000:0x0935, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.CAPI.itoa(this.oParent.Var_70e6, 10));
+					y = 40;
+				}
 
-			// Instruction address 0x0000:0x0945, size: 5
-			this.oParent.CAPI.strcat(0xba06, "~");
+				this.oParent.CityWorker.F0_1d12_0045_ProcessCityState(cityID, -1);
 
-			this.oCPU.AX.UInt16 = (ushort)((short)this.oParent.Var_e17a);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), this.oCPU.AX.UInt16));
-			this.oCPU.AX.UInt16 = (ushort)((short)this.oParent.Var_70e6);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), this.oCPU.AX.UInt16));
+				string cityName = this.oParent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.oParent.Segment_2459.F0_2459_08c6_GetCityName(cityID), 62);
 
-		L0959:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)), 0xb4);
-			if (this.oCPU.Flags.GE) goto L097b;
+				if (y < 180)
+				{
+					this.oParent.DrawTools.DrawStringWithShadow(cityName, 16, y, 15);
+				}
 
-			// Instruction address 0x0000:0x096f, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 80, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)), 10);
+				string trade;
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)), 0x8));
+				if ((city.Status & CityStatusEnum.CivilDisorder) != CityStatusEnum.None)
+				{
+					trade = " \x008c(Disorder)";
+				}
+				else
+				{
+					trade = string.Create(CultureInfo.InvariantCulture,
+						$" {this.oParent.Var_70da_Arr[3]}\\/{this.oParent.Var_e17a}$/{this.oParent.Var_70e6}~");
 
-		L097b:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c), 0x1);
+					totalIncome = (short)(totalIncome + this.oParent.Var_e17a);
+					totalScience = (short)(totalScience + this.oParent.Var_70e6);
+				}
 
-		L0980:
-			this.oCPU.AX.UInt16 = 0x1;
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.CX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c));
-			this.oCPU.UInt32ToTwoUInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.TwoUInt16ToUInt32(this.oCPU.AX.UInt16, this.oCPU.DX.UInt16) << this.oCPU.CX.LowUInt8);
+				if (y < 180)
+				{
+					this.oParent.DrawTools.DrawStringToScreen0(trade, 80, y, 10);
+					y += 8;
+				}
 
-			this.oCPU.CX.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.AX.UInt16 = 28;
-			this.oCPU.BX.UInt16 = this.oCPU.DX.UInt16;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x38)));
-			this.oCPU.DI.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.CX.UInt16 = this.oCPU.AND_UInt16(this.oCPU.CX.UInt16,
-				this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x38))].ImprovementFlags0);
-			this.oCPU.BX.UInt16 = this.oCPU.AND_UInt16(this.oCPU.BX.UInt16,
-				this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x38))].ImprovementFlags1);
-			this.oCPU.BX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.BX.UInt16, this.oCPU.CX.UInt16);
-			if (this.oCPU.Flags.E) goto L09c7;
-			
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			this.oCPU.SI.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.SI.UInt16, this.oCPU.BP.UInt16);
-			this.oCPU.SI.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SI.UInt16, 0x34);
+				uint improvements = ((uint)city.ImprovementFlags1 << 16) | city.ImprovementFlags0;
 
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, this.oCPU.SI.UInt16,
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, this.oCPU.SI.UInt16),
-					(ushort)((short)this.oParent.GameData.GetImprovementType(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c)) + 1).MaintenanceCost)));
+				for (int i = 1; i < 24; i++)
+				{
+					if ((improvements & (1u << i)) != 0)
+					{
+						maintenance[i] += this.oParent.GameData.GetImprovementType(i + 1).MaintenanceCost;
 
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c)), 0x1);
-			if (this.oCPU.Flags.NE) goto L09c7;
+						if (i == 1)
+						{
+							maintenance[i] += palaceMaintenance;
+						}
+					}
+				}
+			}
 
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3e));
-			this.oCPU.WriteUInt16(this.oCPU.DS.UInt16, this.oCPU.SI.UInt16, this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.DS.UInt16, this.oCPU.SI.UInt16), this.oCPU.AX.UInt16));
+			this.oParent.DrawTools.DrawStringToScreen0(string.Create(CultureInfo.InvariantCulture, $"Total Income: {totalIncome}$"), 8, y + 4, 10);
 
-		L09c7:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c)), 0x18);
-			if (this.oCPU.Flags.L) goto L0980;
+			if (this.oParent.CityWorker.F0_1d12_6c97_PlayerHasWonder(this.oParent.GameData.HumanPlayerID, WonderEnum.SETIProgram))
+			{
+				totalScience = (short)(totalScience + (totalScience / 2));
+			}
 
-		L09d0:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x38), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x38))));
+			if (totalScience != 0 && y < 180)
+			{
+				int yearFactor = (this.oParent.GameData.Year < 0) ? 1 : ((this.oParent.GameData.Year < 1750) ? 2 : 3);
 
-		L09d3:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x38)), 0x80);
-			if (this.oCPU.Flags.L) goto L09dd;
-			goto L0a8d;
+				// The original works in 16 bits: the cost of the next discovery is truncated before it is divided
+				short discoveryCost = (short)(yearFactor * this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].DiscoveredTechnologyCount *
+					((this.oParent.GameData.DifficultyLevel * 2) + 6));
+				int turns = discoveryCost / totalScience;
 
-		L09dd:
-			this.oCPU.AX.UInt16 = 0x1c;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x38)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
+				this.oParent.DrawTools.DrawStringToScreen0(string.Create(CultureInfo.InvariantCulture, $"Discoveries: {turns} turns"), 8, y + 12, 10);
+			}
 
-			if (this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x38))].Status == CityStatusEnum.Invalid) goto L09d0;
-			
-			if (this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x38))].PlayerID != playerID)
-				goto L09d0;
-
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)), 0xb4);
-			if (this.oCPU.Flags.L) goto L0a16;
-
-			// Instruction address 0x0000:0x09fd, size: 5
-			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
-
-			F14_0000_001c(0x47d5, 2);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36), 0x28);
-
-		L0a16:
-			// Instruction address 0x0000:0x0a1d, size: 5
-			this.oParent.CityWorker.F0_1d12_0045_ProcessCityState(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x38)), -1);
-
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
-			// Instruction address 0x0000:0x0a2d, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.Segment_2459.F0_2459_08c6_GetCityName(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x38))));
-
-			// Instruction address 0x0000:0x0a3d, size: 5
-			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 62));
-
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)), 0xb4);
-			if (this.oCPU.Flags.GE) goto L0a63;
-
-			// Instruction address 0x0000:0x0a5b, size: 5
-			this.oParent.DrawTools.DrawStringWithShadow(0xba06,
-				16,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)),
-				15);
-
-		L0a63:
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-			this.oCPU.AX.UInt16 = 0x1c;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x38)));
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-
-			if ((this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x38))].Status & CityStatusEnum.CivilDisorder) != CityStatusEnum.None)
-				goto L0a7a;
-			goto L08aa;
-
-		L0a7a:
-			// Instruction address 0x0000:0x0a82, size: 5
-			this.oParent.CAPI.strcat(0xba06, " \x008c(Disorder)");
-			goto L0959;
-
-		L0a8d:
-			// Instruction address 0x0000:0x0a95, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Total Income: ");
-
-			// Instruction address 0x0000:0x0ab5, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 10));
-
-			// Instruction address 0x0000:0x0ac5, size: 5
-			this.oParent.CAPI.strcat(0xba06, "$");
-
-			// Instruction address 0x0000:0x0ae0, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 8, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)) + 4, 10);
-
-			// Instruction address 0x0000:0x0af0, size: 5
-			this.oCPU.AX.UInt16 = (ushort)(this.oParent.CityWorker.F0_1d12_6c97_PlayerHasWonder(this.oParent.GameData.HumanPlayerID, WonderEnum.SETIProgram) ? 1 : 0);
-			
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L0b07;
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.AX.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.AX.UInt16, this.oCPU.DX.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.SAR_UInt16(this.oCPU.AX.UInt16, 0x1);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), this.oCPU.AX.UInt16));
-
-		L0b07:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x0);
-			if (this.oCPU.Flags.NE) goto L0b10;
-			goto L0baf;
-
-		L0b10:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)), 0xb4);
-			if (this.oCPU.Flags.L) goto L0b1a;
-			goto L0baf;
-
-		L0b1a:
-			if (this.oParent.GameData.Year >= 0) goto L0b26;
-			this.oCPU.AX.UInt16 = 0x1;
-			goto L0b36;
-
-		L0b26:
-			if (this.oParent.GameData.Year>= 1750) goto L0b33;
-			this.oCPU.AX.UInt16 = 0x2;
-			goto L0b36;
-
-		L0b33:
-			this.oCPU.AX.UInt16 = 0x3;
-
-		L0b36:
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, (ushort)this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].DiscoveredTechnologyCount);
-			this.oCPU.CX.UInt16 = (ushort)oParent.GameData.DifficultyLevel;
-			this.oCPU.CX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.CX.UInt16, 0x1);
-			this.oCPU.CX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.CX.UInt16, 0x6);
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.CX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
-			this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3a), this.oCPU.AX.UInt16);
-
-			// Instruction address 0x0000:0x0b5c, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Discoveries: ");
-
-			// Instruction address 0x0000:0x0b7c, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3a)), 10));
-
-			// Instruction address 0x0000:0x0b8c, size: 5
-			this.oParent.CAPI.strcat(0xba06, " turns");
-
-			// Instruction address 0x0000:0x0ba7, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 8, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)) + 12, 10);
-
-		L0baf:
-			// Instruction address 0x0000:0x0bbf, size: 5
 			this.oParent.DrawTools.DrawStringToScreen0("Maintenance Costs", 160, 32, 15);
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36), 0x28);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x0);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c), 0x0);
-			goto L0ca9;
+			y = 40;
+			short totalCost = 0;
 
-		L0bd9:
-			// Instruction address 0x0000:0x0c06, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(
-					this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 + (this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c)) << 1) - 0x34)) /
-					this.oParent.GameData.GetImprovementType(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c)) + 1).MaintenanceCost, 10));
+			for (int i = 0; i < 24; i++)
+			{
+				int cost = maintenance[i];
 
-		L0bf6:
-			// Instruction address 0x0000:0x0c16, size: 5
-			this.oParent.CAPI.strcat(0xba06, " ");
+				if (cost == 0)
+					continue;
 
-			// Instruction address 0x0000:0x0c2c, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.GameData.GetImprovementType(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c)) + 1).Name);
+				// The number of improvements of this type
+				int count = (i == 1) ? (short)cost / (short)palaceMaintenance : cost / this.oParent.GameData.GetImprovementType(i + 1).MaintenanceCost;
 
-			// Instruction address 0x0000:0x0c3c, size: 5
-			this.oParent.CAPI.strcat(0xba06, ", ");
+				if (y < 180)
+				{
+					this.oParent.DrawTools.DrawStringToScreen0(
+						string.Create(CultureInfo.InvariantCulture, $"{count} {this.oParent.GameData.GetImprovementType(i + 1).Name}, {cost}$"), 160, y, 14);
 
-			// Instruction address 0x0000:0x0c61, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(
-					(short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 +
-						(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c)) << 1) - 0x34)), 10));
+					y += 8;
+				}
 
-			// Instruction address 0x0000:0x0c71, size: 5
-			this.oParent.CAPI.strcat(0xba06, "$");
+				totalCost = (short)(totalCost + cost);
+			}
 
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)), 0xb4);
-			if (this.oCPU.Flags.GE) goto L0c9b;
+			this.oParent.DrawTools.DrawStringToScreen0(string.Create(CultureInfo.InvariantCulture, $"Total Cost: {totalCost}$"), 160, y + 4, 14);
 
-			// Instruction address 0x0000:0x0c8f, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 160, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)), 14);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)), 0x8));
-
-		L0c9b:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 + this.oCPU.SI.UInt16 - 0x34));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), this.oCPU.AX.UInt16));
-
-		L0ca6:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c))));
-
-		L0ca9:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c)), 0x18);
-			if (this.oCPU.Flags.GE) goto L0cda;
-			this.oCPU.DI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c));
-			this.oCPU.DI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.DI.UInt16, 0x1);
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 + this.oCPU.DI.UInt16 - 0x34));
-			this.oCPU.SI.UInt16 = this.oCPU.OR_UInt16(this.oCPU.SI.UInt16, this.oCPU.SI.UInt16);
-			if (this.oCPU.Flags.E) goto L0ca6;
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3c)), 0x1);
-			if (this.oCPU.Flags.E) goto L0cc9;
-			goto L0bd9;
-
-		L0cc9:
-			// Instruction address 0x0000:0x0c06, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa((short)((short)this.oCPU.SI.UInt16 / 
-					(short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x3e))), 10));
-
-			goto L0bf6;
-
-		L0cda:
-			// Instruction address 0x0000:0x0ce2, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Total Cost: ");
-
-			// Instruction address 0x0000:0x0d02, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 10));
-
-			// Instruction address 0x0000:0x0d12, size: 5
-			this.oParent.CAPI.strcat(0xba06, "$");
-
-			// Instruction address 0x0000:0x0d2d, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 160, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)) + 4, 14);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x36)), 0xc));
-
-			F14_0000_013b();
-
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.DI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F14_0000_07f1_TradeReport");
+			WaitAndCloseReport();
 		}
 
 		/// <summary>
 		/// Shows Intelligence Report window.
 		/// </summary>
-		public void F14_0000_0d43_IntelligenceReport()
+		public void IntelligenceReport()
 		{
-			this.oCPU.Log.EnterBlock("F14_0000_0d43_IntelligenceReport()");
-
-			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x26);
-			this.oCPU.PUSH_UInt16(this.oCPU.DI.UInt16);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
-
-			F14_0000_0000(0x4847, 1);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1e), 0x20);
-			this.oCPU.AX.UInt16 = 0;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x24), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 0x1);
-			goto L0fee;
-
-		L0d6f:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 0xffff);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c), 0x0);
-
-		L0d79:
-			this.oCPU.AX.UInt16 = 28;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.CMP_UInt16((ushort)this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c))].PlayerID,
-				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-			if (this.oCPU.Flags.NE) goto L0d9f;
-			
-			if (this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c))].Status == CityStatusEnum.Invalid) goto L0d9f;
-
-			this.oCPU.TEST_UInt16(this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c))].ImprovementFlags0, 0x1);
-			if (this.oCPU.Flags.E) goto L0d9f;
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), this.oCPU.AX.UInt16);
-
-		L0d9f:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)), 0x80);
-			if (this.oCPU.Flags.L) goto L0d79;
-
-			// Instruction address 0x0000:0x0db1, size: 5
-			this.oParent.CAPI.strcat(0xba06, ": ");
-
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-
-			// Instruction address 0x0000:0x0dc6, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.GameData.Players[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Name);
-
-			// Instruction address 0x0000:0x0ddd, size: 5
-			this.oParent.DrawTools.DrawStringWithShadow(0xba06,
-				8,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1e)),
-				15);
-
-			// Instruction address 0x0000:0x0df3, size: 5
-			this.oParent.CAPI.strcpy(0xba06, 
-				this.oParent.Array_1966_GovernmentNames[(int)this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].GovernmentType]);
-
-			// Instruction address 0x0000:0x0e03, size: 5
-			this.oParent.CAPI.strcat(0xba06, ", ");
-
-			// Instruction address 0x0000:0x0e24, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Coins, 10));
-
-			// Instruction address 0x0000:0x0e34, size: 5
-			this.oParent.CAPI.strcat(0xba06, "$");
-
-			if (this.oParent.GameData.DifficultyLevel > 1) goto L0e84;
-
-			// Instruction address 0x0000:0x0e4b, size: 5
-			this.oParent.CAPI.strcat(0xba06, ", ");
-
-			// Instruction address 0x0000:0x0e6c, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].UnitCount, 10));
-
-			// Instruction address 0x0000:0x0e7c, size: 5
-			this.oParent.CAPI.strcat(0xba06, " Units.");
-
-		L0e84:
-			// Instruction address 0x0000:0x0e98, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 
-				160, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1e)),
-				this.oParent.Array_1946_PlayerColours[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))]);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1e), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1e)), 0x8));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a), 0x10);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c), 0x1);
-			goto L0f1d;
-
-		L0eb0:
-			// Instruction address 0x0000:0x0eb8, size: 5
-			this.oParent.CAPI.strcat(0xba06, ":\x008f PEACE");
-
-		L0eb3:
-			// Instruction address 0x0000:0x0ece, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a)),
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1e)),
-				7);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a)), 0x60));
-
-		L0eda:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
-			this.oCPU.CX.LowUInt8 = 0x4;
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, this.oCPU.CX.LowUInt8);
-
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-			
-			if ((this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c))] & (DiplomacyFlagsEnum.Contact | DiplomacyFlagsEnum.Peace)) != DiplomacyFlagsEnum.Contact)
-				goto L0f1a;
-
-			// Instruction address 0x0000:0x0ef8, size: 5
-			this.oParent.CAPI.strcat(0xba06, ":\x008c WAR");
-
-			// Instruction address 0x0000:0x0f0e, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a)),
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1e)),
-				7);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a)), 0x60));
-
-		L0f1a:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c))));
-
-		L0f1d:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c)), 0x8);
-			if (this.oCPU.Flags.GE) goto L0f78;
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
-			// Instruction address 0x0000:0x0f35, size: 5
-			this.oParent.CAPI.strcpy(0xba06, this.oParent.GameData.Players[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c))].Nation);
-
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a)), 0xf0);
-			if (this.oCPU.Flags.LE) goto L0f4d;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1a), 0x10);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1e), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1e)), 0x8));
-
-		L0f4d:
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
-			this.oCPU.CX.LowUInt8 = 0x4;
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, this.oCPU.CX.LowUInt8);
-
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-			
-			if (!this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c))].HasFlag(DiplomacyFlagsEnum.Peace))
-				goto L0eda;
-
-			if (!this.oParent.GameData.Players[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1c))].HasFlag(DiplomacyFlagsEnum.Allied))
-				goto L0eb0;
-
-			// Instruction address 0x0000:0x0eb8, size: 5
-			this.oParent.CAPI.strcat(0xba06, ":\x008f ALLIED");
-
-			goto L0eb3;
-
-		L0f78:
-			this.oCPU.DI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))));
-			this.oCPU.DI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.DI.UInt16, 0x1);
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 + this.oCPU.DI.UInt16 - 0x16), this.oCPU.AX.UInt16);
-			this.oCPU.AX.UInt16 = (ushort)this.oParent.GameData.HumanPlayerID;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L0feb;
-
-			// Instruction address 0x0000:0x0f96, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "INFO");
-
-			// Instruction address 0x0000:0x0fb6, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa((short)this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), 10));
-
-			this.oCPU.AX.UInt16 = 0x18;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-
-			// Instruction address 0x0000:0x0fe3, size: 5
-			this.oParent.DrawTools.DrawFilledRectangleWithCenteredText(281, this.oCPU.SI.Int16 + 20, 318, this.oCPU.SI.Int16 + 29, 
-				this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06),
-				this.oParent.Array_1946_PlayerColours[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))]);
-
-		L0feb:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))));
-
-		L0fee:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x8);
-			if (this.oCPU.Flags.L) goto L0ff7;
-			goto L107e;
-
-		L0ff7:
-			this.oCPU.AX.UInt16 = 0x1;
-			this.oCPU.CX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
-			this.oCPU.AX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.AX.UInt16, this.oCPU.CX.LowUInt8);
-			this.oCPU.TEST_UInt16(this.oCPU.AX.UInt16, (ushort)this.oParent.GameData.ActiveCivilizations);
-			if (this.oCPU.Flags.E) goto L0feb;
-			this.oCPU.AX.UInt16 = 0x18;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
-			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, 0x20);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1e), this.oCPU.AX.UInt16);
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.SI.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SI.UInt16, 0x2);
-
-			// Instruction address 0x0000:0x1024, size: 5
-			this.oParent.Graphics.F0_VGA_0599_DrawLine(this.oParent.Var_aa_Screen0_Rectangle, 4, (short)this.oCPU.SI.UInt16, 316, (short)this.oCPU.SI.UInt16, 9);
-
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-
-			// Instruction address 0x0000:0x1039, size: 5
-			this.oParent.CAPI.strcpy(0xba06, this.oParent.GameData.Players[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Nation);
-
-			this.oCPU.AX.UInt16 = (ushort)this.oParent.GameData.HumanPlayerID;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.NE) goto L104c;
-			goto L0d6f;
-
-		L104c:
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.CX.LowUInt8 = 0x4;
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, this.oCPU.CX.LowUInt8);
-
-			if (this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].HasFlag(DiplomacyFlagsEnum.EmbassyEstablished))
-				goto L0d6f;
-
-			// Instruction address 0x0000:0x106b, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0("No embassy established.", 
-				96, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x1e)),
-				this.oParent.Array_1946_PlayerColours[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))]);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))));
-			goto L0feb;
-
-		L107e:
-			MouseEvent mouseEvent = this.oParent.GetMouseEvent();
-
-			if (mouseEvent.Buttons != MouseButtonsEnum.None) goto L1093;
-
-			// Instruction address 0x0000:0x108a, size: 5
-			this.oParent.CAPI.kbhit();
-
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L107e;
-
-		L1093:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x18), 0x1);
-
-			// Instruction address 0x0000:0x1098, size: 5
-			this.oParent.CAPI.kbhit();
-
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L10b8;
-
-			// Instruction address 0x0000:0x10a1, size: 5
-			this.oCPU.AX.Int16 = (short)this.oParent.CommonTools.GetNavigationKey();
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x22), this.oCPU.AX.UInt16);
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x31);
-			if (this.oCPU.Flags.L) goto L10b8;
-			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x37);
-			if (this.oCPU.Flags.G) goto L10b8;
-			this.oCPU.AX.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.AX.UInt16, 0x31);
-			goto L10cc;
-
-		L10b8:
-			if (mouseEvent.Position.X <= 281) goto L1114;
-
-			this.oCPU.AX.Int16 = (short)mouseEvent.Position.Y;
-			this.oCPU.AX.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.AX.UInt16, 0x1c);
-			this.oCPU.CWD(this.oCPU.AX, this.oCPU.DX);
-			this.oCPU.CX.UInt16 = 0x18;
-			this.oCPU.IDIV_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.CX.UInt16);
-
-		L10cc:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), this.oCPU.AX.UInt16);
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.L) goto L1114;
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.GE) goto L1114;
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 + this.oCPU.SI.UInt16 - 0x16));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), this.oCPU.AX.UInt16);
-			this.oCPU.AX.UInt16 = (ushort)this.oParent.GameData.HumanPlayerID;
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E) goto L1114;
-			
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-			
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.CX.LowUInt8 = 0x4;
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, this.oCPU.CX.LowUInt8);
-
-			if (!this.oParent.GameData.Players[this.oParent.GameData.HumanPlayerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].HasFlag(DiplomacyFlagsEnum.EmbassyEstablished))
-				goto L1114;
-
-			F14_0000_1164(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x24), 0x1);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x18), 0x0);
-
-		L1114:
-			this.oCPU.AX.Int16 = (short)mouseEvent.Position.X;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), this.oCPU.AX.UInt16);
-
-			// Instruction address 0x0000:0x111a, size: 5
-			this.oParent.CommonTools.ClearKeyboardAndMouseEvents();
-
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x18)), 0x0);
-			if (this.oCPU.Flags.NE) goto L1142;
-			goto L107e;
-
-		L1142:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x24)), 0x0);
-			if (this.oCPU.Flags.E) goto L1154;
-
-			// Instruction address 0x0000:0x114d, size: 5
-			this.oParent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
-
-			goto L1159;
-
-		L1154:
-			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
-
-		L1159:
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.DI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F14_0000_0d43_IntelligenceReport");
+			int humanPlayerID = this.oParent.GameData.HumanPlayerID;
+			Player humanPlayer = this.oParent.GameData.Players[humanPlayerID];
+
+			ShowReportHeader("INTELLIGENCE REPORT", 1);
+
+			bool reportShown = false;
+			int rowCount = 0;
+
+			// The player shown on each row. A row without an embassy is counted but not stored, the original left whatever
+			// was on the stack.
+			int[] rowPlayerIDs = new int[8];
+
+			for (int playerID = 1; playerID < 8; playerID++)
+			{
+				if ((this.oParent.GameData.ActiveCivilizations & (1 << playerID)) == 0)
+					continue;
+
+				Player player = this.oParent.GameData.Players[playerID];
+				int y = (rowCount * 24) + 32;
+
+				this.oParent.Graphics.F0_VGA_0599_DrawLine(this.oParent.Var_aa_Screen0_Rectangle, 4, y - 2, 316, y - 2, 9);
+
+				if (playerID != humanPlayerID && !humanPlayer.Diplomacy[playerID].HasFlag(DiplomacyFlagsEnum.EmbassyEstablished))
+				{
+					this.oParent.DrawTools.DrawStringToScreen0("No embassy established.", 96, y, this.oParent.Array_1946_PlayerColours[playerID]);
+
+					rowCount++;
+					continue;
+				}
+
+				// The original also looks for the player's capital here, but doesn't use it
+
+				this.oParent.DrawTools.DrawStringWithShadow($"{player.Nation}: {player.Name}", 8, y, 15);
+
+				string status = string.Create(CultureInfo.InvariantCulture,
+					$"{this.oParent.Array_1966_GovernmentNames[(int)player.GovernmentType]}, {player.Coins}$");
+
+				if (this.oParent.GameData.DifficultyLevel <= 1)
+				{
+					status += string.Create(CultureInfo.InvariantCulture, $", {player.UnitCount} Units.");
+				}
+
+				this.oParent.DrawTools.DrawStringToScreen0(status, 160, y, this.oParent.Array_1946_PlayerColours[playerID]);
+
+				y += 8;
+
+				// Relations with the other players
+				int x = 16;
+
+				for (int otherPlayerID = 1; otherPlayerID < 8; otherPlayerID++)
+				{
+					string nation = this.oParent.GameData.Players[otherPlayerID].Nation;
+					DiplomacyFlagsEnum diplomacy = player.Diplomacy[otherPlayerID];
+
+					if (x > 240)
+					{
+						x = 16;
+						y += 8;
+					}
+
+					if (diplomacy.HasFlag(DiplomacyFlagsEnum.Peace))
+					{
+						nation += diplomacy.HasFlag(DiplomacyFlagsEnum.Allied) ? ":\x008f ALLIED" : ":\x008f PEACE";
+
+						this.oParent.DrawTools.DrawStringToScreen0(nation, x, y, 7);
+						x += 96;
+					}
+
+					if ((diplomacy & (DiplomacyFlagsEnum.Contact | DiplomacyFlagsEnum.Peace)) == DiplomacyFlagsEnum.Contact)
+					{
+						nation += ":\x008c WAR";
+
+						this.oParent.DrawTools.DrawStringToScreen0(nation, x, y, 7);
+						x += 96;
+					}
+				}
+
+				rowPlayerIDs[rowCount] = playerID;
+				rowCount++;
+
+				if (playerID != humanPlayerID)
+				{
+					// Button to show the player's details
+					this.oParent.DrawTools.DrawFilledRectangleWithCenteredText(281, (rowCount * 24) + 20, 318, (rowCount * 24) + 29,
+						string.Create(CultureInfo.InvariantCulture, $"INFO{rowCount}"), this.oParent.Array_1946_PlayerColours[playerID]);
+				}
+			}
+
+			bool close;
+
+			do
+			{
+				MouseEvent mouseEvent;
+
+				do
+				{
+					mouseEvent = this.oParent.GetMouseEvent();
+				}
+				while (mouseEvent.Buttons == MouseButtonsEnum.None && this.oParent.CAPI.kbhit() == 0);
+
+				close = true;
+
+				// A row is chosen with the keys 1 to 7, or by clicking an INFO button
+				int row = -1;
+				bool rowChosen = false;
+
+				if (this.oParent.CAPI.kbhit() != 0)
+				{
+					int key = this.oParent.CommonTools.GetNavigationKey();
+
+					if (key >= '1' && key <= '7')
+					{
+						row = key - '1';
+						rowChosen = true;
+					}
+				}
+
+				if (!rowChosen && mouseEvent.Position.X > 281)
+				{
+					row = (mouseEvent.Position.Y - 28) / 24;
+					rowChosen = true;
+				}
+
+				if (rowChosen && row >= 0 && row < rowCount)
+				{
+					int playerID = rowPlayerIDs[row];
+
+					if (playerID != humanPlayerID && humanPlayer.Diplomacy[playerID].HasFlag(DiplomacyFlagsEnum.EmbassyEstablished))
+					{
+						PlayerIntelligenceReport(playerID);
+
+						reportShown = true;
+						close = false;
+					}
+				}
+
+				this.oParent.CommonTools.ClearKeyboardAndMouseEvents();
+			}
+			while (!close);
+
+			if (reportShown)
+			{
+				this.oParent.GameEngine.F0_1238_1b44_RedrawMapWithBlankingEffect();
+			}
+			else
+			{
+				this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
+			}
 		}
 
 		/// <summary>
-		/// ?
+		/// Shows the intelligence report about a player: leader, capital, government, treasury, military, foreign affairs
+		/// and technologies
 		/// </summary>
 		/// <param name="playerID"></param>
-		public void F14_0000_1164(int playerID)
+		public void PlayerIntelligenceReport(int playerID)
 		{
-			this.oCPU.Log.EnterBlock($"F14_0000_1164({playerID})");
+			Player player = this.oParent.GameData.Players[playerID];
+			NationDefinition nation = this.oParent.GameData.Nations[player.NationalityID];
 
-			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x6);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
+			ShowReportHeader("INTELLIGENCE REPORT", 1);
 
-			F14_0000_0000(0x48a5, 1);
+			int y = 32;
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 0x20);
+			this.oParent.DrawTools.DrawStringWithShadow($"Subject: the {player.Nation}", 16, 32, 15);
+			y += 12;
 
-			// Instruction address 0x0000:0x1187, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Subject: the ");
+			this.oParent.DrawTools.DrawStringToScreen0($"Leader:\x008f {this.oParent.Array_19b2_GovernmentTypeNames[(int)player.GovernmentType]} {player.Name}", 16, y, 9);
+			y += 8;
 
-			this.oCPU.SI.Int16 = (short)playerID;
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-
-			// Instruction address 0x0000:0x119c, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.GameData.Players[playerID].Nation);
-
-			// Instruction address 0x0000:0x11b4, size: 5
-			this.oParent.DrawTools.DrawStringWithShadow(0xba06, 16, 32, 15);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0xc));
-
-			// Instruction address 0x0000:0x11c8, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Leader:\x008f ");
-
-			// Instruction address 0x0000:0x11de, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.Array_19b2_GovernmentTypeNames[(int)this.oParent.GameData.Players[playerID].GovernmentType]);
-
-			// Instruction address 0x0000:0x11ee, size: 5
-			this.oParent.CAPI.strcat(0xba06, " ");
-
-			// Instruction address 0x0000:0x11fe, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.GameData.Players[playerID].Name);
-
-			// Instruction address 0x0000:0x1215, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 16, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 9);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x8));
-
-			if (this.oParent.GameData.Nations[this.oParent.GameData.Players[playerID].NationalityID].Mood == 1)
+			if (nation.Mood == 1)
 			{
-				// Instruction address 0x0000:0x1240, size: 5
-				this.oParent.DrawTools.DrawStringToScreen0("Aggressive", 24, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 7);
-
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4),
-					this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x8));
-			}
-		
-			if (this.oParent.GameData.Nations[this.oParent.GameData.Players[playerID].NationalityID].Mood == -1)
-			{
-				// Instruction address 0x0000:0x1270, size: 5
-				this.oParent.DrawTools.DrawStringToScreen0("Friendly", 24, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 7);
-
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4),
-					this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x8));
-			}
-		
-			if (this.oParent.GameData.Nations[this.oParent.GameData.Players[playerID].NationalityID].Policy == 1)
-			{
-				// Instruction address 0x0000:0x12a0, size: 5
-				this.oParent.DrawTools.DrawStringToScreen0("Expansionistic", 24, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 7);
-
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4),
-					this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x8));
+				this.oParent.DrawTools.DrawStringToScreen0("Aggressive", 24, y, 7);
+				y += 8;
 			}
 
-			if (this.oParent.GameData.Nations[this.oParent.GameData.Players[playerID].NationalityID].Policy == -1)
+			if (nation.Mood == -1)
 			{
-				// Instruction address 0x0000:0x12d0, size: 5
-				this.oParent.DrawTools.DrawStringToScreen0("Perfectionist", 24, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 7);
-
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4),
-					this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x8));
+				this.oParent.DrawTools.DrawStringToScreen0("Friendly", 24, y, 7);
+				y += 8;
 			}
 
-			if (this.oParent.GameData.Nations[this.oParent.GameData.Players[playerID].NationalityID].Ideology == 1)
+			if (nation.Policy == 1)
 			{
-				// Instruction address 0x0000:0x1300, size: 5
-				this.oParent.DrawTools.DrawStringToScreen0("Civilized", 24, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 7);
-
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4),
-					this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x8));
+				this.oParent.DrawTools.DrawStringToScreen0("Expansionistic", 24, y, 7);
+				y += 8;
 			}
 
-			if (this.oParent.GameData.Nations[this.oParent.GameData.Players[playerID].NationalityID].Ideology == -1)
+			if (nation.Policy == -1)
 			{
-				// Instruction address 0x0000:0x1330, size: 5
-				this.oParent.DrawTools.DrawStringToScreen0("Militaristic", 24, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 7);
-
-				this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4),
-					this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x8));
+				this.oParent.DrawTools.DrawStringToScreen0("Perfectionist", 24, y, 7);
+				y += 8;
 			}
-		
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x4));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0xffff);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 0x0);
 
-		L134a:
-			this.oCPU.AX.UInt16 = 28;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-			if (this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))].PlayerID != playerID) goto L1370;
-			
-			if (this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))].Status == CityStatusEnum.Invalid) goto L1370;
-
-			this.oCPU.TEST_UInt16(this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))].ImprovementFlags0, 0x1);
-			if (this.oCPU.Flags.E) goto L1370;
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.AX.UInt16);
-
-		L1370:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), 0x80);
-			if (this.oCPU.Flags.L) goto L134a;
-
-			// Instruction address 0x0000:0x1382, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Capital:\x008f ");
-
-			// Instruction address 0x0000:0x138d, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.Segment_2459.F0_2459_08c6_GetCityName(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))));
-			
-			// Instruction address 0x0000:0x13a4, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 16, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 9);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x8));
-
-			// Instruction address 0x0000:0x13b8, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Government:\x008f ");
-
-			this.oCPU.SI.Int16 = (short)playerID;
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
-
-			// Instruction address 0x0000:0x13d3, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.Array_1966_GovernmentNames[(int)this.oParent.GameData.Players[playerID].GovernmentType]);
-
-			// Instruction address 0x0000:0x13ea, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 16, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 9);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x8));
-
-			// Instruction address 0x0000:0x13fe, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Treasury:\x008f ");
-
-			// Instruction address 0x0000:0x141f, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.GameData.Players[playerID].Coins, 10));
-
-			// Instruction address 0x0000:0x142f, size: 5
-			this.oParent.CAPI.strcat(0xba06, "$");
-
-			// Instruction address 0x0000:0x1446, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 16, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 9);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x8));
-			
-			if (this.oParent.GameData.DifficultyLevel > 1) goto L14b5;
-
-			// Instruction address 0x0000:0x1461, size: 5
-			this.oParent.CAPI.strcpy(0xba06, "Military:\x008f ");
-
-			// Instruction address 0x0000:0x1482, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.GameData.Players[playerID].UnitCount, 10));
-
-			// Instruction address 0x0000:0x1492, size: 5
-			this.oParent.CAPI.strcat(0xba06, " Units.");
-
-			// Instruction address 0x0000:0x14a9, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 16, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 9);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0xc));
-
-		L14b5:
-			// Instruction address 0x0000:0x14c4, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0("Foreign Affairs:", 16, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 9);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x8));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 0x1);
-
-		L14d5:
-			this.oCPU.SI.Int16 = (short)playerID;
-			this.oCPU.CX.LowUInt8 = 0x4;
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, this.oCPU.CX.LowUInt8);
-
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-
-			if (this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))].HasFlag(DiplomacyFlagsEnum.Peace))
+			if (nation.Ideology == 1)
 			{
-				// Instruction address 0x0000:0x14f0, size: 5
-				this.oParent.CAPI.strcpy(0xba06, "At\x008f PEACE");
+				this.oParent.DrawTools.DrawStringToScreen0("Civilized", 24, y, 7);
+				y += 8;
 			}
-		
-			this.oCPU.SI.Int16 = (short)playerID;
-			this.oCPU.CX.LowUInt8 = 0x4;
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, this.oCPU.CX.LowUInt8);
 
-			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6));
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, 0x1);
-
-			if ((this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))] & (DiplomacyFlagsEnum.Contact | DiplomacyFlagsEnum.Peace)) == DiplomacyFlagsEnum.Contact)
+			if (nation.Ideology == -1)
 			{
-				// Instruction address 0x0000:0x1516, size: 5
-				this.oParent.CAPI.strcpy(0xba06, "At\x008c WAR");
+				this.oParent.DrawTools.DrawStringToScreen0("Militaristic", 24, y, 7);
+				y += 8;
 			}
-		
-			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6));
-			this.oCPU.SI.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.SI.UInt16, 0x1);
 
-			this.oCPU.BX.Int16 = (short)playerID;
-			this.oCPU.CX.LowUInt8 = 0x4;
-			this.oCPU.BX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.BX.UInt16, this.oCPU.CX.LowUInt8);
+			y += 4;
 
-			if (!this.oParent.GameData.Players[playerID].Diplomacy[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))].HasFlag(DiplomacyFlagsEnum.Contact))
-				goto L157c;
+			// The capital is the last city of the player with a Palace, or none
+			int capitalCityID = -1;
 
-			// Instruction address 0x0000:0x1539, size: 5
-			this.oParent.CAPI.strcat(0xba06, "\x0087 with the ");
+			for (int cityID = 0; cityID < 128; cityID++)
+			{
+				City city = this.oParent.GameData.Cities[cityID];
 
-			// Instruction address 0x0000:0x1549, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.GameData.Players[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))].Nation);
+				if (city.PlayerID == playerID && city.Status != CityStatusEnum.Invalid && (city.ImprovementFlags0 & 0x1) != 0)
+				{
+					capitalCityID = cityID;
+				}
+			}
 
-			// Instruction address 0x0000:0x1559, size: 5
-			this.oParent.CAPI.strcat(0xba06, ".");
+			this.oParent.DrawTools.DrawStringToScreen0($"Capital:\x008f {this.oParent.Segment_2459.F0_2459_08c6_GetCityName(capitalCityID)}", 16, y, 9);
+			y += 8;
 
-			// Instruction address 0x0000:0x1570, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 24, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 7);
+			this.oParent.DrawTools.DrawStringToScreen0($"Government:\x008f {this.oParent.Array_1966_GovernmentNames[(int)player.GovernmentType]}", 16, y, 9);
+			y += 8;
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x8));
+			this.oParent.DrawTools.DrawStringToScreen0(string.Create(CultureInfo.InvariantCulture, $"Treasury:\x008f {player.Coins}$"), 16, y, 9);
+			y += 8;
 
-		L157c:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), 0x8);
-			if (this.oCPU.Flags.GE) goto L1588;
-			goto L14d5;
+			if (this.oParent.GameData.DifficultyLevel <= 1)
+			{
+				this.oParent.DrawTools.DrawStringToScreen0(string.Create(CultureInfo.InvariantCulture, $"Military:\x008f {player.UnitCount} Units."), 16, y, 9);
+				y += 12;
+			}
 
-		L1588:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x4));
+			this.oParent.DrawTools.DrawStringToScreen0("Foreign Affairs:", 16, y, 9);
+			y += 8;
 
-			// Instruction address 0x0000:0x159b, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0("Technologies:", 16, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 9);
+			string relation = "";
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x8));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 0x47);
+			for (int otherPlayerID = 1; otherPlayerID < 8; otherPlayerID++)
+			{
+				DiplomacyFlagsEnum diplomacy = player.Diplomacy[otherPlayerID];
 
-		L15ac:
-			// Instruction address 0x0000:0x15b2, size: 5
-			this.oCPU.AX.UInt16 = (ushort)(this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID,
-				(TechnologyAdvanceEnum)this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))) ? 1 : 0);
-			this.oCPU.AX.UInt16 = this.oCPU.OR_UInt16(this.oCPU.AX.UInt16, this.oCPU.AX.UInt16);
-			if (this.oCPU.Flags.E)
-				goto L15e6;
+				if (diplomacy.HasFlag(DiplomacyFlagsEnum.Peace))
+				{
+					relation = "At\x008f PEACE";
+				}
 
-			// Instruction address 0x0000:0x15d3, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(
-				this.oParent.GameData.TechnologyAdvances[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))].Name,
-				24,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)),
-				7);
+				if ((diplomacy & (DiplomacyFlagsEnum.Contact | DiplomacyFlagsEnum.Peace)) == DiplomacyFlagsEnum.Contact)
+				{
+					relation = "At\x008c WAR";
+				}
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x8));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0xc0);
-			if (this.oCPU.Flags.GE) goto L15eb;
+				if (diplomacy.HasFlag(DiplomacyFlagsEnum.Contact))
+				{
+					this.oParent.DrawTools.DrawStringToScreen0($"{relation}\x0087 with the {this.oParent.GameData.Players[otherPlayerID].Nation}.", 24, y, 7);
+					y += 8;
+				}
+			}
 
-		L15e6:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 
-				this.oCPU.DEC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))));
-			if (this.oCPU.Flags.NS) goto L15ac;
+			y += 4;
 
-		L15eb:
-			F14_0000_013b();
+			this.oParent.DrawTools.DrawStringToScreen0("Technologies:", 16, y, 9);
+			y += 8;
 
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F14_0000_1164");
+			// From the most advanced technology down, until the page is full
+			for (int technology = 71; technology >= 0; technology--)
+			{
+				if (this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, (TechnologyAdvanceEnum)technology))
+				{
+					this.oParent.DrawTools.DrawStringToScreen0(this.oParent.GameData.TechnologyAdvances[technology].Name, 24, y, 7);
+					y += 8;
+
+					if (y >= 192)
+						break;
+				}
+			}
+
+			WaitAndCloseReport();
 		}
 
 		/// <summary>
 		/// Shows Attitude Report window.
 		/// </summary>
 		/// <param name="playerID"></param>
-		public void F14_0000_15f4_AttitudeReport(short playerID)
+		public void AttitudeReport(short playerID)
 		{
-			this.oCPU.Log.EnterBlock($"F14_0000_15f4_AttitudeReport({playerID})");
+			ShowReportHeader("ATTITUDE SURVEY", 9);
 
-			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x14);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
+			int y = 32;
+			int unhappyCount = 0;
+			int happyCount = 0;
+			int citizenCount = 0;
+			int resourcesXOffset = 0;
 
-			F14_0000_0000(0x4995, 9);
-			
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 0x20);
-			this.oCPU.AX.UInt16 = 0;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12), this.oCPU.AX.UInt16);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa), this.oCPU.AX.UInt16);
+			for (int cityID = 0; cityID < 128; cityID++)
+			{
+				City city = this.oParent.GameData.Cities[cityID];
 
-		L1620:
-			this.oCPU.AX.UInt16 = 0x1c;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-			
-			if (this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa))].Status != CityStatusEnum.Invalid) goto L1632;
-			goto L175a;
+				if (city.Status == CityStatusEnum.Invalid || city.PlayerID != playerID)
+					continue;
 
-		L1632:
-			if (this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa))].PlayerID != playerID)
-				goto L175a;
+				if (y > 190)
+				{
+					// Next page
+					this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0xbe);
-			if (this.oCPU.Flags.LE) goto L165f;
+					DrawReportHeader("ATTITUDE SURVEY", 9);
 
-			// Instruction address 0x0000:0x1646, size: 5
-			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+					y = 32;
+				}
 
-			F14_0000_001c(0x49a5, 9);
+				this.oParent.CityWorker.F0_1d12_0045_ProcessCityState(cityID, -1);
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), 0x20);
+				this.oParent.DrawTools.DrawStringToScreen0($"{this.oParent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}:", 16, y, 15);
 
-		L165f:
-			// Instruction address 0x0000:0x1666, size: 5
-			this.oParent.CityWorker.F0_1d12_0045_ProcessCityState(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa)), -1);
+				// Draw the citizens, shifted a little on each row
+				this.oParent.CityWorker.F0_1d12_6ed4_DrawResources(cityID, (resourcesXOffset & 0x7) + 80, y - 3, this.oParent.Var_e8b8, 124);
 
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
+				// The improvements that make citizens content
+				int x = 212;
 
-			// Instruction address 0x0000:0x1676, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.Segment_2459.F0_2459_08c6_GetCityName(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa))));
+				this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle, 212, y - 1, 90, 10, 11);
 
-			// Instruction address 0x0000:0x1686, size: 5
-			this.oParent.CAPI.strcat(0xba06, ":");
+				for (int i = 0; i < 24; i++)
+				{
+					// The original shifts in 16 bits, so bits 16 and above are never set
+					int bit = (i < 16) ? (1 << i) : 0;
 
-			// Instruction address 0x0000:0x169d, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 16, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 15);
+					if ((city.ImprovementFlags0 & bit & 0x2618) != 0)
+					{
+						this.oParent.CityWorker.F0_1d12_7045_DrawWonderOrImprovement(i + 1, x, y - 1);
+						x += 18;
+					}
+				}
 
-			this.oCPU.AX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12));
-			this.oCPU.AX.UInt16 = this.oCPU.AND_UInt16(this.oCPU.AX.UInt16, 0x7);
-			this.oCPU.AX.UInt16 = this.oCPU.ADD_UInt16(this.oCPU.AX.UInt16, 0x50);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8), this.oCPU.AX.UInt16);
+				citizenCount += (sbyte)city.ActualSize;
+				happyCount += (short)this.oParent.Var_70e2_CityHappyCitizenCount;
+				unhappyCount += (short)this.oParent.Var_70e4_CityUnhappyCitizenCount;
+				resourcesXOffset += 4;
+				y += 10;
+			}
 
-			// Instruction address 0x0000:0x16c6, size: 5
-			this.oParent.CityWorker.F0_1d12_6ed4_DrawResources(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa)),
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)),
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)) - 3,
-				this.oParent.Var_e8b8, 124);
+			if (citizenCount == 0)
+			{
+				citizenCount++;
+			}
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8), 0xd4);
+			this.oParent.DrawTools.DrawStringToScreen0(
+				$"Population: {this.oParent.GameEngine.PopulationValueToString(this.oParent.GameEngine.GetPlayerPopulationCount(playerID))}" +
+				$" Happy:{Percentage(happyCount, citizenCount)}" +
+				$"% Content:{Percentage(citizenCount - happyCount - unhappyCount, citizenCount)}" +
+				$"% Unhappy:{Percentage(unhappyCount, citizenCount)}%", 16, y + 8, 15);
 
-			// Instruction address 0x0000:0x16ec, size: 5
-			this.oParent.DrawTools.FillRectangle(this.oParent.Var_aa_Screen0_Rectangle,
-				212, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)) - 1, 90, 10, 11);
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xe), 0x0);
-
-		L16f9:
-			this.oCPU.AX.UInt16 = 28;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa)));
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.AX.UInt16 = this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa))].ImprovementFlags0;
-			this.oCPU.DX.UInt16 = 0x1;
-			this.oCPU.CX.LowUInt8 = this.oCPU.ReadUInt8(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xe));
-			this.oCPU.DX.UInt16 = this.oCPU.SHL_UInt16(this.oCPU.DX.UInt16, this.oCPU.CX.LowUInt8);
-			this.oCPU.AX.UInt16 = this.oCPU.AND_UInt16(this.oCPU.AX.UInt16, this.oCPU.DX.UInt16);
-			this.oCPU.TEST_UInt16(this.oCPU.AX.UInt16, 0x2618);
-			if (this.oCPU.Flags.E) goto L172d;
-
-			// Instruction address 0x0000:0x1721, size: 5
-			this.oParent.CityWorker.F0_1d12_7045_DrawWonderOrImprovement((short)(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xe)) + 1),
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)),
-				(short)(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)) - 1));
-
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)), 0x12));
-
-		L172d:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xe), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xe))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xe)), 0x18);
-			if (this.oCPU.Flags.L) goto L16f9;
-			this.oCPU.AX.UInt16 = 0x1c;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa)));
-			this.oCPU.BX.UInt16 = this.oCPU.AX.UInt16;
-			this.oCPU.AX.LowUInt8 = (byte)this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa))].ActualSize;
-			this.oCPU.CBW(this.oCPU.AX);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), this.oCPU.AX.UInt16));
-			this.oCPU.AX.UInt16 = (ushort)((short)this.oParent.Var_70e2_CityHappyCitizenCount);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), this.oCPU.AX.UInt16));
-			this.oCPU.AX.UInt16 = (ushort)((short)this.oParent.Var_70e4_CityUnhappyCitizenCount);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)), this.oCPU.AX.UInt16));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x12)), 0x4));
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc), this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)), 0xa));
-
-		L175a:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa))));
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xa)), 0x80);
-			if (this.oCPU.Flags.GE) goto L1767;
-			goto L1620;
-
-		L1767:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), 0x0);
-			if (this.oCPU.Flags.NE) goto L1770;
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6))));
-
-		L1770:
-			// Instruction address 0x0000:0x1778, size: 5
-			this.oParent.CAPI.strcpy(0xba06, $"Population: {this.oParent.GameEngine.PopulationValueToString(this.oParent.GameEngine.GetPlayerPopulationCount(playerID))}");
-
-			// Instruction address 0x0000:0x1793, size: 5
-			this.oParent.CAPI.strcat(0xba06, " Happy:");
-
-			F14_0000_181d(
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)),
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)));
-
-			// Instruction address 0x0000:0x17b0, size: 5
-			this.oParent.CAPI.strcat(0xba06, "% Content:");
-
-			F14_0000_181d(
-				(short)(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)) -
-					this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)) -
-					this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))),
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)));
-
-			// Instruction address 0x0000:0x17d4, size: 5
-			this.oParent.CAPI.strcat(0xba06, "% Unhappy:");
-
-			F14_0000_181d(
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)),
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)));
-
-			// Instruction address 0x0000:0x17f1, size: 5
-			this.oParent.CAPI.strcat(0xba06, "%");
-
-			// Instruction address 0x0000:0x180c, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 
-				16,
-				this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0xc)) + 8,
-				15);
-
-			F14_0000_013b();
-
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F14_0000_15f4_AttitudeReport");
+			WaitAndCloseReport();
 		}
 
 		/// <summary>
-		/// ?
+		/// Returns value as a percentage of total
 		/// </summary>
-		/// <param name="param1"></param>
-		/// <param name="param2"></param>
-		public void F14_0000_181d(short param1, short param2)
+		/// <param name="value"></param>
+		/// <param name="total"></param>
+		public string Percentage(int value, int total)
 		{
-			this.oCPU.Log.EnterBlock($"F14_0000_181d({param1}, {param2})");
+			int percentage;
 
-			// function body
-			if (param1 < 300)
+			if ((short)value < 300)
 			{
-				// Instruction address 0x0000:0x1865, size: 5
-				this.oParent.CAPI.strcat(0xba06, this.oParent.CAPI.itoa((100 * param1) / param2, 10));
+				percentage = (100 * (short)value) / (short)total;
 			}
 			else
 			{
-				// Instruction address 0x0000:0x1865, size: 5
-				this.oParent.CAPI.strcat(0xba06, this.oParent.CAPI.itoa((10 * param1) / (param2 / 10), 10));
+				percentage = (10 * (short)value) / ((short)total / 10);
 			}
 
-			// Far return
-			this.oCPU.Log.ExitBlock("F14_0000_181d");
+			return percentage.ToString(CultureInfo.InvariantCulture);
 		}
 
 		/// <summary>
 		/// Shows City Status window.
 		/// </summary>
 		/// <param name="playerID"></param>
-		public void F14_0000_186f_CityStatus(short playerID)
+		public void CityStatus(short playerID)
 		{
-			this.oCPU.Log.EnterBlock($"F14_0000_186f_CityStatus({playerID})");
+			ShowReportHeader("CITY STATUS", 8);
 
-			// function body
-			this.oCPU.PUSH_UInt16(this.oCPU.BP.UInt16);
-			this.oCPU.BP.UInt16 = this.oCPU.SP.UInt16;
-			this.oCPU.SP.UInt16 = this.oCPU.SUB_UInt16(this.oCPU.SP.UInt16, 0x8);
-			this.oCPU.PUSH_UInt16(this.oCPU.SI.UInt16);
+			int y = 32;
 
-			F14_0000_0000(0x49e4, 8);
+			for (int cityID = 0; cityID < 128; cityID++)
+			{
+				City city = this.oParent.GameData.Cities[cityID];
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 0x20);
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 0x0);
-			goto L1968;
+				if (city.Status == CityStatusEnum.Invalid || city.PlayerID != playerID)
+					continue;
 
-		L1892:
-			this.oCPU.AX.UInt16 = 0x1c;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
+				if (y >= 192)
+				{
+					// Next page
+					this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
-			// Instruction address 0x0000:0x18ae, size: 5
-			this.oParent.CAPI.strcpy(0xba06, 
-				this.oParent.GameData.GetImprovementType(-this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].CurrentProductionID).Name);
+					DrawReportHeader("CITY STATUS", 8);
 
-			// Instruction address 0x0000:0x18be, size: 5
-			this.oParent.CAPI.strcpy(0xba06, this.oParent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 96));
+					y = 32;
+				}
 
-			// Instruction address 0x0000:0x18ce, size: 5
-			this.oParent.CAPI.strcat(0xba06, "\x0087 (");
+				this.oParent.CityWorker.F0_1d12_0045_ProcessCityState(cityID, -1);
 
-			// Instruction address 0x0000:0x18ef, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].ShieldsCount, 10));
+				this.oParent.DrawTools.DrawStringToScreen0(this.oParent.Segment_2459.F0_2459_08c6_GetCityName(cityID), 8, y, 15);
 
-			// Instruction address 0x0000:0x18ff, size: 5
-			this.oParent.CAPI.strcat(0xba06, "/");
+				// Size, food, shields and trade
+				string text = string.Create(CultureInfo.InvariantCulture,
+					$"{city.ActualSize}-{this.oParent.Var_70da_Arr[0]}{{ {this.oParent.Var_70da_Arr[1]}| {this.oParent.Var_70da_Arr[2]}}}");
 
-			// Instruction address 0x0000:0x1932, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(
-					10 * this.oParent.GameData.GetImprovementType(-this.oParent.GameData.Cities[this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].CurrentProductionID).Cost,
-				10));
+				this.oParent.DrawTools.DrawStringToScreen0(text, 80, y, 15);
 
-			// Instruction address 0x0000:0x1942, size: 5
-			this.oParent.CAPI.strcat(0xba06, ")");
+				if (city.CurrentProductionID < 0)
+				{
+					ImprovementDefinition improvement = this.oParent.GameData.GetImprovementType(-city.CurrentProductionID);
 
-		L194a:
-			// Instruction address 0x0000:0x1959, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 172, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), 15);
+					text = this.oParent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(improvement.Name, 96) +
+						string.Create(CultureInfo.InvariantCulture, $"\x0087 ({city.ShieldsCount}/{10 * improvement.Cost})");
+				}
+				else if (city.CurrentProductionID < 0x40)
+				{
+					UnitDefinition unit = this.oParent.GameData.Units[city.CurrentProductionID];
 
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 
-				this.oCPU.ADD_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), 0x8));
+					text = unit.Name + string.Create(CultureInfo.InvariantCulture, $"\x0087 ({city.ShieldsCount}/{10 * unit.Cost})");
+				}
 
-		L1965:
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4), 
-				this.oCPU.INC_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))));
+				// For any other production the original draws the size text again
+				this.oParent.DrawTools.DrawStringToScreen0(text, 172, y, 15);
 
-		L1968:
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), 0x80);
-			if (this.oCPU.Flags.L) goto L1972;
-			goto L1b69;
+				y += 8;
+			}
 
-		L1972:
-			this.oCPU.AX.UInt16 = 0x1c;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-			
-			if (this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].Status == CityStatusEnum.Invalid) goto L1965;
-			
-			if (this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].PlayerID != playerID)
-				goto L1965;
-
-			this.oCPU.CMP_UInt16(this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), 0xc0);
-			if (this.oCPU.Flags.L) goto L19ab;
-
-			// Instruction address 0x0000:0x1992, size: 5
-			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
-
-			F14_0000_001c(0x49f0, 8);
-			
-			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6), 0x20);
-
-		L19ab:
-			// Instruction address 0x0000:0x19b2, size: 5
-			this.oParent.CityWorker.F0_1d12_0045_ProcessCityState(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)), -1);
-
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-
-			// Instruction address 0x0000:0x19c2, size: 5
-			this.oParent.CAPI.strcat(0xba06, this.oParent.Segment_2459.F0_2459_08c6_GetCityName(this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))));
-			
-			// Instruction address 0x0000:0x19d9, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 8, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), 15);
-
-			this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, 0xba06, 0x0);
-			this.oCPU.AX.UInt16 = 0x1c;
-			this.oCPU.IMUL_UInt16(this.oCPU.AX, this.oCPU.DX, this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4)));
-			this.oCPU.SI.UInt16 = this.oCPU.AX.UInt16;
-
-			// Instruction address 0x0000:0x1a09, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].ActualSize, 10));
-
-			// Instruction address 0x0000:0x1a19, size: 5
-			this.oParent.CAPI.strcat(0xba06, "-");
-
-			// Instruction address 0x0000:0x1a3a, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.Var_70da_Arr[0], 10));
-
-			// Instruction address 0x0000:0x1a4a, size: 5
-			this.oParent.CAPI.strcat(0xba06, "{ ");
-
-			// Instruction address 0x0000:0x1a6b, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.Var_70da_Arr[1], 10));
-
-			// Instruction address 0x0000:0x1a7b, size: 5
-			this.oParent.CAPI.strcat(0xba06, "| ");
-
-			// Instruction address 0x0000:0x1a9c, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.Var_70da_Arr[2], 10));
-
-			// Instruction address 0x0000:0x1aac, size: 5
-			this.oParent.CAPI.strcat(0xba06, "}");
-
-			// Instruction address 0x0000:0x1ac3, size: 5
-			this.oParent.DrawTools.DrawStringToScreen0(0xba06, 80, this.oCPU.ReadInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x6)), 15);
-
-			this.oCPU.CMP_UInt8((byte)this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].CurrentProductionID, 0x0);
-			if (this.oCPU.Flags.GE) goto L1ad5;
-			goto L1892;
-
-		L1ad5:
-			this.oCPU.CMP_UInt8((byte)this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].CurrentProductionID, 0x40);
-			if (this.oCPU.Flags.L) goto L1adf;
-			goto L194a;
-
-		L1adf:
-			// Instruction address 0x0000:0x1aed, size: 5
-			this.oParent.CAPI.strcpy(0xba06, 
-				this.oParent.GameData.Units[this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].CurrentProductionID].Name);
-
-			// Instruction address 0x0000:0x1afd, size: 5
-			this.oParent.CAPI.strcat(0xba06, "\x0087 (");
-
-			// Instruction address 0x0000:0x1b1e, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].ShieldsCount, 10));
-
-			// Instruction address 0x0000:0x1b2e, size: 5
-			this.oParent.CAPI.strcat(0xba06, "/");
-
-			// Instruction address 0x0000:0x1b5b, size: 5
-			this.oParent.CAPI.strcat(0xba06,
-				this.oParent.CAPI.itoa(
-					10 * this.oParent.GameData.Units[this.oParent.GameData.Cities[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4))].CurrentProductionID].Cost, 10));
-
-			// Instruction address 0x0000:0x1942, size: 5
-			this.oParent.CAPI.strcat(0xba06, ")");
-
-			goto L194a;
-
-		L1b69:
-			F14_0000_013b();
-
-			this.oCPU.SI.UInt16 = this.oCPU.POP_UInt16();
-			this.oCPU.SP.UInt16 = this.oCPU.BP.UInt16;
-			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
-			// Far return
-			this.oCPU.Log.ExitBlock("F14_0000_186f_CityStatus");
+			WaitAndCloseReport();
 		}
 	}
 }

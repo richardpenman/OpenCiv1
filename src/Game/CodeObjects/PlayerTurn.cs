@@ -1411,7 +1411,7 @@ namespace OpenCivOne
 					}
 					else
 					{
-						this.parent.Overlay_14.F14_0000_186f_CityStatus(this.parent.GameData.HumanPlayerID);
+						this.parent.Overlay_14.CityStatus(this.parent.GameData.HumanPlayerID);
 					}
 					break;
 
@@ -1423,7 +1423,7 @@ namespace OpenCivOne
 					}
 					else
 					{
-						this.parent.Overlay_14.F14_0000_03ad_MilitaryReport(this.parent.GameData.HumanPlayerID);
+						this.parent.Overlay_14.MilitaryReport(this.parent.GameData.HumanPlayerID);
 					}
 					break;
 
@@ -1442,23 +1442,23 @@ namespace OpenCivOne
 					}
 					else
 					{
-						this.parent.Overlay_14.F14_0000_0d43_IntelligenceReport();
+						this.parent.Overlay_14.IntelligenceReport();
 					}
 					break;
 
 				// F4 - Attitude Advisor
 				case 0x3e00:
-					this.parent.Overlay_14.F14_0000_15f4_AttitudeReport(this.parent.GameData.HumanPlayerID);
+					this.parent.Overlay_14.AttitudeReport(this.parent.GameData.HumanPlayerID);
 					break;
 
 				// F5 - Trade Advisor
 				case 0x3f00:
-					this.parent.Overlay_14.F14_0000_07f1_TradeReport(this.parent.GameData.HumanPlayerID);
+					this.parent.Overlay_14.TradeReport(this.parent.GameData.HumanPlayerID);
 					break;
 
 				// F6 - Science Advisor
 				case 0x4000:
-					this.parent.Overlay_14.F14_0000_014b_ScienceReport(this.parent.GameData.HumanPlayerID);
+					this.parent.Overlay_14.ScienceReport(this.parent.GameData.HumanPlayerID);
 					break;
 
 				// F7 - Wonders of the World

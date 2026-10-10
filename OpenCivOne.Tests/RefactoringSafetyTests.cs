@@ -72,7 +72,6 @@ namespace OpenCivOne.Tests
 	public class RefactoringSafetyTests : IClassFixture<GameStatesFixture>
 	{
 		private const int Escape = 0x1b;
-		private const int Enter = 0x0d;
 
 		private static readonly object ExpectedLock = new();
 		private readonly GameStatesFixture states;
@@ -88,28 +87,88 @@ namespace OpenCivOne.Tests
 		[MemberData(nameof(StateNames))]
 		public void AdvisorReports(string state)
 		{
-			Check(state, "ScienceReport", (game, player) => game.Overlay_14.F14_0000_014b_ScienceReport(player), Escape, Escape, Escape);
-			Check(state, "MilitaryReport", (game, player) => game.Overlay_14.F14_0000_03ad_MilitaryReport(player), Escape, Escape, Escape);
-			Check(state, "TradeReport", (game, player) => game.Overlay_14.F14_0000_07f1_TradeReport(player), Escape, Escape, Escape);
-			Check(state, "IntelligenceReport", (game, player) => game.Overlay_14.F14_0000_0d43_IntelligenceReport(), Escape, Escape, Escape);
-			Check(state, "AttitudeReport", (game, player) => game.Overlay_14.F14_0000_15f4_AttitudeReport(player), Escape, Escape, Escape);
-			Check(state, "CityStatus", (game, player) => game.Overlay_14.F14_0000_186f_CityStatus(player), Escape, Escape, Escape);
+			Check(state, "ScienceReport", (game, player) => game.Overlay_14.ScienceReport(player), Escape, Escape, Escape);
+			Check(state, "MilitaryReport", (game, player) => game.Overlay_14.MilitaryReport(player), Escape, Escape, Escape);
+			Check(state, "TradeReport", (game, player) => game.Overlay_14.TradeReport(player), Escape, Escape, Escape);
+			Check(state, "IntelligenceReport", (game, player) => game.Overlay_14.IntelligenceReport(), Escape, Escape, Escape);
+			Check(state, "AttitudeReport", (game, player) => game.Overlay_14.AttitudeReport(player), Escape, Escape, Escape);
+			Check(state, "CityStatus", (game, player) => game.Overlay_14.CityStatus(player), Escape, Escape, Escape);
 
 			for (short otherPlayer = 1; otherPlayer < 8; otherPlayer++)
 			{
 				short playerID = otherPlayer;
-				Check(state, $"ForeignAffairs{playerID}", (game, player) => game.Overlay_14.F14_0000_1164(playerID), Escape, Escape, Escape);
+				Check(state, $"ForeignAffairs{playerID}", (game, player) => game.Overlay_14.PlayerIntelligenceReport(playerID), Escape, Escape, Escape);
 			}
+
+			// Every player's reports, from that player's point of view, including the pages after the first
+			int[] pages = Enumerable.Repeat(Escape, 8).ToArray();
+
+			for (short otherPlayer = 1; otherPlayer < 8; otherPlayer++)
+			{
+				short playerID = otherPlayer;
+
+				Check(state, $"Player{playerID}/ScienceReport", (game, player) => game.Overlay_14.ScienceReport(playerID), playerID, pages);
+				Check(state, $"Player{playerID}/MilitaryReport", (game, player) => game.Overlay_14.MilitaryReport(playerID), playerID, pages);
+				Check(state, $"Player{playerID}/TradeReport", (game, player) => game.Overlay_14.TradeReport(playerID), playerID, pages);
+				Check(state, $"Player{playerID}/AttitudeReport", (game, player) => game.Overlay_14.AttitudeReport(playerID), playerID, pages);
+				Check(state, $"Player{playerID}/CityStatus", (game, player) => game.Overlay_14.CityStatus(playerID), playerID, pages);
+
+				// The same with an embassy with every civilization, so that the details can be opened
+				Check(state, $"Player{playerID}/IntelligenceReportWithEmbassies", (game, player) =>
+				{
+					for (int i = 0; i < 8; i++)
+					{
+						game.GameData.Players[playerID].Diplomacy[i] |= DiplomacyFlagsEnum.EmbassyEstablished;
+					}
+
+					game.Overlay_14.IntelligenceReport();
+				}, playerID, '1', Escape, '2', Escape, '3', Escape, '4', Escape, '5', Escape, '6', Escape, '7', Escape, Escape);
+
+				// Open the details of each civilization in turn with the keys 1 to 7
+				Check(state, $"Player{playerID}/IntelligenceReport", (game, player) => game.Overlay_14.IntelligenceReport(), playerID,
+					'1', Escape, '2', Escape, '3', Escape, '4', Escape, '5', Escape, '6', Escape, '7', Escape, Escape);
+			}
+		}
+
+		[Theory]
+		[MemberData(nameof(StateNames))]
+		public void AdvisorReportsWithManyCities(string state)
+		{
+			// Every city belongs to the human player, so the reports have several pages
+			int[] pages = Enumerable.Repeat(Escape, 8).ToArray();
+
+			void GiveAllCities(OpenCivOneGame game, short player)
+			{
+				foreach (City city in game.GameData.Cities)
+				{
+					if (city.Status != CityStatusEnum.Invalid)
+					{
+						city.PlayerID = player;
+					}
+				}
+			}
+
+			Check(state, "AllCities/TradeReport", (game, player) => { GiveAllCities(game, player); game.Overlay_14.TradeReport(player); }, pages);
+			Check(state, "AllCities/AttitudeReport", (game, player) => { GiveAllCities(game, player); game.Overlay_14.AttitudeReport(player); }, pages);
+			Check(state, "AllCities/CityStatus", (game, player) => { GiveAllCities(game, player); game.Overlay_14.CityStatus(player); }, pages);
 		}
 
 		private void Check(string state, string name, Action<OpenCivOneGame, short> action, params int[] keys)
 		{
+			Check(state, name, action, this.states.HumanPlayerID, keys);
+		}
+
+		/// <summary>
+		/// Runs the action with the given player as the human player
+		/// </summary>
+		private void Check(string state, string name, Action<OpenCivOneGame, short> action, short humanPlayerID, params int[] keys)
+		{
 			using GameHarness harness = GameHarness.Load(this.states.Directory, state);
-			harness.Game.GameData.HumanPlayerID = this.states.HumanPlayerID;
+			harness.Game.GameData.HumanPlayerID = humanPlayerID;
 
-			List<string> screens = harness.RunWithKeys(() => action(harness.Game, this.states.HumanPlayerID), TimeSpan.FromMinutes(1), keys);
+			List<string> screens = harness.RunWithKeys(() => action(harness.Game, humanPlayerID), TimeSpan.FromMinutes(1), keys);
 
-			string actual = string.Join(" ", screens.Select(hash => hash.Substring(0, 16))) + " | " + harness.HashGameState().Substring(0, 16);
+			string actual = string.Join(" ", screens.Select(hash => hash[..16])) + " | " + harness.HashGameState()[..16];
 
 			Compare($"{state}/{name}", actual);
 		}

@@ -468,27 +468,27 @@ namespace OpenCivOne
 			switch (selectedOption)
 			{
 				case 0: // City Status
-					this.parent.Overlay_14.F14_0000_186f_CityStatus(this.parent.GameData.HumanPlayerID);
+					this.parent.Overlay_14.CityStatus(this.parent.GameData.HumanPlayerID);
 					break;
 
 				case 1: // Military Advisor
-					this.parent.Overlay_14.F14_0000_03ad_MilitaryReport(this.parent.GameData.HumanPlayerID);
+					this.parent.Overlay_14.MilitaryReport(this.parent.GameData.HumanPlayerID);
 					break;
 
 				case 2: // Intelligence Advisor
-					this.parent.Overlay_14.F14_0000_0d43_IntelligenceReport();
+					this.parent.Overlay_14.IntelligenceReport();
 					break;
 
 				case 3: // Attitude Advisor
-					this.parent.Overlay_14.F14_0000_15f4_AttitudeReport(this.parent.GameData.HumanPlayerID);
+					this.parent.Overlay_14.AttitudeReport(this.parent.GameData.HumanPlayerID);
 					break;
 
 				case 4: // Trade Advisor
-					this.parent.Overlay_14.F14_0000_07f1_TradeReport(this.parent.GameData.HumanPlayerID);
+					this.parent.Overlay_14.TradeReport(this.parent.GameData.HumanPlayerID);
 					break;
 
 				case 5: // Science Advisor
-					this.parent.Overlay_14.F14_0000_014b_ScienceReport(this.parent.GameData.HumanPlayerID);
+					this.parent.Overlay_14.ScienceReport(this.parent.GameData.HumanPlayerID);
 					break;
 			}
 		}

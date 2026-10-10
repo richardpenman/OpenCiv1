@@ -1994,7 +1994,7 @@ namespace OpenCivOne
 
 			if (this.oParent.Var_3934 != -2) goto L17c7;
 			
-			this.oParent.Overlay_14.F14_0000_1164(playerID);
+			this.oParent.Overlay_14.PlayerIntelligenceReport(playerID);
 			
 			goto L170d;
 

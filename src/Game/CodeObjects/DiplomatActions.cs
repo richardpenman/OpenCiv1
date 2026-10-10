@@ -82,7 +82,7 @@ namespace OpenCivOne
 						// Instruction address 0x0000:0x0164, size: 5
 						this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(diplomatPlayerID, diplomatUnitID);
 
-						this.parent.Overlay_14.F14_0000_1164(cityPlayerID);
+						this.parent.Overlay_14.PlayerIntelligenceReport(cityPlayerID);
 
 						return;
 

@@ -3048,7 +3048,7 @@ namespace OpenCivOne
 			// Instruction address 0x1ade:0x20cc, size: 5
 			this.oParent.MenuBoxDialog.ShowDialog(this.oCPU.ReadString(this.oCPU.DS.UInt16, 0xba06), 80, 100);
 
-			this.oParent.Overlay_14.F14_0000_0d43_IntelligenceReport();
+			this.oParent.Overlay_14.IntelligenceReport();
 
 		L20d9:
 			if (technology != TechnologyAdvanceEnum.Gunpowder && technology != TechnologyAdvanceEnum.Combustion)
