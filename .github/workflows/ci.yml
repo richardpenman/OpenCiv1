@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    name: Build & Test (${{ matrix.os }})
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+      fail-fast: false
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore OpenCivOne.sln
+
+    - name: Build
+      run: dotnet build OpenCivOne.sln --no-restore --configuration Release
+
+    - name: Test
+      run: dotnet test OpenCivOne.sln --no-build --configuration Release --verbosity normal
+
+  code-analysis:
+    name: Code Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Run built-in .NET code analysis
+      run: |
+        dotnet build OpenCivOne.sln --configuration Release /p:EnableNETAnalyzers=true /p:AnalysisMode=AllEnabledByDefault
+        dotnet format style OpenCivOne.sln --verify-no-changes
+        dotnet format analyzers OpenCivOne.sln --verify-no-changes
+
+    - name: Run security scan
+      run: |
+        dotnet tool install --global security-scan
+        security-scan OpenCivOne.sln

@@ -164,6 +164,7 @@ You can also compile with CLI method:
 <li>cd OpenCiv1</li>
 <li>dotnet build -c Debug</li>
 </ul>
+To run the unit tests use: dotnet test (they run automatically on GitHub for each push and pull request).
 
 ## Current screenshots of the OpenCivOne game
 

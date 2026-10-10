@@ -5,6 +5,8 @@ VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenCivOne", "src\OpenCivOne.csproj", "{55F5F1A4-2E16-46FC-90E1-8E8E52869226}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenCivOne.Tests", "OpenCivOne.Tests\OpenCivOne.Tests.csproj", "{D3E3AD46-A1F6-4B1C-AA5E-D3813ADF750F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{55F5F1A4-2E16-46FC-90E1-8E8E52869226}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55F5F1A4-2E16-46FC-90E1-8E8E52869226}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55F5F1A4-2E16-46FC-90E1-8E8E52869226}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3E3AD46-A1F6-4B1C-AA5E-D3813ADF750F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3E3AD46-A1F6-4B1C-AA5E-D3813ADF750F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3E3AD46-A1F6-4B1C-AA5E-D3813ADF750F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3E3AD46-A1F6-4B1C-AA5E-D3813ADF750F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
