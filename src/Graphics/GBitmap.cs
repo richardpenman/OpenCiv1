@@ -501,7 +501,7 @@ namespace OpenCivOne.Graphics
 
 			if (savePalette)
 			{
-				iLength = 2 + 255 * 3; // we can't write full 256 colors!
+				iLength = 2 + 256 * 3; // first and last color index, then 256 colors
 
 				// write signature
 				writer.WriteByte(0x4d);
