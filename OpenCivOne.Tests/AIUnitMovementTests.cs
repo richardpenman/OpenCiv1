@@ -107,5 +107,42 @@ namespace OpenCivOne.Tests
 
 			Assert.Equal(canJoin ? to : from, unit.Position);
 		}
+
+		[Fact]
+		public void AircraftReturnsTowardsNearestCityOrCarrier()
+		{
+			using GameHarness harness = GameHarness.Load("BugScenarios");
+			GameData data = harness.Game.GameData;
+			int playerID = FindComputerPlayer(data);
+			var (from, _, _) = FindQuietSquares(harness, false);
+
+			int unitID = harness.Game.UnitManagement.F0_1866_0cf5_CreateUnit(playerID, UnitTypeEnum.Fighter, from.X, from.Y);
+			Unit fighter = data.Players[playerID].Units[unitID];
+			fighter.RemainingMoves = 30;
+			fighter.SpecialMoves = 1;
+			int distanceBefore = DistanceToNearestBase(harness, playerID, fighter.Position);
+
+			int retryCount = 0;
+			harness.Game.PlayerTurn.HomeCityCommand(playerID, unitID, ref retryCount);
+
+			Assert.Equal(distanceBefore - 1, DistanceToNearestBase(harness, playerID, fighter.Position));
+		}
+
+		private static int DistanceToNearestBase(GameHarness harness, int playerID, GPoint position)
+		{
+			IEnumerable<GPoint> cities = harness.Game.GameData.Cities
+				.Where(city => city.Status != CityStatusEnum.Invalid && city.PlayerID == playerID)
+				.Select(city => city.Position);
+			IEnumerable<GPoint> carriers = harness.Game.GameData.Players[playerID].Units
+				.Where(unit => unit.UnitType == UnitTypeEnum.Carrier)
+				.Select(unit => unit.Position);
+
+			return cities.Concat(carriers).Min(target =>
+			{
+				int dx = Math.Abs(position.X - target.X);
+
+				return Math.Max(Math.Min(dx, 80 - dx), Math.Abs(position.Y - target.Y));
+			});
+		}
 	}
 }

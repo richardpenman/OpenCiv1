@@ -2051,7 +2051,8 @@ namespace OpenCivOne
 					// Instruction address 0x1866:0x248f, size: 5
 					int newPlayerID = this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(newX, newY);
 
-					if (newPlayerID != -1 && newPlayerID != playerID)
+					// Only empty squares or squares with the player's own units
+					if (newPlayerID == -1 || newPlayerID == playerID)
 					{
 						// Instruction address 0x1866:0x24ad, size: 5
 						if (!this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY).HasFlag(TerrainImprovementFlagsEnum.City) ||
