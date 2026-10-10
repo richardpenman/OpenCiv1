@@ -1,6 +1,6 @@
-using System;
 using Avalonia.Media;
 using IRB.VirtualCPU;
+using System;
 
 namespace OpenCivOne
 {
@@ -321,10 +321,7 @@ namespace OpenCivOne
 			uint uiCityNameID = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8));
 			ushort usStringOffset = (ushort)(0xba06 + this.oParent.CAPI.strlen(0xba06));
 
-			for (int i = 0; i < 0xd; i++)
-			{
-				this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(usStringOffset + i), (byte)this.oParent.GameData.CityNames[uiCityNameID][i]);
-			}
+			WriteCityNameToBuffer(usStringOffset, uiCityNameID);
 
 			F9_0000_08a3();
 
@@ -334,10 +331,7 @@ namespace OpenCivOne
 			uiCityNameID = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8));
 			usStringOffset = (ushort)(0xba06 + this.oParent.CAPI.strlen(0xba06));
 
-			for (int i = 0; i < 0xd; i++)
-			{
-				this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(usStringOffset + i), (byte)this.oParent.GameData.CityNames[uiCityNameID][i]);
-			}
+			WriteCityNameToBuffer(usStringOffset, uiCityNameID);
 
 			// Instruction address 0x0000:0x036b, size: 5
 			this.oParent.CAPI.strcat(0xba06, " destroyed");
@@ -1112,7 +1106,9 @@ namespace OpenCivOne
 			this.oCPU.WriteUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2), 0x0);
 
 		L0c7d:
-			this.oCPU.AX.LowUInt8 = (byte)this.oParent.GameData.CityNames[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8))][this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))];
+			this.oCPU.AX.LowUInt8 = (byte)CityNameCharAt(
+				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)),
+				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2)));
 
 			this.oCPU.SI.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x4));
 			this.oCPU.BX.UInt16 = this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2));
@@ -1125,7 +1121,9 @@ namespace OpenCivOne
 			this.oCPU.CMP_UInt16(this.oCPU.AX.UInt16, 0x50);
 			if (this.oCPU.Flags.GE) goto L0cbc;
 
-			if (this.oParent.GameData.CityNames[this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8))][this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))] != '\0')
+			if (CityNameCharAt(
+				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x8)),
+				this.oCPU.ReadUInt16(this.oCPU.SS.UInt16, (ushort)(this.oCPU.BP.UInt16 - 0x2))) != '\0')
 				goto L0c7d;
 
 		L0cbc:
@@ -1641,6 +1639,37 @@ namespace OpenCivOne
 			this.oCPU.BP.UInt16 = this.oCPU.POP_UInt16();
 			// Far return
 			this.oCPU.Log.ExitBlock("F9_0000_0f79");
+		}
+
+		/// <summary>
+		/// Appends a city name to the text buffer, padded to the 13 byte field the original used.
+		/// The names were fixed size null padded buffers there but are variable length strings
+		/// here, so the padding has to be written explicitly. The trailing nulls also terminate
+		/// the buffer for the strlen and strcat calls that follow.
+		/// </summary>
+		/// <param name="stringOffset">Offset in the data segment to write to</param>
+		/// <param name="cityNameID">Index into the city name table</param>
+		private void WriteCityNameToBuffer(ushort stringOffset, uint cityNameID)
+		{
+			for (int i = 0; i < 0xd; i++)
+			{
+				this.oCPU.WriteUInt8(this.oCPU.DS.UInt16, (ushort)(stringOffset + i), (byte)CityNameCharAt(cityNameID, i));
+			}
+		}
+
+		/// <summary>
+		/// Reads one character of a city name, treating anything past the end as the terminator.
+		/// The original stored the names as fixed size null padded buffers, so code walks them
+		/// until it reads a null. They are variable length strings here and carry no padding
+		/// once a city has been founded or a save has been loaded.
+		/// </summary>
+		/// <param name="cityNameID">Index into the city name table</param>
+		/// <param name="index">Character position within the name</param>
+		private char CityNameCharAt(uint cityNameID, int index)
+		{
+			string cityName = this.oParent.GameData.CityNames[cityNameID];
+
+			return (index < cityName.Length) ? cityName[index] : '\0';
 		}
 	}
 }

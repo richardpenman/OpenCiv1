@@ -1,5 +1,5 @@
-﻿using System;
-using OpenCivOne.Graphics;
+﻿using OpenCivOne.Graphics;
+using System;
 
 namespace OpenCivOne
 {

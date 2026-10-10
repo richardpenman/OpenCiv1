@@ -1,8 +1,8 @@
-using System;
 using Avalonia.Media;
 using IRB.Collections.Generic;
 using IRB.VirtualCPU;
 using OpenCivOne.Graphics;
+using System;
 
 namespace OpenCivOne
 {

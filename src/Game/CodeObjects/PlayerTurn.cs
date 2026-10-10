@@ -43,23 +43,7 @@ namespace OpenCivOne
 				}
 			}
 
-			for (int i = 0; i < 128; i++)
-			{
-				if (this.parent.GameData.Players[playerID].Units[i].UnitType != UnitTypeEnum.None && this.parent.Var_df60 != 1)
-				{
-					this.parent.GameData.Players[playerID].Units[i].RemainingMoves =
-						(short)(this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[i].UnitType].MoveCount * 3);
-
-					if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[i].UnitType].MovementType != UnitMovementTypeEnum.Water)
-					{
-						if (this.parent.CityWorker.F0_1d12_6c97_PlayerHasWonder(playerID, WonderEnum.Lighthouse) ||
-							this.parent.CityWorker.F0_1d12_6c97_PlayerHasWonder(playerID, WonderEnum.MagellansExpedition))
-						{
-							this.parent.GameData.Players[playerID].Units[i].RemainingMoves += 3;
-						}
-					}
-				}
-			}
+			ResetUnitMoves(playerID);
 
 			this.parent.RefreshScreenMap = false;
 
@@ -593,9 +577,6 @@ namespace OpenCivOne
 				}
 			}
 
-			int nearestCityID;
-			int newMoveDirection = 0;
-
 			switch (command)
 			{
 				// Change government
@@ -832,36 +813,7 @@ namespace OpenCivOne
 				case 'h':
 					if (unit == null || unitID >= 128) break;
 
-					nearestCityID = this.parent.MapManagement.FindNearestCity(unit.Position);
-
-					if (nearestCityID != -1 && this.parent.MapManagement.GetDistance(unit.Position, this.parent.GameData.Cities[nearestCityID].Position) == 0)
-					{
-						unit.HomeCityID = (short)nearestCityID;
-					}
-					else if (this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Water)
-					{
-						// Instruction address 0x1403:0x1118, size: 5
-						int nearestCityDirection = this.parent.UnitManagement.F0_1866_226d_GetNearestCityDirection(playerID, unitID);
-
-						if (nearestCityDirection != 0)
-						{
-							unit.Status |= UnitStatusEnum.SettlerBuildRoadOrRail;
-							MoveUnit(playerID, unit, newMoveDirection, ref unitMoveRetryCount);
-							break;
-						}
-						else
-						{
-							if (playerID == this.parent.GameData.HumanPlayerID)
-							{
-								unit.ClearStatusFlags(UnitStatusEnum.SettlerBuildRoadOrRail);
-							}
-							else
-							{
-								// Instruction address 0x1403:0x1175, size: 5
-								this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(playerID, unitID);
-							}
-						}
-					}
+					HomeCityCommand(playerID, unitID, ref unitMoveRetryCount);
 					break;
 
 				// Build irrigation
@@ -1670,26 +1622,7 @@ namespace OpenCivOne
 							}
 						}
 
-						if (this.parent.GameData.Players[playerID].Units[unitID].UnitType == UnitTypeEnum.Trireme &&
-							playerID == this.parent.GameData.HumanPlayerID && this.parent.CAPI.RNG.Next(2) != 0)
-						{
-							for (int i = 1; i < 9; i++)
-							{
-								direction = this.parent.MoveDirections[i];
-
-								GPoint newPosition = this.parent.GameData.Players[playerID].Units[unitID].Position + direction;
-
-								if (this.parent.MapManagement.ValidateMapCoordinates(newPosition) && 
-									this.parent.MapManagement.GetTerrainType(newPosition) != TerrainTypeEnum.Water)
-								{
-									// Instruction address 0x1403:0x3e18, size: 5
-									this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(playerID, unitID);
-									// Instruction address 0x1403:0x3e24, size: 5
-									this.parent.Help.F4_0000_03aa_ShowInstantWarningPopup("*TRIREME");
-									break;
-								}
-							}
-						}
+						CheckTriremeLostAtSea(playerID, unitID);
 					}
 				}
 			}
@@ -1997,7 +1930,8 @@ namespace OpenCivOne
 
 						unit.RemainingMoves -= 3;
 
-						if (unit.RemainingMoves < 0 || unit.RemainingMoves == 15)
+						// A Bomber's turn ends after it attacks
+						if (unit.RemainingMoves < 0 || unit.UnitType == UnitTypeEnum.Bomber)
 						{
 							unit.RemainingMoves = 0;
 						}
@@ -2155,7 +2089,7 @@ namespace OpenCivOne
 						playerID != this.parent.GameData.HumanPlayerID && !newImprovements.HasFlag(TerrainImprovementFlagsEnum.City))
 					{
 						if (this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Land ||
-							(this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Water &&
+							(this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Air &&
 								unit.SpecialMoves != 0))
 						{
 							if (((unit.RemainingMoves != 0) ? 4 : 2) <= this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(playerID, newActiveUnitID, UnitStackValueTypeEnum.UnitCount))
@@ -2256,8 +2190,13 @@ namespace OpenCivOne
 						}
 					}
 
+					// Remember the old stack and position, so the transported units can follow the ship
+					int oldX = unit.Position.X;
+					int oldY = unit.Position.Y;
+					int oldNextUnitID = unit.NextUnitID;
+
 					// Instruction address 0x1403:0x2d01, size: 5
-					this.parent.MapManagement.F0_2aea_1412_SetCellActivePlayerID(unit.Position.X, unit.Position.Y, playerID, unitID);
+					this.parent.MapManagement.F0_2aea_1412_SetCellActivePlayerID(oldX, oldY, playerID, unitID);
 
 					// Instruction address 0x1403:0x2d21, size: 5
 					this.parent.MapManagement.F0_2aea_13cb_SetCellPlayerID(newX, newY, playerID, unitID);
@@ -2266,7 +2205,7 @@ namespace OpenCivOne
 					unit.VisibleByPlayer = 0;
 
 					if (playerID != this.parent.GameData.HumanPlayerID &&
-						this.parent.GameData.Units[(int)unit.UnitType].MovementType != UnitMovementTypeEnum.Water)
+						this.parent.GameData.Units[(int)unit.UnitType].MovementType != UnitMovementTypeEnum.Air)
 					{
 						unit.ClearStatusFlags(UnitStatusEnum.Sentry | UnitStatusEnum.SettlerBuildRoadOrRail | UnitStatusEnum.Fortifying |
 							 UnitStatusEnum.Fortified | UnitStatusEnum.SettlerBuildIrrigation | UnitStatusEnum.SettlerBuildMineOrForest);
@@ -2290,32 +2229,31 @@ namespace OpenCivOne
 					}
 
 					if (currentTerrainType == TerrainTypeEnum.Water && newTerrainType != TerrainTypeEnum.Water &&
-						this.parent.GameData.Units[(int)unit.UnitType].MovementType != UnitMovementTypeEnum.Water)
+						this.parent.GameData.Units[(int)unit.UnitType].MovementType != UnitMovementTypeEnum.Air)
 					{
 						unit.RemainingMoves = 0;
 					}
 
-					// !!! Carrier always has transport capability, do we need transport capacity check?
-					if (unit.UnitType == UnitTypeEnum.Carrier && unit.NextUnitID != -1 && this.parent.GameData.Units[(int)unit.UnitType].TransportCapacity == 0)
+					if ((this.parent.GameData.Units[(int)unit.UnitType].TransportCapacity != 0 || unit.UnitType == UnitTypeEnum.Carrier) && oldNextUnitID != -1)
 					{
-						int nextUnitID = unit.NextUnitID;
+						int nextUnitID = oldNextUnitID;
 						int currentCapacity = 0;
 
 						for (int i = 0; i < 20; i++)
 						{
 							int nextUnitID1 = this.parent.GameData.Players[playerID].Units[nextUnitID].NextUnitID;
 
-							if (((this.parent.GameData.Units[(int)unit.UnitType].TransportCapacity < 1) ? UnitMovementTypeEnum.Water : UnitMovementTypeEnum.Land) ==
+							if (((this.parent.GameData.Units[(int)unit.UnitType].TransportCapacity < 1) ? UnitMovementTypeEnum.Air : UnitMovementTypeEnum.Land) ==
 								this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].MovementType)
 							{
-								if (((this.parent.GameData.Players[playerID].Units[nextUnitID].Status & UnitStatusEnum.Sentry) == UnitStatusEnum.None && 
-										currentTerrainType == TerrainTypeEnum.Water) ||
+								if ((this.parent.GameData.Players[playerID].Units[nextUnitID].Status & UnitStatusEnum.Sentry) != UnitStatusEnum.None ||
+									currentTerrainType == TerrainTypeEnum.Water ||
 									(playerID != this.parent.GameData.HumanPlayerID &&
 										(this.parent.GameData.Players[playerID].Units[nextUnitID].Status & (UnitStatusEnum.Fortifying | UnitStatusEnum.Fortified)) == UnitStatusEnum.None &&
 									this.parent.GameData.Players[playerID].Units[nextUnitID].NextUnitID != -1))
 								{
 									// Instruction address 0x1403:0x2efb, size: 5
-									this.parent.MapManagement.F0_2aea_1412_SetCellActivePlayerID(unit.Position.X, unit.Position.Y, playerID, nextUnitID);
+									this.parent.MapManagement.F0_2aea_1412_SetCellActivePlayerID(oldX, oldY, playerID, nextUnitID);
 									// Instruction address 0x1403:0x2f0f, size: 5
 									this.parent.MapManagement.F0_2aea_13cb_SetCellPlayerID(newX, newY, playerID, nextUnitID);
 
@@ -2436,7 +2374,8 @@ namespace OpenCivOne
 
 					if (this.parent.GameData.Units[(int)unit.UnitType].TurnsOutside != 0)
 					{
-						if (this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Water)
+						// An aircraft landing on a Carrier ends its turn and is refuelled
+						if (this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Air)
 						{
 							if (this.parent.UnitManagement.F0_1866_1331_CountUnitTypesInStack(playerID, unitID, UnitTypeEnum.Carrier) != 0)
 							{
@@ -2447,6 +2386,103 @@ namespace OpenCivOne
 						}
 					}
 				}
+			}
+		}
+
+		/// <summary>
+		/// The 'h' command. A unit in a city makes it its home city. An aircraft outside a city flies one square
+		/// towards the nearest city or Carrier; a computer player's aircraft with nowhere to go is lost.
+		/// </summary>
+		/// <param name="playerID"></param>
+		/// <param name="unitID"></param>
+		/// <param name="unitMoveRetryCount"></param>
+		internal void HomeCityCommand(int playerID, int unitID, ref int unitMoveRetryCount)
+		{
+			Unit unit = this.parent.GameData.Players[playerID].Units[unitID];
+			int nearestCityID = this.parent.MapManagement.FindNearestCity(unit.Position);
+
+			if (nearestCityID != -1 && this.parent.MapManagement.GetDistance(unit.Position, this.parent.GameData.Cities[nearestCityID].Position) == 0)
+			{
+				unit.HomeCityID = (short)nearestCityID;
+			}
+			else if (this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Air)
+			{
+				// Instruction address 0x1403:0x1118, size: 5
+				int nearestCityDirection = this.parent.UnitManagement.F0_1866_226d_GetNearestCityDirection(playerID, unitID);
+
+				if (nearestCityDirection != 0)
+				{
+					unit.Status |= UnitStatusEnum.SettlerBuildRoadOrRail;
+					MoveUnit(playerID, unit, nearestCityDirection, ref unitMoveRetryCount);
+				}
+				else if (playerID == this.parent.GameData.HumanPlayerID)
+				{
+					unit.ClearStatusFlags(UnitStatusEnum.SettlerBuildRoadOrRail);
+				}
+				else
+				{
+					unit.RemainingMoves = 0;
+
+					// Instruction address 0x1403:0x1175, size: 5
+					this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(playerID, unitID);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gives all the player's units their full moves for the new turn
+		/// </summary>
+		/// <param name="playerID"></param>
+		internal void ResetUnitMoves(int playerID)
+		{
+			for (int i = 0; i < 128; i++)
+			{
+				Unit unit = this.parent.GameData.Players[playerID].Units[i];
+
+				if (unit.UnitType != UnitTypeEnum.None && this.parent.Var_df60 != 1)
+				{
+					unit.RemainingMoves = (short)(this.parent.GameData.Units[(int)unit.UnitType].MoveCount * 3);
+
+					// The Lighthouse and Magellan's Expedition give ships one extra move
+					if (this.parent.GameData.Units[(int)unit.UnitType].MovementType == UnitMovementTypeEnum.Water)
+					{
+						if (this.parent.CityWorker.F0_1d12_6c97_PlayerHasWonder(playerID, WonderEnum.Lighthouse) ||
+							this.parent.CityWorker.F0_1d12_6c97_PlayerHasWonder(playerID, WonderEnum.MagellansExpedition))
+						{
+							unit.RemainingMoves += 3;
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// A human player's Trireme that ends its move with no land next to it has a 50% chance to be lost at sea
+		/// </summary>
+		/// <param name="playerID"></param>
+		/// <param name="unitID"></param>
+		internal void CheckTriremeLostAtSea(int playerID, int unitID)
+		{
+			Unit unit = this.parent.GameData.Players[playerID].Units[unitID];
+
+			if (unit.UnitType == UnitTypeEnum.Trireme && playerID == this.parent.GameData.HumanPlayerID && this.parent.CAPI.RNG.Next(2) != 0)
+			{
+				for (int i = 1; i < 9; i++)
+				{
+					GPoint newPosition = unit.Position + this.parent.MoveDirections[i];
+
+					if (this.parent.MapManagement.ValidateMapCoordinates(newPosition) &&
+						this.parent.MapManagement.GetTerrainType(newPosition) != TerrainTypeEnum.Water)
+					{
+						// Land is next to the Trireme, it is safe
+						return;
+					}
+				}
+
+				// Instruction address 0x1403:0x3e18, size: 5
+				this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(playerID, unitID);
+				// Instruction address 0x1403:0x3e24, size: 5
+				this.parent.Help.F4_0000_03aa_ShowInstantWarningPopup("*TRIREME");
 			}
 		}
 
@@ -2726,7 +2762,7 @@ namespace OpenCivOne
 		/// <param name="playerID"></param>
 		/// <param name="unitID"></param>
 		/// <returns></returns>
-		private int F0_1403_4562_FindNearestUnitIDInUnitStack(int playerID, int unitID)
+		internal int F0_1403_4562_FindNearestUnitIDInUnitStack(int playerID, int unitID)
 		{
 			//this.oCPU.Log.EnterBlock("'Fn9'(Cdecl, Far, Return) at 0x4562");
 
@@ -2747,7 +2783,9 @@ namespace OpenCivOne
 
 				for (int i = 0; i < 16; i++)
 				{
-					if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].MovementType != UnitMovementTypeEnum.Air)
+					// Skip ships. An empty slot in the stack chain has UnitType None (-1); Units[-1] throws in C#
+					if (this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType != UnitTypeEnum.None &&
+						this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].MovementType != UnitMovementTypeEnum.Water)
 					{
 						int idRange;
 

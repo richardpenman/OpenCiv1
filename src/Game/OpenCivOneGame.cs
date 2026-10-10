@@ -113,7 +113,7 @@ namespace OpenCivOne
 					this.gameResourcePath = $"{userProfilePath}{separator}Dos{separator}Civ1{separator}";
 				}
 #else
-				this.gameResourcePath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}{separator}";
+				this.gameResourcePath = $"{Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)}{separator}";
 #endif
 
 				this.gameMainPath = $"{userProfilePath}{separator}Games{separator}OpenCivOne";

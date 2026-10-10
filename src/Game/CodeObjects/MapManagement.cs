@@ -143,9 +143,12 @@ namespace OpenCivOne
 			this.parent.Var_d4cc_MapViewX = this.parent.MapManagement.AdjustXPosition(x);
 			this.parent.Var_d75e_MapViewY = this.parent.CommonTools.CheckValueRange(y, 0, 38);
 
-			// Another error, the code modified first parameter (playerID) to a
-			// Visibility Mask and that conflicts with other code which expects playerID.
-			int mapPlayerVisibilityMask = (0x1 << playerID);
+			// The on-screen tactical map always shows the human player's view, so the fog
+			// mask must be the human's. Using the passed playerID draws the map through the
+			// current player's fog, which during an AI turn renders the world from that AI's
+			// point of view: its territory appears and everything it cannot see is blacked
+			// out. Most callers already pass HumanPlayerID for exactly this reason.
+			int mapPlayerVisibilityMask = (0x1 << this.parent.GameData.HumanPlayerID);
 
 			this.VisibleCities.Clear();
 
@@ -706,6 +709,13 @@ namespace OpenCivOne
 			// function body
 			// Instruction address 0x2aea:0x0ecd, size: 5
 			Unit unit = this.parent.GameData.Players[playerID].Units[unitID];
+
+			// An empty slot in the stack chain has UnitType None (-1); Units[-1] throws in C#
+			if (unit.UnitType == UnitTypeEnum.None)
+			{
+				return false;
+			}
+
 			int x = this.parent.MapManagement.AdjustXPosition(unit.Position.X - this.parent.Var_d4cc_MapViewX) * 16 + 80;
 			int y = (unit.Position.Y - this.parent.Var_d75e_MapViewY) * 16 + 8;
 
@@ -862,16 +872,29 @@ namespace OpenCivOne
 			// Instruction address 0x2aea:0x127f, size: 3
 			Unit unit = this.parent.GameData.Players[playerID].Units[unitID];
 
-			if (unit.NextUnitID != -1 && GetTerrainType(unit.Position.X, unit.Position.Y) == TerrainTypeEnum.Water &&
+			// An empty slot in the stack chain has UnitType None (-1); Units[-1] throws in C#
+			if (unit.NextUnitID != -1 && unit.UnitType != UnitTypeEnum.None &&
+				GetTerrainType(unit.Position.X, unit.Position.Y) == TerrainTypeEnum.Water &&
 				this.parent.GameData.Units[(int)unit.UnitType].MovementType != UnitMovementTypeEnum.Water)
 			{
 				int currentUnitID = unitID;
+				int stackStep = 0;
 
+				// A damaged stack chain can be cyclic without passing back through unitID, which
+				// would spin here forever; cap the walk like the other stack helpers do.
 				do
 				{
 					currentUnitID = this.parent.GameData.Players[playerID].Units[currentUnitID].NextUnitID;
+					stackStep++;
 
-					if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[currentUnitID].UnitType].MovementType == UnitMovementTypeEnum.Water)
+					if (currentUnitID == -1)
+					{
+						break;
+					}
+
+					// An empty slot in the stack chain has UnitType None (-1); Units[-1] throws in C#
+					if (this.parent.GameData.Players[playerID].Units[currentUnitID].UnitType != UnitTypeEnum.None &&
+						this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[currentUnitID].UnitType].MovementType == UnitMovementTypeEnum.Water)
 					{
 						// Instruction address 0x2aea:0x12e2, size: 3
 						F0_2aea_0e29_DrawUnit(playerID, currentUnitID);
@@ -879,7 +902,7 @@ namespace OpenCivOne
 						currentUnitID = -1;
 					}
 				}
-				while (currentUnitID != -1 && currentUnitID != unitID);
+				while (stackStep < 10 && currentUnitID != -1 && currentUnitID != unitID);
 
 				if (currentUnitID == unitID)
 				{

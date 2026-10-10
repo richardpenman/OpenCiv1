@@ -1,7 +1,7 @@
-﻿using System;
+﻿using IRB.VirtualCPU;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using IRB.VirtualCPU;
 
 namespace OpenCivOne
 {

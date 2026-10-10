@@ -266,8 +266,12 @@ namespace OpenCivOne
 
 			while (nextUnitID != -1 && nextUnitID != unitID && unitStatus.Length < 512)
 			{
-				// Instruction address 0x0000:0x066b, size: 5
-				unitStatus.Append($"*{this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].Name}\n");
+				// An empty slot in the stack chain has UnitType None (-1); Units[-1] throws in C#
+				if (this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType != UnitTypeEnum.None)
+				{
+					// Instruction address 0x0000:0x066b, size: 5
+					unitStatus.Append($"*{this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].Name}\n");
+				}
 
 				nextUnitID = this.parent.GameData.Players[playerID].Units[nextUnitID].NextUnitID;
 			}

@@ -1,6 +1,6 @@
-using System;
 using IRB.VirtualCPU;
 using OpenCivOne.Graphics;
+using System;
 
 namespace OpenCivOne
 {

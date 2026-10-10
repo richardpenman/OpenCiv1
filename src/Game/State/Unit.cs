@@ -1,5 +1,5 @@
-﻿using System;
-using OpenCivOne.Graphics;
+﻿using OpenCivOne.Graphics;
+using System;
 
 namespace OpenCivOne
 {
@@ -27,9 +27,12 @@ namespace OpenCivOne
 			this.Status ^= status;
 		}
 
+		/// <summary>
+		/// Returns true if all the given status flags are set
+		/// </summary>
 		public bool TestStatusFlags(UnitStatusEnum status)
 		{
-			return (this.Status & status) != status;
+			return (this.Status & status) == status;
 		}
 
 		public static Unit FromStream(int id, Stream stream)

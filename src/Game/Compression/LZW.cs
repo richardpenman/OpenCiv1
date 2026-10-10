@@ -1,5 +1,5 @@
-﻿using System;
-using IRB.Collections.Generic;
+﻿using IRB.Collections.Generic;
+using System;
 
 namespace OpenCivOne.Compression
 {

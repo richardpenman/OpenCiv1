@@ -160,7 +160,10 @@ namespace OpenCivOne
 					if (!this.parent.MapManagement.ValidateMapCoordinates(newX, newY))
 						continue;
 
-					if(i < 9 || (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].SightRange & 0x2) != 0)
+					// Ships only see water tiles in the outer ring
+					if (i < 9 || ((this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].SightRange & 0x2) != 0 &&
+						(this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].MovementType != UnitMovementTypeEnum.Water ||
+						this.parent.MapManagement.GetTerrainType(newX, newY) == TerrainTypeEnum.Water)))
 					{
 						// Instruction address 0x1866:0x026c, size: 5
 						this.parent.GameData.MapVisibility[newX, newY] |= (ushort)(1 << playerID);
@@ -1032,7 +1035,9 @@ namespace OpenCivOne
 				{
 					int newUnitID = this.parent.GameData.Players[playerID].Units[oldUnitID].NextUnitID;
 
-					if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType].UnitRoleType == unitRole)
+					// An empty slot in the stack chain has UnitType None (-1); Units[-1] throws in C#
+					if (this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType != UnitTypeEnum.None &&
+						this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType].UnitRoleType == unitRole)
 					{
 						count++;
 					}
@@ -1063,14 +1068,18 @@ namespace OpenCivOne
 
 			for (int i = 0; i < 10 && oldUnitID != -1; i++)
 			{
-				if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType].MovementType == UnitMovementTypeEnum.Land)
+				// An empty slot in the stack chain has UnitType None (-1); Units[-1] throws in C#
+				if (this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType != UnitTypeEnum.None)
 				{
-					count--;
-				}
+					if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType].MovementType == UnitMovementTypeEnum.Land)
+					{
+						count--;
+					}
 
-				if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType].UnitRoleType == UnitRoleTypeEnum.SeaTransport)
-				{
-					count += this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType].TransportCapacity;
+					if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType].UnitRoleType == UnitRoleTypeEnum.SeaTransport)
+					{
+						count += this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType].TransportCapacity;
+					}
 				}
 
 				oldUnitID = this.parent.GameData.Players[playerID].Units[oldUnitID].NextUnitID;
@@ -1102,7 +1111,9 @@ namespace OpenCivOne
 				}
 				else
 				{
-					if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType].MovementType != UnitMovementTypeEnum.Land)
+					// An empty slot in the stack chain has UnitType None (-1); Units[-1] throws in C#
+					if (this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType != UnitTypeEnum.None &&
+						this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType].MovementType != UnitMovementTypeEnum.Land)
 					{
 						this.parent.GameData.Players[playerID].Units[oldUnitID].ClearStatusFlags(UnitStatusEnum.Sentry);
 					}
@@ -1128,7 +1139,9 @@ namespace OpenCivOne
 			{
 				int newUnitID = this.parent.GameData.Players[playerID].Units[oldUnitID].NextUnitID;
 
-				if ((this.parent.GameData.Players[playerID].Units[oldUnitID].Status & UnitStatusEnum.Sentry) != UnitStatusEnum.None)
+				// An empty slot in the stack chain has UnitType None (-1); Units[-1] throws in C#
+				if ((this.parent.GameData.Players[playerID].Units[oldUnitID].Status & UnitStatusEnum.Sentry) != UnitStatusEnum.None &&
+					this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType != UnitTypeEnum.None)
 				{
 					this.parent.GameData.Players[playerID].Units[oldUnitID].ClearStatusFlags(UnitStatusEnum.Sentry);
 
@@ -1165,7 +1178,9 @@ namespace OpenCivOne
 			{
 				int newUnitID = this.parent.GameData.Players[playerID].Units[oldUnitID].NextUnitID;
 
-				if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType].MovementType == UnitMovementTypeEnum.Water)
+				// An empty slot in the stack chain has UnitType None (-1); Units[-1] throws in C#
+				if (this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType != UnitTypeEnum.None &&
+					this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[oldUnitID].UnitType].MovementType == UnitMovementTypeEnum.Water)
 				{
 					// Instruction address 0x1866:0x158a, size: 3
 					F0_1866_1593_UpdateUnitStatuses(playerID, oldUnitID);
@@ -1457,6 +1472,12 @@ namespace OpenCivOne
 						int newX = this.parent.MapManagement.AdjustXPosition(x + i);
 						int newY = y + j;
 						int cityID;
+
+						// The map only wraps horizontally, so unlike newX the vertical coordinate
+						// can fall outside the map when searching near the poles. There is nothing
+						// above the north or below the south edge, so skip those cells.
+						if (newY < 0 || newY >= this.parent.GameData.MapVisibility.GetLength(1))
+							continue;
 
 						if ((this.parent.GameData.MapVisibility[newX, newY] & playerBitmask) != 0 &&
 							mapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY).HasFlag(TerrainImprovementFlagsEnum.City) &&
@@ -1774,7 +1795,9 @@ namespace OpenCivOne
 				this.parent.PlayerTurn.F0_1403_4508_ValidateMapCoordinates(this.parent.GameData.Players[playerID].Units[unitID].Position.X + direction.X,
 					this.parent.GameData.Players[playerID].Units[unitID].Position.Y + direction.Y))
 			{
+				// An empty slot in the stack chain has UnitType None (-1); Units[-1] throws in C#
 				if (this.parent.GameData.Players[playerID].Units[unitID].NextUnitID != -1 &&
+					this.parent.GameData.Players[playerID].Units[this.parent.GameData.Players[playerID].Units[unitID].NextUnitID].UnitType != UnitTypeEnum.None &&
 					(this.parent.MapManagement.GetTerrainType(this.parent.GameData.Players[playerID].Units[unitID].Position.X,
 						this.parent.GameData.Players[playerID].Units[unitID].Position.Y) != TerrainTypeEnum.Water ||
 					this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[this.parent.GameData.Players[playerID].Units[unitID].NextUnitID].UnitType].MovementType == UnitMovementTypeEnum.Water))
@@ -1873,13 +1896,17 @@ namespace OpenCivOne
 				// Instruction address 0x1866:0x2025, size: 5
 				this.parent.MapManagement.F0_2aea_0fb3_DrawUnitWithStatus(playerID, nextUnitID, 106, unitYPos);
 
-				// Instruction address 0x1866:0x2079, size: 5
-				this.parent.DrawTools.DrawStringToScreen0($"{this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].Name}" +
-					$"{(((this.parent.GameData.Players[playerID].Units[nextUnitID].Status & UnitStatusEnum.Veteran) != UnitStatusEnum.None) ? " (V)" : "")}", 128, unitYPos, 15);
+				// An empty slot in the stack chain has UnitType None (-1); Units[-1] throws in C#
+				if (this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType != UnitTypeEnum.None)
+				{
+					// Instruction address 0x1866:0x2079, size: 5
+					this.parent.DrawTools.DrawStringToScreen0($"{this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].Name}" +
+						$"{(((this.parent.GameData.Players[playerID].Units[nextUnitID].Status & UnitStatusEnum.Veteran) != UnitStatusEnum.None) ? " (V)" : "")}", 128, unitYPos, 15);
 
-				// Instruction address 0x1866:0x20b7, size: 5
-				this.parent.DrawTools.DrawStringToScreen0(this.parent.Segment_2459.F0_2459_08c6_GetCityName(this.parent.GameData.Players[playerID].Units[nextUnitID].HomeCityID), 
-					128, unitYPos + 8, 14);
+					// Instruction address 0x1866:0x20b7, size: 5
+					this.parent.DrawTools.DrawStringToScreen0(this.parent.Segment_2459.F0_2459_08c6_GetCityName(this.parent.GameData.Players[playerID].Units[nextUnitID].HomeCityID),
+						128, unitYPos + 8, 14);
+				}
 
 				nextUnitID = this.parent.GameData.Players[playerID].Units[nextUnitID].NextUnitID;
 
@@ -2024,7 +2051,8 @@ namespace OpenCivOne
 					// Instruction address 0x1866:0x248f, size: 5
 					int newPlayerID = this.parent.MapManagement.F0_2aea_14e0_GetCellActiveUnitPlayerID(newX, newY);
 
-					if (newPlayerID != -1 && newPlayerID != playerID)
+					// Only empty squares or squares with the player's own units
+					if (newPlayerID == -1 || newPlayerID == playerID)
 					{
 						// Instruction address 0x1866:0x24ad, size: 5
 						if (!this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY).HasFlag(TerrainImprovementFlagsEnum.City) ||

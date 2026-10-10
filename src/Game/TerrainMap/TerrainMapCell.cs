@@ -15,8 +15,6 @@ namespace OpenCivOne
 		private GPoint oPosition = new GPoint(-1);
 
 		private TerrainTypeEnum eTerrainType = TerrainTypeEnum.Water;
-		private TerrainDefinition? oTerrainDefinition = null;
-		private int iTotalCellWorth = 0;
 
 		public bool HasSpecialResources = false;
 		public int Layer2_PlayerOwnership = 0;
@@ -102,8 +100,6 @@ namespace OpenCivOne
 			set
 			{
 				this.eTerrainType = value;
-				this.oTerrainDefinition = null;
-				this.iTotalCellWorth = 0;
 			}
 			/*{
 				switch (this.Layer1_Terrain)

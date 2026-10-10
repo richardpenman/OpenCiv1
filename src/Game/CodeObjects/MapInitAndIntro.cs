@@ -10,8 +10,6 @@ namespace OpenCivOne
 		private VCPU CPU;
 		private MapManagement map;
 
-		private bool mapFinished = false;
-
 		private int animationStage = 0;
 		private int buildImageIndex = 1;
 		private int paletteSlotCount = 0;
@@ -59,8 +57,6 @@ namespace OpenCivOne
 
 			// function body
 			RandomMT19937 rng = new RandomMT19937(this.parent.GameData.RandomSeed);
-
-			this.mapFinished = false;
 
 			if (this.parent.Var_d76a_EarthMap)
 			{
@@ -1015,8 +1011,6 @@ namespace OpenCivOne
 				this.map.SetTerrainType(rng.Next(80), 49, TerrainTypeEnum.Tundra);
 			}
 			#endregion
-
-			this.mapFinished = true;
 
 			while (AdvanceAnimation())
 			{

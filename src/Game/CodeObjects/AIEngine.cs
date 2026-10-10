@@ -941,15 +941,23 @@ namespace OpenCivOne
 
 					int nextUnitID = unit.NextUnitID;
 
-					while (nextUnitID != -1 && nextUnitID != unitID)
+					// A damaged stack chain can be cyclic without passing back through unitID, which
+					// would spin here forever. Cap the walk like the other stack helpers do.
+					for (int stackStep = 0; stackStep < 10 && nextUnitID != -1 && nextUnitID != unitID; stackStep++)
 					{
 						if ((this.parent.GameData.Players[playerID].Units[nextUnitID].Status & UnitStatusEnum.Fortified) == UnitStatusEnum.None)
 						{
-							unitRoleBits |= (0x1 << (int)this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].UnitRoleType);
-
-							if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].MovementType == UnitMovementTypeEnum.Land)
+							// An empty slot in the stack chain has UnitType None (-1). The DOS original
+							// indexed the unit table with the raw byte type and read harmless garbage,
+							// but Units[-1] throws an IndexOutOfRangeException in C#.
+							if (this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType != UnitTypeEnum.None)
 							{
-								unitCount++;
+								unitRoleBits |= (0x1 << (int)this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].UnitRoleType);
+
+								if (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].MovementType == UnitMovementTypeEnum.Land)
+								{
+									unitCount++;
+								}
 							}
 						}
 						else
@@ -1523,12 +1531,16 @@ namespace OpenCivOne
 							if (selectedActiveUnitID != -1 && this.parent.GameData.Players[selectedActivePlayerID].Units[selectedActiveUnitID].UnitType == UnitTypeEnum.Diplomat)
 							{
 								int activeUnitID = selectedActiveUnitID;
+								int diplomatStep = 0;
 
+								// A damaged stack chain can be cyclic without passing back through the
+								// starting unit, which would spin here forever; cap the walk.
 								do
 								{
 									activeUnitID = this.parent.GameData.Players[selectedActivePlayerID].Units[activeUnitID].NextUnitID;
+									diplomatStep++;
 								}
-								while ((activeUnitID != -1 && activeUnitID != selectedActiveUnitID) && this.parent.GameData.Players[selectedActivePlayerID].Units[activeUnitID].UnitType == UnitTypeEnum.Diplomat);
+								while (diplomatStep < 10 && (activeUnitID != -1 && activeUnitID != selectedActiveUnitID) && this.parent.GameData.Players[selectedActivePlayerID].Units[activeUnitID].UnitType == UnitTypeEnum.Diplomat);
 
 								if (activeUnitID != -1)
 								{
@@ -2192,7 +2204,10 @@ namespace OpenCivOne
 
 				// Instruction address 0x25fb:0x36df, size: 5
 				nearestCityID = this.parent.MapManagement.FindNearestCity(unitX, unitY);
-				nearestCityDistance = this.parent.MapManagement.GetDistance(unit.Position, this.parent.GameData.Cities[nearestCityID].Position);
+				// FindNearestCity returns -1 when the player has no cities; Cities[-1] throws in C#.
+				// 999 matches the sentinel FindNearestCity itself uses for "nothing found".
+				nearestCityDistance = (nearestCityID != -1) ?
+					this.parent.MapManagement.GetDistance(unit.Position, this.parent.GameData.Cities[nearestCityID].Position) : 999;
 
 				for (int i = 1; i < 9; i++)
 				{
@@ -2270,7 +2285,10 @@ namespace OpenCivOne
 			}
 
 			nearestCityID = this.parent.MapManagement.FindNearestCity(unitX, unitY);
-			nearestCityDistance = this.parent.MapManagement.GetDistance(unit.Position, this.parent.GameData.Cities[nearestCityID].Position);
+			// FindNearestCity returns -1 when the player has no cities; Cities[-1] throws in C#.
+			// 999 matches the sentinel FindNearestCity itself uses for "nothing found".
+			nearestCityDistance = (nearestCityID != -1) ?
+				this.parent.MapManagement.GetDistance(unit.Position, this.parent.GameData.Cities[nearestCityID].Position) : 999;
 			// The algorithm for distance has been contained within FindNearestCity and FindNearestPlayerUnit, so there was a confusion
 			// Perhaps we don't need this at all
 			int nearestDistance = nearestCityDistance;
