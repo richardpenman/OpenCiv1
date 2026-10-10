@@ -73,6 +73,7 @@ namespace OpenCivOne.Tests
 	public class RefactoringSafetyTests : IClassFixture<GameStatesFixture>
 	{
 		private const int Escape = 0x1b;
+		private const int Enter = 0x0d;
 
 		private static readonly object ExpectedLock = new();
 		private readonly GameStatesFixture states;
@@ -170,6 +171,70 @@ namespace OpenCivOne.Tests
 			Check(state, "AllCities/TradeReport", (game, player) => { GiveAllCities(game, player); game.AdvisorReports.TradeReport(player); }, pages);
 			Check(state, "AllCities/AttitudeReport", (game, player) => { GiveAllCities(game, player); game.AdvisorReports.AttitudeReport(player); }, pages);
 			Check(state, "AllCities/CityStatus", (game, player) => { GiveAllCities(game, player); game.AdvisorReports.CityStatus(player); }, pages);
+		}
+
+		[Theory]
+		[MemberData(nameof(StateNames))]
+		public void CityEventsAndScore(string state)
+		{
+			int[] keys = Enumerable.Repeat(Enter, 6).ToArray();
+			GameData data;
+
+			using (GameHarness harness = GameHarness.Load(this.states.Directory, state))
+			{
+				data = harness.Game.GameData;
+			}
+
+			// Disasters and riots in every city, with the city's owner as the human player so that messages are shown
+			for (int cityID = 0; cityID < 128; cityID++)
+			{
+				City city = data.Cities[cityID];
+
+				if (city.Status == CityStatusEnum.Invalid)
+					continue;
+
+				short cityIDCopy = (short)cityID;
+
+				for (int seed = 0; seed < 3; seed++)
+				{
+					int seedCopy = seed;
+
+					Check(state, $"CityEvent/{cityID}/{seed}", (game, player) =>
+					{
+						game.GameData.PlayerFlags = (short)(1 << player);
+						game.CAPI.srand(seedCopy);
+						game.CityEvents.F20_0000_0540(cityIDCopy);
+					}, city.PlayerID, keys);
+				}
+			}
+
+			// A computer player founds cities on empty land
+			int founded = 0;
+
+			for (int y = 4; y < 46 && founded < 6; y += 3)
+			{
+				for (int x = 0; x < 80 && founded < 6; x += 7)
+				{
+					if (data.Cities.Any(city => city.Status != CityStatusEnum.Invalid && Math.Abs(city.Position.X - x) <= 3 && Math.Abs(city.Position.Y - y) <= 3))
+						continue;
+
+					int xCopy = x;
+					int yCopy = y;
+					int founder = (founded % 7) + 1;
+					founded++;
+
+					Check(state, $"FoundCity/{x},{y}", (game, player) =>
+					{
+						if (game.MapManagement.GetTerrainType(xCopy, yCopy) != TerrainTypeEnum.Water)
+						{
+							game.CityEvents.F20_0000_0000(founder, xCopy, yCopy, 1);
+						}
+					}, Escape);
+				}
+			}
+
+			Check(state, "CivilizationScore", (game, player) => game.CivilizationScore.F20_0000_0ca9_ShowCivilizationScorePopup(player, true), Escape, Escape, Escape);
+			Check(state, "CivilizationScoreEndOfGame", (game, player) => game.CivilizationScore.F20_0000_0ca9_ShowCivilizationScorePopup(player, false), Escape, Escape, Escape);
 		}
 
 		private void Check(string state, string name, Action<OpenCivOneGame, short> action, params int[] keys)
