@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Text.Json;
 
 namespace OpenCivOne.Tests
@@ -83,21 +84,39 @@ namespace OpenCivOne.Tests
 
 		public static IEnumerable<object[]> StateNames => GameStatesFixture.States.Select(state => new object[] { state.Name });
 
+		/// <summary>
+		/// The game states themselves record what the computer players did in 50 and 120 turns, which covers the code
+		/// they run: city production and growth, disasters, founding cities, building spaceships and so on.
+		/// </summary>
+		[Theory]
+		[MemberData(nameof(StateNames))]
+		public void ComputerPlayersPlayTheSameGame(string state)
+		{
+			using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+
+			foreach (string extension in new[] { ".SVE", ".MAP" })
+			{
+				hash.AppendData(File.ReadAllBytes(Path.Combine(this.states.Directory, state.ToUpperInvariant() + extension)));
+			}
+
+			Compare($"{state}/GameState", Convert.ToHexString(hash.GetHashAndReset())[..16]);
+		}
+
 		[Theory]
 		[MemberData(nameof(StateNames))]
 		public void AdvisorReports(string state)
 		{
-			Check(state, "ScienceReport", (game, player) => game.Overlay_14.ScienceReport(player), Escape, Escape, Escape);
-			Check(state, "MilitaryReport", (game, player) => game.Overlay_14.MilitaryReport(player), Escape, Escape, Escape);
-			Check(state, "TradeReport", (game, player) => game.Overlay_14.TradeReport(player), Escape, Escape, Escape);
-			Check(state, "IntelligenceReport", (game, player) => game.Overlay_14.IntelligenceReport(), Escape, Escape, Escape);
-			Check(state, "AttitudeReport", (game, player) => game.Overlay_14.AttitudeReport(player), Escape, Escape, Escape);
-			Check(state, "CityStatus", (game, player) => game.Overlay_14.CityStatus(player), Escape, Escape, Escape);
+			Check(state, "ScienceReport", (game, player) => game.AdvisorReports.ScienceReport(player), Escape, Escape, Escape);
+			Check(state, "MilitaryReport", (game, player) => game.AdvisorReports.MilitaryReport(player), Escape, Escape, Escape);
+			Check(state, "TradeReport", (game, player) => game.AdvisorReports.TradeReport(player), Escape, Escape, Escape);
+			Check(state, "IntelligenceReport", (game, player) => game.AdvisorReports.IntelligenceReport(), Escape, Escape, Escape);
+			Check(state, "AttitudeReport", (game, player) => game.AdvisorReports.AttitudeReport(player), Escape, Escape, Escape);
+			Check(state, "CityStatus", (game, player) => game.AdvisorReports.CityStatus(player), Escape, Escape, Escape);
 
 			for (short otherPlayer = 1; otherPlayer < 8; otherPlayer++)
 			{
 				short playerID = otherPlayer;
-				Check(state, $"ForeignAffairs{playerID}", (game, player) => game.Overlay_14.PlayerIntelligenceReport(playerID), Escape, Escape, Escape);
+				Check(state, $"ForeignAffairs{playerID}", (game, player) => game.AdvisorReports.PlayerIntelligenceReport(playerID), Escape, Escape, Escape);
 			}
 
 			// Every player's reports, from that player's point of view, including the pages after the first
@@ -107,11 +126,11 @@ namespace OpenCivOne.Tests
 			{
 				short playerID = otherPlayer;
 
-				Check(state, $"Player{playerID}/ScienceReport", (game, player) => game.Overlay_14.ScienceReport(playerID), playerID, pages);
-				Check(state, $"Player{playerID}/MilitaryReport", (game, player) => game.Overlay_14.MilitaryReport(playerID), playerID, pages);
-				Check(state, $"Player{playerID}/TradeReport", (game, player) => game.Overlay_14.TradeReport(playerID), playerID, pages);
-				Check(state, $"Player{playerID}/AttitudeReport", (game, player) => game.Overlay_14.AttitudeReport(playerID), playerID, pages);
-				Check(state, $"Player{playerID}/CityStatus", (game, player) => game.Overlay_14.CityStatus(playerID), playerID, pages);
+				Check(state, $"Player{playerID}/ScienceReport", (game, player) => game.AdvisorReports.ScienceReport(playerID), playerID, pages);
+				Check(state, $"Player{playerID}/MilitaryReport", (game, player) => game.AdvisorReports.MilitaryReport(playerID), playerID, pages);
+				Check(state, $"Player{playerID}/TradeReport", (game, player) => game.AdvisorReports.TradeReport(playerID), playerID, pages);
+				Check(state, $"Player{playerID}/AttitudeReport", (game, player) => game.AdvisorReports.AttitudeReport(playerID), playerID, pages);
+				Check(state, $"Player{playerID}/CityStatus", (game, player) => game.AdvisorReports.CityStatus(playerID), playerID, pages);
 
 				// The same with an embassy with every civilization, so that the details can be opened
 				Check(state, $"Player{playerID}/IntelligenceReportWithEmbassies", (game, player) =>
@@ -121,11 +140,11 @@ namespace OpenCivOne.Tests
 						game.GameData.Players[playerID].Diplomacy[i] |= DiplomacyFlagsEnum.EmbassyEstablished;
 					}
 
-					game.Overlay_14.IntelligenceReport();
+					game.AdvisorReports.IntelligenceReport();
 				}, playerID, '1', Escape, '2', Escape, '3', Escape, '4', Escape, '5', Escape, '6', Escape, '7', Escape, Escape);
 
 				// Open the details of each civilization in turn with the keys 1 to 7
-				Check(state, $"Player{playerID}/IntelligenceReport", (game, player) => game.Overlay_14.IntelligenceReport(), playerID,
+				Check(state, $"Player{playerID}/IntelligenceReport", (game, player) => game.AdvisorReports.IntelligenceReport(), playerID,
 					'1', Escape, '2', Escape, '3', Escape, '4', Escape, '5', Escape, '6', Escape, '7', Escape, Escape);
 			}
 		}
@@ -148,9 +167,9 @@ namespace OpenCivOne.Tests
 				}
 			}
 
-			Check(state, "AllCities/TradeReport", (game, player) => { GiveAllCities(game, player); game.Overlay_14.TradeReport(player); }, pages);
-			Check(state, "AllCities/AttitudeReport", (game, player) => { GiveAllCities(game, player); game.Overlay_14.AttitudeReport(player); }, pages);
-			Check(state, "AllCities/CityStatus", (game, player) => { GiveAllCities(game, player); game.Overlay_14.CityStatus(player); }, pages);
+			Check(state, "AllCities/TradeReport", (game, player) => { GiveAllCities(game, player); game.AdvisorReports.TradeReport(player); }, pages);
+			Check(state, "AllCities/AttitudeReport", (game, player) => { GiveAllCities(game, player); game.AdvisorReports.AttitudeReport(player); }, pages);
+			Check(state, "AllCities/CityStatus", (game, player) => { GiveAllCities(game, player); game.AdvisorReports.CityStatus(player); }, pages);
 		}
 
 		private void Check(string state, string name, Action<OpenCivOneGame, short> action, params int[] keys)
