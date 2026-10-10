@@ -127,12 +127,22 @@ namespace OpenCivOne
 					// !!! Possible improvement, recompute unit path if, for example, a road or railroad was encountered
 					direction = this.parent.MapManagement.GetMoveDirection(this.parent.MapManagement.GetDistanceOffset(unit.Position, newPos!.Value));
 
-					if (direction > 8)
+					if (direction < 1 || direction > 8)
 					{
 						// A stored path goes stale when the unit did not move along it, for example when its
-						// move was blocked or it ran out of moves!
-						// !!! Note: This should never happen because code erases current path with Unit.GoToNextDirection = -1 so the path should never go beyond ring 1
-						throw new Exception("Error in GoTo algorithm!");
+						// move was blocked or it ran out of moves. Find a new path from the unit's current position.
+						unit.GoToPath.Clear();
+						this.FindGoToPath(unit, testVisibility);
+
+						direction = (unit.GoToPath.Count == 0) ? -1 :
+							this.parent.MapManagement.GetMoveDirection(this.parent.MapManagement.GetDistanceOffset(unit.Position, unit.GoToPath.Pop()));
+
+						if (direction < 1 || direction > 8)
+						{
+							// We couldn't find a path for a destination
+							direction = -1;
+							unit.GoToDestination = OpenCivOneGame.InvalidPosition;
+						}
 					}
 				}
 			}
