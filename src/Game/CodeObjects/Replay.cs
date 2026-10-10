@@ -1307,7 +1307,7 @@ namespace OpenCivOne
 			this.oParent.CommonTools.ClearKeyboardAndMouseEvents();
 
 			// Instruction address 0x0000:0x0f3a, size: 5
-			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+			this.oParent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			// Instruction address 0x0000:0x0f43, size: 5
 			this.oParent.CommonTools.PlayTune(1, 0);

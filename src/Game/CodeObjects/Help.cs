@@ -32,7 +32,7 @@ namespace OpenCivOne
 
 				this.parent.DrawTools.DrawTextBlock(32, 32, content, 256, 15);
 
-				this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+				this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 			}
@@ -97,7 +97,7 @@ namespace OpenCivOne
 							this.parent.GameData.Players[playerID].Units[unitID].Position.X, this.parent.GameData.Players[playerID].Units[unitID].Position.Y);
 
 						// Instruction address 0x0000:0x0240, size: 5
-						this.parent.Array_30b8[0] = this.parent.Segment_2459.F0_2459_08c6_GetCityName(nearestCityID);
+						this.parent.Array_30b8[0] = this.parent.Actions.F0_2459_08c6_GetCityName(nearestCityID);
 
 						if (terrainType == TerrainTypeEnum.Hills && !terrainImprovements.HasFlag(TerrainImprovementFlagsEnum.Irrigation) && 
 							!terrainImprovements.HasFlag(TerrainImprovementFlagsEnum.Mines))
@@ -152,7 +152,7 @@ namespace OpenCivOne
 
 				this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
-				this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+				this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 			}
@@ -187,7 +187,7 @@ namespace OpenCivOne
 
 				this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
-				this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+				this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 			}

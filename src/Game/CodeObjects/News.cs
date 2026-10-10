@@ -76,19 +76,19 @@ namespace OpenCivOne
 				switch (this.parent.CAPI.RNG.Next(4))
 				{
 					case 0:
-						newsTitle = $"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(newCityID)} Weekly";
+						newsTitle = $"{this.parent.Actions.F0_2459_08c6_GetCityName(newCityID)} Weekly";
 						break;
 
 					case 1:
-						newsTitle = $"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(newCityID)} Today";
+						newsTitle = $"{this.parent.Actions.F0_2459_08c6_GetCityName(newCityID)} Today";
 						break;
 
 					case 2:
-						newsTitle = $"The {this.parent.Segment_2459.F0_2459_08c6_GetCityName(newCityID)} Times";
+						newsTitle = $"The {this.parent.Actions.F0_2459_08c6_GetCityName(newCityID)} Times";
 						break;
 
 					case 3:
-						newsTitle = $"The {this.parent.Segment_2459.F0_2459_08c6_GetCityName(newCityID)} Tribune";
+						newsTitle = $"The {this.parent.Actions.F0_2459_08c6_GetCityName(newCityID)} Tribune";
 						break;
 				}
 
@@ -96,7 +96,7 @@ namespace OpenCivOne
 
 				if (titleWidth > 300)
 				{
-					newsTitle = $"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(newCityID)} News";
+					newsTitle = $"{this.parent.Actions.F0_2459_08c6_GetCityName(newCityID)} News";
 
 					titleWidth = this.parent.DrawTools.GetStringWidth(newsTitle);
 				}

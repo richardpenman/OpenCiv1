@@ -57,7 +57,7 @@ namespace OpenCivOne
 
 					// Instruction address 0x0000:0x00d2, size: 5
 					selectedAction = this.parent.MenuBoxDialog.ShowDialog($"{this.parent.GameData.Players[diplomatPlayerID].Nationality} diplomat arrives\nin " +
-						$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(destinationCityID)}, what would you like to do?\n Establish Embassy\n" +
+						$"{this.parent.Actions.F0_2459_08c6_GetCityName(destinationCityID)}, what would you like to do?\n Establish Embassy\n" +
 						$" Investigate City\n Steal Technology\n Industrial Sabotage\n Incite a Revolt\n Meet with King\n", 80, 80);
 				}
 				else
@@ -82,13 +82,13 @@ namespace OpenCivOne
 						// Instruction address 0x0000:0x0164, size: 5
 						this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(diplomatPlayerID, diplomatUnitID);
 
-						this.parent.Overlay_14.PlayerIntelligenceReport(cityPlayerID);
+						this.parent.AdvisorReports.PlayerIntelligenceReport(cityPlayerID);
 
 						return;
 
 					case 1:
 						// Instruction address 0x0000:0x0133, size: 5
-						this.parent.Segment_1ade.F0_1ade_03ea(destinationCityID);
+						this.parent.CityManagement.F0_1ade_03ea(destinationCityID);
 
 						// Instruction address 0x0000:0x0141, size: 5
 						this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(diplomatPlayerID, diplomatUnitID);
@@ -98,7 +98,7 @@ namespace OpenCivOne
 					case 2:
 						if (!barbariansInvolved && (this.parent.GameData.Cities[destinationCityID].Status & CityStatusEnum.TechnologyStolen) == CityStatusEnum.None)
 						{
-							if (diplomatPlayerID != this.parent.GameData.HumanPlayerID || this.parent.Segment_29f3.F0_29f3_0c9e_ConfirmAttackAction(cityPlayerID) != -1)
+							if (diplomatPlayerID != this.parent.GameData.HumanPlayerID || this.parent.AttackActions.F0_29f3_0c9e_ConfirmAttackAction(cityPlayerID) != -1)
 							{
 								// Instruction address 0x0000:0x01c6, size: 5
 								this.parent.Diplomacy.F0_2517_0aa1_ClearDiplomacyFlags(diplomatPlayerID, cityPlayerID, DiplomacyFlagsEnum.Peace);
@@ -111,11 +111,11 @@ namespace OpenCivOne
 									{
 										TechnologyAdvanceEnum selectedTechnology = (TechnologyAdvanceEnum)((technologyIndex + i) % 72);
 
-										if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(cityPlayerID, selectedTechnology) &&
-											!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(diplomatPlayerID, selectedTechnology))
+										if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(cityPlayerID, selectedTechnology) &&
+											!this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(diplomatPlayerID, selectedTechnology))
 										{
 											// Instruction address 0x0000:0x0249, size: 5
-											this.parent.Segment_1ade.F0_1ade_1d2e(diplomatPlayerID, cityPlayerID, selectedTechnology);
+											this.parent.Technology.F0_1ade_1d2e(diplomatPlayerID, cityPlayerID, selectedTechnology);
 
 											this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.SpiesReport;
 
@@ -162,7 +162,7 @@ namespace OpenCivOne
 									// Instruction address 0x0000:0x0437, size: 5
 									this.parent.MenuBoxDialog.ShowDialog(
 										$"{this.parent.GameData.GetImprovementType(improvementBit + 1).Name} destroyed\n" +
-										$"in {this.parent.Segment_2459.F0_2459_08c6_GetCityName(destinationCityID)}.\n", 80, 80);
+										$"in {this.parent.Actions.F0_2459_08c6_GetCityName(destinationCityID)}.\n", 80, 80);
 
 									// Instruction address 0x0000:0x0141, size: 5
 									this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(diplomatPlayerID, diplomatUnitID);
@@ -181,7 +181,7 @@ namespace OpenCivOne
 							// Instruction address 0x0000:0x0437, size: 5
 							this.parent.MenuBoxDialog.ShowDialog(
 								$"{this.parent.GameData.Units[this.parent.GameData.Cities[destinationCityID].CurrentProductionID].Name} production sabotaged\n" +
-								$"in {this.parent.Segment_2459.F0_2459_08c6_GetCityName(destinationCityID)}.\n", 80, 80);
+								$"in {this.parent.Actions.F0_2459_08c6_GetCityName(destinationCityID)}.\n", 80, 80);
 						}
 						else
 						{
@@ -190,7 +190,7 @@ namespace OpenCivOne
 							// Instruction address 0x0000:0x0437, size: 5
 							this.parent.MenuBoxDialog.ShowDialog(
 								$"{this.parent.GameData.GetImprovementType(-this.parent.GameData.Cities[destinationCityID].CurrentProductionID).Name} production sabotaged\n" +
-								$"in {this.parent.Segment_2459.F0_2459_08c6_GetCityName(destinationCityID)}.\n", 80, 80);
+								$"in {this.parent.Actions.F0_2459_08c6_GetCityName(destinationCityID)}.\n", 80, 80);
 						}
 
 						// Instruction address 0x0000:0x0141, size: 5
@@ -212,7 +212,7 @@ namespace OpenCivOne
 							}
 
 							StringBuilder menuText = new();
-							menuText.Append(CultureInfo.InvariantCulture, $"Dissidents in {this.parent.Segment_2459.F0_2459_08c6_GetCityName(destinationCityID)}\nwill revolt for {actionCost} coins.\n");
+							menuText.Append(CultureInfo.InvariantCulture, $"Dissidents in {this.parent.Actions.F0_2459_08c6_GetCityName(destinationCityID)}\nwill revolt for {actionCost} coins.\n");
 
 							if (actionCost <= this.parent.GameData.Players[diplomatPlayerID].Coins)
 							{
@@ -448,14 +448,14 @@ namespace OpenCivOne
 						// Instruction address 0x0000:0x0d45, size: 5
 						this.parent.MenuBoxDialog.ShowDialog(
 							$"{this.parent.GameData.Players[cityPlayerID].Nation} declare\nindependence in\n" +
-							$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(destinationCityID)}\n", 100, 32);
+							$"{this.parent.Actions.F0_2459_08c6_GetCityName(destinationCityID)}\n", 100, 32);
 					}
 					else
 					{
 						// Instruction address 0x0000:0x0d45, size: 5
 						this.parent.MenuBoxDialog.ShowDialog(
 							$"{this.parent.GameData.Players[cityPlayerID].Nation} rebel!\nCivil War in\n" +
-							$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(destinationCityID)}.\n" +
+							$"{this.parent.Actions.F0_2459_08c6_GetCityName(destinationCityID)}.\n" +
 							$"{this.parent.GameData.Players[actionPlayerID].Nationality} influence\nsuspected.\n", 100, 32);
 					}
 				}
@@ -509,7 +509,7 @@ namespace OpenCivOne
 				}
 
 				// Instruction address 0x0000:0x0e76, size: 5
-				this.parent.Segment_2459.F0_2459_0000_CityTakeover(actionPlayerID, destinationCityID, true);
+				this.parent.Actions.F0_2459_0000_CityTakeover(actionPlayerID, destinationCityID, true);
 
 				this.parent.Var_28bc = false;
 				this.parent.GameData.GameSettingFlags.Value = gameSettings;

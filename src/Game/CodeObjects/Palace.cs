@@ -522,7 +522,7 @@ namespace OpenCivOne
 				this.parent.Graphics.F0_VGA_06b7_DrawScreenToScreen0WithEffect(1);
 
 				// Instruction address 0x0000:0x078d, size: 5
-				this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+				this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 			}
 
 			// Instruction address 0x0000:0x07a1, size: 5

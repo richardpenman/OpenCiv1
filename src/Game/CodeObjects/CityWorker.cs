@@ -141,25 +141,25 @@ namespace OpenCivOne
 				if (!city.HasImprovement(ImprovementEnum.MassTransit))
 				{
 					// Instruction address 0x1d12:0x035e, size: 5
-					if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Industrialization))
+					if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Industrialization))
 					{
 						this.parent.Var_b882++;
 					}
 
 					// Instruction address 0x1d12:0x037a, size: 5
-					if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Automobile))
+					if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Automobile))
 					{
 						this.parent.Var_b882++;
 					}
 
 					// Instruction address 0x1d12:0x0396, size: 5
-					if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.MassProduction))
+					if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.MassProduction))
 					{
 						this.parent.Var_b882++;
 					}
 
 					// Instruction address 0x1d12:0x03b2, size: 5
-					if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Plastics))
+					if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Plastics))
 					{
 						this.parent.Var_b882++;
 					}
@@ -218,7 +218,7 @@ namespace OpenCivOne
 					this.parent.Var_aa_Screen0_Rectangle.FontID = 2;
 
 					// Instruction address 0x1d12:0x056f, size: 5
-					this.parent.DrawTools.DrawCenteredStringToScreen0($"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} " +
+					this.parent.DrawTools.DrawCenteredStringToScreen0($"{this.parent.Actions.F0_2459_08c6_GetCityName(cityID)} " +
 						$"(Population:{this.parent.GameEngine.PopulationValueToString(cityPopulation)})", 104, 2, 15);
 
 					// Instruction address 0x1d12:0x0587, size: 5
@@ -288,7 +288,7 @@ namespace OpenCivOne
 							this.parent.CommonTools.PlayTune(36, 0);
 
 							this.parent.News.F21_0000_0000_ShowNews(cityID,
-								$"Food storage exhausted\nin {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}!\n{((lostUnitID != -1) ? "Settlers lost." : "Famine feared.")}\n");
+								$"Food storage exhausted\nin {this.parent.Actions.F0_2459_08c6_GetCityName(cityID)}!\n{((lostUnitID != -1) ? "Settlers lost." : "Famine feared.")}\n");
 
 							// Instruction address 0x1d12:0x07f4, size: 5
 							this.parent.CommonTools.PlayTune(1, 0);
@@ -306,7 +306,7 @@ namespace OpenCivOne
 							if (city.ActualSize <= 0)
 							{
 								// Instruction address 0x1d12:0x0843, size: 5
-								this.parent.Segment_1ade.F0_1ade_018e(cityID, city.Position.X, city.Position.Y);
+								this.parent.CityManagement.F0_1ade_018e(cityID, city.Position.X, city.Position.Y);
 
 								this.parent.StartGameMenu.F5_0000_0e6c_TestIfAIPlayerIsDestroyed(this.Var_6548_PlayerID, -1);
 
@@ -343,7 +343,7 @@ namespace OpenCivOne
 
 								// Instruction address 0x1d12:0x094d, size: 5
 								this.parent.MenuBoxDialog.ShowDialog(
-									$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} requires an AQUEDUCT\nfor further growth.\n", 100, 80);
+									$"{this.parent.Actions.F0_2459_08c6_GetCityName(cityID)} requires an AQUEDUCT\nfor further growth.\n", 100, 80);
 							}
 						}
 
@@ -505,7 +505,7 @@ namespace OpenCivOne
 							this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 
 							// Instruction address 0x1d12:0x0e5b, size: 5
-							this.parent.MenuBoxDialog.ShowDialog($"Population decrease\nin {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 100, 80);
+							this.parent.MenuBoxDialog.ShowDialog($"Population decrease\nin {this.parent.Actions.F0_2459_08c6_GetCityName(cityID)}.\n", 100, 80);
 
 							this.parent.Var_b1e8 = 1;
 						}
@@ -768,7 +768,7 @@ namespace OpenCivOne
 									if (city.ActualSize == 0)
 									{
 										// Instruction address 0x1d12:0x16ff, size: 5
-										this.parent.Segment_1ade.F0_1ade_018e(cityID, city.Position.X, city.Position.Y);
+										this.parent.CityManagement.F0_1ade_018e(cityID, city.Position.X, city.Position.Y);
 
 										// Instruction address 0x1d12:0x1727, size: 5
 										this.parent.UnitManagement.F0_1866_0cf5_CreateUnit(this.Var_6548_PlayerID, (UnitTypeEnum)city.CurrentProductionID, city.Position.X, city.Position.Y);
@@ -797,7 +797,7 @@ namespace OpenCivOne
 										}
 
 										// Instruction address 0x1d12:0x180e, size: 5
-										this.parent.Segment_2459.F0_2459_0948_CaravanArrivesAtDestinationCity(this.Var_6548_PlayerID, newUnitID, selectedTradeCityID);
+										this.parent.Actions.F0_2459_0948_CaravanArrivesAtDestinationCity(this.Var_6548_PlayerID, newUnitID, selectedTradeCityID);
 									}
 
 									if (city.CurrentProductionID == 26)
@@ -893,7 +893,7 @@ namespace OpenCivOne
 										this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DefenseMinisterReport;
 
 										// Instruction address 0x1d12:0x1b58, size: 5
-										this.parent.MenuBoxDialog.ShowDialog($"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} builds " +
+										this.parent.MenuBoxDialog.ShowDialog($"{this.parent.Actions.F0_2459_08c6_GetCityName(cityID)} builds " +
 											$"{this.parent.GameData.Units[city.CurrentProductionID].Name}.\n", 80, 80);
 									}
 								}
@@ -932,7 +932,7 @@ namespace OpenCivOne
 									this.parent.CommonTools.PlayTune(36, 0);
 
 									this.parent.News.F21_0000_0000_ShowNews(-1,
-										$"Sensors report a\nNUCLEAR WEAPONS test\nnear {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}!\n");
+										$"Sensors report a\nNUCLEAR WEAPONS test\nnear {this.parent.Actions.F0_2459_08c6_GetCityName(cityID)}!\n");
 
 									this.parent.CommonTools.PlayTune(1, 0);
 								}
@@ -961,12 +961,12 @@ namespace OpenCivOne
 										(newShields <= 21 || newShields > 24) && (city.Status & CityStatusEnum.AutoProduction) == CityStatusEnum.None && newShields != 1)
 									{
 										this.parent.CityView.F19_0000_0000_ShowCityLayout(cityID, newShields,
-											$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} builds\n{this.parent.GameData.GetImprovementType(newShields).Name}.\n");
+											$"{this.parent.Actions.F0_2459_08c6_GetCityName(cityID)} builds\n{this.parent.GameData.GetImprovementType(newShields).Name}.\n");
 									}
 									else
 									{
 										this.parent.News.F21_0000_0000_ShowNews(cityID,
-											$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} builds\n{this.parent.GameData.GetImprovementType(newShields).Name}.\n");
+											$"{this.parent.Actions.F0_2459_08c6_GetCityName(cityID)} builds\n{this.parent.GameData.GetImprovementType(newShields).Name}.\n");
 									}
 
 									city.ShieldsCount = 0;
@@ -979,7 +979,7 @@ namespace OpenCivOne
 									}
 
 									// Instruction address 0x1d12:0x1e1a, size: 5
-									city.CurrentProductionID = (sbyte)((short)this.parent.Segment_1ade.F0_1ade_0421(this.Var_6548_PlayerID, cityID));
+									city.CurrentProductionID = (sbyte)((short)this.parent.CityManagement.F0_1ade_0421(this.Var_6548_PlayerID, cityID));
 
 									if (city.CurrentProductionID >= 0)
 									{
@@ -991,11 +991,11 @@ namespace OpenCivOne
 								{
 									if (this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID)
 									{
-										this.parent.Overlay_18.F18_0000_0f83(this.Var_6548_PlayerID, (ushort)((short)(newShields - 22)));
+										this.parent.Spaceship.F18_0000_0f83(this.Var_6548_PlayerID, (ushort)((short)(newShields - 22)));
 									}
 									else
 									{
-										int local_c8 = (short)this.parent.Overlay_18.F18_0000_0d4f(this.Var_6548_PlayerID, (short)(newShields - 22));
+										int local_c8 = (short)this.parent.Spaceship.F18_0000_0d4f(this.Var_6548_PlayerID, (short)(newShields - 22));
 
 										if (local_c8 != 0 && newShields < 24)
 										{
@@ -1013,34 +1013,34 @@ namespace OpenCivOne
 										{
 											if (local_c8 == 0)
 											{
-												this.parent.Overlay_18.F18_0000_15c3(this.Var_6548_PlayerID);
+												this.parent.Spaceship.F18_0000_15c3(this.Var_6548_PlayerID);
 											}
-											else if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.SpaceFlight))
+											else if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.SpaceFlight))
 											{
 												if (this.parent.GameData.AISpaceshipSuccessRate > 75)
 												{
-													this.parent.Overlay_18.F18_0000_15c3(this.Var_6548_PlayerID);
+													this.parent.Spaceship.F18_0000_15c3(this.Var_6548_PlayerID);
 												}
 												else if (this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Ranking > this.parent.GameData.Players[this.Var_6548_PlayerID].Ranking)
 												{
-													this.parent.Overlay_18.F18_0000_15c3(this.Var_6548_PlayerID);
+													this.parent.Spaceship.F18_0000_15c3(this.Var_6548_PlayerID);
 												}
 												else if ((this.parent.GameData.SpaceshipFlags & (1 << this.parent.GameData.HumanPlayerID)) != 0 &&
 													(this.parent.GameData.Players[this.Var_6548_PlayerID].SpaceshipETAYear - this.parent.GameData.Year) <=
 														(this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].SpaceshipETAYear - this.parent.GameData.Year))
 												{
-													this.parent.Overlay_18.F18_0000_15c3(this.Var_6548_PlayerID);
+													this.parent.Spaceship.F18_0000_15c3(this.Var_6548_PlayerID);
 												}
 												else if ((this.parent.GameData.SpaceshipFlags & (1 << (this.parent.GameData.HumanPlayerID + 8))) != 0 &&
 													this.parent.GameData.Players[this.parent.GameData.ActiveCivilizations].Coins > 1000)
 												{
-													this.parent.Overlay_18.F18_0000_15c3(this.Var_6548_PlayerID);
+													this.parent.Spaceship.F18_0000_15c3(this.Var_6548_PlayerID);
 												}
 											}
 										}
 										else if (local_c8 != 0)
 										{
-											this.parent.Overlay_18.F18_0000_15c3(this.Var_6548_PlayerID);
+											this.parent.Spaceship.F18_0000_15c3(this.Var_6548_PlayerID);
 										}
 									}
 								}
@@ -1065,7 +1065,7 @@ namespace OpenCivOne
 											// Instruction address 0x1d12:0x20f8, size: 5
 											this.parent.MenuBoxDialog.ShowDialog($"Diplomats report:\n" +
 												$"{this.parent.GameData.Players[this.Var_6548_PlayerID].Nationality} capital\nmoved to " +
-												$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 80, 80);
+												$"{this.parent.Actions.F0_2459_08c6_GetCityName(cityID)}.\n", 80, 80);
 										}
 										else
 										{
@@ -1073,7 +1073,7 @@ namespace OpenCivOne
 
 											// Instruction address 0x1d12:0x20f8, size: 5
 											this.parent.MenuBoxDialog.ShowDialog($"{this.parent.GameData.Players[this.Var_6548_PlayerID].Nationality}" +
-												$" capital\nmoved to {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 80, 80);
+												$" capital\nmoved to {this.parent.Actions.F0_2459_08c6_GetCityName(cityID)}.\n", 80, 80);
 										}
 
 										this.parent.GameData.Players[this.Var_6548_PlayerID].XStart = (short)city.Position.X;
@@ -1085,10 +1085,10 @@ namespace OpenCivOne
 								if (newShields == 38)
 								{
 									// Instruction address 0x1d12:0x2143, size: 5
-									this.parent.Segment_1ade.F0_1ade_1584(this.Var_6548_PlayerID, 0);
+									this.parent.CityManagement.F0_1ade_1584(this.Var_6548_PlayerID, 0);
 
 									// Instruction address 0x1d12:0x2153, size: 5
-									this.parent.Segment_1ade.F0_1ade_1584(this.Var_6548_PlayerID, 0);
+									this.parent.CityManagement.F0_1ade_1584(this.Var_6548_PlayerID, 0);
 								}
 
 								if (newShields == 43 && this.Var_6548_PlayerID == this.parent.GameData.HumanPlayerID)
@@ -1116,7 +1116,7 @@ namespace OpenCivOne
 						(city.ShieldsCount == 0 || (city.CurrentProductionID < 0 && newShields == -1)))
 					{
 						// Instruction address 0x1d12:0x2262, size: 5
-						newShields = (short)this.parent.Segment_1ade.F0_1ade_0421(this.Var_6548_PlayerID, cityID);
+						newShields = (short)this.parent.CityManagement.F0_1ade_0421(this.Var_6548_PlayerID, cityID);
 
 						this.parent.Var_aa_Screen0_Rectangle.FontID = 2;
 
@@ -1446,7 +1446,7 @@ namespace OpenCivOne
 				}
 
 				// Instruction address 0x1d12:0x2d27, size: 5
-				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Religion))
+				if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Religion))
 				{
 					if (city.HasImprovement(ImprovementEnum.Cathedral))
 					{
@@ -1473,14 +1473,14 @@ namespace OpenCivOne
 				if (city.HasImprovement(ImprovementEnum.Temple))
 				{
 					// Instruction address 0x1d12:0x2dd6, size: 5
-					if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Mysticism))
+					if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Mysticism))
 					{
 						this.parent.Var_70e4_CityUnhappyCitizenCount -= 2;
 					}
 					else
 					{
 						// Instruction address 0x1d12:0x2df6, size: 5
-						if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.CeremonialBurial))
+						if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.CeremonialBurial))
 						{
 							this.parent.Var_70e4_CityUnhappyCitizenCount--;
 						}
@@ -1490,7 +1490,7 @@ namespace OpenCivOne
 					if (F0_1d12_6c97_PlayerHasWonder(this.Var_6548_PlayerID, WonderEnum.Oracle))
 					{
 						// Instruction address 0x1d12:0x2e2a, size: 5
-						if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Mysticism))
+						if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Mysticism))
 						{
 							this.parent.Var_70e4_CityUnhappyCitizenCount -= 2;
 						}
@@ -1782,7 +1782,7 @@ namespace OpenCivOne
 										this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DefenseMinisterReport;
 
 										// Instruction address 0x1d12:0x3657, size: 5
-										this.parent.MenuBoxDialog.ShowDialog($"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}" +
+										this.parent.MenuBoxDialog.ShowDialog($"{this.parent.Actions.F0_2459_08c6_GetCityName(cityID)}" +
 											$" can't support\n{this.parent.GameData.Units[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].Units[selectedUnit].UnitType].Name}" +
 											".\n Unit Disbanded.\n", 100, 80);
 									}
@@ -1889,7 +1889,7 @@ namespace OpenCivOne
 						// Instruction address 0x1d12:0x3969, size: 5
 						this.parent.MapManagement.F0_2aea_0fb3_DrawUnitWithStatus(this.Var_6548_PlayerID, (short)i, cityUnitX, cityUnitY);
 
-						string cityName = this.parent.Segment_2459.F0_2459_08c6_GetCityName(this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].HomeCityID);
+						string cityName = this.parent.Actions.F0_2459_08c6_GetCityName(this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].HomeCityID);
 
 						cityName = (cityName.Length > 3) ? string.Concat(cityName.AsSpan(0, 3), "."): cityName;
 
@@ -2282,13 +2282,13 @@ namespace OpenCivOne
 								if (this.parent.GameData.Cities[tradeCityID].PlayerID != this.Var_6548_PlayerID)
 								{
 									// Instruction address 0x1d12:0x4765, size: 5
-									this.parent.DrawTools.DrawStringToScreen0($"{{{this.parent.Segment_2459.F0_2459_08c6_GetCityName(tradeCityID)}:+" +
+									this.parent.DrawTools.DrawStringToScreen0($"{{{this.parent.Actions.F0_2459_08c6_GetCityName(tradeCityID)}:+" +
 										$"{(city.BaseTrade + this.parent.GameData.Cities[tradeCityID].BaseTrade + 4) / 8}}} ", 98, (i * 6) + 179, 10);
 								}
 								else
 								{
 									// Instruction address 0x1d12:0x4765, size: 5
-									this.parent.DrawTools.DrawStringToScreen0($"{{{this.parent.Segment_2459.F0_2459_08c6_GetCityName(tradeCityID)}:+" +
+									this.parent.DrawTools.DrawStringToScreen0($"{{{this.parent.Actions.F0_2459_08c6_GetCityName(tradeCityID)}:+" +
 										$"{((city.BaseTrade + this.parent.GameData.Cities[tradeCityID].BaseTrade + 4) / 16)}}} ", 98, (i * 6) + 179, 10);
 								}
 							}
@@ -2422,7 +2422,7 @@ namespace OpenCivOne
 							if ((city.Status & CityStatusEnum.AutoProduction) != CityStatusEnum.None)
 							{
 								// Instruction address 0x1d12:0x4aef, size: 5
-								int newProductionID = (short)this.parent.Segment_1ade.F0_1ade_0421(this.Var_6548_PlayerID, cityID);
+								int newProductionID = (short)this.parent.CityManagement.F0_1ade_0421(this.Var_6548_PlayerID, cityID);
 
 								this.parent.Var_aa_Screen0_Rectangle.FontID = 2;
 
@@ -2529,7 +2529,7 @@ namespace OpenCivOne
 								}
 
 								// Instruction address 0x1d12:0x4ee9, size: 5
-								city.CurrentProductionID = (sbyte)((short)this.parent.Segment_1ade.F0_1ade_0421(this.Var_6548_PlayerID, cityID));
+								city.CurrentProductionID = (sbyte)((short)this.parent.CityManagement.F0_1ade_0421(this.Var_6548_PlayerID, cityID));
 
 								if (city.CurrentProductionID >= 0)
 								{
@@ -3123,7 +3123,7 @@ namespace OpenCivOne
 					}
 
 					// Instruction address 0x1d12:0x5cbd, size: 5
-					this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+					this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 				L5cc2:
 					this.parent.Var_d4cc_MapViewX = mapViewX;
@@ -3147,7 +3147,7 @@ namespace OpenCivOne
 									(city.Status & CityStatusEnum.CivilDisorder) == CityStatusEnum.None && this.parent.Var_6b92 == 0)
 								{
 									this.parent.CityView.F19_0000_0000_ShowCityLayout(cityID, -2,
-										$"Civil Disorder in\n{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}! Mayor\nflees in panic.\n");
+										$"Civil Disorder in\n{this.parent.Actions.F0_2459_08c6_GetCityName(cityID)}! Mayor\nflees in panic.\n");
 
 									this.parent.CityView.F19_0000_18c1_CivilDisorderAnimation();
 
@@ -3161,7 +3161,7 @@ namespace OpenCivOne
 									this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 
 									// Instruction address 0x1d12:0x5db1, size: 5
-									this.parent.MenuBoxDialog.ShowDialog($"Civil Disorder in\n{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}! Mayor\nflees in panic.\n", 100, 80);
+									this.parent.MenuBoxDialog.ShowDialog($"Civil Disorder in\n{this.parent.Actions.F0_2459_08c6_GetCityName(cityID)}! Mayor\nflees in panic.\n", 100, 80);
 								}
 
 								// Instruction address 0x1d12:0x5dbd, size: 5
@@ -3190,7 +3190,7 @@ namespace OpenCivOne
 									}
 
 									// Instruction address 0x1d12:0x5e5b, size: 5
-									city.CurrentProductionID = (sbyte)((short)this.parent.Segment_1ade.F0_1ade_0421(this.Var_6548_PlayerID, cityID));
+									city.CurrentProductionID = (sbyte)((short)this.parent.CityManagement.F0_1ade_0421(this.Var_6548_PlayerID, cityID));
 
 									if (city.CurrentProductionID >= 0)
 									{
@@ -3210,7 +3210,7 @@ namespace OpenCivOne
 										this.parent.CommonTools.PlayTune(36, 0);
 
 										this.parent.News.F21_0000_0000_ShowNews(cityID,
-											$"Discontented citizens of\n{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} revolt:\nGovernment Collapses!\n");
+											$"Discontented citizens of\n{this.parent.Actions.F0_2459_08c6_GetCityName(cityID)} revolt:\nGovernment Collapses!\n");
 
 										this.parent.GameData.Players[this.Var_6548_PlayerID].Diplomacy[0] |= DiplomacyFlagsEnum.Allied;
 
@@ -3232,7 +3232,7 @@ namespace OpenCivOne
 									this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.DomesticAdvisorReport;
 
 									// Instruction address 0x1d12:0x5fb7, size: 5
-									this.parent.MenuBoxDialog.ShowDialog($"Order restored\nin {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 100, 80);
+									this.parent.MenuBoxDialog.ShowDialog($"Order restored\nin {this.parent.Actions.F0_2459_08c6_GetCityName(cityID)}.\n", 100, 80);
 								}
 								else
 								{
@@ -3242,7 +3242,7 @@ namespace OpenCivOne
 									}
 
 									// Instruction address 0x1d12:0x5ff9, size: 5
-									city.CurrentProductionID = (sbyte)((short)this.parent.Segment_1ade.F0_1ade_0421(this.Var_6548_PlayerID, cityID));
+									city.CurrentProductionID = (sbyte)((short)this.parent.CityManagement.F0_1ade_0421(this.Var_6548_PlayerID, cityID));
 
 									if (city.CurrentProductionID >= 0)
 									{
@@ -3277,7 +3277,7 @@ namespace OpenCivOne
 										{
 											this.parent.CityView.F19_0000_0000_ShowCityLayout(cityID, -2,
 												$"'We love the {this.parent.Array_19b2_GovernmentTypeNames[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType]}'\n" +
-												$"day celebrated in\n{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}!\n");
+												$"day celebrated in\n{this.parent.Actions.F0_2459_08c6_GetCityName(cityID)}!\n");
 
 											this.parent.CityView.F19_0000_1ae1_LoveOurLeaderAnimation();
 
@@ -3288,7 +3288,7 @@ namespace OpenCivOne
 										{
 											this.parent.News.F21_0000_0000_ShowNews(cityID,
 												$"'We love the {this.parent.Array_19b2_GovernmentTypeNames[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType]}'\n" +
-												$"day celebrated in\n{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}!\n");
+												$"day celebrated in\n{this.parent.Actions.F0_2459_08c6_GetCityName(cityID)}!\n");
 										}
 
 										// Instruction address 0x1d12:0x6194, size: 5
@@ -3319,7 +3319,7 @@ namespace OpenCivOne
 
 									this.parent.News.F21_0000_0000_ShowNews(cityID,
 										$"'We love the {this.parent.Array_19b2_GovernmentTypeNames[(int)this.parent.GameData.Players[this.Var_6548_PlayerID].GovernmentType]}'\n" +
-										$"celebration canceled\nin {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n");
+										$"celebration canceled\nin {this.parent.Actions.F0_2459_08c6_GetCityName(cityID)}.\n");
 
 									this.parent.CommonTools.PlayTune(1, 0);
 								}
@@ -3335,7 +3335,7 @@ namespace OpenCivOne
 					{
 
 						if ((this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].ResearchTechnologyID != -1 &&
-							this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID,
+							this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID,
 								(TechnologyAdvanceEnum)this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].ResearchTechnologyID)) ||
 							(this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].ResearchTechnologyID == -1 &&
 							this.parent.GameData.Players[this.Var_6548_PlayerID].ResearchProgress != 0))
@@ -3345,7 +3345,7 @@ namespace OpenCivOne
 							if ((this.parent.GameData.DebugFlags & 0x8) != 0)
 							{
 								// Instruction address 0x1d12:0x6344, size: 5
-								this.parent.Segment_1ade.F0_1ade_1584(this.Var_6548_PlayerID, 0);
+								this.parent.CityManagement.F0_1ade_1584(this.Var_6548_PlayerID, 0);
 							}
 
 							this.parent.GameData.Players[this.Var_6548_PlayerID].ResearchProgress = 0;
@@ -3403,7 +3403,7 @@ namespace OpenCivOne
 							if ((this.parent.GameData.DebugFlags & 0x8) != 0)
 							{
 								// Instruction address 0x1d12:0x64ab, size: 5
-								this.parent.Segment_1ade.F0_1ade_1584(this.Var_6548_PlayerID, 0);
+								this.parent.CityManagement.F0_1ade_1584(this.Var_6548_PlayerID, 0);
 							}
 						}
 					}
@@ -3442,12 +3442,12 @@ namespace OpenCivOne
 								this.parent.Var_2f9e_MessageBoxStyle = MenuBoxReportTypeEnum.ScienceAdvisorReport;
 
 								// Instruction address 0x1d12:0x6638, size: 5
-								this.parent.MenuBoxDialog.ShowDialog($"Pollution near {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 80, 64);
+								this.parent.MenuBoxDialog.ShowDialog($"Pollution near {this.parent.Actions.F0_2459_08c6_GetCityName(cityID)}.\n", 80, 64);
 							}
 						}
 
 						if ((city.Status & CityStatusEnum.CivilDisorder) != CityStatusEnum.None && city.HasImprovement(ImprovementEnum.NuclearPlant) &&
-							!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.FusionPower) && this.parent.CAPI.RNG.Next(3) == 0)
+							!this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.FusionPower) && this.parent.CAPI.RNG.Next(3) == 0)
 						{
 							// Instruction address 0x1d12:0x66a5, size: 5
 							this.parent.MapManagement.F0_2aea_0008_DrawVisibleMap(this.parent.GameData.HumanPlayerID, cityX - 8, cityY - 6);
@@ -3455,14 +3455,14 @@ namespace OpenCivOne
 							this.parent.Animations.F22_0000_0967_NukeAnimation(cityX, cityY);
 
 							// Instruction address 0x1d12:0x66c5, size: 5
-							this.parent.Segment_29f3.F0_29f3_0ec3_AddEffectsOfNuclearAttackOrCatastrophe(cityX, cityY);
+							this.parent.AttackActions.F0_29f3_0ec3_AddEffectsOfNuclearAttackOrCatastrophe(cityX, cityY);
 
 							city.RemoveImprovement(ImprovementEnum.NuclearPlant);
 
 							this.parent.CommonTools.PlayTune(36, 0);
 
 							this.parent.News.F21_0000_0000_ShowNews(cityID,
-								$"Nuclear Catastrophe\nin {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}!\nContamination feared!\n");
+								$"Nuclear Catastrophe\nin {this.parent.Actions.F0_2459_08c6_GetCityName(cityID)}!\nContamination feared!\n");
 
 							this.parent.CommonTools.PlayTune(1, 0);
 						}
@@ -3486,13 +3486,13 @@ namespace OpenCivOne
 									}
 
 									// Instruction address 0x1d12:0x67cf, size: 5
-									if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Gunpowder))
+									if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Gunpowder))
 									{
 										this.parent.GameData.Players[this.Var_6548_PlayerID].Coins--;
 									}
 
 									// Instruction address 0x1d12:0x67f1, size: 5
-									if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Combustion))
+									if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.Var_6548_PlayerID, TechnologyAdvanceEnum.Combustion))
 									{
 										this.parent.GameData.Players[this.Var_6548_PlayerID].Coins--;
 									}
@@ -3508,7 +3508,7 @@ namespace OpenCivOne
 
 									// Instruction address 0x1d12:0x68a7, size: 5
 									this.parent.MenuBoxDialog.ShowDialog(
-										$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}\ncan't maintain\n{this.parent.GameData.GetImprovementType(i + 1).Name}.\n", 100, 80);
+										$"{this.parent.Actions.F0_2459_08c6_GetCityName(cityID)}\ncan't maintain\n{this.parent.GameData.GetImprovementType(i + 1).Name}.\n", 100, 80);
 
 									this.parent.GameData.Players[this.Var_6548_PlayerID].Coins += (short)(10 * this.parent.GameData.GetImprovementType(i + 1).Cost);
 								}
@@ -3819,7 +3819,7 @@ namespace OpenCivOne
 				ImprovementDefinition wonder = this.parent.GameData.Wonders[(int)wonderType];
 
 				if (wonder.ObsoletesAfterTechnology != TechnologyAdvanceEnum.None &&
-					this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(i, wonder.ObsoletesAfterTechnology))
+					this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(i, wonder.ObsoletesAfterTechnology))
 				{
 					break;
 				}
@@ -3852,7 +3852,7 @@ namespace OpenCivOne
 			{
 				// Instruction address 0x1d12:0x6d15, size: 5
 				if (this.parent.GameData.Wonders[wonderID].ObsoletesAfterTechnology != TechnologyAdvanceEnum.None &&
-					this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(i, this.parent.GameData.Wonders[wonderID].ObsoletesAfterTechnology))
+					this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(i, this.parent.GameData.Wonders[wonderID].ObsoletesAfterTechnology))
 				{
 					break;
 				}

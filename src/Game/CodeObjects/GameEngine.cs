@@ -84,7 +84,7 @@ namespace OpenCivOne
 					if (this.parent.Var_df60 == 0)
 					{
 						// Instruction address 0x1238:0x018d, size: 5
-						this.parent.Segment_1ade.F0_1ade_0006(i);
+						this.parent.CityManagement.F0_1ade_0006(i);
 					}
 
 					if (currentPlayer.Coins > 30000)
@@ -171,7 +171,7 @@ namespace OpenCivOne
 						if (this.parent.GameData.Cities[cityID].ActualSize >= 5)
 						{
 							// Process city disasters and riots
-							this.parent.Overlay_20.F20_0000_0540((short)cityID);
+							this.parent.CityEvents.F20_0000_0540((short)cityID);
 						}
 					}
 				}
@@ -342,7 +342,7 @@ namespace OpenCivOne
 					(this.parent.GameData.Cities[i].ImprovementFlags0 & 0x1) != 0)
 				{
 					if (this.parent.GameData.GameSettingFlags.BuildPalace && (this.parent.GameData.SpaceshipFlags & 0x100) == 0 &&
-						(short)this.parent.Overlay_20.F20_0000_0ca9_ShowCivilizationScorePopup(this.parent.GameData.HumanPlayerID, false) >= F0_1238_16e7_GetPalaceBuildNewScoreThreshold(humanPlayer.PalaceBuildCount + 1))
+						(short)this.parent.CivilizationScore.F20_0000_0ca9_ShowCivilizationScorePopup(this.parent.GameData.HumanPlayerID, false) >= F0_1238_16e7_GetPalaceBuildNewScoreThreshold(humanPlayer.PalaceBuildCount + 1))
 					{
 						humanPlayer.PalaceBuildCount++;
 
@@ -454,7 +454,7 @@ namespace OpenCivOne
 			if ((this.parent.GameData.SpaceshipFlags & 0x100) == 0)
 			{
 				this.parent.HallOfFame.F3_0000_065d_ShowFamousPersonsWindow((this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].PalaceBuildCount / 2) - 1,
-					(short)this.parent.Overlay_20.F20_0000_0ca9_ShowCivilizationScorePopup(this.parent.GameData.HumanPlayerID, true));
+					(short)this.parent.CivilizationScore.F20_0000_0ca9_ShowCivilizationScorePopup(this.parent.GameData.HumanPlayerID, true));
 
 				this.parent.HallOfFame.F3_0000_002b_ReadHallOfFameFromFile();
 
@@ -527,7 +527,7 @@ namespace OpenCivOne
 
 				if (this.parent.GameData.Cities[selectedCityID].Status != CityStatusEnum.Invalid &&
 					this.parent.GameData.Cities[selectedCityID].PlayerID == this.parent.GameData.HumanPlayerID &&
-					this.parent.CAPI.RNG.Next(100) < this.parent.Segment_2459.F0_2459_0687_GetCityTreasury(selectedCityID))
+					this.parent.CAPI.RNG.Next(100) < this.parent.Actions.F0_2459_0687_GetCityTreasury(selectedCityID))
 				{
 					int x = 0;
 					int y = 0;
@@ -567,17 +567,17 @@ namespace OpenCivOne
 							if ((this.parent.GameData.TechnologyFirstDiscoveredBy[35] & 7) != 0)
 							{
 								this.parent.MenuBoxDialog.ShowDialog(
-									$"Travellers report:\nGuerrilla uprising\nnear {this.parent.Segment_2459.F0_2459_08c6_GetCityName(selectedCityID)}!\n", 100, 32);
+									$"Travellers report:\nGuerrilla uprising\nnear {this.parent.Actions.F0_2459_08c6_GetCityName(selectedCityID)}!\n", 100, 32);
 							}
 							else if ((this.parent.GameData.TechnologyFirstDiscoveredBy[68] & 7) != 0)
 							{
 								this.parent.MenuBoxDialog.ShowDialog(
-									$"Travellers report:\nNative unrest\nnear {this.parent.Segment_2459.F0_2459_08c6_GetCityName(selectedCityID)}!\n", 100, 32);
+									$"Travellers report:\nNative unrest\nnear {this.parent.Actions.F0_2459_08c6_GetCityName(selectedCityID)}!\n", 100, 32);
 							}
 							else
 							{
 								this.parent.MenuBoxDialog.ShowDialog(
-									$"Travellers report:\nBarbarian uprising\nnear {this.parent.Segment_2459.F0_2459_08c6_GetCityName(selectedCityID)}!\n", 100, 32);
+									$"Travellers report:\nBarbarian uprising\nnear {this.parent.Actions.F0_2459_08c6_GetCityName(selectedCityID)}!\n", 100, 32);
 							}
 						}
 					
@@ -1058,7 +1058,7 @@ namespace OpenCivOne
 				int wonderID = this.parent.CAPI.RNG.Next(21) + 1;
 
 				if (this.parent.GameData.DifficultyLevel != 0 ||
-					this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID,
+					this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID,
 						this.parent.GameData.GetImprovementType(wonderID).RequiresTechnology))
 				{
 					if (this.parent.GameData.DifficultyLevel < 2)
@@ -1083,22 +1083,22 @@ namespace OpenCivOne
 
 						if (playerID != -1 && playerID != this.parent.GameData.HumanPlayerID &&
 							!this.parent.GameData.Players[playerID].Diplomacy[0].HasFlag(DiplomacyFlagsEnum.Allied) &&
-							(wonderID != 17 || this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Rocketry)))
+							(wonderID != 17 || this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Rocketry)))
 						{
 							if (i == 0 &&
-								this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Rocketry) &&
-								!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Rocketry) &&
+								this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Rocketry) &&
+								!this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Rocketry) &&
 								this.parent.GameData.WonderCityID[17] == -1)
 							{
 								wonderID = 17;
 							}
 
 							if ((wonderID != 17 ||
-									!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Rocketry) ||
+									!this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Rocketry) ||
 									this.parent.GameData.Players[playerID].MilitaryPower <= this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].MilitaryPower) &&
 								this.parent.GameData.WonderCityID[wonderID] == -1 &&
 								this.parent.GameData.Cities[cityID].ActualSize > this.parent.GameData.Wonders[wonderID].Cost / 10 &&
-								this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, this.parent.GameData.Wonders[wonderID].RequiresTechnology))
+								this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, this.parent.GameData.Wonders[wonderID].RequiresTechnology))
 							{
 								this.parent.GameData.WonderCityID[wonderID] = (short)cityID;
 
@@ -1123,7 +1123,7 @@ namespace OpenCivOne
 								}
 
 								// Instruction address 0x1238:0x1802, size: 3
-								this.parent.MenuBoxDialog.ShowDialog($"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} ({this.parent.GameData.Players[playerID].Nationality})\nbuilds " +
+								this.parent.MenuBoxDialog.ShowDialog($"{this.parent.Actions.F0_2459_08c6_GetCityName(cityID)} ({this.parent.GameData.Players[playerID].Nationality})\nbuilds " +
 									$"{this.parent.GameData.Wonders[wonderID].Name}.\n", 100, 80);
 
 								this.parent.Encyclopedia.DisplayEncyclopediaTopic(EncyclopediaTopicEnum.CityImprovement, wonderID + 24);
@@ -1137,10 +1137,10 @@ namespace OpenCivOne
 								if (wonderID == 14)
 								{
 									// Instruction address 0x1238:0x1837, size: 5
-									this.parent.Segment_1ade.F0_1ade_1584(playerID, 0);
+									this.parent.CityManagement.F0_1ade_1584(playerID, 0);
 
 									// Instruction address 0x1238:0x1845, size: 5
-									this.parent.Segment_1ade.F0_1ade_1584(playerID, 0);
+									this.parent.CityManagement.F0_1ade_1584(playerID, 0);
 								}
 
 								for (int j = 0; j < 128; j++)
@@ -1150,7 +1150,7 @@ namespace OpenCivOne
 										this.parent.GameData.Cities[j].CurrentProductionID == -(wonderID + 24))
 									{
 										// Instruction address 0x1238:0x1893, size: 5
-										this.parent.Segment_1ade.F0_1ade_03ea(j);
+										this.parent.CityManagement.F0_1ade_03ea(j);
 									}
 								}
 

@@ -74,7 +74,7 @@ namespace OpenCivOne
 			// city doesn't change the game. string.GetHashCode can't be used, it is different every time the game runs.
 			int nameSeed = 0;
 
-			foreach (char ch in this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID))
+			foreach (char ch in this.parent.Actions.F0_2459_08c6_GetCityName(cityID))
 			{
 				nameSeed += (sbyte)ch;
 			}
@@ -491,7 +491,7 @@ namespace OpenCivOne
 				{
 					// Instruction address 0x0000:0x0db1, size: 5
 					this.parent.DrawTools.DrawCenteredStringWithShadowToScreen0(
-						$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} ({this.parent.GameEngine.YearToString(this.parent.GameData.Year)})", 160, 2, 15);
+						$"{this.parent.Actions.F0_2459_08c6_GetCityName(cityID)} ({this.parent.GameEngine.YearToString(this.parent.GameData.Year)})", 160, 2, 15);
 				}
 				else
 				{
@@ -575,7 +575,7 @@ namespace OpenCivOne
 				else
 				{
 					// Instruction address 0x0000:0x0f7d, size: 5
-					this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+					this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 				}
 
 				// Instruction address 0x0000:0x0f94, size: 5
@@ -681,7 +681,7 @@ namespace OpenCivOne
 			for (int i = 0; i < 9; i++)
 			{
 				// Instruction address 0x0000:0x117b, size: 5
-				if (!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Industrialization))
+				if (!this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Industrialization))
 				{
 					// Instruction address 0x0000:0x1152, size: 5
 					bitmaps[i] = this.parent.Graphics.F0_VGA_0b85_ScreenToBitmap(1, (35 * i) + 1, 52, 34, 50);
@@ -805,7 +805,7 @@ namespace OpenCivOne
 				int y = i - x;
 
 				// Instruction address 0x0000:0x1488, size: 5
-				if (!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Automobile))
+				if (!this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Automobile))
 				{
 					// Instruction address 0x0000:0x145f, size: 5
 					this.Array_6880_Roads[i] = this.parent.Graphics.F0_VGA_0b85_ScreenToBitmap(1, x * 24, 65 + y, 24, 8);
@@ -818,7 +818,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x14a0, size: 5
-			if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Combustion))
+			if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Combustion))
 			{
 				// Instruction address 0x0000:0x14b9, size: 5
 				this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "CITYPIX3.PIC", 0);
@@ -909,9 +909,9 @@ namespace OpenCivOne
 			int[] bitmaps = new int[10];
 
 			// Instruction address 0x0000:0x16b1, size: 5
-			if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Gunpowder))
+			if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Gunpowder))
 			{
-				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Automobile))
+				if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Automobile))
 				{
 					// Instruction address 0x0000:0x16e0, size: 5
 					this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "INVADERS.PIC", 0);
@@ -1004,7 +1004,7 @@ namespace OpenCivOne
 			this.parent.CommonTools.StopPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x18df, size: 5
-			if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.University))
+			if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.University))
 			{
 				// Instruction address 0x0000:0x18f3, size: 5
 				this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "RIOT.PIC", 0);
@@ -1091,7 +1091,7 @@ namespace OpenCivOne
 			this.parent.CommonTools.StopPaletteCycleSlots();
 
 			// Instruction address 0x0000:0x1afa, size: 5
-			if (!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Industrialization))
+			if (!this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Industrialization))
 			{
 				// Instruction address 0x0000:0x1b13, size: 5
 				this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(1, 0, 0, "LOVE1.PIC", 0);

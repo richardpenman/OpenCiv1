@@ -303,7 +303,7 @@ namespace OpenCivOne
 					else
 					{
 						// Instruction address 0x2c84:0x02bb, size: 5
-						if (!improvements.HasFlag(TerrainImprovementFlagsEnum.RailRoad) && this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Railroad))
+						if (!improvements.HasFlag(TerrainImprovementFlagsEnum.RailRoad) && this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Railroad))
 						{
 							// Instruction address 0x2c84:0x02cf, size: 5
 							menuText.Append(" Build RailRoad \x008fr\n");
@@ -383,7 +383,7 @@ namespace OpenCivOne
 					menuText.Append(" Build Fortress \x008ff\n");
 
 					// Instruction address 0x2c84:0x045b, size: 5
-					if (!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Construction))
+					if (!this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Construction))
 					{
 						// Disable 'Build Fortress' option
 						this.parent.Var_b276_MenuBoxDisabledOptions |= 0x1 << orderCount;
@@ -468,27 +468,27 @@ namespace OpenCivOne
 			switch (selectedOption)
 			{
 				case 0: // City Status
-					this.parent.Overlay_14.CityStatus(this.parent.GameData.HumanPlayerID);
+					this.parent.AdvisorReports.CityStatus(this.parent.GameData.HumanPlayerID);
 					break;
 
 				case 1: // Military Advisor
-					this.parent.Overlay_14.MilitaryReport(this.parent.GameData.HumanPlayerID);
+					this.parent.AdvisorReports.MilitaryReport(this.parent.GameData.HumanPlayerID);
 					break;
 
 				case 2: // Intelligence Advisor
-					this.parent.Overlay_14.IntelligenceReport();
+					this.parent.AdvisorReports.IntelligenceReport();
 					break;
 
 				case 3: // Attitude Advisor
-					this.parent.Overlay_14.AttitudeReport(this.parent.GameData.HumanPlayerID);
+					this.parent.AdvisorReports.AttitudeReport(this.parent.GameData.HumanPlayerID);
 					break;
 
 				case 4: // Trade Advisor
-					this.parent.Overlay_14.TradeReport(this.parent.GameData.HumanPlayerID);
+					this.parent.AdvisorReports.TradeReport(this.parent.GameData.HumanPlayerID);
 					break;
 
 				case 5: // Science Advisor
-					this.parent.Overlay_14.ScienceReport(this.parent.GameData.HumanPlayerID);
+					this.parent.AdvisorReports.ScienceReport(this.parent.GameData.HumanPlayerID);
 					break;
 			}
 		}
@@ -526,7 +526,7 @@ namespace OpenCivOne
 					break;
 
 				case 2: // Civilization Score
-					this.parent.Overlay_20.F20_0000_0ca9_ShowCivilizationScorePopup(this.parent.GameData.HumanPlayerID, true);
+					this.parent.CivilizationScore.F20_0000_0ca9_ShowCivilizationScorePopup(this.parent.GameData.HumanPlayerID, true);
 					break;
 
 				case 3: // World Map
@@ -538,7 +538,7 @@ namespace OpenCivOne
 					break;
 
 				case 5: // SpaceShips
-					this.parent.Overlay_18.F18_0000_1527_ShowSpaceshipNationDialog();
+					this.parent.Spaceship.F18_0000_1527_ShowSpaceshipNationDialog();
 					break;
 			}
 		}

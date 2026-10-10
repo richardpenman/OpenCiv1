@@ -209,7 +209,7 @@ namespace OpenCivOne
 			// Instruction address 0x1238:0x1c52, size: 5
 			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0,
 				$"BACK{('0' + (char)((governmentType == GovernmentTypeEnum.Communist) ? 3 : (int)governmentType / 2))}" +
-					$"{(this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Invention) ? 'M' : 'A')}.PAL", 0xc1d6);
+					$"{(this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Invention) ? 'M' : 'A')}.PAL", 0xc1d6);
 
 			// Instruction address 0x1238:0x1c62, size: 5
 			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0, "SP256.PAL", 0xc5be);
@@ -224,7 +224,7 @@ namespace OpenCivOne
 
 			this.parent.ImageTools.F0_2fa1_01a2_LoadBitmapOrPalette(-1, 0, 0,
 				$"BACK{(char)((int)'0' + ((governmentType == GovernmentTypeEnum.Communist) ? 3 : (int)governmentType / 2))}" +
-					$"{(this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Invention) &&
+					$"{(this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Invention) &&
 						governmentType != GovernmentTypeEnum.Communist ? 'M' : 'A')}.PAL", out palette);
 
 			byte[] palette1;

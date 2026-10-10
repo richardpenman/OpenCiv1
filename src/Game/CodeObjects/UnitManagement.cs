@@ -1663,7 +1663,7 @@ namespace OpenCivOne
 				this.parent.MenuBoxDialog.ShowDialog("You have discovered\nan advanced tribe.\n", 100, 80);
 			}
 
-			this.parent.Overlay_20.F20_0000_0000(playerID,
+			this.parent.CityEvents.F20_0000_0000(playerID,
 				this.parent.GameData.Players[playerID].Units[unitID].Position.X, this.parent.GameData.Players[playerID].Units[unitID].Position.Y, 1);
 
 			if (playerID == this.parent.GameData.HumanPlayerID)
@@ -1709,9 +1709,9 @@ namespace OpenCivOne
 			foreach (TechnologyAdvanceEnum technology in Enum.GetValues(typeof(TechnologyAdvanceEnum)))
 			{
 				if (technology != TechnologyAdvanceEnum.None && technology != TechnologyAdvanceEnum.NewFutureTechnology &&
-					!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, technology) &&
-					this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, this.parent.GameData.TechnologyAdvances[(int)technology].RequiresTechnologyAdvance1) &&
-					this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, this.parent.GameData.TechnologyAdvances[(int)technology].RequiresTechnologyAdvance2))
+					!this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, technology) &&
+					this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, this.parent.GameData.TechnologyAdvances[(int)technology].RequiresTechnologyAdvance1) &&
+					this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, this.parent.GameData.TechnologyAdvances[(int)technology].RequiresTechnologyAdvance2))
 				{
 					undiscoveredTech.Add(technology);
 				}
@@ -1721,7 +1721,7 @@ namespace OpenCivOne
 			{
 				int index = this.parent.CAPI.RNG.Next(undiscoveredTech.Count);
 
-				this.parent.Segment_1ade.F0_1ade_1d2e(playerID, 0, undiscoveredTech[index]);
+				this.parent.Technology.F0_1ade_1d2e(playerID, 0, undiscoveredTech[index]);
 			}
 			else
 			{
@@ -1904,7 +1904,7 @@ namespace OpenCivOne
 						$"{(((this.parent.GameData.Players[playerID].Units[nextUnitID].Status & UnitStatusEnum.Veteran) != UnitStatusEnum.None) ? " (V)" : "")}", 128, unitYPos, 15);
 
 					// Instruction address 0x1866:0x20b7, size: 5
-					this.parent.DrawTools.DrawStringToScreen0(this.parent.Segment_2459.F0_2459_08c6_GetCityName(this.parent.GameData.Players[playerID].Units[nextUnitID].HomeCityID),
+					this.parent.DrawTools.DrawStringToScreen0(this.parent.Actions.F0_2459_08c6_GetCityName(this.parent.GameData.Players[playerID].Units[nextUnitID].HomeCityID),
 						128, unitYPos + 8, 14);
 				}
 

@@ -640,7 +640,7 @@ namespace OpenCivOne
 						if (this.parent.GameData.Cities[cityID].HasImprovement(ImprovementEnum.SDIDefense))
 						{
 							// Instruction address 0x29f3:0x0e40, size: 5
-							this.parent.MenuBoxDialog.ShowDialog($"SDI protects {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}.\n", 80, 100);
+							this.parent.MenuBoxDialog.ShowDialog($"SDI protects {this.parent.Actions.F0_2459_08c6_GetCityName(cityID)}.\n", 80, 100);
 
 							activeUnitID = -1;
 						}

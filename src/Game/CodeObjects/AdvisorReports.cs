@@ -6,11 +6,11 @@ namespace OpenCivOne
 	/// <summary>
 	/// The advisor reports: science, military, trade, intelligence, attitude and city status
 	/// </summary>
-	public class Overlay_14
+	public class AdvisorReports
 	{
 		private OpenCivOneGame oParent;
 
-		public Overlay_14(OpenCivOneGame parent)
+		public AdvisorReports(OpenCivOneGame parent)
 		{
 			this.oParent = parent;
 		}
@@ -75,7 +75,7 @@ namespace OpenCivOne
 		/// </summary>
 		public void WaitAndCloseReport()
 		{
-			this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+			this.oParent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			this.oParent.Graphics.F0_VGA_07d8_DrawImage(this.oParent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.oParent.Var_aa_Screen0_Rectangle, 0, 0);
 		}
@@ -124,7 +124,7 @@ namespace OpenCivOne
 
 			for (int i = 0; i < this.oParent.GameData.TechnologyAdvances.Length; i++)
 			{
-				if (this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, this.oParent.GameData.TechnologyAdvances[i].Value))
+				if (this.oParent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, this.oParent.GameData.TechnologyAdvances[i].Value))
 				{
 					this.oParent.DrawTools.DrawStringToScreen0(this.oParent.GameData.TechnologyAdvances[i].Name, ((column % 3) * 100) + 8, textYPos,
 						(byte)(((this.oParent.GameData.TechnologyFirstDiscoveredBy[i] & 0x7) != playerID) ? 11 : 15));
@@ -275,12 +275,12 @@ namespace OpenCivOne
 			// The Palace costs more to maintain on higher difficulty levels and with Gunpowder and Combustion
 			int palaceMaintenance = this.oParent.GameData.DifficultyLevel / 2;
 
-			if (this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Gunpowder))
+			if (this.oParent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Gunpowder))
 			{
 				palaceMaintenance++;
 			}
 
-			if (this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Combustion))
+			if (this.oParent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Combustion))
 			{
 				palaceMaintenance++;
 			}
@@ -310,7 +310,7 @@ namespace OpenCivOne
 				if (y >= 180)
 				{
 					// Next page
-					this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+					this.oParent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 					DrawReportHeader("TRADE REPORT", 2);
 
@@ -319,7 +319,7 @@ namespace OpenCivOne
 
 				this.oParent.CityWorker.F0_1d12_0045_ProcessCityState(cityID, -1);
 
-				string cityName = this.oParent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.oParent.Segment_2459.F0_2459_08c6_GetCityName(cityID), 62);
+				string cityName = this.oParent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.oParent.Actions.F0_2459_08c6_GetCityName(cityID), 62);
 
 				if (y < 180)
 				{
@@ -639,7 +639,7 @@ namespace OpenCivOne
 				}
 			}
 
-			this.oParent.DrawTools.DrawStringToScreen0($"Capital:\x008f {this.oParent.Segment_2459.F0_2459_08c6_GetCityName(capitalCityID)}", 16, y, 9);
+			this.oParent.DrawTools.DrawStringToScreen0($"Capital:\x008f {this.oParent.Actions.F0_2459_08c6_GetCityName(capitalCityID)}", 16, y, 9);
 			y += 8;
 
 			this.oParent.DrawTools.DrawStringToScreen0($"Government:\x008f {this.oParent.Array_1966_GovernmentNames[(int)player.GovernmentType]}", 16, y, 9);
@@ -688,7 +688,7 @@ namespace OpenCivOne
 			// From the most advanced technology down, until the page is full
 			for (int technology = 71; technology >= 0; technology--)
 			{
-				if (this.oParent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, (TechnologyAdvanceEnum)technology))
+				if (this.oParent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, (TechnologyAdvanceEnum)technology))
 				{
 					this.oParent.DrawTools.DrawStringToScreen0(this.oParent.GameData.TechnologyAdvances[technology].Name, 24, y, 7);
 					y += 8;
@@ -725,7 +725,7 @@ namespace OpenCivOne
 				if (y > 190)
 				{
 					// Next page
-					this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+					this.oParent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 					DrawReportHeader("ATTITUDE SURVEY", 9);
 
@@ -734,7 +734,7 @@ namespace OpenCivOne
 
 				this.oParent.CityWorker.F0_1d12_0045_ProcessCityState(cityID, -1);
 
-				this.oParent.DrawTools.DrawStringToScreen0($"{this.oParent.Segment_2459.F0_2459_08c6_GetCityName(cityID)}:", 16, y, 15);
+				this.oParent.DrawTools.DrawStringToScreen0($"{this.oParent.Actions.F0_2459_08c6_GetCityName(cityID)}:", 16, y, 15);
 
 				// Draw the citizens, shifted a little on each row
 				this.oParent.CityWorker.F0_1d12_6ed4_DrawResources(cityID, (resourcesXOffset & 0x7) + 80, y - 3, this.oParent.Var_e8b8, 124);
@@ -818,7 +818,7 @@ namespace OpenCivOne
 				if (y >= 192)
 				{
 					// Next page
-					this.oParent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+					this.oParent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 					DrawReportHeader("CITY STATUS", 8);
 
@@ -827,7 +827,7 @@ namespace OpenCivOne
 
 				this.oParent.CityWorker.F0_1d12_0045_ProcessCityState(cityID, -1);
 
-				this.oParent.DrawTools.DrawStringToScreen0(this.oParent.Segment_2459.F0_2459_08c6_GetCityName(cityID), 8, y, 15);
+				this.oParent.DrawTools.DrawStringToScreen0(this.oParent.Actions.F0_2459_08c6_GetCityName(cityID), 8, y, 15);
 
 				// Size, food, shields and trade
 				string text = string.Create(CultureInfo.InvariantCulture,

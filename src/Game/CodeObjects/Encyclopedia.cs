@@ -491,7 +491,7 @@ namespace OpenCivOne
 					this.parent.DrawTools.DrawTextBlock(12, 76, content, 296, 1);
 
 					// Instruction address 0x0000:0x0878, size: 5
-					this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+					this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 					// Instruction address 0x0000:0x0894, size: 5
 					this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 8, 76, 304, 116, (byte)colour);
@@ -812,7 +812,7 @@ namespace OpenCivOne
 			this.parent.Var_aa_Screen0_Rectangle.FontID = 1;
 
 			// Instruction address 0x0000:0x1663, size: 5
-			this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+			this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			this.parent.Var_3c62 = 0;
 

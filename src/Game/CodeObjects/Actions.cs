@@ -74,7 +74,7 @@ namespace OpenCivOne
 			if (playerID == 0 && this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].AttackStrength <= 2 && !this.parent.Var_28bc)
 			{
 				// Instruction address 0x2459:0x0155, size: 5
-				this.parent.Segment_1ade.F0_1ade_018e(cityID, cityX, cityY);
+				this.parent.CityManagement.F0_1ade_018e(cityID, cityX, cityY);
 
 				this.parent.GameData.Cities[cityID].ActualSize = 0;
 			}
@@ -97,7 +97,7 @@ namespace OpenCivOne
 					if (this.parent.GameData.Cities[cityID].ActualSize < 1)
 					{
 						// Instruction address 0x2459:0x01d4, size: 5
-						this.parent.Segment_1ade.F0_1ade_018e(cityID, cityX, cityY);
+						this.parent.CityManagement.F0_1ade_018e(cityID, cityX, cityY);
 					}
 				}
 			}
@@ -255,7 +255,7 @@ namespace OpenCivOne
 					this.parent.GameData.Cities[cityID].CurrentProductionID = 0;
 
 					// Instruction address 0x2459:0x05bb, size: 5			
-					this.parent.GameData.Cities[cityID].CurrentProductionID = (sbyte)((short)this.parent.Segment_1ade.F0_1ade_0421(playerID, cityID));
+					this.parent.GameData.Cities[cityID].CurrentProductionID = (sbyte)((short)this.parent.CityManagement.F0_1ade_0421(playerID, cityID));
 
 					if (this.parent.GameData.Cities[cityID].CurrentProductionID >= 0)
 					{
@@ -338,8 +338,8 @@ namespace OpenCivOne
 
 				for (int i = 71; i >= 0; i--)
 				{
-					if (!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID1, (TechnologyAdvanceEnum)i) &&
-						this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID2, (TechnologyAdvanceEnum)i))
+					if (!this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID1, (TechnologyAdvanceEnum)i) &&
+						this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID2, (TechnologyAdvanceEnum)i))
 					{
 						// Instruction address 0x2459:0x0762, size: 5
 						menuText.Append(CultureInfo.InvariantCulture, $"{this.parent.GameData.TechnologyAdvances[i].Name}\n ");
@@ -349,9 +349,9 @@ namespace OpenCivOne
 						undiscoveredTechnologies[j] = i;
 						j++;
 
-						if (this.parent.Segment_1ade.F0_1ade_2317_GradeTechnology(playerID1, (TechnologyAdvanceEnum)i) > maximumTechnologyGrade)
+						if (this.parent.Technology.F0_1ade_2317_GradeTechnology(playerID1, (TechnologyAdvanceEnum)i) > maximumTechnologyGrade)
 						{
-							maximumTechnologyGrade = this.parent.Segment_1ade.F0_1ade_2317_GradeTechnology(playerID1, (TechnologyAdvanceEnum)i);
+							maximumTechnologyGrade = this.parent.Technology.F0_1ade_2317_GradeTechnology(playerID1, (TechnologyAdvanceEnum)i);
 							latestTechnology = i;
 						}
 					}
@@ -377,7 +377,7 @@ namespace OpenCivOne
 						}
 
 						// Instruction address 0x2459:0x0818, size: 5
-						this.parent.Segment_1ade.F0_1ade_1d2e(playerID1, playerID2, (TechnologyAdvanceEnum)undiscoveredTechnologies[selectedTechnology]);
+						this.parent.Technology.F0_1ade_1d2e(playerID1, playerID2, (TechnologyAdvanceEnum)undiscoveredTechnologies[selectedTechnology]);
 					}
 					else
 					{
@@ -397,7 +397,7 @@ namespace OpenCivOne
 						}
 
 						// Instruction address 0x2459:0x08aa, size: 5
-						this.parent.Segment_1ade.F0_1ade_1d2e(playerID1, playerID2, (TechnologyAdvanceEnum)latestTechnology);
+						this.parent.Technology.F0_1ade_1d2e(playerID1, playerID2, (TechnologyAdvanceEnum)latestTechnology);
 
 						// Instruction address 0x2459:0x08b9, size: 5
 						this.parent.AIEngine.F0_25fb_3459_PlayerChangeCityProductionForSameContinent(playerID1, -1);
@@ -488,13 +488,13 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x2459:0x0a24, size: 5
-			if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.Cities[cityID].PlayerID, TechnologyAdvanceEnum.Railroad))
+			if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.Cities[cityID].PlayerID, TechnologyAdvanceEnum.Railroad))
 			{
 				caravanGoodsWorth -= caravanGoodsWorth / 3;
 			}
 
 			// Instruction address 0x2459:0x0a4e, size: 5
-			if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.Cities[cityID].PlayerID, TechnologyAdvanceEnum.Flight))
+			if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.Cities[cityID].PlayerID, TechnologyAdvanceEnum.Flight))
 			{
 				caravanGoodsWorth -= caravanGoodsWorth / 3;
 			}

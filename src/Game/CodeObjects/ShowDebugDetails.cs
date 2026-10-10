@@ -254,7 +254,7 @@ namespace OpenCivOne
 
 			unitStatus.Append(CultureInfo.InvariantCulture, $"{this.parent.GameData.Players[playerID].Nationality}\n({unitID})/" +
 				$"{this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].Name}\n" +
-				$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(this.parent.GameData.Players[playerID].Units[unitID].HomeCityID)}\n" +
+				$"{this.parent.Actions.F0_2459_08c6_GetCityName(this.parent.GameData.Players[playerID].Units[unitID].HomeCityID)}\n" +
 				$"Loc:{this.parent.GameData.Players[playerID].Units[unitID].Position.X},{this.parent.GameData.Players[playerID].Units[unitID].Position.Y}\n");
 
 			if (this.parent.GameData.Players[playerID].Units[unitID].GoToDestination.X != -1)
@@ -401,7 +401,7 @@ namespace OpenCivOne
 			for (int i = 0; i < 72 && yOffset < 193; i++)
 			{
 				// Instruction address 0x0000:0x04e2, size: 5
-				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, (TechnologyAdvanceEnum)i))
+				if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, (TechnologyAdvanceEnum)i))
 				{
 					if ((this.parent.GameData.TechnologyFirstDiscoveredBy[i] & 0x7) != playerID)
 					{
@@ -422,7 +422,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x0525, size: 5
-			this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+			this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			// Instruction address 0x0000:0x0542, size: 5
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
@@ -506,7 +506,7 @@ namespace OpenCivOne
 				}
 			}
 
-			this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+			this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			// Show destroyed unit statistics
 			this.parent.DrawTools.FillRectangle(this.parent.Var_aa_Screen0_Rectangle, 0, 0, 320, 200, 4);
@@ -539,7 +539,7 @@ namespace OpenCivOne
 				}
 			}
 
-			this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+			this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 		}

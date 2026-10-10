@@ -508,7 +508,7 @@ namespace OpenCivOne
 				this.parent.CommonTools.WaitTimer(80);
 			}
 
-			this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+			this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			if (playerID == this.parent.GameData.HumanPlayerID)
 			{
@@ -562,7 +562,7 @@ namespace OpenCivOne
 
 			for (int i = 0; i < 72; i++)
 			{
-				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, (TechnologyAdvanceEnum)i))
+				if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, (TechnologyAdvanceEnum)i))
 				{
 					// Instruction address 0x0000:0x1617, size: 5
 					this.parent.Array_30b8[3] = this.parent.GameData.TechnologyAdvances[i].Name;
@@ -675,7 +675,7 @@ namespace OpenCivOne
 			this.parent.Var_db38 = 1;
 			this.parent.MenuBoxDialog.F0_2d05_0031_ShowMenuBox("Active Unit\n", 88, 170, true, false, true);
 
-			this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+			this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 		}
 	}
 }

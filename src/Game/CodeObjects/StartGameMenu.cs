@@ -310,7 +310,7 @@ namespace OpenCivOne
 			for (int i = 0; i < 72; i++)
 			{
 				// Instruction address 0x0000:0x06bd, size: 5
-				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, (TechnologyAdvanceEnum)i))
+				if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, (TechnologyAdvanceEnum)i))
 				{
 					// Instruction address 0x0000:0x06d7, size: 5
 					startText.Append(CultureInfo.InvariantCulture, $"{this.parent.GameData.TechnologyAdvances[i].Name}, ");
@@ -348,7 +348,7 @@ namespace OpenCivOne
 			this.parent.DrawTools.DrawTextBlock(88, 81, startText.ToString().Replace('^', '\n'), 150, 0);
 
 			// Instruction address 0x0000:0x07bd, size: 5
-			this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+			this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 		}
 
 		/// <summary>
@@ -434,13 +434,13 @@ namespace OpenCivOne
 					for (int i = 0; i < 72; i++)
 					{
 						// Instruction address 0x0000:0x0967, size: 5
-						if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, (TechnologyAdvanceEnum)i) &&
+						if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(this.parent.GameData.HumanPlayerID, (TechnologyAdvanceEnum)i) &&
 							(this.parent.GameData.TechnologyFirstDiscoveredBy[i] & 0x7) != 0 &&
 							(this.parent.GameData.TechnologyFirstDiscoveredBy[i] & 0x7) != this.parent.GameData.HumanPlayerID &&
 							this.parent.CAPI.RNG.Next(2) == 0)
 						{
 							// Instruction address 0x0000:0x09b2, size: 5
-							this.parent.Segment_1ade.F0_1ade_1d2e(playerID, playerID, (TechnologyAdvanceEnum)i);
+							this.parent.Technology.F0_1ade_1d2e(playerID, playerID, (TechnologyAdvanceEnum)i);
 						}
 					}
 				}
@@ -685,7 +685,7 @@ namespace OpenCivOne
 						$"{this.parent.GameData.Players[playerID].Nationality}\ncivilization\nhas died out!\n", 100, 80);
 
 					// Instruction address 0x0000:0x0f3d, size: 5
-					this.parent.Segment_2459.F0_2459_05ee_SpaceshipArrivalFailed(playerID);
+					this.parent.Actions.F0_2459_05ee_SpaceshipArrivalFailed(playerID);
 
 					// The replay stream stores the destroyer as a player index byte and the replay
 					// reader indexes Players[] with it, so the "no attacker" sentinel must not reach
@@ -923,7 +923,7 @@ namespace OpenCivOne
 			else
 			{
 				// Instruction address 0x0000:0x1b48, size: 5
-				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Invention))
+				if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(parent.GameData.HumanPlayerID, TechnologyAdvanceEnum.Invention))
 				{
 					ancientGovernment = false;
 				}
@@ -980,7 +980,7 @@ namespace OpenCivOne
 				this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 
 				// Instruction address 0x0000:0x1d0b, size: 5
-				this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+				this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 			}
 		}
 

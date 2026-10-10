@@ -143,7 +143,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x037c, size: 5
-			this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+			this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			// Instruction address 0x0000:0x0399, size: 5
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
@@ -193,7 +193,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x055e, size: 5
-			this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+			this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 		}
@@ -280,7 +280,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x07ea, size: 5
-			this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+			this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 		}
@@ -306,7 +306,7 @@ namespace OpenCivOne
 						if (y != 999)
 						{
 							// Instruction address 0x0000:0x0925, size: 5
-							this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+							this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 						}
 
 						// Instruction address 0x0000:0x093e, size: 5
@@ -326,12 +326,12 @@ namespace OpenCivOne
 					{
 						/*if (i < 8)
 						{
-							wonderText = $"The {this.oParent.GameData.Wonders[i].Name} of {this.oParent.Segment_2459.F0_2459_08c6_GetCityName(wonderCityID)}. "+
+							wonderText = $"The {this.oParent.GameData.Wonders[i].Name} of {this.oParent.Actions.F0_2459_08c6_GetCityName(wonderCityID)}. "+
 								$"({this.oParent.GameData.Players[wonderPlayerID].Nationality})";
 						}
 						else
 						{*/
-							wonderText = $"{this.parent.GameData.Wonders[i].Name} in {this.parent.Segment_2459.F0_2459_08c6_GetCityName(wonderCityID)}. "+
+							wonderText = $"{this.parent.GameData.Wonders[i].Name} in {this.parent.Actions.F0_2459_08c6_GetCityName(wonderCityID)}. "+
 								$"({this.parent.GameData.Players[wonderPlayerID].Nationality})";
 						//}
 					}
@@ -356,7 +356,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x09cf, size: 5
-			this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+			this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 		}
@@ -430,7 +430,7 @@ namespace OpenCivOne
 
 						for (int j = 0; j < 72; j++)
 						{
-							if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(i, (TechnologyAdvanceEnum)j))
+							if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(i, (TechnologyAdvanceEnum)j))
 							{
 								playerGrades[i]++;
 							}
@@ -500,7 +500,7 @@ namespace OpenCivOne
 			this.parent.CommonTools.ClearKeyboardAndMouseEvents();
 
 			// Instruction address 0x0000:0x0d58, size: 5
-			this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+			this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 		}
@@ -716,22 +716,22 @@ namespace OpenCivOne
 			{
 				rankData[i] = ((citySizes[i] * 2 + educationCounts[i]) * 2) / citySizes[i];
 
-				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(i, TechnologyAdvanceEnum.Alphabet))
+				if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(i, TechnologyAdvanceEnum.Alphabet))
 				{
 					rankData[i] *= 2;
 				}
 
-				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(i, TechnologyAdvanceEnum.Writing))
+				if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(i, TechnologyAdvanceEnum.Writing))
 				{
 					rankData[i] *= 2;
 				}
 
-				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(i, TechnologyAdvanceEnum.Literacy))
+				if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(i, TechnologyAdvanceEnum.Literacy))
 				{
 					rankData[i] *= 2;
 				}
 
-				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(i, TechnologyAdvanceEnum.University))
+				if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(i, TechnologyAdvanceEnum.University))
 				{
 					rankData[i] *= 2;
 				}
@@ -756,7 +756,7 @@ namespace OpenCivOne
 			{
 				rankData[i] = (50 * citySizes[i]) / (citySizes[i] + cityGrowthCounts[i]);
 
-				if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(i, TechnologyAdvanceEnum.Medicine))
+				if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(i, TechnologyAdvanceEnum.Medicine))
 				{
 					rankData[i] /= 2;
 				}
@@ -891,7 +891,7 @@ namespace OpenCivOne
 			PrintPlayerRank(rankData, yPosition, "");
 
 			// Instruction address 0x0000:0x1953, size: 5
-			this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+			this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 		}
@@ -1042,7 +1042,7 @@ namespace OpenCivOne
 
 					// Instruction address 0x0000:0x0b8e, size: 5
 					this.parent.DrawTools.DrawCenteredStringToScreen0(
-						$"{i + 1}. {this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID)} " +
+						$"{i + 1}. {this.parent.Actions.F0_2459_08c6_GetCityName(cityID)} " +
 						$"({this.parent.GameData.Players[this.parent.GameData.Cities[cityID].PlayerID].Nationality})", 160, y + 3,
 						this.parent.Array_1946_PlayerColours[this.parent.GameData.Cities[cityID].PlayerID]);
 
@@ -1079,7 +1079,7 @@ namespace OpenCivOne
 			}
 
 			// Instruction address 0x0000:0x0c63, size: 5
-			this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+			this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19d4_Screen1_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 		}

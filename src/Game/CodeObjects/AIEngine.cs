@@ -302,7 +302,7 @@ namespace OpenCivOne
 
 				if (((this.parent.GameData.Players[playerID].Continents[i].Attack + playerAttackStrength) * 2 > this.parent.GameData.Continents[i].Size ||
 						(this.parent.GameData.Players[playerID].Continents[i].CityCount + playerCityCount) * 64 + 2 > this.parent.GameData.Continents[i].BuildSiteCount) &&
-					this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Mapmaking))
+					this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Mapmaking))
 				{
 					this.parent.GameData.Players[playerID].Continents[i].Strategy = PlayerContinentStrategyEnum.Transport;
 				}
@@ -359,18 +359,18 @@ namespace OpenCivOne
 						// Instruction address 0x25fb:0x08b9, size: 5
 						this.parent.Diplomacy.F0_2517_04a1_ChangeCurrentGovernment(playerID, GovernmentTypeEnum.Despotism);
 					}
-					else if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.TheRepublic) && this.parent.Var_db42 >= 0)
+					else if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.TheRepublic) && this.parent.Var_db42 >= 0)
 					{
 						// Instruction address 0x25fb:0x08b9, size: 5
 						this.parent.Diplomacy.F0_2517_04a1_ChangeCurrentGovernment(playerID, GovernmentTypeEnum.Republic);
 					}
-					else if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Communism) && 
+					else if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Communism) && 
 						this.parent.GameData.Players[playerID].CityCount > 10)
 					{
 						// Instruction address 0x25fb:0x08b9, size: 5
 						this.parent.Diplomacy.F0_2517_04a1_ChangeCurrentGovernment(playerID, GovernmentTypeEnum.Communist);
 					}
-					else if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Monarchy))
+					else if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Monarchy))
 					{
 						// Instruction address 0x25fb:0x08b9, size: 5
 						this.parent.Diplomacy.F0_2517_04a1_ChangeCurrentGovernment(playerID, GovernmentTypeEnum.Monarchy);
@@ -397,7 +397,7 @@ namespace OpenCivOne
 
 						if (((i + this.parent.GameData.TurnCount) & 0xf) != 0 ||
 
-							(!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID,
+							(!this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID,
 							this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[i].UnitType].CancelTechnology) &&
 							(((this.parent.GameData.Players[playerID].GovernmentType == GovernmentTypeEnum.Anarchy ||
 								this.parent.GameData.Players[playerID].GovernmentType == GovernmentTypeEnum.Despotism) &&
@@ -1257,7 +1257,7 @@ namespace OpenCivOne
 							PlayerAddUnitPolicy(playerID, unitX, unitY, UnitRoleTypeEnum.Defense, 2);
 						}
 
-						if ((!this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Monarchy) ?
+						if ((!this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Monarchy) ?
 							this.parent.GameData.TerrainModifications[(int)terrainType].AICanImproveBeforeMonarchy :
 							this.parent.GameData.TerrainModifications[(int)terrainType].AICanImproveAfterMonarchy) ||
 							continentStrategy == PlayerContinentStrategyEnum.Transport)
@@ -1303,7 +1303,7 @@ namespace OpenCivOne
 
 										// !!! F0_1d12_6abc_GetCityResourceCount was using uninitialized playerID and cityID from CityWorker class, it now makes sense to use referenced player and unit ID
 										if ((terrainImprovements & (TerrainImprovementFlagsEnum.Road | TerrainImprovementFlagsEnum.RailRoad)) != (TerrainImprovementFlagsEnum.Road | TerrainImprovementFlagsEnum.RailRoad) &&
-											this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Railroad) &&
+											this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Railroad) &&
 											(((terrainImprovements & TerrainImprovementFlagsEnum.Road) == TerrainImprovementFlagsEnum.Road) ? 1 : 2) <=
 											this.parent.CityWorker.F0_1d12_6abc_GetCityResourceCount(playerID, unit.HomeCityID, unitX, unitY, CityResourceTypeEnum.Production))
 										{
@@ -1344,7 +1344,7 @@ namespace OpenCivOne
 
 									if (activeUnitID == -1 || (playerID == activePlayerID && this.parent.UnitManagement.F0_1866_1331_CountUnitTypesInStack(playerID, activeUnitID, UnitTypeEnum.Settler) == 0))
 									{
-										if ((this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Monarchy) ?
+										if ((this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Monarchy) ?
 											this.parent.GameData.TerrainModifications[(int)this.parent.MapManagement.GetTerrainType(newX, newY)].AICanImproveAfterMonarchy :
 												this.parent.GameData.TerrainModifications[(int)this.parent.MapManagement.GetTerrainType(newX, newY)].AICanImproveBeforeMonarchy) &&
 											this.parent.PlayerTurn.F0_1403_3f68_GetPreferredImprovement(newX, newY) != 0)
@@ -1368,7 +1368,7 @@ namespace OpenCivOne
 						}
 
 						if ((this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(unitX, unitY) & TerrainImprovementFlagsEnum.Road) != TerrainImprovementFlagsEnum.Road &&
-							terrainType != TerrainTypeEnum.River || this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.BridgeBuilding))
+							terrainType != TerrainTypeEnum.River || this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.BridgeBuilding))
 						{
 							if (((nearestCityID < 128) ? this.parent.GameData.Cities[nearestCityID].PlayerID : -1) == playerID)
 							{
@@ -1717,7 +1717,7 @@ namespace OpenCivOne
 													(this.parent.MapManagement.F0_2aea_1585_GetVisibleTerrainImprovements(newX, newY) & TerrainImprovementFlagsEnum.City) == TerrainImprovementFlagsEnum.City)
 												{
 													// Instruction address 0x25fb:0x2ad8, size: 5
-													int attackScore = this.parent.Segment_29f3.F0_29f3_000e_AttackUnit(playerID, unitID, newCityPlayerID, selectedActiveUnitID, false);
+													int attackScore = this.parent.AttackActions.F0_29f3_000e_AttackUnit(playerID, unitID, newCityPlayerID, selectedActiveUnitID, false);
 
 													// Instruction address 0x25fb:0x2aec, size: 5
 													attackScore = (this.parent.UnitManagement.F0_1866_1251_GetStackUnitValueSum(newCityPlayerID, selectedActiveUnitID, UnitStackValueTypeEnum.Cost) + 1) * attackScore;
@@ -2103,7 +2103,7 @@ namespace OpenCivOne
 			}
 		
 			// Instruction address 0x25fb:0x34fc, size: 5
-			int productionID = (short)this.parent.Segment_1ade.F0_1ade_0421(playerID, cityID);
+			int productionID = (short)this.parent.CityManagement.F0_1ade_0421(playerID, cityID);
 			
 			this.parent.GameData.Cities[cityID].CurrentProductionID = (sbyte)productionID;
 
@@ -2243,7 +2243,7 @@ namespace OpenCivOne
 
 							// Instruction address 0x25fb:0x3867, size: 5
 							this.parent.MenuBoxDialog.ShowDialog("Barbarian raiding party\nlands near " +
-								$"{this.parent.Segment_2459.F0_2459_08c6_GetCityName(this.parent.MapManagement.FindNearestCity(newX, newY))}!\nCitizens are alarmed.\n", 100, 32);
+								$"{this.parent.Actions.F0_2459_08c6_GetCityName(this.parent.MapManagement.FindNearestCity(newX, newY))}!\nCitizens are alarmed.\n", 100, 32);
 						}
 
 						unit.VisibleByPlayer |= this.parent.GameData.MapVisibility[newX, newY];
@@ -2268,7 +2268,7 @@ namespace OpenCivOne
 					{
 						if (this.parent.GameData.Cities[i].Status != CityStatusEnum.Invalid)
 						{
-							int currentCityProfit = (this.parent.Segment_2459.F0_2459_0687_GetCityTreasury(i) + 50) / 
+							int currentCityProfit = (this.parent.Actions.F0_2459_0687_GetCityTreasury(i) + 50) / 
 								(this.parent.MapManagement.GetDistance(unitX, unitY, this.parent.GameData.Cities[i].Position) + 1);
 
 							if (currentCityProfit > maximumCityProfit)

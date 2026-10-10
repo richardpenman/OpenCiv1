@@ -145,7 +145,7 @@ namespace OpenCivOne
 			}
 		
 			// Instruction address 0x0000:0x01ad, size: 5
-			int keyPress = this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+			int keyPress = this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 			return (playerIndex != -1 && (keyPress == 'c' || keyPress == 'C')) ? true : false;
 		}
@@ -304,7 +304,7 @@ namespace OpenCivOne
 				this.parent.Graphics.F0_VGA_009a_ReplaceColor(this.parent.Var_aa_Screen0_Rectangle, 80, 183 - personIndex * 8, 160, 8, 15, 14);
 
 				// Instruction address 0x0000:0x0984, size: 5
-				this.parent.Segment_2459.F0_2459_0918_WaitForKeyPressOrMouseClick();
+				this.parent.Actions.F0_2459_0918_WaitForKeyPressOrMouseClick();
 
 				// Instruction address 0x0000:0x098d, size: 5
 				this.parent.CommonTools.PlayTune(1, 0);

@@ -31,11 +31,12 @@ namespace OpenCivOne
 		private MapManagement mapManagement;
 		private UnitManagement unitManagement;
 		private UnitGoTo unitGoTo;
-		private Actions oSegment_2459;
+		private Actions actions;
 		private AIEngine aiEngine;
-		private Segment_1ade oSegment_1ade;
+		private CityManagement cityManagement;
+		private Technology technology;
 		private CityWorker cityWorker;
-		private AttackActions oSegment_29f3;
+		private AttackActions attackActions;
 		private Diplomacy diplomacy;
 		private Menus menus;
 		private MainIntro mainIntro;
@@ -46,15 +47,16 @@ namespace OpenCivOne
 		private HallOfFame hallOfFame;
 		private StartGameMenu startGameMenu;
 		private TextBoxDialogues textBoxDialogues;
-		private Overlay_14 oOverlay_14;
+		private AdvisorReports advisorReports;
 		private Encyclopedia encyclopedia;
 		private News news;
 		private CityView cityView;
-		private Overlay_18 oOverlay_18;
+		private Spaceship spaceship;
 		private DiplomatActions diplomatActions;
 		private Replay replay;
 		private Reports reports;
-		private Overlay_20 oOverlay_20;
+		private CityEvents cityEvents;
+		private CivilizationScore civilizationScore;
 		private Palace palace;
 		private ShowDebugDetails showDebugDetails;
 		private Secession secession;
@@ -157,11 +159,12 @@ namespace OpenCivOne
 			this.mapManagement = new MapManagement(this);
 			this.unitManagement = new UnitManagement(this);
 			this.unitGoTo = new UnitGoTo(this);
-			this.oSegment_2459 = new Actions(this);
+			this.actions = new Actions(this);
 			this.aiEngine = new AIEngine(this);
-			this.oSegment_1ade = new Segment_1ade(this);
+			this.cityManagement = new CityManagement(this);
+			this.technology = new Technology(this);
 			this.cityWorker = new CityWorker(this);
-			this.oSegment_29f3 = new AttackActions(this);
+			this.attackActions = new AttackActions(this);
 			this.diplomacy = new Diplomacy(this);
 			this.menus = new Menus(this);
 			this.mainIntro = new MainIntro(this);
@@ -172,15 +175,16 @@ namespace OpenCivOne
 			this.hallOfFame = new HallOfFame(this);
 			this.startGameMenu = new StartGameMenu(this);
 			this.textBoxDialogues = new TextBoxDialogues(this);
-			this.oOverlay_14 = new Overlay_14(this);
+			this.advisorReports = new AdvisorReports(this);
 			this.encyclopedia = new Encyclopedia(this);
 			this.news = new News(this);
 			this.cityView = new CityView(this);
-			this.oOverlay_18 = new Overlay_18(this);
+			this.spaceship = new Spaceship(this);
 			this.diplomatActions = new DiplomatActions(this);
 			this.replay = new Replay(this);
 			this.reports = new Reports(this);
-			this.oOverlay_20 = new Overlay_20(this);
+			this.cityEvents = new CityEvents(this);
+			this.civilizationScore = new CivilizationScore(this);
 			this.palace = new Palace(this);
 			this.showDebugDetails = new ShowDebugDetails(this);
 			this.secession = new Secession(this);
@@ -587,9 +591,9 @@ namespace OpenCivOne
 			get { return this.unitGoTo; }
 		}
 
-		public Actions Segment_2459
+		public Actions Actions
 		{
-			get { return this.oSegment_2459; }
+			get { return this.actions; }
 		}
 
 		public AIEngine AIEngine
@@ -597,9 +601,14 @@ namespace OpenCivOne
 			get { return this.aiEngine; }
 		}
 
-		public Segment_1ade Segment_1ade
+		public CityManagement CityManagement
 		{
-			get { return this.oSegment_1ade; }
+			get { return this.cityManagement; }
+		}
+
+		public Technology Technology
+		{
+			get { return this.technology; }
 		}
 
 		public CityWorker CityWorker
@@ -607,9 +616,9 @@ namespace OpenCivOne
 			get { return this.cityWorker; }
 		}
 
-		public AttackActions Segment_29f3
+		public AttackActions AttackActions
 		{
-			get { return this.oSegment_29f3; }
+			get { return this.attackActions; }
 		}
 
 		public Diplomacy Diplomacy
@@ -662,9 +671,9 @@ namespace OpenCivOne
 			get { return this.textBoxDialogues; }
 		}
 
-		public Overlay_14 Overlay_14
+		public AdvisorReports AdvisorReports
 		{
-			get { return this.oOverlay_14; }
+			get { return this.advisorReports; }
 		}
 
 		public Encyclopedia Encyclopedia
@@ -682,9 +691,9 @@ namespace OpenCivOne
 			get { return this.cityView; }
 		}
 
-		public Overlay_18 Overlay_18
+		public Spaceship Spaceship
 		{
-			get { return this.oOverlay_18; }
+			get { return this.spaceship; }
 		}
 
 		public DiplomatActions DiplomatActions
@@ -702,9 +711,14 @@ namespace OpenCivOne
 			get { return this.reports; }
 		}
 
-		public Overlay_20 Overlay_20
+		public CityEvents CityEvents
 		{
-			get { return this.oOverlay_20; }
+			get { return this.cityEvents; }
+		}
+
+		public CivilizationScore CivilizationScore
+		{
+			get { return this.civilizationScore; }
 		}
 
 		public Palace Palace

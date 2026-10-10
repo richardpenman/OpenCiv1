@@ -216,7 +216,7 @@ namespace OpenCivOne
 
 				// Instruction address 0x2aea:0x018d, size: 5
 				this.parent.DrawTools.DrawStringWithShadow(
-					this.parent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityInfo.CityID), 327 - cityInfo.ScreenPos.X),
+					this.parent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.parent.Actions.F0_2459_08c6_GetCityName(cityInfo.CityID), 327 - cityInfo.ScreenPos.X),
 					this.parent.CommonTools.CheckValueRange(cityInfo.ScreenPos.X - 8, 80, 999), cityInfo.ScreenPos.Y + 16, 11);
 			}
 
@@ -229,7 +229,7 @@ namespace OpenCivOne
 			int mapYOffset;
 
 			// Instruction address 0x2aea:0x01b9, size: 5
-			if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Navigation))
+			if (this.parent.Technology.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Navigation))
 			{
 				yMap = 0;
 			}
@@ -1069,7 +1069,7 @@ namespace OpenCivOne
 			if (activeUnitID != -1)
 			{
 				// Instruction address 0x2aea:0x13ed, size: 5
-				this.parent.Segment_29f3.F0_29f3_0b66_AddUnitToStack(playerID, unitID, activeUnitID);
+				this.parent.AttackActions.F0_29f3_0b66_AddUnitToStack(playerID, unitID, activeUnitID);
 			}
 		
 			// Instruction address 0x2aea:0x140b, size: 3
@@ -1091,7 +1091,7 @@ namespace OpenCivOne
 			if (this.parent.GameData.Players[playerID].Units[unitID].NextUnitID != -1)
 			{
 				// Instruction address 0x2aea:0x1433, size: 5
-				this.parent.Segment_29f3.F0_29f3_0bc9_RemoveUnitFromStack(playerID, unitID);
+				this.parent.AttackActions.F0_29f3_0bc9_RemoveUnitFromStack(playerID, unitID);
 			}
 			else
 			{
