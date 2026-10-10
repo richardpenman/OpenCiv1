@@ -279,6 +279,61 @@ namespace OpenCivOne.Tests
 			Check(state, "CivilizationScoreEndOfGame", (game, player) => game.CivilizationScore.ShowCivilizationScore(player, false), Escape, Escape, Escape);
 		}
 
+		[Theory]
+		[MemberData(nameof(StateNames))]
+		public void GiveTechnology(string state)
+		{
+			int[] keys = Enumerable.Repeat(Enter, 10).ToArray();
+			GameData data;
+
+			using (GameHarness harness = GameHarness.Load(this.states.Directory, state))
+			{
+				data = harness.Game.GameData;
+			}
+
+			short human = this.states.HumanPlayerID;
+			short otherPlayer = (short)Enumerable.Range(1, 7).First(id => id != human && (data.ActiveCivilizations & (1 << id)) != 0);
+
+			// Technologies with extra messages or effects, and a few others the player doesn't have. Not the future
+			// technologies, which have no encyclopedia text, so the game shows an error message.
+			IEnumerable<TechnologyAdvanceEnum> Missing(short playerID) =>
+				new[] { TechnologyAdvanceEnum.Monarchy, TechnologyAdvanceEnum.Invention, TechnologyAdvanceEnum.Gunpowder, TechnologyAdvanceEnum.Writing }
+				.Concat(Enumerable.Range(0, 67).Select(id => (TechnologyAdvanceEnum)id))
+				.Where(technology => (data.Players[playerID].DiscoveredTechnologyFlags[(int)technology >> 4] & (1 << ((int)technology & 0xf))) == 0)
+				.Distinct()
+				.Take(8);
+
+			foreach (TechnologyAdvanceEnum technology in Missing(human))
+			{
+				Check(state, $"Technology/Develop/{technology}", (game, player) => game.Technology.F0_1ade_1d2e(human, human, technology), keys);
+				Check(state, $"Technology/Acquire/{technology}", (game, player) => game.Technology.F0_1ade_1d2e(human, otherPlayer, technology), keys);
+				Check(state, $"Technology/GreatLibrary/{technology}", (game, player) => game.Technology.F0_1ade_1d2e(human, -2, technology), keys);
+			}
+
+			foreach (TechnologyAdvanceEnum technology in Missing(otherPlayer))
+			{
+				// Reported by spies when the human player has an embassy
+				Check(state, $"Technology/Embassy/{technology}", (game, player) =>
+				{
+					game.GameData.Players[human].Diplomacy[otherPlayer] |= DiplomacyFlagsEnum.EmbassyEstablished;
+					game.Technology.F0_1ade_1d2e(otherPlayer, otherPlayer, technology);
+				}, keys);
+
+				// Without an embassy, the other leader may come to boast about it
+				for (int seed = 0; seed < 3; seed++)
+				{
+					int seedCopy = seed;
+
+					Check(state, $"Technology/NoEmbassy/{technology}/{seed}", (game, player) =>
+					{
+						game.GameData.Players[human].Diplomacy[otherPlayer] &= ~DiplomacyFlagsEnum.EmbassyEstablished;
+						game.CAPI.srand(seedCopy);
+						game.Technology.F0_1ade_1d2e(otherPlayer, otherPlayer, technology);
+					}, keys);
+				}
+			}
+		}
+
 		private void Check(string state, string name, Action<OpenCivOneGame, short> action, params int[] keys)
 		{
 			Check(state, name, action, this.states.HumanPlayerID, keys);

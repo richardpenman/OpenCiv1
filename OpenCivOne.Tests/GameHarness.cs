@@ -63,6 +63,9 @@ namespace OpenCivOne.Tests
 
 			ResourcePathField.SetValue(this.Game, this.Directory + Path.DirectorySeparatorChar);
 
+			// The game seeds its random number generator from the clock
+			this.Game.CAPI.srand(0);
+
 			// Screens the game draws to; nothing is shown
 			for (int i = 0; i < 3; i++)
 			{
