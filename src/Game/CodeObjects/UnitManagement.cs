@@ -1663,7 +1663,7 @@ namespace OpenCivOne
 				this.parent.MenuBoxDialog.ShowDialog("You have discovered\nan advanced tribe.\n", 100, 80);
 			}
 
-			this.parent.CityEvents.F20_0000_0000(playerID,
+			this.parent.CityEvents.FoundCity(playerID,
 				this.parent.GameData.Players[playerID].Units[unitID].Position.X, this.parent.GameData.Players[playerID].Units[unitID].Position.Y, 1);
 
 			if (playerID == this.parent.GameData.HumanPlayerID)

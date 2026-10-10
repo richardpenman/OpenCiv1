@@ -203,7 +203,7 @@ namespace OpenCivOne.Tests
 					{
 						game.GameData.PlayerFlags = (short)(1 << player);
 						game.CAPI.srand(seedCopy);
-						game.CityEvents.F20_0000_0540(cityIDCopy);
+						game.CityEvents.RandomCityEvent(cityIDCopy);
 					}, city.PlayerID, keys);
 				}
 			}
@@ -227,7 +227,7 @@ namespace OpenCivOne.Tests
 					{
 						if (game.MapManagement.GetTerrainType(xCopy, yCopy) != TerrainTypeEnum.Water)
 						{
-							game.CityEvents.F20_0000_0000(founder, xCopy, yCopy, 1);
+							game.CityEvents.FoundCity(founder, xCopy, yCopy, 1);
 						}
 					}, Escape);
 				}

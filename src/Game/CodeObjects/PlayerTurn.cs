@@ -719,7 +719,7 @@ namespace OpenCivOne
 						{
 							unit.RemainingMoves = 0;
 
-							int local_3a = (short)this.parent.CityEvents.F20_0000_0000(playerID, unit.Position.X, unit.Position.Y, 1);
+							int local_3a = (short)this.parent.CityEvents.FoundCity(playerID, unit.Position.X, unit.Position.Y, 1);
 
 							if (local_3a != -1)
 							{

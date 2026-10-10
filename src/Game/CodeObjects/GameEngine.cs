@@ -171,7 +171,7 @@ namespace OpenCivOne
 						if (this.parent.GameData.Cities[cityID].ActualSize >= 5)
 						{
 							// Process city disasters and riots
-							this.parent.CityEvents.F20_0000_0540((short)cityID);
+							this.parent.CityEvents.RandomCityEvent((short)cityID);
 						}
 					}
 				}
