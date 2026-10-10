@@ -2256,8 +2256,13 @@ namespace OpenCivOne
 						}
 					}
 
+					// Remember the old stack and position, so the transported units can follow the ship
+					int oldX = unit.Position.X;
+					int oldY = unit.Position.Y;
+					int oldNextUnitID = unit.NextUnitID;
+
 					// Instruction address 0x1403:0x2d01, size: 5
-					this.parent.MapManagement.F0_2aea_1412_SetCellActivePlayerID(unit.Position.X, unit.Position.Y, playerID, unitID);
+					this.parent.MapManagement.F0_2aea_1412_SetCellActivePlayerID(oldX, oldY, playerID, unitID);
 
 					// Instruction address 0x1403:0x2d21, size: 5
 					this.parent.MapManagement.F0_2aea_13cb_SetCellPlayerID(newX, newY, playerID, unitID);
@@ -2290,32 +2295,31 @@ namespace OpenCivOne
 					}
 
 					if (currentTerrainType == TerrainTypeEnum.Water && newTerrainType != TerrainTypeEnum.Water &&
-						this.parent.GameData.Units[(int)unit.UnitType].MovementType != UnitMovementTypeEnum.Water)
+						this.parent.GameData.Units[(int)unit.UnitType].MovementType != UnitMovementTypeEnum.Air)
 					{
 						unit.RemainingMoves = 0;
 					}
 
-					// !!! Carrier always has transport capability, do we need transport capacity check?
-					if (unit.UnitType == UnitTypeEnum.Carrier && unit.NextUnitID != -1 && this.parent.GameData.Units[(int)unit.UnitType].TransportCapacity == 0)
+					if ((this.parent.GameData.Units[(int)unit.UnitType].TransportCapacity != 0 || unit.UnitType == UnitTypeEnum.Carrier) && oldNextUnitID != -1)
 					{
-						int nextUnitID = unit.NextUnitID;
+						int nextUnitID = oldNextUnitID;
 						int currentCapacity = 0;
 
 						for (int i = 0; i < 20; i++)
 						{
 							int nextUnitID1 = this.parent.GameData.Players[playerID].Units[nextUnitID].NextUnitID;
 
-							if (((this.parent.GameData.Units[(int)unit.UnitType].TransportCapacity < 1) ? UnitMovementTypeEnum.Water : UnitMovementTypeEnum.Land) ==
+							if (((this.parent.GameData.Units[(int)unit.UnitType].TransportCapacity < 1) ? UnitMovementTypeEnum.Air : UnitMovementTypeEnum.Land) ==
 								this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[nextUnitID].UnitType].MovementType)
 							{
-								if (((this.parent.GameData.Players[playerID].Units[nextUnitID].Status & UnitStatusEnum.Sentry) == UnitStatusEnum.None && 
-										currentTerrainType == TerrainTypeEnum.Water) ||
+								if ((this.parent.GameData.Players[playerID].Units[nextUnitID].Status & UnitStatusEnum.Sentry) != UnitStatusEnum.None ||
+									currentTerrainType == TerrainTypeEnum.Water ||
 									(playerID != this.parent.GameData.HumanPlayerID &&
 										(this.parent.GameData.Players[playerID].Units[nextUnitID].Status & (UnitStatusEnum.Fortifying | UnitStatusEnum.Fortified)) == UnitStatusEnum.None &&
 									this.parent.GameData.Players[playerID].Units[nextUnitID].NextUnitID != -1))
 								{
 									// Instruction address 0x1403:0x2efb, size: 5
-									this.parent.MapManagement.F0_2aea_1412_SetCellActivePlayerID(unit.Position.X, unit.Position.Y, playerID, nextUnitID);
+									this.parent.MapManagement.F0_2aea_1412_SetCellActivePlayerID(oldX, oldY, playerID, nextUnitID);
 									// Instruction address 0x1403:0x2f0f, size: 5
 									this.parent.MapManagement.F0_2aea_13cb_SetCellPlayerID(newX, newY, playerID, nextUnitID);
 
