@@ -1189,9 +1189,14 @@ namespace OpenCivOne
 
 						if (city.CurrentProductionID == -1 && city.ShieldsCount != 0)
 						{
+							// The city is building the Palace, but the original looks the cost up in the unit table with the
+							// production byte 0xff as the index (raw 1d12:L2560). That reads the word at DS:0x3320, part of the
+							// "spacest.pic" file name, which is always 99.
+							const int originalPalaceCostReading = 99;
+
 							// Instruction address 0x1d12:0x2591, size: 5
 							cityShieldIncome = this.parent.CommonTools.CheckValueRange(
-								(this.parent.GameData.Units[city.CurrentProductionID].Cost * difficultyProductionRatio) - city.ShieldsCount,
+								(originalPalaceCostReading * difficultyProductionRatio) - city.ShieldsCount,
 								0, this.parent.GameData.Players[this.Var_6548_PlayerID].Coins / 3);
 						}
 
