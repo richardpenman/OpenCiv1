@@ -160,7 +160,10 @@ namespace OpenCivOne
 					if (!this.parent.MapManagement.ValidateMapCoordinates(newX, newY))
 						continue;
 
-					if(i < 9 || (this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].SightRange & 0x2) != 0)
+					// Ships only see water tiles in the outer ring
+					if (i < 9 || ((this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].SightRange & 0x2) != 0 &&
+						(this.parent.GameData.Units[(int)this.parent.GameData.Players[playerID].Units[unitID].UnitType].MovementType != UnitMovementTypeEnum.Water ||
+						this.parent.MapManagement.GetTerrainType(newX, newY) == TerrainTypeEnum.Water)))
 					{
 						// Instruction address 0x1866:0x026c, size: 5
 						this.parent.GameData.MapVisibility[newX, newY] |= (ushort)(1 << playerID);
