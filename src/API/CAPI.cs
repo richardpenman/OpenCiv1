@@ -27,6 +27,7 @@ namespace OpenCivOne
 		public short kbhit()
 		{
 			this.oCPU.DoEvents();
+			this.oParent.CountInputPoll();
 
 			this.oCPU.AX.UInt16 = (ushort)((this.oParent.Keys.Count > 0) ? 0xffff : 0);
 

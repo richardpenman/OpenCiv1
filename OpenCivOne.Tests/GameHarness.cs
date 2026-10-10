@@ -4,6 +4,7 @@ using OpenCivOne.Resources;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
+using System.Security.Cryptography;
 
 namespace OpenCivOne.Tests
 {
@@ -23,11 +24,17 @@ namespace OpenCivOne.Tests
 		public OpenCivOneGame Game { get; }
 
 		/// <summary>
+		/// Called by RunWithKeys whenever the game waits for a key, before the key is pressed. Useful to look at the screen
+		/// while writing a test.
+		/// </summary>
+		public Action? OnWaitingForKey { get; set; }
+
+		/// <summary>
 		/// A private copy of the save folder, so tests can write saves without touching the fixtures.
 		/// </summary>
 		public string Directory { get; }
 
-		private GameHarness(string saveName)
+		private GameHarness(string saveDirectory, string saveName)
 		{
 			this.Directory = Path.Combine(Path.GetTempPath(), "OpenCivOne.Tests", Guid.NewGuid().ToString("N"));
 			System.IO.Directory.CreateDirectory(this.Directory);
@@ -36,7 +43,7 @@ namespace OpenCivOne.Tests
 			{
 				string file = saveName.ToUpperInvariant() + extension;
 
-				File.Copy(Path.Combine(AppContext.BaseDirectory, "Saves", file), Path.Combine(this.Directory, file));
+				File.Copy(Path.Combine(saveDirectory, file), Path.Combine(this.Directory, file));
 			}
 
 			WritePlaceholderResources(this.Directory);
@@ -138,7 +145,15 @@ namespace OpenCivOne.Tests
 		/// </summary>
 		public static GameHarness Load(string saveName)
 		{
-			GameHarness harness = new GameHarness(saveName);
+			return Load(Path.Combine(AppContext.BaseDirectory, "Saves"), saveName);
+		}
+
+		/// <summary>
+		/// Loads {SAVENAME}.SVE and .MAP from the given directory.
+		/// </summary>
+		public static GameHarness Load(string saveDirectory, string saveName)
+		{
+			GameHarness harness = new GameHarness(saveDirectory, saveName);
 
 			Assert.True(harness.Game.LoadAndSave.LoadGameData($"{saveName}.SVE"), $"Could not load save game {saveName}");
 
@@ -268,6 +283,117 @@ namespace OpenCivOne.Tests
 			{
 				ExceptionDispatchInfo.Capture(error).Throw();
 			}
+		}
+
+		/// <summary>
+		/// Runs game code that waits for the player. Whenever the game is waiting for input (it keeps checking an empty
+		/// keyboard buffer), the screens are hashed and the next of the given keys is pressed.
+		/// Fails if the code is still running after the timeout, for example because it waits for more keys.
+		/// </summary>
+		/// <returns>The hash of the screens each time the game waited for a key</returns>
+		public List<string> RunWithKeys(Action action, TimeSpan timeout, params int[] keys)
+		{
+			// The game counts as waiting after this many checks for input with nothing to read
+			const int idlePolls = 20;
+
+			Exception? error = null;
+			bool finished = false;
+			Thread thread = new Thread(() =>
+			{
+				try
+				{
+					action();
+				}
+				catch (Exception e)
+				{
+					error = e;
+				}
+				finally
+				{
+					finished = true;
+				}
+			}, 64 * 1024 * 1024);
+
+			lock (OpenCivOneGame.KeyboardAndMouseLock)
+			{
+				this.Game.Keys.Clear();
+			}
+
+			List<string> screens = new List<string>();
+			Stopwatch stopwatch = Stopwatch.StartNew();
+			int nextKey = 0;
+			int pollsWhenEmpty = -1;
+
+			thread.IsBackground = true;
+			thread.Start();
+
+			while (!finished && stopwatch.Elapsed < timeout)
+			{
+				lock (OpenCivOneGame.KeyboardAndMouseLock)
+				{
+					if (this.Game.Keys.Count > 0)
+					{
+						pollsWhenEmpty = -1;
+					}
+					else if (pollsWhenEmpty < 0)
+					{
+						pollsWhenEmpty = this.Game.InputPollCount;
+					}
+					else if (this.Game.InputPollCount - pollsWhenEmpty >= idlePolls && nextKey < keys.Length)
+					{
+						this.OnWaitingForKey?.Invoke();
+						screens.Add(HashScreens());
+						this.Game.Keys.Enqueue(keys[nextKey++]);
+						pollsWhenEmpty = -1;
+					}
+				}
+
+				thread.Join(1);
+			}
+
+			if (!finished)
+			{
+				Assert.Fail($"The game code did not finish within {timeout} after {nextKey} of {keys.Length} keys");
+			}
+
+			if (error != null)
+			{
+				ExceptionDispatchInfo.Capture(error).Throw();
+			}
+
+			return screens;
+		}
+
+		/// <summary>
+		/// A hash of everything drawn on the game's screens, to check that a refactoring draws exactly the same.
+		/// </summary>
+		public string HashScreens()
+		{
+			using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+
+			foreach (int screenID in new[] { 0, 1, 2 })
+			{
+				if (this.Game.Graphics.Screens.ContainsKey(screenID))
+				{
+					hash.AppendData(this.Game.Graphics.Screens.GetValueByKey(screenID).Pixels);
+				}
+			}
+
+			return Convert.ToHexString(hash.GetHashAndReset());
+		}
+
+		/// <summary>
+		/// A hash of the game state, taken by saving the game.
+		/// </summary>
+		public string HashGameState()
+		{
+			Assert.True(this.Game.LoadAndSave.SaveGameData("CIVIL9.SVE"));
+
+			using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+			hash.AppendData(File.ReadAllBytes(Path.Combine(this.Directory, "CIVIL9.SVE")));
+			hash.AppendData(File.ReadAllBytes(Path.Combine(this.Directory, "CIVIL9.MAP")));
+
+			return Convert.ToHexString(hash.GetHashAndReset());
 		}
 
 		public void Dispose()

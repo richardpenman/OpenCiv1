@@ -79,6 +79,7 @@ namespace OpenCivOne
 		// Keyboard
 		public static readonly object KeyboardAndMouseLock = new();
 		private Queue<int> keys = new Queue<int>();
+		private int inputPollCount = 0;
 
 		// Mouse
 		private List<MouseEvent> mouseEvents = new List<MouseEvent>();
@@ -395,6 +396,7 @@ namespace OpenCivOne
 		public MouseEvent PeekMouseEvent()
 		{
 			this.oCPU.DoEvents();
+			CountInputPoll();
 
 			lock (OpenCivOneGame.KeyboardAndMouseLock)
 			{
@@ -419,6 +421,7 @@ namespace OpenCivOne
 		public bool HasNewMouseEvent()
 		{
 			this.oCPU.DoEvents();
+			CountInputPoll();
 
 			lock (OpenCivOneGame.KeyboardAndMouseLock)
 			{
@@ -434,6 +437,7 @@ namespace OpenCivOne
 		public MouseEvent GetMouseEvent()
 		{
 			this.oCPU.DoEvents();
+			CountInputPoll();
 
 			lock (OpenCivOneGame.KeyboardAndMouseLock)
 			{
@@ -481,6 +485,17 @@ namespace OpenCivOne
 		public string SavePath { get => this.gameSavePath; }
 
 		public GlobalPreferences GlobalPreferences { get => this.globalPreferences; }
+
+		/// <summary>
+		/// The number of times the game has checked for a key press or mouse event. Tests use it to tell when the game is
+		/// waiting for the player.
+		/// </summary>
+		public int InputPollCount { get => Volatile.Read(ref this.inputPollCount); }
+
+		internal void CountInputPoll()
+		{
+			Interlocked.Increment(ref this.inputPollCount);
+		}
 
 		public Queue<int> Keys
 		{
