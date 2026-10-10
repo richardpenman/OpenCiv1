@@ -918,7 +918,10 @@ namespace OpenCivOne
 			this.oCPU.Log.EnterBlock($"F18_0000_0c11_GetSpaceShipData({playerID}, {xPos}, {yPos})");
 
 			// function body
-			sbyte sdata = this.oParent.GameData.Players[playerID].SpaceshipData[(12 * xPos) + yPos];
+			// The original keeps all players' spaceship data in one table and doesn't check bounds, so a cell
+			// next to the edge of a player's 180 entries reads the neighbouring player's data
+			int index = (playerID * 180) + (12 * xPos) + yPos;
+			sbyte sdata = (index >= 0 && index < 8 * 180) ? this.oParent.GameData.Players[index / 180].SpaceshipData[index % 180] : (sbyte)-1;
 
 			if (sdata == -1 || sdata >= 0x3)
 			{
