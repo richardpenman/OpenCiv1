@@ -1670,26 +1670,7 @@ namespace OpenCivOne
 							}
 						}
 
-						if (this.parent.GameData.Players[playerID].Units[unitID].UnitType == UnitTypeEnum.Trireme &&
-							playerID == this.parent.GameData.HumanPlayerID && this.parent.CAPI.RNG.Next(2) != 0)
-						{
-							for (int i = 1; i < 9; i++)
-							{
-								direction = this.parent.MoveDirections[i];
-
-								GPoint newPosition = this.parent.GameData.Players[playerID].Units[unitID].Position + direction;
-
-								if (this.parent.MapManagement.ValidateMapCoordinates(newPosition) && 
-									this.parent.MapManagement.GetTerrainType(newPosition) != TerrainTypeEnum.Water)
-								{
-									// Instruction address 0x1403:0x3e18, size: 5
-									this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(playerID, unitID);
-									// Instruction address 0x1403:0x3e24, size: 5
-									this.parent.Help.F4_0000_03aa_ShowInstantWarningPopup("*TRIREME");
-									break;
-								}
-							}
-						}
+						CheckTriremeLostAtSea(playerID, unitID);
 					}
 				}
 			}
@@ -2453,6 +2434,36 @@ namespace OpenCivOne
 						}
 					}
 				}
+			}
+		}
+
+		/// <summary>
+		/// A human player's Trireme that ends its move with no land next to it has a 50% chance to be lost at sea
+		/// </summary>
+		/// <param name="playerID"></param>
+		/// <param name="unitID"></param>
+		internal void CheckTriremeLostAtSea(int playerID, int unitID)
+		{
+			Unit unit = this.parent.GameData.Players[playerID].Units[unitID];
+
+			if (unit.UnitType == UnitTypeEnum.Trireme && playerID == this.parent.GameData.HumanPlayerID && this.parent.CAPI.RNG.Next(2) != 0)
+			{
+				for (int i = 1; i < 9; i++)
+				{
+					GPoint newPosition = unit.Position + this.parent.MoveDirections[i];
+
+					if (this.parent.MapManagement.ValidateMapCoordinates(newPosition) &&
+						this.parent.MapManagement.GetTerrainType(newPosition) != TerrainTypeEnum.Water)
+					{
+						// Land is next to the Trireme, it is safe
+						return;
+					}
+				}
+
+				// Instruction address 0x1403:0x3e18, size: 5
+				this.parent.UnitManagement.F0_1866_0f10_DeleteUnit(playerID, unitID);
+				// Instruction address 0x1403:0x3e24, size: 5
+				this.parent.Help.F4_0000_03aa_ShowInstantWarningPopup("*TRIREME");
 			}
 		}
 

@@ -131,6 +131,51 @@ namespace OpenCivOne.Tests
 		}
 
 		[Fact]
+		public void TriremeNextToLandIsNeverLost()
+		{
+			// Triremes #47 to #50 end their move next to land
+			for (int seed = 1; seed <= 10; seed++)
+			{
+				using GameHarness harness = GameHarness.Load("BugScenarios");
+				int playerID = harness.Game.GameData.HumanPlayerID;
+				harness.SeedRandom(seed);
+
+				for (int unitID = 47; unitID <= 50; unitID++)
+				{
+					harness.Game.PlayerTurn.CheckTriremeLostAtSea(playerID, unitID);
+
+					Assert.Equal(UnitTypeEnum.Trireme, harness.Game.GameData.Players[playerID].Units[unitID].UnitType);
+				}
+			}
+		}
+
+		[Fact]
+		public void TriremeAwayFromLandCanBeLost()
+		{
+			int lost = 0;
+
+			for (int seed = 1; seed <= 10; seed++)
+			{
+				using GameHarness harness = GameHarness.Load("BugScenarios");
+				int playerID = harness.Game.GameData.HumanPlayerID;
+				harness.SeedRandom(seed);
+
+				// A new Trireme on the open sea at (5,25), with no land next to it
+				int unitID = harness.Game.UnitManagement.F0_1866_0cf5_CreateUnit(playerID, UnitTypeEnum.Trireme, 5, 25);
+				Unit trireme = harness.Game.GameData.Players[playerID].Units[unitID];
+
+				harness.Game.PlayerTurn.CheckTriremeLostAtSea(playerID, unitID);
+
+				if (trireme.UnitType == UnitTypeEnum.None)
+				{
+					lost++;
+				}
+			}
+
+			Assert.InRange(lost, 1, 9);
+		}
+
+		[Fact]
 		public void BattleshipOnlyRevealsWaterTwoSquaresAway()
 		{
 			using GameHarness harness = GameHarness.Load("BugScenarios");
