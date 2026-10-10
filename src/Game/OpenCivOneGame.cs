@@ -114,7 +114,8 @@ namespace OpenCivOne
 					this.gameResourcePath = $"{userProfilePath}{separator}Dos{separator}Civ1{separator}";
 				}
 #else
-				this.gameResourcePath = $"{Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)}{separator}";
+				// The executable's directory. Assembly.Location is empty in a single-file build.
+				this.gameResourcePath = AppContext.BaseDirectory;
 #endif
 
 				this.gameMainPath = $"{userProfilePath}{separator}Games{separator}OpenCivOne";

@@ -76,8 +76,8 @@ namespace IRB.VirtualCPU
 			// We need this because of different paths between Debug and Release versions
 			// The Release executable is intended to be put directly into DOS Cilization game directory
 			// For Debug there are different paths on different platforms
-			string? assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-			AssemblyPath = (!string.IsNullOrEmpty(assemblyPath)) ? assemblyPath + Path.DirectorySeparatorChar : "";
+			// AppContext.BaseDirectory is the executable's directory, also in a single-file build where Assembly.Location is empty
+			AssemblyPath = AppContext.BaseDirectory;
 
 #if DEBUG
 			if (Environment.OSVersion.Platform == PlatformID.Win32NT)
@@ -90,7 +90,7 @@ namespace IRB.VirtualCPU
 					Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), Path.DirectorySeparatorChar);
 			}
 #else
-			DefaultCIVPath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}{Path.DirectorySeparatorChar}";
+			DefaultCIVPath = AppContext.BaseDirectory;
 #endif
 		}
 
@@ -3132,7 +3132,7 @@ namespace IRB.VirtualCPU
 				if (this.drive == 0)
 				{
 					byte drv = 2;
-					string? sRoot = Path.GetPathRoot(Assembly.GetExecutingAssembly().Location);
+					string? sRoot = Path.GetPathRoot(AppContext.BaseDirectory);
 
 					if (sRoot != null && sRoot.Length == 3 && sRoot[1] == ':' && sRoot[2] == Path.PathSeparator)
 					{
