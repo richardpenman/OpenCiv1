@@ -1,6 +1,6 @@
-﻿using System;
+﻿using IRB.Collections.Generic.Trees;
+using System;
 using System.Xml.Serialization;
-using IRB.Collections.Generic.Trees;
 
 namespace IRB.Collections.Generic
 {

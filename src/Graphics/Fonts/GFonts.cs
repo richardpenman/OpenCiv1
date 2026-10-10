@@ -1,8 +1,8 @@
-﻿using System;
+﻿using IRB.Collections.Generic;
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Xml.Serialization;
-using IRB.Collections.Generic;
 
 namespace OpenCivOne.Graphics
 {

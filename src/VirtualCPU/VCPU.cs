@@ -1,9 +1,9 @@
-﻿using System.Reflection;
-using System.Text;
-using OpenCivOne;
+﻿using Disassembler.Formats.MZ;
 using IRB.Collections.Generic;
+using OpenCivOne;
 using OpenCivOne.Graphics;
-using Disassembler.Formats.MZ;
+using System.Reflection;
+using System.Text;
 
 namespace IRB.VirtualCPU
 {

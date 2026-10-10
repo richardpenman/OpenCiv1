@@ -1,7 +1,7 @@
-using System.Text;
 using IRB.Collections.Generic;
 using IRB.VirtualCPU;
 using OpenCivOne.Graphics;
+using System.Text;
 
 namespace OpenCivOne
 {

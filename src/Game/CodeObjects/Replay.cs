@@ -1,6 +1,6 @@
-using System;
 using Avalonia.Media;
 using IRB.VirtualCPU;
+using System;
 
 namespace OpenCivOne
 {

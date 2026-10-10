@@ -1,8 +1,8 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using Avalonia.Media;
+﻿using Avalonia.Media;
 using IRB.Collections.Generic;
 using OpenCivOne.Compression;
+using System;
+using System.Runtime.CompilerServices;
 
 namespace OpenCivOne.Graphics
 {

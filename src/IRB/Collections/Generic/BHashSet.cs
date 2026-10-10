@@ -1,5 +1,5 @@
-﻿using System;
-using IRB.Collections.Generic.Trees;
+﻿using IRB.Collections.Generic.Trees;
+using System;
 
 namespace IRB.Collections.Generic
 {
