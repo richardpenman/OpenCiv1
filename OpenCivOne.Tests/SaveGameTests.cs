@@ -16,8 +16,8 @@ namespace OpenCivOne.Tests
 		public void SavingUnchangedGameWritesIdenticalFiles()
 		{
 			using GameHarness harness = GameHarness.Load("BugScenarios");
-			byte[] originalSave = File.ReadAllBytes(Path.Combine(harness.Directory, "CIVIL0.SVE"));
-			byte[] originalMap = File.ReadAllBytes(Path.Combine(harness.Directory, "CIVIL0.MAP"));
+			byte[] originalSave = File.ReadAllBytes(Path.Combine(harness.Directory, "BUGSCENARIOS.SVE"));
+			byte[] originalMap = File.ReadAllBytes(Path.Combine(harness.Directory, "BUGSCENARIOS.MAP"));
 
 			Assert.True(harness.Game.LoadAndSave.SaveGameData("CIVIL1.SVE"));
 

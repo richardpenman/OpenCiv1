@@ -1,8 +1,13 @@
-# Bug scenarios save (CIVIL0)
+# Test save games
 
-A 580 AD game as the Mongols with units placed to reproduce movement bugs. The tests in
-`UnitMovementTests`, `AIUnitMovementTests` and `TurnTests` use these units. Copy both files into
-your Civilization folder to try the scenarios in the game.
+Tests load these with `GameHarness.Load("Name")`, which reads `NAME.SVE` and `NAME.MAP` (upper case,
+because the game upper-cases save file names). To play one in the game, copy both files into your
+Civilization folder and rename them to a save slot, for example `CIVIL0.SVE` and `CIVIL0.MAP`.
+
+## BUGSCENARIOS
+
+Units placed to reproduce unit movement, combat, transport, trade route and AI movement bugs. The tests in
+`UnitMovementTests`, `AIUnitMovementTests` and `TurnTests` use these units.
 
 | Units | Position | Action | Expected (original game) |
 |---|---|---|---|

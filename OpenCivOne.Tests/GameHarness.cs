@@ -24,14 +24,16 @@ namespace OpenCivOne.Tests
 		/// </summary>
 		public string Directory { get; }
 
-		private GameHarness(string saveFolder)
+		private GameHarness(string saveName)
 		{
 			this.Directory = Path.Combine(Path.GetTempPath(), "OpenCivOne.Tests", Guid.NewGuid().ToString("N"));
 			System.IO.Directory.CreateDirectory(this.Directory);
 
-			foreach (string file in System.IO.Directory.GetFiles(Path.Combine(AppContext.BaseDirectory, "Saves", saveFolder)))
+			foreach (string extension in new[] { ".SVE", ".MAP" })
 			{
-				File.Copy(file, Path.Combine(this.Directory, Path.GetFileName(file)));
+				string file = saveName.ToUpperInvariant() + extension;
+
+				File.Copy(Path.Combine(AppContext.BaseDirectory, "Saves", file), Path.Combine(this.Directory, file));
 			}
 
 			this.Game = new OpenCivOneGame(null!);
@@ -51,13 +53,13 @@ namespace OpenCivOne.Tests
 		}
 
 		/// <summary>
-		/// Loads CIVIL{slot}.SVE/.MAP from OpenCivOne.Tests/Saves/{saveFolder}.
+		/// Loads OpenCivOne.Tests/Saves/{SAVENAME}.SVE and .MAP. The game upper-cases save file names, so the files must be upper case.
 		/// </summary>
-		public static GameHarness Load(string saveFolder, int slot = 0)
+		public static GameHarness Load(string saveName)
 		{
-			GameHarness harness = new GameHarness(saveFolder);
+			GameHarness harness = new GameHarness(saveName);
 
-			Assert.True(harness.Game.LoadAndSave.LoadGameData($"CIVIL{slot}.SVE"), $"Could not load save game {saveFolder}/CIVIL{slot}");
+			Assert.True(harness.Game.LoadAndSave.LoadGameData($"{saveName}.SVE"), $"Could not load save game {saveName}");
 
 			return harness;
 		}

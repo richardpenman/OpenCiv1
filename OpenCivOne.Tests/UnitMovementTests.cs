@@ -3,7 +3,7 @@ using OpenCivOne.Graphics;
 namespace OpenCivOne.Tests
 {
 	/// <summary>
-	/// Unit movement scenarios in Saves/BugScenarios (the human player is the Mongols).
+	/// Unit movement scenarios in Saves/BUGSCENARIOS, played as the save's human player.
 	/// Expected results follow the original game's code.
 	/// </summary>
 	public class UnitMovementTests
