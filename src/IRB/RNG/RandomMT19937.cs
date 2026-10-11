@@ -148,10 +148,7 @@ public class RandomMT19937
 
 	public virtual void NextBytes(byte[] buffer)
 	{
-		if (buffer == null)
-		{
-			throw new ArgumentNullException("buffer");
-		}
+		ArgumentNullException.ThrowIfNull(buffer);
 		for (int i = 0; i < buffer.Length; i++)
 		{
 			// (this.InternalSample() & 0xff) is the same, but faster than (this.InternalSample() % 0x100)

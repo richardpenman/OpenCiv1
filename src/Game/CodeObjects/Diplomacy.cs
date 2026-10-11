@@ -1,4 +1,5 @@
 using IRB.VirtualCPU;
+using System.Globalization;
 using System.Text;
 
 namespace OpenCivOne
@@ -233,7 +234,7 @@ namespace OpenCivOne
 										if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Monarchy))
 										{
 											governments.Add((GovernmentTypeEnum)i);
-											governmentMenu.Append($" {this.parent.Array_1966_GovernmentNames[i]}\n");
+											governmentMenu.Append(CultureInfo.InvariantCulture, $" {this.parent.Array_1966_GovernmentNames[i]}\n");
 										}
 										break;
 
@@ -241,7 +242,7 @@ namespace OpenCivOne
 										if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Communism))
 										{
 											governments.Add((GovernmentTypeEnum)i);
-											governmentMenu.Append($" {this.parent.Array_1966_GovernmentNames[i]}\n");
+											governmentMenu.Append(CultureInfo.InvariantCulture, $" {this.parent.Array_1966_GovernmentNames[i]}\n");
 										}
 										break;
 
@@ -249,7 +250,7 @@ namespace OpenCivOne
 										if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.TheRepublic))
 										{
 											governments.Add((GovernmentTypeEnum)i);
-											governmentMenu.Append($" {this.parent.Array_1966_GovernmentNames[i]}\n");
+											governmentMenu.Append(CultureInfo.InvariantCulture, $" {this.parent.Array_1966_GovernmentNames[i]}\n");
 										}
 										break;
 
@@ -257,7 +258,7 @@ namespace OpenCivOne
 										if (this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID, TechnologyAdvanceEnum.Democracy))
 										{
 											governments.Add((GovernmentTypeEnum)i);
-											governmentMenu.Append($" {this.parent.Array_1966_GovernmentNames[i]}\n");
+											governmentMenu.Append(CultureInfo.InvariantCulture, $" {this.parent.Array_1966_GovernmentNames[i]}\n");
 										}
 										break;
 								}
@@ -265,14 +266,14 @@ namespace OpenCivOne
 							else
 							{
 								governments.Add((GovernmentTypeEnum)i);
-								governmentMenu.Append($" {this.parent.Array_1966_GovernmentNames[i]}\n");
+								governmentMenu.Append(CultureInfo.InvariantCulture, $" {this.parent.Array_1966_GovernmentNames[i]}\n");
 							}
 						}
 
 						if (governments.Count == 0)
 						{
 							governments.Add(GovernmentTypeEnum.Despotism);
-							governmentMenu.Append($" {this.parent.Array_1966_GovernmentNames[1]}\n");
+							governmentMenu.Append(CultureInfo.InvariantCulture, $" {this.parent.Array_1966_GovernmentNames[1]}\n");
 						}
 
 						// Instruction address 0x2517:0x05ab, size: 5

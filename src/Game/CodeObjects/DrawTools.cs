@@ -224,11 +224,11 @@ namespace OpenCivOne
 			int currentPosition = 0;
 
 			// clean out text of unnecessary characters
-			text = text.Replace('\r', ' ').Replace("^\n", "\r").Replace('\n', ' ').Replace('\r', '\n').Replace('^', '\n');
+			text = text.Replace('\r', ' ').Replace("^\n", "\r", StringComparison.Ordinal).Replace('\n', ' ').Replace('\r', '\n').Replace('^', '\n');
 
-			while (text.IndexOf("  ") >= 0)
+			while (text.Contains("  ", StringComparison.Ordinal))
 			{
-				text = text.Replace("  ", " ");
+				text = text.Replace("  ", " ", StringComparison.Ordinal);
 			}
 
 			// we want to adamantly end our text with a line separator
@@ -306,11 +306,11 @@ namespace OpenCivOne
 			int currentPosition = 0;
 
 			// clean out text of unnecessary characters
-			text = text.Replace('\r', ' ').Replace("^\n", "\r").Replace('\n', ' ').Replace('\r', '\n').Replace('^', '\n');
+			text = text.Replace('\r', ' ').Replace("^\n", "\r", StringComparison.Ordinal).Replace('\n', ' ').Replace('\r', '\n').Replace('^', '\n');
 
-			while (text.IndexOf("  ") >= 0)
+			while (text.Contains("  ", StringComparison.Ordinal))
 			{
-				text = text.Replace("  ", " ");
+				text = text.Replace("  ", " ", StringComparison.Ordinal);
 			}
 
 			// we want to adamantly end our text with a line separator

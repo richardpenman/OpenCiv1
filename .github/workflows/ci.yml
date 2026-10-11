@@ -27,13 +27,13 @@ jobs:
       run: dotnet restore OpenCivOne.sln
 
     - name: Build
-      run: dotnet build OpenCivOne.sln --no-restore --configuration Release
+      run: dotnet build OpenCivOne.sln --no-restore --configuration Release -warnaserror
 
     - name: Test
       run: dotnet test OpenCivOne.sln --no-build --configuration Release --verbosity normal
 
   code-analysis:
-    name: Code Analysis
+    name: Code Style and Security
     runs-on: ubuntu-latest
 
     steps:
@@ -45,9 +45,8 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: Run built-in .NET code analysis
+    - name: Check code style
       run: |
-        dotnet build OpenCivOne.sln --configuration Release /p:EnableNETAnalyzers=true /p:AnalysisMode=AllEnabledByDefault
         dotnet format style OpenCivOne.sln --verify-no-changes
         dotnet format analyzers OpenCivOne.sln --verify-no-changes
 

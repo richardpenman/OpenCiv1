@@ -88,7 +88,7 @@ namespace OpenCivOne
 			}
 			if (cell.Position.X < 0 || cell.Position.X >= this.width || cell.Position.Y < 0 || cell.Position.Y >= this.height)
 			{
-				throw new ArgumentOutOfRangeException("The position of the Cell is outside of the Map size range");
+				throw new ArgumentOutOfRangeException(nameof(cell), "The position of the Cell is outside of the Map size range");
 			}
 
 			int index = (cell.Y * this.width) + cell.X;
@@ -162,14 +162,11 @@ namespace OpenCivOne
 				}
 				if (value.Position.X < 0 || value.Position.X >= this.width || value.Position.Y < 0 || value.Position.Y >= this.height)
 				{
-					throw new ArgumentOutOfRangeException("The position of the Cell is outside of the Map size range");
+					throw new ArgumentOutOfRangeException(nameof(value), "The position of the Cell is outside of the Map size range");
 				}
 
 				int key = (value.Y * this.width) + value.X;
-				if (key != index)
-				{
-					throw new ArgumentOutOfRangeException("The Cell position and it's index value don't match");
-				}
+				ArgumentOutOfRangeException.ThrowIfNotEqual(index, key);
 
 				TerrainMapCell oldCell = this.aCells[index];
 				oldCell.ParentInternal = null;

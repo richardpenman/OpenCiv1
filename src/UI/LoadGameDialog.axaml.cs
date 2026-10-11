@@ -19,7 +19,6 @@ public partial class LoadGameDialog : Window
 	private OpenCivOneGame? parent = null;
 	private string gameListPath = "";
 	private BDictionary<string, string> gameList = new();
-	private BDictionary<string, GameData?> saveGameList = new();
 
 	public LoadGameDialog()
     {

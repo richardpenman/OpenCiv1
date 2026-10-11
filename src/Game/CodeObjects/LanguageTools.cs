@@ -49,12 +49,12 @@ namespace OpenCivOne
 
 				if (line != null && (match = rxKey.Match(line)).Success)
 				{
-					if (match.Groups[1].Value.Equals("END", StringComparison.CurrentCultureIgnoreCase))
+					if (match.Groups[1].Value.Equals("END", StringComparison.OrdinalIgnoreCase))
 						break;
 
 					while (line != null && (match = rxKey.Match(line)).Success)
 					{
-						keys.Add(match.Groups[1].Value.Replace(' ', '_').Replace("'", "").Replace(".", "").ToUpper());
+						keys.Add(match.Groups[1].Value.Replace(' ', '_').Replace("'", "", StringComparison.Ordinal).Replace(".", "", StringComparison.Ordinal).ToUpperInvariant());
 
 						line = textReader.ReadLine();
 					}
@@ -67,19 +67,19 @@ namespace OpenCivOne
 						{
 							if (line.StartsWith('_') || line.StartsWith('-'))
 							{
-								contentItems.Add(contentBuilder.ToString().TrimEnd(' ', '^').Replace("  ", " "));
+								contentItems.Add(contentBuilder.ToString().TrimEnd(' ', '^').Replace("  ", " ", StringComparison.Ordinal));
 								contentBuilder.Clear();
 							}
 
 							if (line.EndsWith('^'))
 							{
 								contentBuilder.Append(line.TrimEnd(' ', '^'));
-								contentBuilder.Append("^");
+								contentBuilder.Append('^');
 							}
 							else
 							{
 								contentBuilder.Append(line);
-								contentBuilder.Append(" ");
+								contentBuilder.Append(' ');
 							}
 						}
 
@@ -88,7 +88,7 @@ namespace OpenCivOne
 
 					if (contentBuilder.Length > 0)
 					{
-						contentItems.Add(contentBuilder.ToString().TrimEnd(' ', '^').Replace("  ", " "));
+						contentItems.Add(contentBuilder.ToString().TrimEnd(' ', '^').Replace("  ", " ", StringComparison.Ordinal));
 					}
 
 					for (int i = 0; i < keys.Count; i++)
@@ -189,7 +189,7 @@ namespace OpenCivOne
 			{
 				if (text[text.Length - 2] != ' ')
 				{
-					text = text.Substring(0, text.Length - 2) + '.';
+					text = string.Concat(text.AsSpan(0, text.Length - 2), ".");
 				}
 				else
 				{
@@ -232,7 +232,7 @@ namespace OpenCivOne
 
 			int lineCount = 0;
 
-			using (FileStream inputStream = new FileStream($"{this.parent.ResourcePath}{section.ToUpper()}.TXT", FileMode.Open))
+			using (FileStream inputStream = new FileStream($"{this.parent.ResourcePath}{section.ToUpperInvariant()}.TXT", FileMode.Open))
 			{
 				inputStream.Seek(0x212, SeekOrigin.Begin);
 
@@ -245,7 +245,7 @@ namespace OpenCivOne
 						string? line = textReader.ReadLine();
 
 						// Instruction address 0x2f4d:0x0310, size: 5
-						if (line != null && line.Equals(topic, StringComparison.CurrentCultureIgnoreCase))
+						if (line != null && line.Equals(topic, StringComparison.OrdinalIgnoreCase))
 						{
 							line = textReader.ReadLine();
 
@@ -271,9 +271,9 @@ namespace OpenCivOne
 
 							string item = itemText.ToString().TrimEnd(' ', '^', '\n');
 
-							while (item.IndexOf("  ") >= 0)
+							while (item.Contains("  ", StringComparison.Ordinal))
 							{
-								item = item.Replace("  ", " ");
+								item = item.Replace("  ", " ", StringComparison.Ordinal);
 							}
 
 							return item;
@@ -325,7 +325,7 @@ namespace OpenCivOne
 			// function body
 			for (int i = 0; i < Array_30ae.Length; i++)
 			{
-				text = text.Replace(Array_30ae[i], this.parent.Array_30b8[i]);
+				text = text.Replace(Array_30ae[i], this.parent.Array_30b8[i], StringComparison.Ordinal);
 			}
 
 			return text;

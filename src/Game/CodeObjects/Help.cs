@@ -20,7 +20,7 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock($"F4_0000_0000(0x{key:x4})");
 
 			// function body
-			string content = this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey("HELP", "*" + topic.ToUpper());
+			string content = this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey("HELP", "*" + topic.ToUpperInvariant());
 
 			if (!string.IsNullOrEmpty(content))
 			{

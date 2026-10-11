@@ -1,4 +1,4 @@
-# Remove the line below if you want to inherit .editorconfig settings from higher directories
+# Settings for all C# code in the repository
 root = true
 
 # C# files
@@ -267,3 +267,33 @@ spelling_checkable_types = strings,identifiers,comments
 [*.md]
 spelling_languages = en-us,en-gb
 spelling_checkable_types = strings,identifiers,comments
+
+[*.cs]
+
+# Code analysis rule set
+# The build uses the default .NET analyzers. These additional rules are warnings, and CI builds with warnings as errors.
+# Rules that don't suit code translated from the original game (public fields, underscores in names such as
+# F0_1866_0f10, explicit default values) are left off.
+
+# Globalization: text handling must not depend on the computer's language settings.
+# For example "file.sve".ToUpper() is "FİLE.SVE" on a Turkish system, so the file is not found.
+dotnet_diagnostic.CA1304.severity = warning
+dotnet_diagnostic.CA1305.severity = warning
+dotnet_diagnostic.CA1307.severity = warning
+dotnet_diagnostic.CA1309.severity = warning
+dotnet_diagnostic.CA1310.severity = warning
+dotnet_diagnostic.CA1311.severity = warning
+
+# Reliability and security
+dotnet_diagnostic.CA1823.severity = warning
+dotnet_diagnostic.CA2208.severity = warning
+dotnet_diagnostic.CA5369.severity = warning
+
+# Performance
+dotnet_diagnostic.CA1510.severity = warning
+dotnet_diagnostic.CA1512.severity = warning
+dotnet_diagnostic.CA1825.severity = warning
+dotnet_diagnostic.CA1834.severity = warning
+dotnet_diagnostic.CA1845.severity = warning
+dotnet_diagnostic.CA1868.severity = warning
+dotnet_diagnostic.CA2249.severity = warning

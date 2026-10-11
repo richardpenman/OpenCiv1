@@ -69,8 +69,17 @@ namespace OpenCivOne
 				}
 			}
 
-			// RNG based on city name
-			RandomMT19937 oRNG = new RandomMT19937(this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID).GetHashCode());
+			// The layout is random, seeded with the sum of the city name's characters (raw 19:L0073), so a city always looks
+			// the same. The original reseeds the game's random number generator; this uses a separate one so that viewing a
+			// city doesn't change the game. string.GetHashCode can't be used, it is different every time the game runs.
+			int nameSeed = 0;
+
+			foreach (char ch in this.parent.Segment_2459.F0_2459_08c6_GetCityName(cityID))
+			{
+				nameSeed += (sbyte)ch;
+			}
+
+			RandomMT19937 oRNG = new RandomMT19937(nameSeed);
 
 			x1 = 9;
 			y1 = 11;

@@ -1891,7 +1891,7 @@ namespace OpenCivOne
 
 						string cityName = this.parent.Segment_2459.F0_2459_08c6_GetCityName(this.parent.GameData.Players[this.Var_6548_PlayerID].Units[i].HomeCityID);
 
-						cityName = (cityName.Length > 3) ? (cityName.Substring(0, 3) + "."): cityName;
+						cityName = (cityName.Length > 3) ? string.Concat(cityName.AsSpan(0, 3), "."): cityName;
 
 						// Instruction address 0x1d12:0x39b4, size: 5
 						this.parent.DrawTools.DrawStringToScreen0(cityName, cityUnitX, cityUnitY + 15, 0);
@@ -1949,7 +1949,7 @@ namespace OpenCivOne
 							{
 								// Instruction address 0x1d12:0x3b40, size: 5
 								this.parent.DrawTools.DrawStringToScreen0(
-									this.parent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.parent.GameData.Wonders[i + 1].Name.ToUpper(), 63), 253, cityY + 2, 15);
+									this.parent.LanguageTools.F0_2f4d_04f7_TrimStringToWidth(this.parent.GameData.Wonders[i + 1].Name.ToUpperInvariant(), 63), 253, cityY + 2, 15);
 
 								// Instruction address 0x1d12:0x3b69, size: 5
 								F0_1d12_7045_DrawWonderOrImprovement(i + 25, ((improvementX & 1) != 0) ? 213 : 233, cityY - 2);

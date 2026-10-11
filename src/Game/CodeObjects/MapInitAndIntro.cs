@@ -1411,7 +1411,7 @@ namespace OpenCivOne
 								this.parent.Graphics.F0_VGA_07d8_DrawImage(this.parent.Var_19e8_Screen2_Rectangle, 0, 0, 320, 200, this.parent.Var_aa_Screen0_Rectangle, 0, 0);
 
 								// Instruction address 0x0000:0x1a73, size: 5
-								imageFileName = imageFileName.Replace(".PIC", ".PAL");
+								imageFileName = imageFileName.Replace(".PIC", ".PAL", StringComparison.Ordinal);
 
 								byte[] palette;
 								// Instruction address 0x0000:0x1a83, size: 5

@@ -1,4 +1,5 @@
 using OpenCivOne.Graphics;
+using System.Globalization;
 using System.Text;
 
 namespace OpenCivOne
@@ -183,9 +184,9 @@ namespace OpenCivOne
 
 				StringBuilder saveGameText = new();
 
-				saveGameText.Append($" CIVIL{this.gameIndex}.SVE\n {this.parent.Array_33a2_GameDifficultyNames[this.parent.GameData.DifficultyLevel]} ");
-				saveGameText.Append($"{this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Name}\n {this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Nation}");
-				saveGameText.Append($"/{this.parent.GameEngine.YearToString(this.parent.GameData.Year)}");
+				saveGameText.Append(CultureInfo.InvariantCulture, $" CIVIL{this.gameIndex}.SVE\n {this.parent.Array_33a2_GameDifficultyNames[this.parent.GameData.DifficultyLevel]} ");
+				saveGameText.Append(CultureInfo.InvariantCulture, $"{this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Name}\n {this.parent.GameData.Players[this.parent.GameData.HumanPlayerID].Nation}");
+				saveGameText.Append(CultureInfo.InvariantCulture, $"/{this.parent.GameEngine.YearToString(this.parent.GameData.Year)}");
 				saveGameText.Append("\n ... save in progress.\n");
 
 				// Instruction address 0x0000:0x05c3, size: 5
@@ -215,7 +216,7 @@ namespace OpenCivOne
 		/// <returns></returns>
 		public bool LoadGameData(string filename)
 		{
-			filename = filename.ToUpper();
+			filename = filename.ToUpperInvariant();
 
 			//this.CPU.Log.EnterBlock($"F11_0000_083b_LoadGameData('{path}')");
 
@@ -779,7 +780,7 @@ namespace OpenCivOne
 		/// <returns></returns>
 		public bool SaveGameData(string filename)
 		{
-			filename = filename.ToUpper();
+			filename = filename.ToUpperInvariant();
 
 			//this.CPU.Log.EnterBlock($"F11_0000_08f6_SaveGameData('{filename}')");
 

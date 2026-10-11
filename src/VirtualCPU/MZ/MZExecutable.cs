@@ -22,11 +22,11 @@
 		// always 1 in this case
 		protected ushort overlayFlag = 0;
 		// Additional data in the header before Relocation table
-		protected byte[] additionalHeaderDataBeforeRelocationTable = new byte[0];
+		protected byte[] additionalHeaderDataBeforeRelocationTable = Array.Empty<byte>();
 		// Additional data in the header after Relocation table
-		protected byte[] additionalHeaderDataAfterRelocationTable = new byte[0];
+		protected byte[] additionalHeaderDataAfterRelocationTable = Array.Empty<byte>();
 		// actual code or data
-		protected byte[] mainData = new byte[0];
+		protected byte[] mainData = Array.Empty<byte>();
 		// relocation data
 		protected List<MZRelocationItem> relocations = new List<MZRelocationItem>();
 		// overlays
@@ -154,7 +154,7 @@
 				if (zeroes && additionalHeaderDataSizeAfterRelocationTable < 16)
 				{
 					// we can safely assume that these are an paragraph padding zeroes
-					exe.additionalHeaderDataAfterRelocationTable = new byte[0];
+					exe.additionalHeaderDataAfterRelocationTable = Array.Empty<byte>();
 				}
 			}
 

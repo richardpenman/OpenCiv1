@@ -275,10 +275,8 @@ namespace OpenCivOne
 
 		public void RemoveImprovement(ImprovementEnum improvement)
 		{
-			if (this.Improvements.Contains(improvement))
+			if (this.Improvements.Remove(improvement))
 			{
-				this.Improvements.Remove(improvement);
-
 				this.improvementBitFlags |= ImprovementEnumToBit(improvement);
 				this.improvementBitFlags ^= ImprovementEnumToBit(improvement);
 			}

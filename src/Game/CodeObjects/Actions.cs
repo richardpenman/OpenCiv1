@@ -1,5 +1,6 @@
 using IRB.VirtualCPU;
 using OpenCivOne.Graphics;
+using System.Globalization;
 using System.Text;
 
 namespace OpenCivOne
@@ -341,7 +342,7 @@ namespace OpenCivOne
 						this.parent.Segment_1ade.F0_1ade_22b5_PlayerHasTechnology(playerID2, (TechnologyAdvanceEnum)i))
 					{
 						// Instruction address 0x2459:0x0762, size: 5
-						menuText.Append($"{this.parent.GameData.TechnologyAdvances[i].Name}\n ");
+						menuText.Append(CultureInfo.InvariantCulture, $"{this.parent.GameData.TechnologyAdvances[i].Name}\n ");
 
 						// Only technologies added to the menu are counted, so that this index
 						// matches the option index returned by the selection dialog

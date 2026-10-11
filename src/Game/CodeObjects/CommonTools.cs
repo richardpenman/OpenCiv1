@@ -20,7 +20,7 @@ namespace OpenCivOne
 		private bool transformFlag = false;
 		private int transformValue = 0;
 		private int transformCount = 0;
-		private TransformColor[] transformColors = new TransformColor[0];
+		private TransformColor[] transformColors = Array.Empty<TransformColor>();
 		private bool paletteCycleEnabled = false;
 
 		public CommonTools(OpenCivOneGame parent)
@@ -347,10 +347,10 @@ namespace OpenCivOne
 			//this.oCPU.Log.EnterBlock($"F0_1000_0382_AddPaletteCycleSlot({index}, {speed}, {fromColorIndex}, {toColorIndex})");
 
 			if (index < 0 || index > 8)
-				throw new ArgumentOutOfRangeException("Argument index is out of range");
+				throw new ArgumentOutOfRangeException(nameof(index));
 
 			if (fromColorIndex > toColorIndex)
-				throw new ArgumentOutOfRangeException("Argument fromColorIndex is greater than toColorIndex");
+				throw new ArgumentOutOfRangeException(nameof(fromColorIndex), "fromColorIndex is greater than toColorIndex");
 
 			while (this.inTimer)
 			{
@@ -479,7 +479,7 @@ namespace OpenCivOne
 				int position = 0;
 
 				if (speed < 1 || speed > 50)
-					throw new ArgumentOutOfRangeException("The argument speed is out of range");
+					throw new ArgumentOutOfRangeException(nameof(speed));
 
 				this.transformColors = new TransformColor[256];
 				position += 6;

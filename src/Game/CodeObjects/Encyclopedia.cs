@@ -1,6 +1,7 @@
 using IRB.Collections.Generic;
 using IRB.VirtualCPU;
 using OpenCivOne.Graphics;
+using System.Globalization;
 using System.Text;
 
 namespace OpenCivOne
@@ -124,8 +125,8 @@ namespace OpenCivOne
 					for (int j = 0; j < 67; j++)
 					{
 						// Instruction address 0x0000:0x019b, size: 5
-						if (string.Compare(this.parent.GameData.TechnologyAdvances[j].Name, oldTopicText, true) > 0 &&
-							string.Compare(this.parent.GameData.TechnologyAdvances[j].Name, topicText, true) < 0)
+						if (string.Compare(this.parent.GameData.TechnologyAdvances[j].Name, oldTopicText, StringComparison.OrdinalIgnoreCase) > 0 &&
+							string.Compare(this.parent.GameData.TechnologyAdvances[j].Name, topicText, StringComparison.OrdinalIgnoreCase) < 0)
 						{
 							itemTopic = EncyclopediaTopicEnum.TechnologyAdvance;
 							topicIndex = j;
@@ -138,8 +139,8 @@ namespace OpenCivOne
 				{
 					for (int j = 1; j < 46; j++)
 					{
-						if (string.Compare(this.parent.GameData.GetImprovementType(j).Name, oldTopicText, true) > 0 &&
-							string.Compare(this.parent.GameData.GetImprovementType(j).Name, topicText, true) < 0)
+						if (string.Compare(this.parent.GameData.GetImprovementType(j).Name, oldTopicText, StringComparison.OrdinalIgnoreCase) > 0 &&
+							string.Compare(this.parent.GameData.GetImprovementType(j).Name, topicText, StringComparison.OrdinalIgnoreCase) < 0)
 						{
 							itemTopic = EncyclopediaTopicEnum.CityImprovement;
 							topicIndex = j;
@@ -154,8 +155,8 @@ namespace OpenCivOne
 				{
 					for (int j = 0; j < 28; j++)
 					{
-						if (string.Compare(this.parent.GameData.Units[j].Name, oldTopicText, true) > 0 &&
-							string.Compare(this.parent.GameData.Units[j].Name, topicText, true) < 0)
+						if (string.Compare(this.parent.GameData.Units[j].Name, oldTopicText, StringComparison.OrdinalIgnoreCase) > 0 &&
+							string.Compare(this.parent.GameData.Units[j].Name, topicText, StringComparison.OrdinalIgnoreCase) < 0)
 						{
 							itemTopic = EncyclopediaTopicEnum.UnitType;
 							topicIndex = j;
@@ -171,8 +172,8 @@ namespace OpenCivOne
 					for (int j = 0; j < 12; j++)
 					{
 						// Instruction address 0x0000:0x02bb, size: 5
-						if (string.Compare(this.parent.GameData.Terrains[j].Name, oldTopicText, true) > 0 &&
-							string.Compare(this.parent.GameData.Terrains[j].Name, topicText, true) < 0)
+						if (string.Compare(this.parent.GameData.Terrains[j].Name, oldTopicText, StringComparison.OrdinalIgnoreCase) > 0 &&
+							string.Compare(this.parent.GameData.Terrains[j].Name, topicText, StringComparison.OrdinalIgnoreCase) < 0)
 						{
 							itemTopic = EncyclopediaTopicEnum.TerrainType;
 							topicIndex = j;
@@ -187,8 +188,8 @@ namespace OpenCivOne
 				{
 					for (int j = 0; j < 21; j++)
 					{
-						if (string.Compare(gameConcepts[j], oldTopicText, true) > 0 &&
-							string.Compare(gameConcepts[j], topicText, true) < 0)
+						if (string.Compare(gameConcepts[j], oldTopicText, StringComparison.OrdinalIgnoreCase) > 0 &&
+							string.Compare(gameConcepts[j], topicText, StringComparison.OrdinalIgnoreCase) < 0)
 						{
 							itemTopic = EncyclopediaTopicEnum.GameConcept;
 							topicIndex = j;
@@ -481,7 +482,7 @@ namespace OpenCivOne
 
 			if (this.parent.GameData.GameSettingFlags.EncyclopediaText && topicType != EncyclopediaTopicEnum.TerrainType)
 			{
-				string content = this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey($"BLURB{((int)topicType) - 1}", $"*{topicName.ToUpper()}");
+				string content = this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey($"BLURB{((int)topicType) - 1}", $"*{topicName.ToUpperInvariant()}");
 
 				// Instruction address 0x0000:0x0855, size: 5
 				if (!string.IsNullOrEmpty(content))
@@ -501,7 +502,7 @@ namespace OpenCivOne
 			{
 				// Instruction address 0x0000:0x08d6, size: 5
 				yPosition = this.parent.DrawTools.DrawTextBlock(12, yPosition,
-					this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey($"BLURB{((int)topicType - 1)}", $"*{topicName.ToUpper()}2"), 288, 1);
+					this.parent.LanguageTools.F0_2f4d_01ad_GetTextBySectionAndKey($"BLURB{((int)topicType - 1)}", $"*{topicName.ToUpperInvariant()}2"), 288, 1);
 
 				yPosition += 8;
 			}
@@ -703,12 +704,12 @@ namespace OpenCivOne
 							{
 								StringBuilder description = new();
 
-								description.Append($"Food: {this.parent.GameData.Terrains[i].Food}{((this.parent.GameData.Terrains[i].Food >= 3) ? "*" : "")}");
+								description.Append(CultureInfo.InvariantCulture, $"Food: {this.parent.GameData.Terrains[i].Food}{((this.parent.GameData.Terrains[i].Food >= 3) ? "*" : "")}");
 
 								if (this.parent.GameData.TerrainModifications[topicIndex].IrrigationEffect < -1)
 								{
 									// Instruction address 0x0000:0x1296, size: 5
-									description.Append($" ({this.parent.GameData.Terrains[i].Food - this.parent.GameData.TerrainModifications[topicIndex].IrrigationEffect - 1}");
+									description.Append(CultureInfo.InvariantCulture, $" ({this.parent.GameData.Terrains[i].Food - this.parent.GameData.TerrainModifications[topicIndex].IrrigationEffect - 1}");
 									description.Append((this.parent.GameData.Terrains[i].Food >= 2) ? "*" : "");
 									description.Append(" with Irrigation)");
 								}
@@ -726,15 +727,15 @@ namespace OpenCivOne
 							{
 								StringBuilder description = new();
 
-								description.Append($"Production: {((topicIndex == 2 || topicIndex == 11) ? "0/" : "")}{this.parent.GameData.Terrains[i].Production}");
+								description.Append(CultureInfo.InvariantCulture, $"Production: {((topicIndex == 2 || topicIndex == 11) ? "0/" : "")}{this.parent.GameData.Terrains[i].Production}");
 
 								if (this.parent.GameData.TerrainModifications[topicIndex].MiningEffect < -1)
 								{
-									description.Append($" ({this.parent.GameData.Terrains[i].Production - this.parent.GameData.TerrainModifications[topicIndex].MiningEffect - 1}");
+									description.Append(CultureInfo.InvariantCulture, $" ({this.parent.GameData.Terrains[i].Production - this.parent.GameData.TerrainModifications[topicIndex].MiningEffect - 1}");
 
 									if (this.parent.GameData.Terrains[i].Production - this.parent.GameData.TerrainModifications[topicIndex].MiningEffect - 1 >= 3)
 									{
-										description.Append("*");
+										description.Append('*');
 									}
 
 									description.Append(" with Mining)");
@@ -753,16 +754,16 @@ namespace OpenCivOne
 							{
 								StringBuilder description = new();
 
-								description.Append($"Trade: {this.parent.GameData.Terrains[i].Trade}{((this.parent.GameData.Terrains[i].Trade != 0) ? "%" : "")}");
+								description.Append(CultureInfo.InvariantCulture, $"Trade: {this.parent.GameData.Terrains[i].Trade}{((this.parent.GameData.Terrains[i].Trade != 0) ? "%" : "")}");
 								
 								if (this.parent.GameData.Terrains[i].Trade >= 3)
 								{
-									description.Append("*");
+									description.Append('*');
 								}
 
 								if (topicIndex <= 2)
 								{
-									description.Append($" ({this.parent.GameData.Terrains[i].Trade + 1}% with Roads)");
+									description.Append(CultureInfo.InvariantCulture, $" ({this.parent.GameData.Terrains[i].Trade + 1}% with Roads)");
 								}
 
 								// Instruction address 0x0000:0x151d, size: 5

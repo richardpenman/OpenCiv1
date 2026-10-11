@@ -81,8 +81,8 @@ namespace OpenCivOne
 				ushort usStack = this.aStack.Pop();
 				// _setargv pushes permanent data on the stack!
 				if (this.oCPU != null &&
-					!text.Equals("_setargv", StringComparison.InvariantCultureIgnoreCase) &&
-					!text.Equals("start", StringComparison.InvariantCultureIgnoreCase) &&
+					!text.Equals("_setargv", StringComparison.OrdinalIgnoreCase) &&
+					!text.Equals("start", StringComparison.OrdinalIgnoreCase) &&
 					this.oCPU.SP.UInt16 != usStack)
 				{
 					this.oLog.Write($", Error: Stack leak detected in function '{text}', " +

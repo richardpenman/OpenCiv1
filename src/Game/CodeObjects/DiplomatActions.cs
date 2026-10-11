@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 
 namespace OpenCivOne
@@ -211,7 +212,7 @@ namespace OpenCivOne
 							}
 
 							StringBuilder menuText = new();
-							menuText.Append($"Dissidents in {this.parent.Segment_2459.F0_2459_08c6_GetCityName(destinationCityID)}\nwill revolt for {actionCost} coins.\n");
+							menuText.Append(CultureInfo.InvariantCulture, $"Dissidents in {this.parent.Segment_2459.F0_2459_08c6_GetCityName(destinationCityID)}\nwill revolt for {actionCost} coins.\n");
 
 							if (actionCost <= this.parent.GameData.Players[diplomatPlayerID].Coins)
 							{
@@ -223,7 +224,7 @@ namespace OpenCivOne
 									if (this.parent.GameData.Players[diplomatPlayerID].Diplomacy[cityPlayerID].HasFlag(DiplomacyFlagsEnum.Peace))
 									{
 										// Instruction address 0x0000:0x0543, size: 5
-										menuText.Append($" Subvert city for {actionCost * 2} coins\n");
+										menuText.Append(CultureInfo.InvariantCulture, $" Subvert city for {actionCost * 2} coins\n");
 									}
 								}
 							}
