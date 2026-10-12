@@ -21,6 +21,7 @@ Units placed to reproduce unit movement, combat, transport, trade route and AI m
 | Triremes #47 to #50 | 67,21 70,21 70,12 72,12 | End the turn | Never lost next to land |
 | Caravan #51 (home Samarkand, already trades with Moscow) | 52,18 | Move down into Moscow | Still one trade route with Moscow |
 | Battleship #52 | 52,26 | Move down-right | Only water revealed two squares away |
+| Samarkand has Magellan's Expedition; Trireme #34, Militia #35 | 71,17 | End the turn | Trireme gets 4 moves, Militia keeps 1 |
 
 ## AITURNS
 

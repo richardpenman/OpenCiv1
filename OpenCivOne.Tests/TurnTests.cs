@@ -2,18 +2,15 @@ namespace OpenCivOne.Tests
 {
 	public class TurnTests
 	{
-		// The Lighthouse gives the same bonus, but is obsolete in this save game
-		[Theory]
-		[InlineData(WonderEnum.MagellansExpedition)]
-		public void WonderGivesShipsAnExtraMove(WonderEnum wonder)
+		// Samarkand has Magellan's Expedition. The Lighthouse gives the same bonus, but is obsolete in this save game.
+		[Fact]
+		public void MagellansExpeditionGivesShipsAnExtraMove()
 		{
 			using GameHarness harness = GameHarness.Load("BugScenarios");
 			GameData data = harness.Game.GameData;
 			int playerID = data.HumanPlayerID;
 			Player player = data.Players[playerID];
-			// Give the wonder to Samarkand, the Caravan's home city
-			data.WonderCityID[(int)wonder] = player.Units[51].HomeCityID;
-			Assert.True(harness.Game.CityWorker.F0_1d12_6c97_PlayerHasWonder(playerID, wonder));
+			Assert.True(harness.Game.CityWorker.F0_1d12_6c97_PlayerHasWonder(playerID, WonderEnum.MagellansExpedition));
 
 			harness.Game.PlayerTurn.ResetUnitMoves(playerID);
 
